@@ -1,100 +1,181 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Electrosolvers - All Electronic Devices</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Electrosolvers - All Electronic Devices | Chuka, Kenya</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-body{background:#f4f6f8;color:#111}
-header{background:#0a1a2f;color:white;padding:18px 16px;position:sticky;top:0;z-index:10}
-.top{display:flex;justify-content:space-between;align-items:center;max-width:1100px;margin:auto}
-.logo{font-size:22px;font-weight:900} .logo span{color:#ffcc00}
-nav a{color:white;text-decoration:none;margin-left:14px;font-size:14px}
-.hero{background:linear-gradient(135deg,#0a1a2f,#0f4c81);color:white;padding:40px 16px;text-align:center}
-.hero h1{font-size:32px;line-height:1.2} .hero h1 span{color:#ffcc00}
-.hero p{margin:14px 0 20px;opacity:.9}
-.btn{display:inline-block;background:#25D366;color:white;padding:13px 22px;border-radius:30px;text-decoration:none;font-weight:bold}
-.btn2{background:#ffcc00;color:#111;margin-left:8px}
-.search{max-width:700px;margin:20px auto 0;display:flex;gap:8px;padding:0 16px}
-.search input{flex:1;padding:13px;border-radius:10px;border:1px solid #ddd}
-.search button{padding:13px 18px;border:none;background:#0a1a2f;color:white;border-radius:10px}
-.wrap{max-width:1100px;margin:auto;padding:20px 16px}
-.cats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
-.cats button{padding:9px 16px;border-radius:20px;border:1px solid #ddd;background:white;cursor:pointer}
-.cats button.active{background:#0a1a2f;color:white}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-@media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}}
-.card{background:white;border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.08)}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#f5f7fa;color:#111}
+header{background:#0a1931;color:#fff;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
+header b{font-size:22px} header b span{color:#ffcc00}
+header a{color:#fff;text-decoration:none;margin-left:12px;font-size:14px}
+.hero{background:linear-gradient(180deg,#0a1931,#164a8a);color:#fff;text-align:center;padding:32px 16px}
+.hero h1{font-size:30px;line-height:1.2}.hero h1 span{color:#ffcc00}
+.hero p{margin:12px 0;color:#dbeafe}
+.btn{display:inline-block;padding:12px 20px;border-radius:999px;font-weight:700;text-decoration:none;margin:4px}
+.green{background:#25D366;color:#fff}.yellow{background:#ffcc00;color:#111}
+.wrap{max-width:1100px;margin:auto;padding:16px}
+.search{display:flex;gap:8px;margin:10px 0}
+.search input{flex:1;padding:12px;border:1px solid #ddd;border-radius:10px}
+.search button{padding:12px 16px;background:#0a1931;color:#fff;border:0;border-radius:10px}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.filters button{padding:8px 14px;border:1px solid #ddd;background:#fff;border-radius:999px;cursor:pointer}
+.filters button.active{background:#0a1931;color:#fff}
+.count{font-weight:700;margin:8px 0;color:#444}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(min-width:700px){.grid{grid-template-columns:1fr 1fr 1fr 1fr}}
+.card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.08);display:flex;flex-direction:column}
 .card img{width:100%;height:150px;object-fit:cover}
-.card .p{padding:12px}
-.card h3{font-size:15px} .card p{font-size:13px;color:#666;margin:6px 0}
-.price{font-weight:900;color:#0f4c81;font-size:17px}
-.order{display:block;text-align:center;background:#25D366;color:white;padding:10px;border-radius:8px;text-decoration:none;margin-top:10px;font-weight:bold}
-footer{background:#0a1a2f;color:white;text-align:center;padding:24px 16px;margin-top:30px}
+.card .p{padding:12px;display:flex;flex-direction:column;gap:5px;flex:1}
+.card h3{font-size:15px;line-height:1.3}.card small{color:#666;line-height:1.4;font-size:12.5px}
+.price{color:#0a4db3;font-weight:800;font-size:17px}
+.order{background:#25D366;color:#fff;text-align:center;padding:10px;border-radius:10px;text-decoration:none;font-weight:700;margin-top:auto}
+footer{background:#0a1931;color:#fff;text-align:center;padding:24px 16px;margin-top:20px}
+footer a{color:#25D366}
 </style>
 </head>
 <body>
-<header><div class="top"><div class="logo">ELECTRO<span>SOLVERS</span></div><nav><a href="#shop">Shop</a><a href="https://wa.me/25412555279">WhatsApp</a></nav></div></header>
-<div class="hero">
-<h1>All Electronic Devices.<br><span>One Trusted Shop.</span></h1>
-<p>Phones, Laptops, TVs, Fridges, Speakers, Accessories - Best Prices in Kenya. Order on WhatsApp, Fast Delivery.</p>
-<a class="btn" href="https://wa.me/25412555279?text=Hi%20Electrosolvers!%20I%20want%20to%20order">Order on WhatsApp</a>
-<a class="btn btn2" href="#shop">Shop Now</a>
-<p style="margin-top:14px;font-size:13px">Phone: 012555279 - Chuka, Kenya - Delivery Available</p>
-</div>
-<div class="search"><input id="searchInput" placeholder="Search... e.g iPhone, Samsung, TV, Laptop"><button onclick="searchNow()">Search</button></div>
+<header><b>ELECTRO<span>SOLVERS</span></b><div><a href="#shop">Shop</a><a href="https://wa.me/25412555279">WhatsApp</a></div></header>
+<div class="hero"><h1>All Electronic Devices.<br><span>One Trusted Shop.</span></h1><p>200+ Phones, Laptops, TVs, Fridges, Speakers, Accessories - Best Prices in Kenya. Order on WhatsApp, Fast Delivery.</p><a class="btn green" href="https://wa.me/25412555279?text=Hi%20Electrosolvers!%20I%20want%20to%20order">Order on WhatsApp</a><a class="btn yellow" href="#shop">Shop Now - 200 Items</a><p style="margin-top:10px;font-size:14px">Phone: 012555279 - Chuka, Kenya - Delivery Available</p></div>
 <div class="wrap" id="shop">
 <h2>Shop All Devices</h2>
-<div class="cats">
-<button class="active" onclick="filterCat('all',this)">All</button>
-<button onclick="filterCat('phones',this)">Phones</button>
-<button onclick="filterCat('laptops',this)">Laptops</button>
-<button onclick="filterCat('tvs',this)">TVs and Audio</button>
-<button onclick="filterCat('home',this)">Home</button>
-<button onclick="filterCat('accessories',this)">Accessories</button>
-</div>
+<div class="search"><input id="q" placeholder="Search... e.g iPhone, Samsung, TV, Laptop, Fridge" oninput="render()"><button onclick="render()">Search</button></div>
+<div class="filters" id="filters"></div>
+<div class="count" id="count"></div>
 <div class="grid" id="grid"></div>
 </div>
-<div class="wrap" style="background:white;border-radius:14px">
-<h2>Why Electrosolvers?</h2>
-<p style="margin-top:10px;line-height:1.7">Genuine Products with Warranty<br>Best Prices - Ask for Today's Offer<br>Pay on Delivery / M-Pesa Accepted<br>Fast Delivery in Chuka and Countrywide</p>
-<a class="btn" style="margin-top:14px" href="https://wa.me/25412555279?text=Hi%20Electrosolvers!%20What%20is%20today's%20offer?">Ask For Today's Offer</a>
-</div>
-<footer><h3>ELECTROSOLVERS</h3><p style="margin:10px 0">All Electronic Devices - Quality You Can Trust</p><p>WhatsApp: 012555279</p><p style="margin-top:10px;font-size:12px;opacity:.7">2026 Electrosolvers. All Rights Reserved.</p></footer>
+<footer><h3>ELECTROSOLVERS</h3><p>Chuka, Kenya | Phone: 012555279 | WhatsApp: <a href="https://wa.me/25412555279">Chat Now</a></p><p style="margin-top:8px;color:#aaa;font-size:13px">All products come with warranty. Prices may vary with stock. Confirm on WhatsApp before payment.</p></footer>
 <script>
-const products=[
-{name:"iPhone 13 128GB",cat:"phones",price:"KSh 58,000",img:"https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=600",desc:"New, Sealed, 1 Year Warranty"},
-{name:"Samsung Galaxy A55",cat:"phones",price:"KSh 42,500",img:"https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=600",desc:"New, Dual SIM, 256GB"},
-{name:"Tecno Camon 30",cat:"phones",price:"KSh 26,999",img:"https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=600",desc:"New, 12GB RAM, 256GB"},
-{name:"HP ProBook 15 Laptop",cat:"laptops",price:"KSh 68,000",img:"https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600",desc:"Core i5, 8GB, 512GB SSD"},
-{name:"Lenovo IdeaPad Slim 3",cat:"laptops",price:"KSh 55,500",img:"https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=600",desc:"Core i3, 8GB, 256GB SSD"},
-{name:"MacBook Air M1",cat:"laptops",price:"KSh 105,000",img:"https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600",desc:"M1 Chip, 8GB, 256GB"},
-{name:"Smart TV 43 inch 4K",cat:"tvs",price:"KSh 32,999",img:"https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=600",desc:"Android TV, Netflix, 1 Year Warranty"},
-{name:"Hisense 55 inch 4K Smart TV",cat:"tvs",price:"KSh 52,999",img:"https://images.unsplash.com/photo-1593784991095-a205069470b6?w=600",desc:"4K UHD, Bluetooth, HDR"},
-{name:"Bluetooth Speaker",cat:"tvs",price:"KSh 4,500",img:"https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=600",desc:"Bass, 20H Battery, Waterproof"},
-{name:"Double Door Fridge",cat:"home",price:"KSh 58,500",img:"https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=600",desc:"250L, No Frost, Warranty"},
-{name:"Microwave Oven",cat:"home",price:"KSh 12,500",img:"https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?w=600",desc:"20L, Digital, 1 Year Warranty"},
-{name:"Air Fryer 5.5L",cat:"home",price:"KSh 9,999",img:"https://images.unsplash.com/photo-1626074353765-517a681e40be?w=600",desc:"Digital, Healthy Cooking"},
-{name:"AirPods Pro",cat:"accessories",price:"KSh 7,500",img:"https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=600",desc:"Noise Cancellation, Original"},
-{name:"Fast Charger 25W",cat:"accessories",price:"KSh 1,800",img:"https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=600",desc:"Type-C, Fast Charging"},
-{name:"Smart Watch",cat:"accessories",price:"KSh 3,999",img:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600",desc:"Calls, Fitness, Bluetooth"},
-{name:"Power Bank 20000mAh",cat:"accessories",price:"KSh 3,200",img:"https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=600",desc:"Fast Charge, 2 Ports"},
-];
-function render(list){
-document.getElementById('grid').innerHTML=list.map(p=>`
-<div class="card"><img src="${p.img}"><div class="p"><h3>${p.name}</h3><p>${p.desc}</p><div class="price">${p.price}</div><a class="order" href="https://wa.me/25412555279?text=${encodeURIComponent('Hi Electrosolvers! I want to order '+p.name+' - '+p.price)}">Order on WhatsApp</a></div></div>`).join('');
-}
-function filterCat(c,btn){
-document.querySelectorAll('.cats button').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
-render(c==='all'?products:products.filter(p=>p.cat===c));
-}
-function searchNow(){
-let q=document.getElementById('searchInput').value.toLowerCase();
-render(products.filter(p=>p.name.toLowerCase().includes(q)));
-}
-render(products);
-</script>
-</body>
-</html>
+const WA="https://wa.me/25412555279?text=";
+const IMG={
+phone:"https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&q=80",
+laptop:"https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600&q=80",
+tv:"https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=600&q=80",
+audio:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&q=80",
+home:"https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?w=600&q=80",
+watch:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&q=80",
+acc:"https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=600&q=80",
+fridge:"https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=600&q=80",
+cooker:"https://images.unsplash.com/photo-1556911220-bff31c812dba?w=600&q=80",
+camera:"https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&q=80"
+};
+// name, price, category, description, image key
+const P=[
+["iPhone 13 128GB",58000,"Phones","New, Sealed, 1 Year Warranty. A15 Bionic, Dual Camera, Face ID, 5G.", "phone"],
+["iPhone 13 256GB",68000,"Phones","New, Sealed. 256GB Storage, A15 Chip, Super Retina Display, 5G.", "phone"],
+["iPhone 14 128GB",78000,"Phones","New, Sealed. A15 Bionic, Crash Detection, Better Battery, 5G.", "phone"],
+["iPhone 14 Pro 256GB",125000,"Phones","New. Dynamic Island, 48MP Camera, A16 Bionic, ProMotion.", "phone"],
+["iPhone 15 128GB",98000,"Phones","New, Sealed. USB-C, A16 Chip, 48MP Camera, Titanium Design Feel.", "phone"],
+["iPhone 15 Pro Max 256GB",165000,"Phones","New. A17 Pro, Titanium, 48MP + 5x Zoom, USB-C, Best iPhone Camera.", "phone"],
+["iPhone 12 128GB",43000,"Phones","New. A14 Bionic, OLED Display, Dual Camera, 5G, Face ID.", "phone"],
+["iPhone 11 128GB",33000,"Phones","New. A13 Chip, Dual Camera, Face ID, Great Battery for Price.", "phone"],
+["Samsung Galaxy A55 256GB",42500,"Phones","New, Dual SIM. 50MP OIS Camera, AMOLED 120Hz, 5000mAh.", "phone"],
+["Samsung Galaxy A35 128GB",33500,"Phones","New. 50MP Camera, AMOLED, 5000mAh, 5G.", "phone"],
+["Samsung Galaxy A15 128GB",19500,"Phones","New. 50MP Camera, 5000mAh, AMOLED, Dual SIM.", "phone"],
+["Samsung Galaxy A05 64GB",12500,"Phones","New. 50MP Camera, 5000mAh, 6.7 inch Display.", "phone"],
+["Samsung Galaxy S24 Ultra 512GB",145000,"Phones","New. 200MP Camera, S-Pen, AI Features, Snapdragon 8 Gen 3.", "phone"],
+["Samsung Galaxy S23 FE 128GB",52000,"Phones","New. 50MP OIS, AMOLED 120Hz, Wireless Charging.", "phone"],
+["Samsung Galaxy Z Flip 5 256GB",98000,"Phones","New. Foldable, Flex Window, 50MP Camera, Snapdragon 8 Gen 2.", "phone"],
+["Tecno Spark 20 128GB",15500,"Phones","New. 50MP Camera, 5000mAh, 8GB RAM, Dual SIM.", "phone"],
+["Tecno Camon 30 256GB",26500,"Phones","New. 70MP Selfie Camera, AMOLED, 5000mAh, Fast Charge.", "phone"],
+["Tecno Pop 8 64GB",10500,"Phones","New. 5000mAh, 6.6 inch Display, Dual SIM, Budget Best.", "phone"],
+["Infinix Hot 40 128GB",16500,"Phones","New. 50MP Camera, 5000mAh, 8GB RAM, 90Hz Display.", "phone"],
+["Infinix Note 40 Pro 256GB",32500,"Phones","New. 108MP Camera, AMOLED Curved, 70W Fast Charge, Wireless MagCharge.", "phone"],
+["Infinix Smart 8 64GB",11500,"Phones","New. 5000mAh, 6.6 inch, Dual SIM, Budget Phone.", "phone"],
+["Xiaomi Redmi 13C 128GB",14500,"Phones","New. 50MP Camera, 5000mAh, 6.74 inch 90Hz.", "phone"],
+["Xiaomi Redmi Note 13 Pro 256GB",34500,"Phones","New. 200MP Camera, AMOLED 120Hz, 67W Fast Charge.", "phone"],
+["Xiaomi Redmi A3 64GB",11000,"Phones","New. 5000mAh, 6.71 inch, Dual SIM.", "phone"],
+["Realme C55 256GB",22500,"Phones","New. 64MP Camera, 5000mAh, 33W Charge, 90Hz.", "phone"],
+["Realme Note 50 64GB",11500,"Phones","New. 5000mAh, 6.74 inch, Dual SIM.", "phone"],
+["Oppo A58 128GB",20500,"Phones","New. 50MP Camera, 5000mAh, Dual Stereo Speakers.", "phone"],
+["Oppo Reno 11F 256GB",38500,"Phones","New. 64MP Camera, AMOLED 120Hz, 67W Charge.", "phone"],
+["Nokia C32 64GB",12500,"Phones","New. 50MP Camera, 5000mAh, Clean Android.", "phone"],
+["Nokia G22 128GB",18500,"Phones","New. 50MP Camera, 3-Day Battery, Repairable Design.", "phone"],
+["Huawei Nova 12 SE 256GB",32000,"Phones","New. 108MP Camera, OLED, 66W SuperCharge.", "phone"],
+["Itel P55 128GB",13500,"Phones","New. 50MP Camera, 5000mAh, 6.6 inch.", "phone"],
+["Itel A70 128GB",12500,"Phones","New. 5000mAh, 6.6 inch, Dual SIM.", "phone"],
+["Honor X8b 256GB",28500,"Phones","New. 108MP Camera, AMOLED, 5000mAh.", "phone"],
+["Honor 90 512GB",55000,"Phones","New. 200MP Camera, AMOLED Curved 120Hz, 66W Charge.", "phone"],
+["Google Pixel 8 128GB",68000,"Phones","New. Best AI Camera, Tensor G3, 7 Years Updates.", "phone"],
+["Google Pixel 7a 128GB",42000,"Phones","New. 64MP Camera, Tensor G2, Wireless Charging.", "phone"],
+["OnePlus Nord CE4 256GB",36500,"Phones","New. 50MP Sony Camera, AMOLED 120Hz, 100W Charge.", "phone"],
+["Vivo Y27 128GB",18500,"Phones","New. 50MP Camera, 5000mAh, 44W Charge.", "phone"],
+["Vivo V30 256GB",52000,"Phones","New. 50MP Aura Light Camera, AMOLED Curved, 80W Charge.", "phone"],
+["HP Pavilion 15 Core i5 8GB 512GB",78500,"Laptops","New. 15.6 inch, Windows 11, SSD Fast Boot, For School & Work.", "laptop"],
+["HP ProBook 450 G10 Core i5",98500,"Laptops","New. Business Laptop, 8GB/512GB SSD, Fingerprint, 1 Yr Warranty.", "laptop"],
+["HP 15 Core i3 8GB 256GB",52500,"Laptops","New. 15.6 inch, Windows 11, SSD, For Students.", "laptop"],
+["HP EliteBook 840 G8 Core i7",115000,"Laptops","Refurbished. 16GB/512GB SSD, Touch, Fingerprint, Premium Business.", "laptop"],
+["HP Victus Gaming Ryzen 5 RTX 3050",125000,"Laptops","New. Gaming Laptop, 16GB/512GB, RTX 3050, 144Hz Display.", "laptop"],
+["HP 250 G9 Core i5 8GB 512GB",68500,"Laptops","New. 15.6 inch, Windows 11, For Office & School.", "laptop"],
+["Lenovo IdeaPad Slim 3 Core i5",72500,"Laptops","New. 8GB/512GB SSD, 15.6 inch, Slim, Windows 11.", "laptop"],
+["Lenovo IdeaPad Slim 3 Ryzen 5",68000,"Laptops","New. 8GB/512GB, Backlit Keyboard, Windows 11.", "laptop"],
+["Lenovo ThinkPad T14 Core i5",95000,"Laptops","Refurbished. 16GB/512GB, Durable Business, Fingerprint.", "laptop"],
+["Lenovo ThinkPad X1 Carbon i7",135000,"Laptops","Refurbished. 16GB/1TB, Ultra Light, Touch, Premium.", "laptop"],
+["Dell Inspiron 15 Core i5",76000,"Laptops","New. 8GB/512GB SSD, 15.6 inch, Windows 11.", "laptop"],
+["Dell Latitude 5420 Core i5",85000,"Laptops","Refurbished. 16GB/512GB, Business, Fingerprint, Backlit.", "laptop"],
+["Dell XPS 13 Core i7 16GB",145000,"Laptops","Refurbished. InfinityEdge Display, Ultra Slim, Premium.", "laptop"],
+["Apple MacBook Air M1 256GB",95000,"Laptops","New. Apple M1 Chip, 8GB/256GB, 13.3 inch Retina, 18hr Battery.", "laptop"],
+["Apple MacBook Air M2 256GB",135000,"Laptops","New. M2 Chip, Liquid Retina, MagSafe, 18hr Battery.", "laptop"],
+["Apple MacBook Pro 14 M3 512GB",225000,"Laptops","New. M3 Chip, Liquid Retina XDR, 22hr Battery, Pro Performance.", "laptop"],
+["Asus VivoBook 15 Core i5",72000,"Laptops","New. 8GB/512GB, 15.6 inch, Windows 11, Slim.", "laptop"],
+["Asus ROG Strix Gaming RTX 4060",185000,"Laptops","New. Ryzen 7, 16GB/1TB, RTX 4060, 165Hz Gaming.", "laptop"],
+["Acer Aspire 5 Core i5",70000,"Laptops","New. 8GB/512GB, 15.6 inch, Windows 11.", "laptop"],
+["Acer Nitro 5 Gaming RTX 3050",118000,"Laptops","New. i5, 16GB/512GB, RTX 3050, 144Hz.", "laptop"],
+["MSI Modern 14 Core i5",68000,"Laptops","New. 8GB/512GB, Lightweight, Windows 11.", "laptop"],
+["Samsung Galaxy Book 4 Core i5",95000,"Laptops","New. 16GB/512GB, AMOLED, Lightweight.", "laptop"],
+["HP Chromebook 14 4GB 64GB",28000,"Laptops","New. Chrome OS, For Students, Light, Long Battery.", "laptop"],
+["Lenovo Chromebook 14",26000,"Laptops","New. Chrome OS, 4GB/64GB, For School.", "laptop"],
+["Microsoft Surface Laptop 5 i5",125000,"Laptops","Refurbished. 16GB/512GB, Touch, Premium Design.", "laptop"],
+["Toshiba Dynabook Core i5",58000,"Laptops","Refurbished. 8GB/256GB SSD, 14 inch, Business.", "laptop"],
+["HP EliteBook 830 G7 i5",78000,"Laptops","Refurbished. 16GB/512GB, 13.3 inch, Touch, Fingerprint.", "laptop"],
+["Dell Precision 3561 i7 Workstation",135000,"Laptops","Refurbished. 32GB/1TB, Quadro Graphics, For Design & Engineering.", "laptop"],
+["Lenovo Legion 5 Pro RTX 3070",165000,"Laptops","Refurbished. Ryzen 7, 16GB/1TB, RTX 3070, 165Hz QHD.", "laptop"],
+["Apple MacBook Air M1 512GB",115000,"Laptops","New. M1, 8GB/512GB, Retina, Long Battery.", "laptop"],
+["Hisense 32 inch Smart TV",18500,"TVs and Audio","New. Smart TV, Netflix, YouTube, WiFi, 1 Yr Warranty.", "tv"],
+["Hisense 43 inch 4K Smart TV",31500,"TVs and Audio","New. 4K UHD, Smart, Netflix, HDR, Bluetooth.", "tv"],
+["Hisense 50 inch 4K Smart TV",43000,"TVs and Audio","New. 4K UHD, Dolby Vision, Smart, WiFi.", "tv"],
+["Hisense 55 inch 4K Smart TV",54000,"TVs and Audio","New. 4K UHD, Dolby Vision, Smart, Voice Remote.", "tv"],
+["Hisense 65 inch 4K Smart TV",75000,"TVs and Audio","New. 4K UHD, Smart, HDR, Big Screen Cinema.", "tv"],
+["Samsung 32 inch Smart TV",23000,"TVs and Audio","New. Smart, Netflix, YouTube, WiFi.", "tv"],
+["Samsung 43 inch 4K Smart TV",41000,"TVs and Audio","New. 4K Crystal UHD, Smart, HDR.", "tv"],
+["Samsung 50 inch 4K Smart TV",55000,"TVs and Audio","New. 4K Crystal, Smart, Voice Remote.", "tv"],
+["Samsung 55 inch QLED 4K TV",85000,"TVs and Audio","New. QLED, 4K, Quantum HDR, Smart.", "tv"],
+["LG 32 inch Smart TV",23500,"TVs and Audio","New. Smart, WebOS, Netflix, WiFi.", "tv"],
+["LG 43 inch 4K Smart TV",42000,"TVs and Audio","New. 4K UHD, WebOS, Magic Remote.", "tv"],
+["LG 55 inch 4K Smart TV",68000,"TVs and Audio","New. 4K UHD, AI ThinQ, Magic Remote.", "tv"],
+["TCL 32 inch Smart TV",17500,"TVs and Audio","New. Smart, Android TV, Netflix, WiFi.", "tv"],
+["TCL 43 inch 4K Smart TV",29500,"TVs and Audio","New. 4K, Android TV, HDR.", "tv"],
+["TCL 55 inch 4K Smart TV",52000,"TVs and Audio","New. 4K, Google TV, Dolby Vision.", "tv"],
+["Skyworth 32 inch Smart TV",17000,"TVs and Audio","New. Smart, Netflix, YouTube.", "tv"],
+["Skyworth 43 inch Smart TV",28500,"TVs and Audio","New. 4K Smart, Netflix, WiFi.", "tv"],
+["Vitron 32 inch Smart TV",15500,"TVs and Audio","New. Smart, Netflix, WiFi, Budget Best.", "tv"],
+["Vitron 43 inch Smart TV",26000,"TVs and Audio","New. Smart, 4K Support, WiFi.", "tv"],
+["Sony 43 inch 4K Smart TV",62000,"TVs and Audio","New. 4K HDR, Google TV, Premium Picture.", "tv"],
+["JBL Flip 6 Portable Speaker",14500,"TVs and Audio","New. Waterproof, 12hr Battery, Powerful Bass, Bluetooth.", "audio"],
+["JBL Charge 5 Speaker",18500,"TVs and Audio","New. 20hr Battery, Waterproof, Powerbank Function.", "audio"],
+["JBL Go 3 Speaker",5500,"TVs and Audio","New. Portable, Waterproof, 5hr Battery, Bluetooth.", "audio"],
+["Anker Soundcore Boom 2",11500,"TVs and Audio","New. 24hr Battery, Waterproof, Deep Bass.", "audio"],
+["Sony SRS-XB43 Speaker",16500,"TVs and Audio","New. Extra Bass, 24hr Battery, Waterproof, Lights.", "audio"],
+["Marshall Emberton II Speaker",22000,"TVs and Audio","New. 30hr Battery, Waterproof, Signature Sound.", "audio"],
+["Oraimo FreePods Pro",3500,"TVs and Audio","New. Noise Cancellation, 36hr Battery, Bluetooth 5.3.", "audio"],
+["Oraimo FreePods 4",2800,"TVs and Audio","New. 35hr Battery, ENC Mic, Bluetooth.", "audio"],
+["AirPods Pro 2nd Gen",18500,"TVs and Audio","New. Active Noise Cancellation, MagSafe, USB-C.", "audio"],
+["AirPods 2nd Gen",11500,"TVs and Audio","New. Wireless Charging, 24hr Battery.", "audio"],
+["Samsung Galaxy Buds 2 Pro",12500,"TVs and Audio","New. Noise Cancellation, 360 Audio, Wireless Charging.", "audio"],
+["JBL Tune 510BT Headphones",4800,"TVs and Audio","New. 40hr Battery, Wireless, Bass.", "audio"],
+["Sony WH-CH520 Headphones",6500,"TVs and Audio","New. 50hr Battery, Wireless, Lightweight.", "audio"],
+["Sony WH-1000XM5 Headphones",38500,"TVs and Audio","New. Best Noise Cancellation, 30hr Battery, Premium.", "audio"],
+["Beats Studio Buds",9500,"TVs and Audio","New. Noise Cancellation, 24hr Battery, Apple & Android.", "audio"],
+["Anker Soundcore Q20i Headphones",5500,"TVs and Audio","New. Noise Cancellation, 40hr Battery.", "audio"],
+["Von Hotpoint 2.1 Soundbar",8500,"TVs and Audio","New. Bluetooth, USB, Powerful Bass, For TV.", "audio"],
+["Hisense Soundbar 2.1",12000,"TVs and Audio","New. Bluetooth, Dolby Audio, Wireless Subwoofer.", "audio"],
+["Nunix Party Speaker 15 inch",12500,"TVs and Audio","New. Big Bass, Mic Included, LED Lights, Bluetooth.", "audio"],
+["Von 2.1 Home Theatre",16500,"TVs and Audio","New. 3 Speakers, Bluetooth, FM, USB, Powerful.", "audio"],
+["Hisense 32 inch TV + Soundbar Combo",28000,"TVs and Audio","Combo Deal. 32 inch Smart TV + Soundbar, Save Money.", "tv"],
+["Von Double Door Fridge 200L",48500,"Home","New. Double Door, No Frost, Energy Saving, 1 Yr Warranty.", "fridge"],
+["Von Single Door Fridge 120L",28500,"Home","New. Single Door, Energy Saving, For Small Family.", "fridge"],
+["Hisense Double Door Fridge 260L",58000,"Home","New. No Frost, Inverter, Energy Saving.", "fridge"],
+["Hisense Single Door Fridge 160L",35000,"Home","New. Single Door, Low Noise, Energy Saving.", "fridge"],
+["Samsung Double Door Fridge 300L",75000,"Home","New. Digital Inverter, No Frost, 20 Yr Compressor Warranty.", "fridge"],
+["LG
