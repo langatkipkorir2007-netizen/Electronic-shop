@@ -157,5 +157,60 @@ function filterCat(word,btn){
   btn.style.background='#ff6600'; btn.style.color='#fff';
 }
 </script>
+<script>
+// AUTO FIX - Replace all wrong photos with correct emoji
+document.querySelectorAll('.card').forEach(function(card){
+  var title = card.querySelector('h3').innerText.toLowerCase();
+  var emoji = '🛒';
+  if(title.includes('kettle')) emoji='🍵';
+  else if(title.includes('bulb')) emoji='💡';
+  else if(title.includes('cable')||title.includes('wire')) emoji='🔌';
+  else if(title.includes('extension')) emoji='🔌';
+  else if(title.includes('socket')) emoji='🔌';
+  else if(title.includes('iron')) emoji='👔';
+  else if(title.includes('blender')) emoji='🥤';
+  else if(title.includes('rice cooker')) emoji='🍚';
+  else if(title.includes('hot plate')) emoji='🍳';
+  else if(title.includes('shower')||title.includes('heater')) emoji='🚿';
+  else if(title.includes('fan')) emoji='🌀';
+  else if(title.includes('microwave')) emoji='♨️';
+  else if(title.includes('sandwich')) emoji='🥪';
+  else if(title.includes('hair dryer')) emoji='💨';
+  else if(title.includes('clipper')) emoji='💈';
+  else if(title.includes('shaver')) emoji='🪒';
+  else if(title.includes('washing')) emoji='🧺';
+  else if(title.includes('dispenser')) emoji='💧';
+  else if(title.includes('freezer')) emoji='❄️';
+  else if(title.includes('fridge')) emoji='🧊';
+  else if(title.includes('cooker')||title.includes('pressure')) emoji='🍲';
+  else if(title.includes('air fryer')) emoji='🍟';
+  else if(title.includes('power bank')) emoji='🔋';
+  else if(title.includes('charger')||title.includes('cable')) emoji='🔌';
+  else if(title.includes('earbud')||title.includes('headphone')) emoji='🎧';
+  else if(title.includes('tecno')||title.includes('infinix')||title.includes('itel')||title.includes('redmi')||title.includes('samsung')) emoji='📱';
+  else if(title.includes('memory')||title.includes('flash')) emoji='💾';
+  else if(title.includes('watch')) emoji='⌚';
+  else if(title.includes('tripod')) emoji='📷';
+  else if(title.includes('mouse')) emoji='🖱️';
+  else if(title.includes('keyboard')) emoji='⌨️';
+  else if(title.includes('router')||title.includes('wifi')) emoji='📶';
+  else if(title.includes('tv')) emoji='📺';
+  else if(title.includes('laptop')||title.includes('dell')||title.includes('lenovo')||title.includes('hp ')) emoji='💻';
+  else if(title.includes('solar')) emoji='☀️';
+  else if(title.includes('battery')) emoji='🔋';
+  else if(title.includes('inverter')) emoji='⚡';
+  else if(title.includes('cctv')||title.includes('camera')) emoji='📹';
+  else if(title.includes('speaker')||title.includes('theatre')) emoji='🔊';
+  else if(title.includes('bulb')) emoji='💡';
+
+  var img = card.querySelector('img');
+  if(img){
+    var div = document.createElement('div');
+    div.innerText = emoji;
+    div.style.cssText = 'font-size:90px;text-align:center;padding:30px 0;background:#fff3e6;';
+    img.replaceWith(div);
+  }
+});
+</script>
 </body>
 </html>
