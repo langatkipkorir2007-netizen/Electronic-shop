@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -6,11 +6,10 @@
 <title>LANGAT ELECTRONIC SHOP - 209 Items</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-body{background:#f2f2f2;padding:10px}
+body{background:#f2f2f2;padding:10px;padding-bottom:80px}
 header{background:#0a4db3;color:#fff;padding:15px;text-align:center;border-radius:10px}
 header h1{font-size:22px} header p{font-size:13px;margin-top:5px;line-height:1.5}
-.pay{background:#fff;color:#000;padding:10px;border-radius:10px;margin:10px 0;text-align:center;font-size:13px;line-height:1.6;border:2px solid #25D366}
-.pay b{color:#0a4db3}
+.info{background:#fff;padding:10px;border-radius:10px;margin:10px 0;text-align:center;font-size:13px;line-height:1.6;border:2px solid #0a4db3}
 .search{margin:10px 0} .search input{width:100%;padding:12px;border-radius:8px;border:1px solid #ccc;font-size:16px}
 .count{text-align:center;font-size:14px;font-weight:bold;margin:5px 0}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
@@ -20,17 +19,40 @@ header h1{font-size:22px} header p{font-size:13px;margin-top:5px;line-height:1.5
 .old{color:#999;text-decoration:line-through;font-size:12px}
 .new{color:#0a4db3;font-weight:bold;font-size:16px}
 .disc{background:red;color:#fff;padding:2px 6px;border-radius:5px;font-size:11px}
-.order{display:inline-block;background:#25D366;color:#fff;padding:8px 15px;border-radius:20px;text-decoration:none;font-size:13px;font-weight:bold;margin-top:6px}
+.add{display:inline-block;background:#0a4db3;color:#fff;padding:9px 15px;border-radius:20px;border:none;font-size:13px;font-weight:bold;margin-top:6px;cursor:pointer}
+.added{background:#25D366!important}
+.cartbar{position:fixed;bottom:0;left:0;right:0;background:#0a4db3;color:#fff;padding:12px;display:flex;justify-content:space-between;align-items:center;z-index:99}
+.cartbar button{background:#25D366;color:#fff;border:none;padding:10px 18px;border-radius:20px;font-weight:bold;font-size:14px}
+.cartbox{position:fixed;bottom:60px;left:10px;right:10px;background:#fff;border-radius:12px;padding:15px;box-shadow:0 0 20px rgba(0,0,0,.3);display:none;max-height:75vh;overflow:auto;z-index:100}
+.cartbox h2{font-size:16px;margin-bottom:10px}
+.item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #eee;font-size:13px;gap:8px}
+.item button{background:red;color:#fff;border:none;padding:4px 8px;border-radius:5px}
+.total{font-size:16px;font-weight:bold;text-align:right;margin:10px 0}
+.paybox{background:#e8f5e9;padding:10px;border-radius:10px;font-size:13px;line-height:1.7;text-align:center;border:2px solid #25D366}
+.checkout{background:#25D366;color:#fff;border:none;width:100%;padding:13px;border-radius:8px;font-weight:bold;font-size:15px;margin-top:10px}
+.close{background:#ccc;border:none;width:100%;padding:10px;border-radius:8px;margin-top:8px}
 footer{text-align:center;padding:15px;color:#333;font-size:13px;line-height:1.6;background:#fff;border-radius:10px;margin-top:10px}
 </style>
 </head>
 <body>
-<header><h1>⚡ LANGAT ELECTRONIC SHOP ⚡</h1><p>209 Items | Best Prices in Kenya | Delivery Countrywide<br>WhatsApp: 0712555279</p></header>
-<div class="pay"><b>PAYMENT METHODS:</b><br>✅ M-PESA Till: <b>0712555279</b> (Langat)<br>✅ Cash on Delivery<br>✅ WhatsApp Order - Click Order Now</div>
+<header><h1>⚡ LANGAT ELECTRONIC SHOP ⚡</h1><p>209 Items | See All Products FREE - No Payment To Browse<br>WhatsApp: 0712555279</p></header>
+<div class="info"><b>🛒 HOW IT WORKS:</b><br>1. Browse all pictures FREE<br>2. Click <b>ADD TO CART</b> for many items<br>3. Click <b>VIEW CART</b> below<br>4. Pay ONLY at checkout</div>
 <div class="search"><input id="search" placeholder="🔍 Search Kettle, TV, Fan, Generator..." oninput="filter()"></div>
 <div class="count" id="count"></div>
 <div class="grid" id="grid"></div>
-<footer><b>© Langat Electronic Shop</b><br>M-PESA Till: 0712555279 | WhatsApp: 0712555279<br>Cash on Delivery Available | Delivery Countrywide</footer>
+<footer><b>© Langat Electronic Shop</b><br>Browse FREE | Pay After You Choose<br>M-PESA Till: 0712555279 | Cash on Delivery Available</footer>
+
+<div class="cartbox" id="cartbox">
+<h2>🛒 Your Cart</h2>
+<div id="cartitems"></div>
+<div class="total" id="total"></div>
+<div class="paybox"><b>💳 PAYMENT - AFTER YOU CHOOSE:</b><br>✅ M-PESA Till: <b>0712555279</b> (Langat)<br>✅ Cash on Delivery - Pay When You Receive<br>✅ Send Order on WhatsApp Below</div>
+<button class="checkout" onclick="checkout()">✅ Send Order on WhatsApp & Pay Now</button>
+<button class="close" onclick="toggleCart()">Close Cart</button>
+</div>
+
+<div class="cartbar"><span id="cartlabel">🛒 Cart: 0 items - KSh 0</span><button onclick="toggleCart()">VIEW CART</button></div>
+
 <script>
 var P=[
 ["Electric Kettle","kettle","3500","2899"],
@@ -187,4 +209,148 @@ var P=[
 ["Smart Plug WiFi","smart-plug","1800","1299"],
 ["Smart Bulb WiFi","smart-bulb","1500","1099"],
 ["Smart Camera 360","cctv-camera","4500","3499"],
-["Video Doorbell","doorbell","6500","499
+["Video Doorbell","doorbell","6500","4999"],
+["Door Lock Smart","smart-lock","9500","7499"],
+["Alarm System","alarm-system","12500","9999"],
+["Smoke Detector","smoke-detector","2200","1799"],
+["Electric Fence Energizer","electric-fence","15000","11999"],
+["Gate Opener Motor","gate-motor","35000","28999"],
+["Intercom","intercom","8500","6699"],
+["PBX System","pbx","25000","19999"],
+["Fingerprint Machine","fingerprint","12500","9999"],
+["Biometric Attendance","biometric","15000","11999"],
+["Barcode Scanner","barcode-scanner","6500","4999"],
+["Cash Counting Machine","cash-counter","18500","14999"],
+["POS Machine","pos-machine","22000","17999"],
+["Receipt Printer","receipt-printer","12500","9999"],
+["Label Printer","label-printer","9500","7499"],
+["Money Detector","money-detector","3500","2699"],
+["Safe Box Digital","safe-box","12500","9999"],
+["Weighing Scale Digital","weighing-scale","3500","2699"],
+["Weighing Scale 300KG","weighing-scale","8500","6699"],
+["Sewing Machine Electric","sewing-machine","18500","14999"],
+["Overlock Machine","sewing-machine","25000","19999"],
+["Embroidery Machine","embroidery-machine","45000","37999"],
+["Knitting Machine","knitting-machine","22000","17999"],
+["Hair Dryer Professional","hair-dryer","4500","3499"],
+["Salon Steamer","salon-steamer","12500","9999"],
+["Nail Dryer UV","nail-dryer","3200","2499"],
+["Manicure Set Electric","manicure","2800","2199"],
+["Tattoo Machine","tattoo-machine","6500","4999"],
+["Facial Steamer","facial-steamer","4500","3499"],
+["Body Scale Smart","weighing-scale","2800","2199"],
+["Electric Scooter","electric-scooter","55000","45999"],
+["Electric Bike","electric-bike","85000","69999"],
+["Hoverboard","hoverboard","35000","28999"],
+["Drone Camera 4K","drone","25000","19999"],
+["Drone Mini","drone","15000","11999"],
+["Action Camera 4K","action-camera","12500","9999"],
+["Digital Camera","camera","35000","28999"],
+["Instant Camera","instant-camera","12500","9999"],
+["Webcam HD","webcam","3500","2699"],
+["Studio Light Box","studio-light","6500","4999"],
+["Green Screen","green-screen","3200","2499"],
+["VR Headset","vr-headset","8500","6699"],
+["Game Console PS4","game-console","35000","28999"],
+["Game Console PS5","game-console","85000","69999"],
+["Game Controller","game-controller","4500","3499"],
+["Gaming Keyboard RGB","gaming-keyboard","5500","4299"],
+["Gaming Mouse","gaming-mouse","2800","2199"],
+["Gaming Headset","gaming-headset","4500","3499"],
+["Gaming Chair","gaming-chair","18500","14999"],
+["Tablet 10 Inch","tablet","18500","14999"],
+["Tablet 8 Inch Kids","tablet","12500","9999"],
+["Smartphone 64GB","smartphone","15000","11999"],
+["Smartphone 128GB","smartphone","22000","17999"],
+["Feature Phone Dual SIM","feature-phone","3500","2699"],
+["Phone Battery","phone-battery","1500","1099"],
+["Phone Screen Protector","screen-protector","500","349"],
+["Phone Cover","phone-case","600","449"],
+["Memory Card 64GB","memory-card","1500","1099"],
+["Memory Card 128GB","memory-card","2500","1899"],
+["USB Flash 32GB","usb-flash","1200","899"],
+["USB Flash 64GB","usb-flash","1800","1299"],
+["External Hard Drive 1TB","hard-drive","8500","6699"],
+["SSD 512GB","ssd","8500","6699"],
+["RAM 8GB DDR4","ram","4500","3499"],
+["Motherboard","motherboard","8500","6699"],
+["CPU Processor","processor","15000","11999"],
+["Graphics Card","graphics-card","35000","28999"],
+["Power Supply 600W","power-supply","5500","4299"],
+["Computer Case RGB","computer-case","6500","4999"],
+["Cooling Fan PC","cooling-fan","1800","1299"],
+["USB Hub 4 Port","usb-hub","1200","899"],
+["Card Reader","card-reader","800","599"],
+["OTG Adapter","otg-adapter","500","349"],
+["HDMI Cable 2M","hdmi-cable","800","599"],
+["VGA Cable","vga-cable","600","449"],
+["Projector Screen 100 Inch","projector-screen","6500","4999"],
+["Projector Mount","projector-mount","2500","1899"],
+["Whiteboard Interactive","whiteboard","45000","37999"],
+["PA System 200W","pa-system","25000","19999"],
+["Megaphone","megaphone","4500","3499"],
+["Translator Device","translator","8500","6699"],
+["Two Way Radio","walkie-talkie","6500","4999"],
+["Baby Monitor","baby-monitor","6500","4999"],
+["Baby Bottle Warmer","bottle-warmer","3500","2699"],
+["Breast Pump Electric","breast-pump","5500","4299"],
+["Electric Mosquito Killer","mosquito-killer","2500","1899"],
+["Insect Killer Lamp","insect-killer","1800","1299"],
+["Pet Clipper","pet-clipper","2800","2199"],
+["Aquarium Pump","aquarium-pump","2200","1799"],
+["Aquarium Heater","aquarium-heater","1800","1299"]
+];
+var cart=[];
+var grid=document.getElementById('grid');
+var count=document.getElementById('count');
+function show(list){
+grid.innerHTML='';
+count.innerHTML='Showing '+list.length+' items - Browse FREE, Pay Later';
+list.forEach(function(p,idx){
+var off=Math.round((1-p[3]/p[2])*100);
+var d=document.createElement('div');d.className='card';
+d.innerHTML='<img src="https://loremflickr.com/600/400/'+encodeURIComponent(p[1])+'?lock='+Math.floor(Math.random()*900)+'" loading="lazy" onerror="this.onerror=null;this.src=\'https://picsum.photos/600/400?random='+Math.floor(Math.random()*900)+'\'"><h3>'+p[0]+'</h3><p><span class="old">KSh '+p[2]+'</span> <span class="disc">-'+off+'% OFF</span></p><p class="new">KSh '+p[3]+'</p><button class="add" onclick="addToCart('+P.indexOf(p)+',this)">🛒 ADD TO CART</button>';
+grid.appendChild(d);
+});
+}
+function addToCart(i,btn){
+cart.push(P[i]);
+if(btn){btn.innerHTML='✅ ADDED';btn.classList.add('added');}
+updateCart();
+}
+function updateCart(){
+var total=0; cart.forEach(function(c){total+=parseInt(c[3])});
+document.getElementById('cartlabel').innerHTML='🛒 Cart: '+cart.length+' items - KSh '+total.toLocaleString();
+var box=document.getElementById('cartitems');
+if(cart.length==0){box.innerHTML='<p style="text-align:center;color:#999">Cart is empty. Add items first.</p>';}
+else{
+box.innerHTML='';
+cart.forEach(function(c,i){
+var div=document.createElement('div');div.className='item';
+div.innerHTML='<span>'+c[0]+' - KSh '+c[3]+'</span><button onclick="removeItem('+i+')">Remove</button>';
+box.appendChild(div);
+});
+}
+document.getElementById('total').innerHTML='TOTAL TO PAY: KSh '+total.toLocaleString();
+}
+function removeItem(i){cart.splice(i,1);updateCart();show(P);}
+function toggleCart(){
+var b=document.getElementById('cartbox');
+b.style.display=b.style.display=='block'?'none':'block';
+updateCart();
+}
+function checkout(){
+if(cart.length==0){alert('Cart is empty! Add items first.');return;}
+var total=0; var msg='Hi Langat, I want to order:\n\n';
+cart.forEach(function(c,i){total+=parseInt(c[3]); msg+=(i+1)+'. '+c[0]+' - KSh '+c[3]+'\n';});
+msg+='\nTOTAL: KSh '+total.toLocaleString()+'\nI will pay via: M-PESA Till 0712555279 / Cash on Delivery\nMy Name:\nMy Location:';
+window.open('https://wa.me/254712555279?text='+encodeURIComponent(msg),'_blank');
+}
+function filter(){
+var q=document.getElementById('search').value.toLowerCase();
+show(P.filter(function(p){return p[0].toLowerCase().includes(q)}));
+}
+show(P); updateCart();
+</script>
+</body>
+</html>
