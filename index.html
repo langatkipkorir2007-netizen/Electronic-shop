@@ -83,3 +83,46 @@ footer{background:#fff;padding:16px;border-radius:12px;text-align:center;margin-
 <b>Contact Us: +254 701 416556 | 0708535057</b><br>
 Fast Delivery Across Kenya • Secure Payment • Trusted by Thousands
 </footer>
+
+<!-- CART BAR -->
+<div id="cartBar" style="position:fixed;bottom:0;left:0;right:0;background:#111;color:#fff;padding:14px;display:flex;justify-content:space-between;align-items:center;z-index:99">
+<span id="cartText">🛒 Cart: 0 items - KSh 0</span>
+<button onclick="checkout()" style="background:#25D366;color:#fff;border:none;padding:10px 16px;border-radius:10px;font-weight:bold">Order on WhatsApp</button>
+</div>
+
+<script>
+let cart = [];
+let currentCat = 'all';
+
+function filter(){
+  let q = document.getElementById('search').value.toLowerCase();
+  let cards = document.querySelectorAll('.card');
+  let count = 0;
+  cards.forEach(c=>{
+    let name = c.getAttribute('data-name');
+    let cat = c.getAttribute('data-cat');
+    let show = (currentCat=='all' || cat==currentCat) && name.includes(q);
+    c.style.display = show ? 'block' : 'none';
+    if(show) count++;
+  });
+  document.getElementById('count').innerText = count;
+}
+function setCat(c,el){
+  currentCat = c;
+  document.querySelectorAll('.cats button').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  filter();
+}
+function add(name,price){
+  cart.push({name:name,price:price});
+  let total = cart.reduce((s,p)=>s+p.price,0);
+  document.getElementById('cartText').innerText = '🛒 Cart: ' + cart.length + ' items - KSh ' + total.toLocaleString();
+}
+function checkout(){
+  if(cart.length==0){ alert('Cart is empty'); return; }
+  let msg = "Hello LANGAT SHOP, I want to order:%0A" + cart.map(p=>"- "+p.name+" - KSh "+p.price.toLocaleString()).join("%0A");
+  window.open("https://wa.me/254701416556?text="+msg);
+}
+</script>
+</body>
+</html>
