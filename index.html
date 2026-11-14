@@ -92,8 +92,35 @@ Fast Delivery Across Kenya • Secure Payment • Trusted by Thousands
 
 <script>
 let cart = [];
-<button onclick="clearCart()">Clear</button>
+let currentCat = 'all';
 
+function filter() {
+  let q = document.getElementById('search').value.toLowerCase();
+  let cards = document.querySelectorAll('.card');
+  let count = 0;
+  cards.forEach(c => {
+    let name = c.getAttribute('data-name').toLowerCase();
+    let cat = c.getAttribute('data-cat');
+    let show = (currentCat == 'all' || cat == currentCat) && name.includes(q);
+    c.style.display = show ? 'block' : 'none';
+    if (show) count++;
+  });
+  document.getElementById('count').innerText = count;
+}
+
+function setCat(c, el) {
+  currentCat = c;
+  document.querySelectorAll('.cats button').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  filter();
+}
+
+function add(name, price) {
+  cart.push({ name: name, price: price });
+  updateCartUI();
+}
+
+function clearCart() {
   cart = [];
   updateCartUI();
 }
@@ -112,6 +139,7 @@ function checkout() {
   window.open("https://wa.me/254701416556?text=" + msg);
 }
 </script>
+
 
 </body>
 </html>
