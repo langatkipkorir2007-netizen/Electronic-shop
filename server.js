@@ -4,57 +4,43 @@ const app = express();
 
 app.use(express.json());
 
-// Pesapal Sandbox URL (ensure it ends with /api)
-// For live production, change to: https://pay.pesapal.com/v3/api
-const PESAPAL_BASE_URL = 'https://cybqa.pesapal.com/pesapalv3/api';
-
-async function getPesapalToken() {
-    const response = await axios.post(`${PESAPAL_BASE_URL}/Auth/RequestToken`, {
-        consumer_key: process.env.PESAPAL_CONSUMER_KEY,
-        consumer_secret: process.env.PESAPAL_CONSUMER_SECRET
-    });
-    return response.data.token;
-}
-
-app.post('/api/create-pesapal-order', async (req, res) => {
+app.post('/api/create-mpesa-payment', async (req, res) => {
     try {
-        const { amount, email, phoneNumber, orderId } = req.body;
-        const token = await getPesapalToken();
+        const { amount, phoneNumber, email } = req.body;
 
-        const orderResponse = await axios.post(
-            `${PESAPAL_BASE_URL}/Transactions/SubmitOrderRequest`,
+        // Ensure phone number starts with 254 (e.g., 254712345678)
+        let formattedPhone = phoneNumber.trim();
+        if (formattedPhone.startsWith('0')) {
+            formattedPhone = '254' + formattedPhone.slice(1);
+        }
+
+        const response = await axios.post(
+            'https://api.intasend.com/api/v1/payment/mpesa-stk-push/',
             {
-                id: orderId || `KILIMALL-${Date.now()}`,
-                currency: 'KES',
                 amount: amount,
-                description: 'Payment for Kilimall Order',
-                callback_url: 'https://your-callback-url.com', // <-- REPLACE with your actual redirect URL
-                notification_id: 'YOUR_REGISTERED_IPN_ID',       // <-- REPLACE with your actual Pesapal IPN ID
-billing_address: {
-    email_address: email || 'customer@example.com',
-    phone_number: phoneNumber
-}
-
+                phone_number: formattedPhone,
+                email: email || 'customer@example.com',
+                api_ref: `ORDER-${Date.now()}`
             },
             {
                 headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
+                    Authorization: `Bearer ${process.env.INTASEND_SECRET_KEY}`,
+                    'Content-Type': 'application/json'
                 }
             }
         );
 
         return res.status(200).json({
             success: true,
-            redirect_url: orderResponse.data.redirect_url
+            message: 'STK Push sent! Ask customer to enter M-Pesa PIN.',
+            data: response.data
         });
 
     } catch (error) {
-        console.error('Order Error:', error.response?.data || error.message);
-        return res.status(500).json({ 
-            success: false, 
-            error: error.response?.data || error.message 
+        console.error('Payment Error:', error.response?.data || error.message);
+        return res.status(500).json({
+            success: false,
+            error: error.response?.data || error.message
         });
     }
 });
