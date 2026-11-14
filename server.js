@@ -30,10 +30,11 @@ app.post('/api/create-pesapal-order', async (req, res) => {
                 description: 'Payment for Kilimall Order',
                 callback_url: 'https://your-callback-url.com', // <-- REPLACE with your actual redirect URL
                 notification_id: 'YOUR_REGISTERED_IPN_ID',       // <-- REPLACE with your actual Pesapal IPN ID
-                billing_address: {
-                    email_address: email || 'customer@example.com',
-                    phone_number: phoneNumber
-                }
+billing_address: {
+    email_address: email || 'customer@example.com',
+    phone_number: phoneNumber
+}
+
             },
             {
                 headers: {
