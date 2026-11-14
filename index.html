@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LANGAT SHOP</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f9f9f9; color: #333; padding-bottom: 80px; }
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f4f4f4; color: #333; padding-bottom: 85px; }
     header { background: #111; color: #fff; text-align: center; padding: 15px; }
     header h1 { margin: 0; font-size: 24px; color: #25D366; }
     header p { margin: 5px 0 0; font-size: 13px; color: #ccc; }
@@ -14,16 +14,31 @@
     .cats { display: flex; gap: 8px; overflow-x: auto; padding: 10px; background: #222; white-space: nowrap; }
     .cats button { background: #444; color: #fff; border: none; padding: 8px 14px; border-radius: 20px; cursor: pointer; font-weight: bold; }
     .cats button.active { background: #25D366; color: #fff; }
-    .info-bar { text-align: center; font-weight: bold; margin: 15px 0; font-size: 14px; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; padding: 0 10px; }
-    .card { background: #fff; border-radius: 8px; padding: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; flex-direction: column; justify-content: space-between; }
-    .card img { width: 100%; height: 130px; object-fit: cover; border-radius: 6px; }
+    .info-bar { text-align: center; font-weight: bold; margin: 12px 0; font-size: 14px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; padding: 0 10px; }
+    .card { background: #fff; border-radius: 8px; padding: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.08); display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+    .img-wrap { position: relative; cursor: pointer; }
+    .card img { width: 100%; height: 135px; object-fit: cover; border-radius: 6px; display: block; }
+    .inspect-badge { position: absolute; bottom: 6px; right: 6px; background: rgba(0,0,0,0.75); color: #fff; font-size: 11px; padding: 4px 7px; border-radius: 4px; font-weight: bold; }
     .card h3 { font-size: 15px; margin: 8px 0 4px; }
     .card .desc { font-size: 12px; color: #666; margin: 0 0 8px; }
     .card .old { text-decoration: line-through; color: #888; font-size: 12px; }
     .card .disc { color: #e44d26; font-size: 12px; font-weight: bold; margin-left: 5px; }
     .card .new { font-weight: bold; color: #b12704; font-size: 15px; margin: 4px 0 8px; }
-    .card .add { background: #25D366; color: #fff; border: none; padding: 8px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; font-size: 13px; }
+    .card .add { background: #25D366; color: #fff; border: none; padding: 9px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; font-size: 13px; }
+    
+    /* INSPECTION MODAL */
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 200; justify-content: center; align-items: center; padding: 15px; }
+    .modal-box { background: #fff; border-radius: 12px; max-width: 420px; width: 100%; padding: 16px; position: relative; max-height: 90vh; overflow-y: auto; }
+    .close-btn { position: absolute; top: 10px; right: 12px; background: #eee; border: none; font-size: 18px; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-weight: bold; }
+    .main-preview { width: 100%; height: 240px; object-fit: cover; border-radius: 8px; margin-top: 10px; background: #f9f9f9; }
+    .thumbs { display: flex; gap: 8px; margin-top: 10px; justify-content: center; }
+    .thumbs img { width: 65px; height: 65px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 2px solid transparent; opacity: 0.7; }
+    .thumbs img.selected { border-color: #25D366; opacity: 1; }
+    .modal-title { font-size: 18px; margin: 12px 0 4px; }
+    .modal-specs { font-size: 13px; color: #555; line-height: 1.5; margin-bottom: 10px; }
+    .modal-price { font-size: 18px; font-weight: bold; color: #b12704; margin-bottom: 12px; }
+
     footer { text-align: center; padding: 20px; font-size: 13px; color: #666; background: #eee; margin-top: 30px; }
     #cartBar { position: fixed; bottom: 0; left: 0; right: 0; background: #111; color: #fff; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; z-index: 99; }
     #cartText { font-size: 14px; font-weight: bold; }
@@ -36,7 +51,7 @@
 
 <header>
   <h1>LANGAT SHOP</h1>
-  <p>Real Pictures | Browse FREE | Pay Later</p>
+  <p>360° Multi-Angle Inspection | Browse FREE | Pay Later</p>
 </header>
 
 <div class="search-container">
@@ -51,94 +66,28 @@
 </div>
 
 <div class="info-bar">
-  Showing <span id="count">8</span> Products - Fast Loading
+  Showing <span id="count">6</span> Products • Tap any photo to inspect all angles
 </div>
 
-<div class="grid" id="grid">
-  <!-- 1 -->
-  <div class="card" data-name="smartphone 128gb phone" data-cat="phones">
-    <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300&q=60" loading="lazy">
-    <h3>Smartphone 128GB</h3>
-    <p class="desc">6.5 Inch, Dual SIM, 5000mAh</p>
-    <p><span class="old">KSh 22,000</span> <span class="disc">-18% OFF</span></p>
-    <p class="new">KSh 17,999</p>
-    <button class="add" onclick="add('Smartphone 128GB', 17999)">🛒 ADD TO CART</button>
-  </div>
+<div class="grid" id="grid"></div>
 
-  <!-- 2 -->
-  <div class="card" data-name="led tv 43 inch television" data-cat="phones">
-    <img src="https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=300&q=60" loading="lazy">
-    <h3>LED TV 43 Inch</h3>
-    <p class="desc">Full HD, HDMI + USB ports</p>
-    <p><span class="old">KSh 35,000</span> <span class="disc">-17% OFF</span></p>
-    <p class="new">KSh 28,999</p>
-    <button class="add" onclick="add('LED TV 43 Inch', 28999)">🛒 ADD TO CART</button>
-  </div>
-
-  <!-- 3 -->
-  <div class="card" data-name="wireless earbuds bluetooth earphones" data-cat="phones">
-    <img src="https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=300&q=60" loading="lazy">
-    <h3>Wireless Bluetooth Earbuds</h3>
-    <p class="desc">Noise Cancelling, Charging Case</p>
-    <p><span class="old">KSh 2,500</span> <span class="disc">-40% OFF</span></p>
-    <p class="new">KSh 1,499</p>
-    <button class="add" onclick="add('Wireless Bluetooth Earbuds', 1499)">🛒 ADD TO CART</button>
-  </div>
-
-  <!-- 4 -->
-  <div class="card" data-name="power bank 20000mah fast charger" data-cat="phones">
-    <img src="https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=300&q=60" loading="lazy">
-    <h3>20,000mAh Power Bank</h3>
-    <p class="desc">Dual USB + Type-C, LED Display</p>
-    <p><span class="old">KSh 3,200</span> <span class="disc">-25% OFF</span></p>
-    <p class="new">KSh 2,399</p>
-    <button class="add" onclick="add('20000mAh Power Bank', 2399)">🛒 ADD TO CART</button>
-  </div>
-
-  <!-- 5 -->
-  <div class="card" data-name="electric kettle stainless steel" data-cat="kitchen">
-    <img src="https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=300&q=60" loading="lazy">
-    <h3>2.0L Electric Kettle</h3>
-    <p class="desc">Stainless Steel, Auto Shut-Off</p>
-    <p><span class="old">KSh 2,200</span> <span class="disc">-32% OFF</span></p>
-    <p class="new">KSh 1,499</p>
-    <button class="add" onclick="add('2.0L Electric Kettle', 1499)">🛒 ADD TO CART</button>
-  </div>
-
-  <!-- 6 -->
-  <div class="card" data-name="non stick cookware sufuria set pots" data-cat="kitchen">
-    <img src="https://images.unsplash.com/photo-1584990347449-a2d4c2c044c9?w=300&q=60" loading="lazy">
-    <h3>Non-Stick Cookware Set</h3>
-    <p class="desc">Granite Coated Pots with Lids</p>
-    <p><span class="old">KSh 6,500</span> <span class="disc">-23% OFF</span></p>
-    <p class="new">KSh 4,999</p>
-    <button class="add" onclick="add('Non-Stick Cookware Set', 4999)">🛒 ADD TO CART</button>
-  </div>
-
-  <!-- 7 -->
-  <div class="card" data-name="mens running sneakers shoes" data-cat="fashion">
-    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&q=60" loading="lazy">
-    <h3>Men's Sports Sneakers</h3>
-    <p class="desc">Breathable, Lightweight, Comfortable</p>
-    <p><span class="old">KSh 2,800</span> <span class="disc">-25% OFF</span></p>
-    <p class="new">KSh 2,100</p>
-    <button class="add" onclick="add('Mens Sports Sneakers', 2100)">🛒 ADD TO CART</button>
-  </div>
-
-  <!-- 8 -->
-  <div class="card" data-name="ladies handbag shoulder bag leather" data-cat="fashion">
-    <img src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=300&q=60" loading="lazy">
-    <h3>Ladies Classic Handbag</h3>
-    <p class="desc">PU Leather, Crossbody Strap</p>
-    <p><span class="old">KSh 3,000</span> <span class="disc">-33% OFF</span></p>
-    <p class="new">KSh 1,999</p>
-    <button class="add" onclick="add('Ladies Classic Handbag', 1999)">🛒 ADD TO CART</button>
+<!-- INSPECTION MODAL -->
+<div class="modal" id="inspectModal" onclick="closeModal(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <button class="close-btn" onclick="document.getElementById('inspectModal').style.display='none'">✕</button>
+    <div style="font-size:12px;color:#25D366;font-weight:bold;">🔍 MULTI-ANGLE PRODUCT VIEW</div>
+    <img id="modalMainImg" class="main-preview" src="">
+    <div class="thumbs" id="modalThumbs"></div>
+    <h3 class="modal-title" id="modalTitle"></h3>
+    <div class="modal-specs" id="modalSpecs"></div>
+    <div class="modal-price" id="modalPrice"></div>
+    <button class="add" id="modalAddBtn" style="padding:12px;font-size:15px;">🛒 ADD TO CART</button>
   </div>
 </div>
 
 <footer>
   <b>Contact Us: +254 701 416 556</b><br>
-  Fast Delivery Across Kenya • Secure Payment • Trusted by Thousands
+  Fast Delivery Across Kenya • Inspect Before Paying • Trusted by Thousands
 </footer>
 
 <div id="cartBar">
@@ -150,8 +99,158 @@
 </div>
 
 <script>
+// PRODUCT CATALOG WITH MULTIPLE FACES / ANGLES
+const products = [
+  {
+    name: "Smartphone 128GB",
+    searchKeys: "smartphone 128gb phone android camera",
+    cat: "phones",
+    oldPrice: 22000,
+    price: 17999,
+    disc: "-18% OFF",
+    shortDesc: "6.5\" HD+, Dual SIM, 5000mAh",
+    fullSpecs: "• Front & Back Glass Finish<br>• 50MP Triple Rear Camera + 16MP Selfie<br>• 128GB Storage, 6GB RAM, Fast Type-C Charging",
+    images: [
+      "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500&q=80",
+      "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=500&q=80",
+      "https://images.unsplash.com/photo-1565849904461-04a58ad377e0?w=500&q=80"
+    ]
+  },
+  {
+    name: "Wireless Bluetooth Earbuds",
+    searchKeys: "wireless earbuds bluetooth earphones pods",
+    cat: "phones",
+    oldPrice: 2500,
+    price: 1499,
+    disc: "-40% OFF",
+    shortDesc: "Noise Cancelling, Charging Case",
+    fullSpecs: "• Ergonomic In-Ear Fit (Left & Right)<br>• Magnetic LED Charging Case (24h Battery)<br>• Touch Controls & Deep Bass",
+    images: [
+      "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500&q=80",
+      "https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=500&q=80",
+      "https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=500&q=80"
+    ]
+  },
+  {
+    name: "Smart Watch Ultra",
+    searchKeys: "smart watch bluetooth fitness tracker",
+    cat: "phones",
+    oldPrice: 4500,
+    price: 3150,
+    disc: "-30% OFF",
+    shortDesc: "Bluetooth Calls, Heart Rate, IP68",
+    fullSpecs: "• 1.9\" Full Touch HD Screen<br>• Side Crown Button & Speaker Grille<br>• Interchangeable Silicone Strap",
+    images: [
+      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&q=80",
+      "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=500&q=80",
+      "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=500&q=80"
+    ]
+  },
+  {
+    name: "2.0L Electric Kettle",
+    searchKeys: "electric kettle stainless steel water boiler",
+    cat: "kitchen",
+    oldPrice: 2200,
+    price: 1499,
+    disc: "-32% OFF",
+    shortDesc: "Stainless Steel, Auto Shut-Off",
+    fullSpecs: "• 360° Swivel Detachable Power Base<br>• Brushed Stainless Steel Body & Cool-Touch Handle<br>• Concealed Heating Element",
+    images: [
+      "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=500&q=80",
+      "https://images.unsplash.com/photo-1522012188892-24beb302783d?w=500&q=80"
+    ]
+  },
+  {
+    name: "Men's Sports Sneakers",
+    searchKeys: "mens running sneakers shoes trainers",
+    cat: "fashion",
+    oldPrice: 2800,
+    price: 2100,
+    disc: "-25% OFF",
+    shortDesc: "Breathable Mesh, Non-Slip Sole",
+    fullSpecs: "• Side & Top Breathable Knit Mesh<br>• Cushioned Shock-Absorbing Sole<br>• Available in Sizes 40 - 45",
+    images: [
+      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80",
+      "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=500&q=80",
+      "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=500&q=80"
+    ]
+  },
+  {
+    name: "Ladies Classic Handbag",
+    searchKeys: "ladies handbag shoulder bag leather purse",
+    cat: "fashion",
+    oldPrice: 3000,
+    price: 1999,
+    disc: "-33% OFF",
+    shortDesc: "PU Leather, Crossbody Strap",
+    fullSpecs: "• Structured Front & Back Zip Pockets<br>• Gold-Tone Hardware & Adjustable Strap<br>• Spacious Multi-Compartment Interior",
+    images: [
+      "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=500&q=80",
+      "https://images.unsplash.com/photo-1591561954557-26941169b49e?w=500&q=80"
+    ]
+  }
+];
+
 let cart = [];
 let currentCat = 'all';
+
+function renderProducts() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  products.forEach((p, index) => {
+    grid.innerHTML += `
+      <div class="card" data-name="${p.searchKeys}" data-cat="${p.cat}">
+        <div class="img-wrap" onclick="openInspect(${index})">
+          <img src="${p.images[0]}" loading="lazy">
+          <span class="inspect-badge">📷 ${p.images.length} Views</span>
+        </div>
+        <h3>${p.name}</h3>
+        <p class="desc">${p.shortDesc}</p>
+        <p><span class="old">KSh ${p.oldPrice.toLocaleString()}</span> <span class="disc">${p.disc}</span></p>
+        <p class="new">KSh ${p.price.toLocaleString()}</p>
+        <button class="add" onclick="add('${p.name}', ${p.price})">🛒 ADD TO CART</button>
+      </div>
+    `;
+  });
+  filter();
+}
+
+function openInspect(index) {
+  const p = products[index];
+  document.getElementById('modalTitle').innerText = p.name;
+  document.getElementById('modalSpecs').innerHTML = p.fullSpecs;
+  document.getElementById('modalPrice').innerText = 'KSh ' + p.price.toLocaleString();
+  
+  const mainImg = document.getElementById('modalMainImg');
+  mainImg.src = p.images[0];
+
+  const thumbsDiv = document.getElementById('modalThumbs');
+  thumbsDiv.innerHTML = '';
+  p.images.forEach((imgUrl, i) => {
+    const thumb = document.createElement('img');
+    thumb.src = imgUrl;
+    if (i === 0) thumb.classList.add('selected');
+    thumb.onclick = function() {
+      mainImg.src = imgUrl;
+      document.querySelectorAll('.thumbs img').forEach(t => t.classList.remove('selected'));
+      thumb.classList.add('selected');
+    };
+    thumbsDiv.appendChild(thumb);
+  });
+
+  document.getElementById('modalAddBtn').onclick = function() {
+    add(p.name, p.price);
+    document.getElementById('inspectModal').style.display = 'none';
+  };
+
+  document.getElementById('inspectModal').style.display = 'flex';
+}
+
+function closeModal(e) {
+  if (e.target.id === 'inspectModal') {
+    document.getElementById('inspectModal').style.display = 'none';
+  }
+}
 
 function filter() {
   let q = document.getElementById('search').value.toLowerCase();
@@ -197,6 +296,8 @@ function checkout() {
   let msg = "Hello LANGAT SHOP, I want to order:%0A" + itemsList + "%0A%0A*Total: KSh " + total.toLocaleString() + "*";
   window.open("https://wa.me/254701416556?text=" + msg);
 }
+
+renderProducts();
 </script>
 
 </body>
