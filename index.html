@@ -6,33 +6,58 @@
 <title>LANGAT SHOP</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-body{background:#f2f2f2;padding:10px;padding-bottom:80px}
-header{background:#f68b1e;color:#fff;padding:14px;text-align:center;border-radius:10px}
-.search input{width:100%;padding:12px;border-radius:8px;border:1px solid #ccc;font-size:16px;margin:10px 0}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.card{background:#fff;border-radius:10px;overflow:hidden;text-align:center;padding-bottom:10px}
-.card img{width:100%;height:140px;object-fit:cover;background:#eee}
-.card h3{font-size:13px;margin:8px 5px 3px}
-.desc{font-size:11px;color:#555;padding:0 6px;min-height:26px}
+body{background:#f5f5f5;padding:12px;padding-bottom:95px}
+.top{background:#111;color:#fff;text-align:center;padding:8px;font-size:12px}
+header{background:#fff;padding:14px;border-radius:12px;margin-top:10px;text-align:center}
+header h1{color:#f68b1e;font-size:24px}
+header p{color:#555;font-size:12px;margin-top:4px}
+.search{margin:12px 0;display:flex;gap:8px}
+.search input{flex:1;padding:12px;border-radius:10px;border:1px solid #ddd;font-size:15px}
+.search button{background:#f68b1e;color:#fff;border:none;padding:0 18px;border-radius:10px;font-weight:bold}
+.cats{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px}
+.cats button{white-space:nowrap;background:#fff;border:1px solid #ddd;padding:8px 14px;border-radius:20px}
+.cats button.on{background:#f68b1e;color:#fff;border-color:#f68b1e}
+.count{text-align:center;font-weight:bold;margin-bottom:10px;font-size:14px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:#fff;border-radius:14px;overflow:hidden;padding-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,0.08)}
+.card img{width:100%;height:150px;object-fit:cover;display:block}
+.card .pad{padding:10px}
+.cat{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.5px}
+.card h3{font-size:14px;margin:4px 0 8px;line-height:1.3}
 .old{color:#999;text-decoration:line-through;font-size:12px}
-.new{color:#f68b1e;font-weight:bold;font-size:16px}
-.disc{background:red;color:#fff;padding:2px 6px;border-radius:5px;font-size:11px}
-.add{background:#f68b1e;color:#fff;padding:9px 15px;border-radius:20px;border:none;font-weight:bold;margin-top:6px}
-.cartbar{position:fixed;bottom:0;left:0;right:0;background:#f68b1e;color:#fff;padding:12px;display:flex;justify-content:space-between;align-items:center}
-.cartbar button{background:#25D366;color:#fff;border:none;padding:10px 18px;border-radius:20px;font-weight:bold}
-footer{text-align:center;padding:15px;background:#fff;border-radius:10px;margin-top:10px;font-size:13px;line-height:1.6}
+.new{font-weight:bold;font-size:16px}
+.disc{color:#e53935;font-size:11px;font-weight:bold}
+.add{width:100%;background:#f68b1e;color:#fff;border:none;padding:11px;border-radius:10px;font-weight:bold;margin-top:10px}
+.cartbar{position:fixed;bottom:12px;left:12px;right:12px;background:#111;color:#fff;padding:14px 16px;border-radius:14px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 4px 15px rgba(0,0,0,0.3)}
+.cartbar button{background:#25D366;color:#fff;border:none;padding:10px 18px;border-radius:10px;font-weight:bold}
+footer{background:#fff;padding:16px;border-radius:12px;text-align:center;margin-top:14px;font-size:13px;line-height:1.7}
 </style>
 </head>
 <body>
-<header><h1>⚡ LANGAT SHOP ⚡</h1><p>Real Pictures | Browse FREE | Pay Later</p></header>
-<div class="search"><input id="search" placeholder="🔍 Search fridge, phone, kettle..." oninput="doSearch()"></div>
-<p style="text-align:center;font-weight:bold;margin-bottom:8px">Showing 12 Best Sellers - Fast Loading</p>
-<div class="grid" id="grid">
-
-<div class="card" data-name="fridge double door"><img src="https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=300&q=60" loading="lazy"><h3>Fridge Double Door</h3><p class="desc">No Frost, 200L, energy saving</p><p><span class="old">KSh 45000</span> <span class="disc">-16% OFF</span></p><p class="new">KSh 37999</p><button class="add" onclick="add('Fridge Double Door',37999)">🛒 ADD TO CART</button></div>
-
-<div class="card" data-name="smartphone 128gb phone"><img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300&q=60" loading="lazy"><h3>Smartphone 128GB</h3><p class="desc">6.5 Inch, Dual SIM, 5000mAh</p><p><span class="old">KSh 22000</span> <span class="disc">-18% OFF</span></p><p class="new">KSh 17999</p><button class="add" onclick="add('Smartphone 128GB',17999)">🛒 ADD TO CART</button></div>
-
-<div class="card" data-name="laptop 14 inch computer"><img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=300&q=60" loading="lazy"><h3>Laptop 14 Inch</h3><p class="desc">8GB RAM, 256GB SSD, Windows 11</p><p><span class="old">KSh 45000</span> <span class="disc">-16% OFF</span></p><p class="new">KSh 37999</p><button class="add" onclick="add('Laptop 14 Inch',37999)">🛒 ADD TO CART</button></div>
-
-<div class="card" data-name="led tv 43 inch television"><img src="https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=300&q=60" loading="lazy"><h3>LED TV 43 Inch</h3><p class="desc">Full HD, HDMI + USB</p><p><span class="old">KSh 35000</span> <span class="disc">-17% OFF</span></p><p class="new">KSh 28999</p><button class="add"
+<div class="top">Welcome to LANGAT SHOP - Convenient shopping in Kenya</div>
+<header><h1>LANGAT SHOP</h1><p>80 Products | Real Pictures | Browse FREE | Pay Later</p></header>
+<div class="search"><input id="search" placeholder="Search products..." oninput="doFilter()"><button onclick="doFilter()">Search</button></div>
+<div class="cats" id="cats">
+<button class="on" onclick="setCat('all',this)">All</button>
+<button onclick="setCat('phone',this)">Phones</button>
+<button onclick="setCat('laptop',this)">Laptops</button>
+<button onclick="setCat('tv',this)">TV & Audio</button>
+<button onclick="setCat('kitchen',this)">Kitchen</button>
+<button onclick="setCat('fashion',this)">Fashion</button>
+<button onclick="setCat('beauty',this)">Beauty</button>
+<button onclick="setCat('kids',this)">Kids</button>
+<button onclick="setCat('home',this)">Home</button>
+<button onclick="setCat('solar',this)">Solar</button>
+</div>
+<p class="count" id="count">Showing 80 Products</p>
+<div class="grid">
+<div class="card" data-name="fridge double door" data-cat="home"><img src="https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=400&q=70"><div class="pad"><span class="cat">Home</span><h3>Fridge Double Door 200L</h3><p><span class="new">KSh 37,999</span> <span class="old">KSh 45,000</span> <span class="disc">-16% OFF</span></p><button class="add" onclick="add('Fridge Double Door',37999)">Add to cart</button></div></div>
+<div class="card" data-name="smartphone phone" data-cat="phone"><img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&q=70"><div class="pad"><span class="cat">Phones</span><h3>Smartphone 128GB</h3><p><span class="new">KSh 17,999</span> <span class="old">KSh 22,000</span> <span class="disc">-18% OFF</span></p><button class="add" onclick="add('Smartphone 128GB',17999)">Add to cart</button></div></div>
+<div class="card" data-name="laptop computer" data-cat="laptop"><img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&q=70"><div class="pad"><span class="cat">Laptops</span><h3>Laptop 14 Inch</h3><p><span class="new">KSh 37,999</span> <span class="old">KSh 45,000</span> <span class="disc">-16% OFF</span></p><button class="add" onclick="add('Laptop 14 Inch',37999)">Add to cart</button></div></div>
+<div class="card" data-name="tv television" data-cat="tv"><img src="https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&q=70"><div class="pad"><span class="cat">TV & Audio</span><h3>LED TV 43 Inch</h3><p><span class="new">KSh 28,999</span> <span class="old">KSh 35,000</span> <span class="disc">-17% OFF</span></p><button class="add" onclick="add('LED TV 43 Inch',28999)">Add to cart</button></div></div>
+<div class="card" data-name="tv smart 50" data-cat="tv"><img src="https://images.unsplash.com/photo-1552975084-6e027cd345c2?w=400&q=70"><div class="pad"><span class="cat">TV & Audio</span><h3>Smart TV 50 Inch</h3><p><span class="new">KSh 42,999</span> <span class="old">KSh 49,400</span> <span class="disc">-13% OFF</span></p><button class="add" onclick="add('Smart TV 50 Inch',42999)">Add to cart</button></div></div>
+<div class="card" data-name="tv smart 55" data-cat="tv"><img src="https://images.unsplash.com/photo-1593784991095-a205069470b6?w=400&q=70"><div class="pad"><span class="cat">TV & Audio</span><h3>Smart TV 55 Inch</h3><p><span class="new">KSh 54,999</span> <span class="old">KSh 63,200</span> <span class="disc">-13% OFF</span></p><button class="add" onclick="add('Smart TV 55 Inch',54999)">Add to cart</button></div></div>
+<div class="card" data-name="sound bar speaker" data-cat="tv"><img src="https://images.unsplash.com/photo-1545454675-3531b543be5d?w=400&q=70"><div class="pad"><span class="cat">TV & Audio</span><h3>Sound Bar</h3><p><span class="new">KSh 8,500</span> <span class="old">KSh 9,800</span> <span class="disc">-13% OFF</span></p><button class="add" onclick="add('Sound Bar',8500)">Add to cart</button></div></div>
+<div class="card" data-name="bluetooth speaker" data-cat="tv"><img src="https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&q=70"><div class="pad"><span class="cat">TV & Audio</span><h3>Bluetooth Speaker</h3><p><span class="new">KSh 2,500</span> <span class="old">KSh 2,900</span> <span class="disc">-14% OFF</span></p><button class="add" onclick="add('Bluetooth Speaker',2500)">Add to cart</button></div></div>
+<div class="card" data-name="kettle" data-cat="kitchen"><img src="https://images.unsplash.com/photo-1594213114663-d94db9b17125?w=400&q=70"><div class="pad"><span class="cat">Kitchen</span><h3>Electric Kettle 1.8L</h3><p><span class="new">KSh 2,899</span> <span class="old">KSh 3,500</span> <span class="disc">-17% OFF</span></p><button class="add" onclick="add('Electric Kettle',2899)">Add to cart</button></div></div>
+<div class="card" data-name="microwave" data-cat="kitchen"><img src="https://images.unsplash.com/photo-157426990
