@@ -68,49 +68,103 @@
             <span class="whitespace-nowrap cursor-pointer hover:text-red-600">Fashion</span>
             <span class="whitespace-nowrap cursor-pointer hover:text-red-600">Supermarket</span>
             <span class="whitespace-nowrap cursor-pointer hover:text-red-600">Baby Products</span>
+            <span class="whitespace-nowrap cursor-pointer hover:text-red-600">Gaming & Consoles</span>
         </div>
     </nav>
+
+    <!-- Hero Banner Section -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+        <div class="bg-gradient-to-r from-red-600 to-orange-500 rounded-2xl p-6 md:p-10 text-white flex flex-col md:flex-row items-center justify-between shadow-lg">
+            <div class="space-y-4 max-w-lg mb-6 md:mb-0">
+                <span class="bg-white text-red-600 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Mega Festival Deal</span>
+                <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight">Up to 50% Off Top Smartphones & Electronics</h1>
+                <p class="text-red-100 text-sm md:text-base">Fast delivery countrywide. Secure payments powered by M-Pesa & Pesapal.</p>
+            </div>
+            <div class="bg-white/10 backdrop-blur-md p-6 rounded-xl border border-white/20 text-center">
+                <p class="text-xs uppercase tracking-widest text-red-100 font-semibold mb-1">Use Code at Checkout</p>
+                <p class="text-2xl font-mono font-bold tracking-wider mb-2">KILI2026</p>
+                <span class="text-xs bg-white text-red-600 font-bold px-3 py-1 rounded">10% Additional Discount</span>
+            </div>
+        </div>
+    </div>
 
     <!-- Main Shop & Checkout Layout -->
     <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
-            <!-- Left Side: Product List Section (2 Columns) -->
+            <!-- Left Side: Expanded Product Catalog (2 Columns) -->
             <div class="lg:col-span-2 space-y-6">
-                <h1 class="text-2xl font-bold text-gray-900">Flash Sale Items</h1>
+                <div class="flex items-center justify-between">
+                    <h2 class="text-2xl font-bold text-gray-900">Featured Flash Sale Items</h2>
+                    <span class="text-sm text-red-600 font-semibold cursor-pointer">View All &rarr;</span>
+                </div>
                 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <!-- Sample Product Card -->
+                    
+                    <!-- Product 1 -->
                     <div class="bg-white p-4 rounded-xl shadow-xs border border-gray-200 flex flex-col justify-between hover:shadow-md transition">
                         <div>
                             <div class="w-full h-48 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 mb-4 font-semibold">
-                                <i class="fa-solid fa-image text-4xl"></i>
+                                <i class="fa-solid fa-mobile-screen text-4xl text-red-500"></i>
                             </div>
                             <span class="bg-red-100 text-red-600 text-xs px-2 py-1 rounded font-bold">-45% OFF</span>
                             <h3 class="font-semibold text-gray-800 mt-2">Smart Android 5G Smartphone - 8GB RAM 256GB ROM</h3>
                             <p class="text-red-600 font-extrabold text-lg mt-1">KES 21,989</p>
                             <p class="text-gray-400 text-xs line-through">KES 39,999</p>
                         </div>
-                        <button onclick="updateCartAmount(21989)" class="mt-4 w-full bg-red-50 text-red-600 border border-red-600 py-2 rounded-lg font-bold hover:bg-red-600 hover:text-white transition text-sm">
+                        <button onclick="updateCartAmount(21989, 'Smart Android 5G Smartphone')" class="mt-4 w-full bg-red-50 text-red-600 border border-red-600 py-2 rounded-lg font-bold hover:bg-red-600 hover:text-white transition text-sm">
                             Select for Checkout
                         </button>
                     </div>
 
-                    <!-- Second Product Card -->
+                    <!-- Product 2 -->
                     <div class="bg-white p-4 rounded-xl shadow-xs border border-gray-200 flex flex-col justify-between hover:shadow-md transition">
                         <div>
                             <div class="w-full h-48 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 mb-4 font-semibold">
-                                <i class="fa-solid fa-image text-4xl"></i>
+                                <i class="fa-solid fa-headphones text-4xl text-red-500"></i>
                             </div>
                             <span class="bg-red-100 text-red-600 text-xs px-2 py-1 rounded font-bold">-30% OFF</span>
                             <h3 class="font-semibold text-gray-800 mt-2">Wireless Bluetooth Earbuds & Power Bank Case</h3>
                             <p class="text-red-600 font-extrabold text-lg mt-1">KES 3,499</p>
                             <p class="text-gray-400 text-xs line-through">KES 4,999</p>
                         </div>
-                        <button onclick="updateCartAmount(3499)" class="mt-4 w-full bg-red-50 text-red-600 border border-red-600 py-2 rounded-lg font-bold hover:bg-red-600 hover:text-white transition text-sm">
+                        <button onclick="updateCartAmount(3499, 'Wireless Bluetooth Earbuds')" class="mt-4 w-full bg-red-50 text-red-600 border border-red-600 py-2 rounded-lg font-bold hover:bg-red-600 hover:text-white transition text-sm">
                             Select for Checkout
                         </button>
                     </div>
+
+                    <!-- Product 3 -->
+                    <div class="bg-white p-4 rounded-xl shadow-xs border border-gray-200 flex flex-col justify-between hover:shadow-md transition">
+                        <div>
+                            <div class="w-full h-48 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 mb-4 font-semibold">
+                                <i class="fa-solid fa-laptop text-4xl text-red-500"></i>
+                            </div>
+                            <span class="bg-red-100 text-red-600 text-xs px-2 py-1 rounded font-bold">-25% OFF</span>
+                            <h3 class="font-semibold text-gray-800 mt-2">Ultra-Slim 14-inch Laptop - 16GB RAM 512GB SSD</h3>
+                            <p class="text-red-600 font-extrabold text-lg mt-1">KES 45,000</p>
+                            <p class="text-gray-400 text-xs line-through">KES 60,000</p>
+                        </div>
+                        <button onclick="updateCartAmount(45000, 'Ultra-Slim 14-inch Laptop')" class="mt-4 w-full bg-red-50 text-red-600 border border-red-600 py-2 rounded-lg font-bold hover:bg-red-600 hover:text-white transition text-sm">
+                            Select for Checkout
+                        </button>
+                    </div>
+
+                    <!-- Product 4 -->
+                    <div class="bg-white p-4 rounded-xl shadow-xs border border-gray-200 flex flex-col justify-between hover:shadow-md transition">
+                        <div>
+                            <div class="w-full h-48 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 mb-4 font-semibold">
+                                <i class="fa-solid fa-blender text-4xl text-red-500"></i>
+                            </div>
+                            <span class="bg-red-100 text-red-600 text-xs px-2 py-1 rounded font-bold">-40% OFF</span>
+                            <h3 class="font-semibold text-gray-800 mt-2">Heavy Duty Kitchen Blender & Grinder 2000W</h3>
+                            <p class="text-red-600 font-extrabold text-lg mt-1">KES 4,899</p>
+                            <p class="text-gray-400 text-xs line-through">KES 8,199</p>
+                        </div>
+                        <button onclick="updateCartAmount(4899, 'Heavy Duty Kitchen Blender')" class="mt-4 w-full bg-red-50 text-red-600 border border-red-600 py-2 rounded-lg font-bold hover:bg-red-600 hover:text-white transition text-sm">
+                            Select for Checkout
+                        </button>
+                    </div>
+
                 </div>
             </div>
 
@@ -118,9 +172,14 @@
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 h-fit sticky top-24">
                 <h2 class="text-xl font-bold mb-4 text-gray-900 border-b pb-3">Order Summary</h2>
                 
-                <div class="space-y-3 text-sm mb-6">
+                <div class="mb-4">
+                    <p class="text-xs text-gray-500 uppercase font-bold mb-1">Selected Item:</p>
+                    <p id="selected-item-name" class="font-semibold text-gray-800">Smart Android 5G Smartphone</p>
+                </div>
+
+                <div class="space-y-3 text-sm mb-6 border-t pt-4">
                     <div class="flex justify-between">
-                        <span class="text-gray-600">Selected Items Total</span>
+                        <span class="text-gray-600">Subtotal</span>
                         <span id="display-subtotal" class="font-semibold">KES 21,989</span>
                     </div>
                     <div class="flex justify-between">
@@ -159,18 +218,22 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-gray-200 py-6 text-center text-sm text-gray-500 mt-auto">
-        &copy; 2026 Kilimall Clone. Built for M-Pesa Secure Checkout.
+    <footer class="bg-white border-t border-gray-200 py-8 text-center text-sm text-gray-500 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 space-y-2">
+            <p>&copy; 2026 Kilimall Clone. Built for M-Pesa Secure Checkout on GitHub Pages.</p>
+            <p class="text-xs text-gray-400">All transactions are processed securely through Pesapal Sandbox Gateway.</p>
+        </div>
     </footer>
 
     <!-- Complete Payment & Interactive Script -->
     <script>
         let currentAmount = 21989;
 
-        function updateCartAmount(amount) {
+        function updateCartAmount(amount, itemName) {
             currentAmount = amount;
             document.getElementById('display-subtotal').innerText = 'KES ' + amount.toLocaleString();
             document.getElementById('display-total').innerText = 'KES ' + amount.toLocaleString();
+            document.getElementById('selected-item-name').innerText = itemName;
         }
 
         async function handleMpesaPayment() {
@@ -178,8 +241,8 @@
             const email = document.getElementById('email-input').value;
 
             try {
-                // Connects to your local Node.js backend server running on port 3000
-                const response = await fetch('http://localhost:3000/api/create-pesapal-order', {
+                // Replace the URL below with your live backend URL (e.g., Render or Ngrok) when deployed
+                const response = await fetch('https://YOUR-BACKEND-URL.onrender.com/api/create-pesapal-order', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -191,14 +254,13 @@
 
                 const data = await response.json();
                 if (data.success && data.redirect_url) {
-                    // Safely redirects your customer to Pesapal's secure checkout page
                     window.location.href = data.redirect_url;
                 } else {
                     alert('Payment initialization failed. Please check your backend connection.');
                 }
             } catch (error) {
                 console.error('Error connecting to backend:', error);
-                alert('Could not reach payment server. Make sure your local Node.js server (server.js) is running!');
+                alert('Could not reach payment server. Make sure your backend server URL is correctly configured!');
             }
         }
     </script>
