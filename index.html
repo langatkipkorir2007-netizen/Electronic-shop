@@ -117,25 +117,12 @@ var NEW = [
 ["Landline Telephone","https://growthify.zozothemes.com/wp-content/uploads/2025/03/Landline.jpg","2200","1799","-18%"],
 ["Wireless Landline Phone","https://i5.walmartimages.com/asr/69899086-b3e1-4a7b-b6f6-79c1b279646b_1.9b5008939bd76eb42db8632d5fe803d3.jpeg","3500","2899","-17%"]
 ];
-var grid=document.getElementById('grid');
+var grid=document.getElementById('grid') || document.querySelector('.products') || document.querySelector('main') || document.body;
 NEW.forEach(function(p){
   var d=document.createElement('div'); d.className='card';
   d.innerHTML='<img src="'+p[1]+'" style="object-fit:contain;background:#fff" onerror="this.src=\'https://via.placeholder.com/400x300?text='+encodeURIComponent(p[0])+'\'"><div><h3>'+p[0]+'</h3><p><span class="old">KSh '+p[2]+'</span> <span class="disc">'+p[4]+' OFF</span></p><p class="new">KSh '+p[3]+'</p><a class="order" href="https://wa.me/254712555279?text=Hi, I want '+encodeURIComponent(p[0])+' at KSh '+p[3]+'">Order - Save!</a></div>';
   grid.appendChild(d);
 });
-</script>
-<script>
-// FORCE SHOW ALL - IF GRID NAME IS DIFFERENT
-setTimeout(function(){
-  var grid = document.getElementById('grid') || document.querySelector('.products') || document.querySelector('.grid') || document.querySelector('main') || document.body;
-  var cards = document.querySelectorAll('.card');
-  if(cards.length < 20){
-    // If still less than 20, reload the NEW list again here
-    location.reload();
-  }
-  // Scroll hint - show count
-  console.log('Total products now: ' + cards.length);
-}, 1000);
 </script>
 <script>
 // FIX ANY BROKEN IMAGE - AUTO BACKUP
