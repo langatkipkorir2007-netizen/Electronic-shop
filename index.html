@@ -137,4 +137,18 @@ setTimeout(function(){
   console.log('Total products now: ' + cards.length);
 }, 1000);
 </script>
+<script>
+// FIX ANY BROKEN IMAGE - AUTO BACKUP
+document.querySelectorAll('img').forEach(function(img){
+  img.onerror = function(){
+    var name = img.closest('.card') ? img.closest('.card').querySelector('h3').innerText : '';
+    // Backup: use a reliable picture search by name
+    this.onerror = null;
+    this.src = 'https://placehold.co/600x400/0a4db3/ffffff?text=' + encodeURIComponent(name);
+    this.style.objectFit = 'contain';
+  };
+  // Force reload if already broken
+  if(img.complete && img.naturalWidth === 0){ img.onerror(); }
+});
+</script>
 </body></html>
