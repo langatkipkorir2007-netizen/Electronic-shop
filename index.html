@@ -133,5 +133,29 @@ footer{background:#0a1931;color:#fff;text-align:center;padding:20px}
 <div class="card"><img src="https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=600"><div><h3>Electric Pressure Cooker 6L</h3><p>New Multi Function 1000W</p><p class="price">KSh 7,800</p><a class="order" href="https://wa.me/25412555279?text=Hi%20I%20want%20Pressure%20Cooker">Order</a></div></div>
 <div class="card"><img src="https://images.unsplash.com/photo-1556911220-bff31c812dba?w=600"><div><h3>Air Fryer 5.5L Digital</h3><p>New Oil Less Healthy Cooking</p><p class="price">KSh 8,500</p><a class="order" href="https://wa.me/25412555279?text=Hi%20I%20want%20Air%20Fryer">Order</a></div></div>
 <footer><h3>ELECTROSOLVERS</h3><p>Chuka, Kenya | Phone: 012555279 | WhatsApp: <a style="color:#25D366" href="https://wa.me/25412555279">Chat Now</a></p></footer>
+<script>
+function doSearch(){
+  var q=document.getElementById('searchBox').value.toLowerCase();
+  var cards=document.querySelectorAll('.card');
+  var shown=0;
+  cards.forEach(function(c){
+    var txt=c.innerText.toLowerCase();
+    if(txt.includes(q)){ c.style.display=''; shown++; } else { c.style.display='none'; }
+  });
+  document.getElementById('resultCount').innerText = shown + ' products found';
+}
+function filterCat(word,btn){
+  var cards=document.querySelectorAll('.card');
+  document.getElementById('searchBox').value = word=='all' ? '' : word;
+  var shown=0;
+  cards.forEach(function(c){
+    var txt=c.innerText.toLowerCase();
+    if(word=='all' || txt.includes(word)){ c.style.display=''; shown++; } else { c.style.display='none'; }
+  });
+  document.getElementById('resultCount').innerText = shown + ' products found';
+  document.querySelectorAll('button').forEach(function(b){ b.style.background='#eee'; b.style.color='#000'; });
+  btn.style.background='#ff6600'; btn.style.color='#fff';
+}
+</script>
 </body>
 </html>
