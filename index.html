@@ -3,24 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LANGAT ELECTRONIC SHOP</title>
+<title>LANGAT SHOP - Fast</title>
+<link rel="preconnect" href="https://images.unsplash.com">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
 body{background:#f2f2f2;padding:10px;padding-bottom:80px}
-header{background:#0a4db3;color:#fff;padding:15px;text-align:center;border-radius:10px}
-.info{background:#fff;padding:10px;border-radius:10px;margin:10px 0;text-align:center;font-size:13px;line-height:1.6;border:2px solid #0a4db3}
+header{background:#f68b1e;color:#fff;padding:14px;text-align:center;border-radius:10px}
+.cats{display:flex;gap:6px;overflow-x:auto;padding:8px 0}
+.cats button{white-space:nowrap;background:#fff;border:1px solid #f68b1e;padding:8px 12px;border-radius:20px;font-weight:bold}
+.cats button.active{background:#f68b1e;color:#fff}
 .search input{width:100%;padding:12px;border-radius:8px;border:1px solid #ccc;font-size:16px}
 .count{text-align:center;font-weight:bold;margin:8px 0;font-size:14px}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .card{background:#fff;border-radius:10px;overflow:hidden;text-align:center;padding-bottom:10px}
-.card img{width:100%;height:165px;object-fit:cover;background:#ddd;display:block}
+.card img{width:100%;height:140px;object-fit:cover;background:#eee;display:block}
 .card h3{font-size:13px;margin:8px 5px 3px}
-.desc{font-size:11px;color:#555;padding:0 6px;min-height:28px;line-height:1.4}
+.desc{font-size:11px;color:#555;padding:0 6px;min-height:26px;line-height:1.4}
 .old{color:#999;text-decoration:line-through;font-size:12px}
-.new{color:#0a4db3;font-weight:bold;font-size:16px}
+.new{color:#f68b1e;font-weight:bold;font-size:16px}
 .disc{background:red;color:#fff;padding:2px 6px;border-radius:5px;font-size:11px}
-.add{background:#0a4db3;color:#fff;padding:9px 15px;border-radius:20px;border:none;font-size:13px;font-weight:bold;margin-top:6px}
-.cartbar{position:fixed;bottom:0;left:0;right:0;background:#0a4db3;color:#fff;padding:12px;display:flex;justify-content:space-between;align-items:center;z-index:99}
+.add{background:#f68b1e;color:#fff;padding:9px 15px;border-radius:20px;border:none;font-size:13px;font-weight:bold;margin-top:6px}
+.more{background:#0a4db3;color:#fff;border:none;width:100%;padding:13px;border-radius:8px;font-weight:bold;font-size:15px;margin-top:12px}
+.cartbar{position:fixed;bottom:0;left:0;right:0;background:#f68b1e;color:#fff;padding:12px;display:flex;justify-content:space-between;align-items:center;z-index:99}
 .cartbar button{background:#25D366;color:#fff;border:none;padding:10px 18px;border-radius:20px;font-weight:bold}
 .cartbox{position:fixed;bottom:60px;left:10px;right:10px;background:#fff;border-radius:12px;padding:15px;box-shadow:0 0 20px rgba(0,0,0,.3);display:none;max-height:75vh;overflow:auto;z-index:100}
 .item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee;font-size:13px}
@@ -33,38 +37,17 @@ footer{text-align:center;padding:15px;background:#fff;border-radius:10px;margin-
 </style>
 </head>
 <body>
-<header><h1>⚡ LANGAT ELECTRONIC SHOP ⚡</h1><p>109 Products | Real Pictures | Browse FREE</p></header>
-<div class="info"><b>🛒 HOW IT WORKS:</b><br>1. Browse Real Pictures FREE<br>2. ADD TO CART<br>3. VIEW CART - Pay ONLY at checkout</div>
-<div class="search"><input id="search" placeholder="🔍 Search Kettle, TV, Laptop..." oninput="filter()"></div>
-<div class="count" id="count">Loading...</div>
+<header><h1>⚡ LANGAT SHOP ⚡</h1><p>109 Products | Fast Loading | Like Jumia</p></header>
+<div class="cats" id="cats"></div>
+<div class="search"><input id="search" placeholder="🔍 Search phone, fridge, fan..." oninput="filter()"></div>
+<div class="count" id="count">Loading fast...</div>
 <div class="grid" id="grid"></div>
-<footer><b>© Langat Electronic Shop</b><br>Browse FREE | Pay After You Choose<br>M-PESA Till: 0712555279 | Cash on Delivery</footer>
-<div class="cartbox" id="cartbox"><h2>🛒 Your Cart</h2><div id="cartitems"></div><div class="total" id="total"></div><div class="paybox"><b>💳 PAYMENT - AFTER YOU CHOOSE:</b><br>✅ M-PESA Till: <b>0712555279</b><br>✅ Cash on Delivery</div><button class="checkout" onclick="checkout()">✅ Send Order on WhatsApp</button><button class="close" onclick="toggleCart()">Close Cart</button></div>
+<button class="more" id="moreBtn" onclick="loadMore()">⬇️ LOAD MORE PRODUCTS</button>
+<footer><b>© Langat Shop</b><br>Browse FREE | Pay After You Choose<br>M-PESA Till: 0712555279 | Cash on Delivery</footer>
+<div class="cartbox" id="cartbox"><h2>🛒 Your Cart</h2><div id="cartitems"></div><div class="total" id="total"></div><div class="paybox"><b>💳 PAYMENT:</b><br>✅ M-PESA Till: <b>0712555279</b><br>✅ Cash on Delivery</div><button class="checkout" onclick="checkout()">✅ Send Order on WhatsApp</button><button class="close" onclick="toggleCart()">Close Cart</button></div>
 <div class="cartbar"><span id="cartlabel">🛒 Cart: 0 items - KSh 0</span><button onclick="toggleCart()">VIEW CART</button></div>
 <script>
 var BASE=[
-["Electric Kettle 1.8L","Stainless steel kettle, fast boiling, auto shut-off, 1.8 Litre","https://images.unsplash.com/photo-1594213114663-d94db9b17125?w=600",3500,2899],
-["Microwave Oven 20L","20 Litre microwave, digital display, 6 cooking modes","https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?w=600",12500,9999],
-["Blender 2-in-1","Blender with grinder, 2 jars, 350W motor for fruits & vegetables","https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=600",4200,3299],
-["LED TV 32 Inch","32 Inch HD LED TV, clear picture, HDMI + USB ports","https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=600",22000,17999],
-["LED TV 43 Inch","43 Inch Full HD LED TV, clear picture, HDMI + USB","https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=600",35000,28999],
-["LED TV 55 Inch Smart","55 Inch Smart TV, 4K, Netflix, YouTube, WiFi built-in","https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=600",65000,54999],
-["Laptop 14 Inch","14 Inch Laptop, 8GB RAM, 256GB SSD, Windows 11","https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600",45000,37999],
-["Laptop 15.6 Inch","15.6 Inch Laptop, 8GB RAM, 512GB SSD, Windows 11","https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600",55000,45999],
-["Fridge Double Door","Double Door Fridge, No Frost, 200L, energy saving","https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=600",45000,37999],
-["Bluetooth Speaker","Portable Bluetooth Speaker, deep bass, 12hrs battery","https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=600",4500,3499],
-["Headphones Bluetooth","Wireless Headphones, noise cancelling, 20hrs battery","https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600",3200,2499],
-["Smart Watch","Smart Watch, heart rate, steps, calls, 7 days battery","https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=600",6500,4999],
-["Digital Camera","Digital Camera, 20MP, HD video, zoom lens","https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600",35000,28999],
-["Smartphone 128GB","Smartphone 128GB, 6.5 Inch, Dual SIM, 5000mAh battery","https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600",22000,17999],
-["Printer 3-in-1","Printer, Print + Scan + Copy, WiFi, colour + black","https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=600",15000,11999],
-["Electric Fan Standing","Standing Fan, 3 speeds, adjustable height, quiet motor","https://images.unsplash.com/photo-1565151443833-29bf49a0f5f7?w=600",3800,2999],
-["Coffee Maker","Coffee Maker, 1.5L, makes 12 cups, keep warm function","https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e6?w=600",6500,4999],
-["Acoustic Guitar","Acoustic Guitar, 6 strings, wooden body, full size","https://images.unsplash.com/photo-1564186763535-ebb21ef5277f?w=600",7500,5899],
-["Drone Camera 4K","Drone with 4K Camera, 30mins flight, remote control","https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=600",25000,19999],
-["Solar Panel 200W","Solar Panel 200W, charges battery, for home use","https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600",15000,11999]
-];
-var P=[];
-for(var i=0;i<109;i++){ var b=BASE[i%BASE.length]; var s=i>=BASE.length?" - Model "+(Math.floor(i/BASE.length)+1):""; P.push([b[0]+s,b[1],b[2],b[3],b[4]]); }
-var cart=[]; var grid=document.getElementById('grid'); var count=document.getElementById('count');
-function show(list){ grid.innerHTML=''; count.innerHTML='Showing '+list.length+' items - Real Pictures, Browse FREE'; for(var k=0;k<list.length;k++){ var p=list[k]; var off=Math.round((1-p[4]/p[3])*100); var d=document.createElement('div'); d.className='card'; d.innerHTML='<img src="'+p[2]+'"
+["Smartphone 128GB","Phones","128GB, 6.5 Inch, Dual SIM, 5000mAh","https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300&q=60",22000,17999],
+["Laptop 14 Inch","Computing","8GB RAM, 256GB SSD, Windows 11","https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=300&q=60",45000,37999],
+["LED TV 43 Inch","TV & Audio","43 Inch Full HD, HDMI + USB
