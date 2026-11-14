@@ -158,57 +158,54 @@ function filterCat(word,btn){
 }
 </script>
 <script>
-// AUTO FIX - Replace all wrong photos with correct emoji
+var photos = {
+  'kettle': 'https://images.pexels.com/photos/5851230/pexels-photo-5851230.jpeg?w=600',
+  'bulb': 'https://images.pexels.com/photos/1108572/pexels-photo-1108572.jpeg?w=600',
+  'iron': 'https://images.pexels.com/photos/5591581/pexels-photo-5591581.jpeg?w=600',
+  'blender': 'https://images.pexels.com/photos/616833/pexels-photo-616833.jpeg?w=600',
+  'shower': 'https://images.pexels.com/photos/1585709/pexels-photo-1585709.jpeg?w=600',
+  'heater': 'https://images.pexels.com/photos/1585709/pexels-photo-1585709.jpeg?w=600',
+  'fan': 'https://images.pexels.com/photos/589/pexels-photo-589.jpeg?w=600',
+  'microwave': 'https://images.pexels.com/photos/6822682/pexels-photo-6822682.jpeg?w=600',
+  'washing': 'https://images.pexels.com/photos/4107123/pexels-photo-4107123.jpeg?w=600',
+  'dispenser': 'https://images.pexels.com/photos/416528/pexels-photo-416528.jpeg?w=600',
+  'freezer': 'https://images.pexels.com/photos/1090638/pexels-photo-1090638.jpeg?w=600',
+  'fridge': 'https://images.pexels.com/photos/1090638/pexels-photo-1090638.jpeg?w=600',
+  'cooker': 'https://images.pexels.com/photos/1656663/pexels-photo-1656663.jpeg?w=600',
+  'pressure': 'https://images.pexels.com/photos/5738022/pexels-photo-5738022.jpeg?w=600',
+  'air fryer': 'https://images.pexels.com/photos/6150919/pexels-photo-6150919.jpeg?w=600',
+  'power bank': 'https://images.pexels.com/photos/4526407/pexels-photo-4526407.jpeg?w=600',
+  'earbud': 'https://images.pexels.com/photos/3780681/pexels-photo-3780681.jpeg?w=600',
+  'headphone': 'https://images.pexels.com/photos/3394650/pexels-photo-3394650.jpeg?w=600',
+  'tecno': 'https://images.pexels.com/photos/1092644/pexels-photo-1092644.jpeg?w=600',
+  'infinix': 'https://images.pexels.com/photos/1092644/pexels-photo-1092644.jpeg?w=600',
+  'itel': 'https://images.pexels.com/photos/1092644/pexels-photo-1092644.jpeg?w=600',
+  'redmi': 'https://images.pexels.com/photos/1092644/pexels-photo-1092644.jpeg?w=600',
+  'samsung': 'https://images.pexels.com/photos/1092644/pexels-photo-1092644.jpeg?w=600',
+  'watch': 'https://images.pexels.com/photos/437037/pexels-photo-437037.jpeg?w=600',
+  'tripod': 'https://images.pexels.com/photos/175026/pexels-photo-175026.jpeg?w=600',
+  'mouse': 'https://images.pexels.com/photos/2115256/pexels-photo-2115256.jpeg?w=600',
+  'keyboard': 'https://images.pexels.com/photos/2115256/pexels-photo-2115256.jpeg?w=600',
+  'tv': 'https://images.pexels.com/photos/1444412/pexels-photo-1444412.jpeg?w=600',
+  'laptop': 'https://images.pexels.com/photos/18105/pexels-photo.jpg?w=600',
+  'dell': 'https://images.pexels.com/photos/18105/pexels-photo.jpg?w=600',
+  'lenovo': 'https://images.pexels.com/photos/18105/pexels-photo.jpg?w=600',
+  'solar': 'https://images.pexels.com/photos/356036/pexels-photo-356036.jpeg?w=600',
+  'battery': 'https://images.pexels.com/photos/356036/pexels-photo-356036.jpeg?w=600',
+  'inverter': 'https://images.pexels.com/photos/356036/pexels-photo-356036.jpeg?w=600',
+  'cctv': 'https://images.pexels.com/photos/430208/pexels-photo-430208.jpeg?w=600',
+  'camera': 'https://images.pexels.com/photos/430208/pexels-photo-430208.jpeg?w=600',
+  'speaker': 'https://images.pexels.com/photos/1649771/pexels-photo-1649771.jpeg?w=600',
+  'theatre': 'https://images.pexels.com/photos/1649771/pexels-photo-1649771.jpeg?w=600'
+};
 document.querySelectorAll('.card').forEach(function(card){
   var title = card.querySelector('h3').innerText.toLowerCase();
-  var emoji = '🛒';
-  if(title.includes('kettle')) emoji='🍵';
-  else if(title.includes('bulb')) emoji='💡';
-  else if(title.includes('cable')||title.includes('wire')) emoji='🔌';
-  else if(title.includes('extension')) emoji='🔌';
-  else if(title.includes('socket')) emoji='🔌';
-  else if(title.includes('iron')) emoji='👔';
-  else if(title.includes('blender')) emoji='🥤';
-  else if(title.includes('rice cooker')) emoji='🍚';
-  else if(title.includes('hot plate')) emoji='🍳';
-  else if(title.includes('shower')||title.includes('heater')) emoji='🚿';
-  else if(title.includes('fan')) emoji='🌀';
-  else if(title.includes('microwave')) emoji='♨️';
-  else if(title.includes('sandwich')) emoji='🥪';
-  else if(title.includes('hair dryer')) emoji='💨';
-  else if(title.includes('clipper')) emoji='💈';
-  else if(title.includes('shaver')) emoji='🪒';
-  else if(title.includes('washing')) emoji='🧺';
-  else if(title.includes('dispenser')) emoji='💧';
-  else if(title.includes('freezer')) emoji='❄️';
-  else if(title.includes('fridge')) emoji='🧊';
-  else if(title.includes('cooker')||title.includes('pressure')) emoji='🍲';
-  else if(title.includes('air fryer')) emoji='🍟';
-  else if(title.includes('power bank')) emoji='🔋';
-  else if(title.includes('charger')||title.includes('cable')) emoji='🔌';
-  else if(title.includes('earbud')||title.includes('headphone')) emoji='🎧';
-  else if(title.includes('tecno')||title.includes('infinix')||title.includes('itel')||title.includes('redmi')||title.includes('samsung')) emoji='📱';
-  else if(title.includes('memory')||title.includes('flash')) emoji='💾';
-  else if(title.includes('watch')) emoji='⌚';
-  else if(title.includes('tripod')) emoji='📷';
-  else if(title.includes('mouse')) emoji='🖱️';
-  else if(title.includes('keyboard')) emoji='⌨️';
-  else if(title.includes('router')||title.includes('wifi')) emoji='📶';
-  else if(title.includes('tv')) emoji='📺';
-  else if(title.includes('laptop')||title.includes('dell')||title.includes('lenovo')||title.includes('hp ')) emoji='💻';
-  else if(title.includes('solar')) emoji='☀️';
-  else if(title.includes('battery')) emoji='🔋';
-  else if(title.includes('inverter')) emoji='⚡';
-  else if(title.includes('cctv')||title.includes('camera')) emoji='📹';
-  else if(title.includes('speaker')||title.includes('theatre')) emoji='🔊';
-  else if(title.includes('bulb')) emoji='💡';
-
-  var img = card.querySelector('img');
-  if(img){
-    var div = document.createElement('div');
-    div.innerText = emoji;
-    div.style.cssText = 'font-size:90px;text-align:center;padding:30px 0;background:#fff3e6;';
-    img.replaceWith(div);
+  for(var key in photos){
+    if(title.includes(key)){
+      var img = card.querySelector('img');
+      if(img){ img.src = photos[key]; }
+      break;
+    }
   }
 });
 </script>
