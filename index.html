@@ -125,16 +125,17 @@ NEW.forEach(function(p){
 });
 </script>
 <script>
-// FIX ANY BROKEN IMAGE - AUTO BACKUP
+// REAL IMAGE BACKUP - If Walmart/Amazon blocks, use Flickr real photo
 document.querySelectorAll('img').forEach(function(img){
+  var tried = false;
   img.onerror = function(){
-    var name = img.closest('.card') ? img.closest('.card').querySelector('h3').innerText : '';
-    // Backup: use a reliable picture search by name
-    this.onerror = null;
-    this.src = 'https://placehold.co/600x400/0a4db3/ffffff?text=' + encodeURIComponent(name);
-    this.style.objectFit = 'contain';
+    if(tried) return;
+    tried = true;
+    var card = img.closest('.card');
+    var name = card ? card.querySelector('h3').innerText : 'electronics';
+    // This site is NOT blocked, it gives a real photo for the name
+    this.src = 'https://loremflickr.com/600/400/' + encodeURIComponent(name) + '?lock=' + Math.floor(Math.random()*100);
   };
-  // Force reload if already broken
   if(img.complete && img.naturalWidth === 0){ img.onerror(); }
 });
 </script>
