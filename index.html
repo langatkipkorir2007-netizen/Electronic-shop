@@ -20,7 +20,7 @@
 
     <!-- Top Announcement Bar -->
     <div class="bg-red-700 text-white text-xs py-1.5 px-4 text-center font-medium">
-        🔥 Flash Sale: Up to 60% OFF Across All 10 Departments! Free delivery on orders over KSh 2,500.
+        🔥 Flash Sale: Use Promo Code <span class="bg-red-800 px-1.5 py-0.5 rounded font-bold">KILI2026</span> for 10% OFF your order!
     </div>
 
     <!-- Main Navigation Header -->
@@ -35,9 +35,19 @@
                 <input type="text" id="search-input" placeholder="Search products across 3000 items..." oninput="handleSearch(this.value)" class="w-full bg-gray-100 rounded-full py-2 pl-4 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-red-500">
                 <button class="absolute right-3 top-2.5 text-red-600"><i class="fa-solid fa-magnifying-glass"></i></button>
             </div>
+            <div class="flex items-center gap-2">
+                <!-- View Orders Dashboard Button -->
+                <button onclick="openAdminModal()" class="bg-gray-100 text-gray-700 px-3 py-2 rounded-lg text-xs font-semibold hover:bg-gray-200 transition flex items-center gap-1">
+                    <i class="fa-solid fa-clipboard-list text-red-600"></i> <span class="hidden sm:inline">Orders</span> (<span id="order-badge">0</span>)
+                </button>
+                <!-- Cart Button -->
+                <button onclick="openCartModal()" class="bg-red-600 text-white px-3.5 py-2 rounded-lg text-xs font-bold hover:bg-red-700 transition flex items-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-cart-shopping"></i> Cart (<span id="cart-count">0</span>)
+                </button>
+            </div>
         </div>
 
-        <!-- 10 Strict Category Filter Bar -->
+        <!-- Category Filter Bar -->
         <div class="bg-white border-t border-gray-100 px-4 py-2 flex gap-2 overflow-x-auto hide-scrollbar max-w-7xl mx-auto">
             <button onclick="filterCategory('All')" id="btn-All" class="cat-btn bg-red-600 text-white px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition">All Groups</button>
             <button onclick="filterCategory('Smartphones')" id="btn-Smartphones" class="cat-btn bg-gray-100 text-gray-700 px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap hover:bg-gray-200 transition">📱 Smartphones</button>
@@ -67,18 +77,124 @@
             <!-- Dynamic products load here -->
         </div>
 
-        <!-- Loading indicator at the bottom -->
+        <!-- Loading indicator -->
         <div id="loading-indicator" class="text-center py-6 text-sm text-gray-500 font-medium">
             Scroll down to load more products...
         </div>
     </main>
+
+    <!-- CART & CHECKOUT MODAL DRAWER -->
+    <div id="cart-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex justify-end">
+        <div class="bg-white w-full max-w-md h-full flex flex-col shadow-2xl p-6 overflow-y-auto">
+            <div class="flex justify-between items-center border-b pb-4 mb-4">
+                <h3 class="font-bold text-lg flex items-center gap-2"><i class="fa-solid fa-cart-shopping text-red-600"></i> Your Shopping Cart</h3>
+                <button onclick="closeCartModal()" class="text-gray-400 hover:text-black font-bold text-xl">&times;</button>
+            </div>
+            
+            <div id="cart-items-container" class="flex-1 space-y-3 overflow-y-auto mb-4">
+                <p class="text-gray-500 text-center py-8">Your cart is empty.</p>
+            </div>
+
+            <div class="border-t pt-4">
+                <!-- Promo Code Section -->
+                <div id="promo-section" class="mb-3 hidden">
+                    <div class="flex gap-2">
+                        <input type="text" id="promo-input" placeholder="Promo Code (e.g. KILI2026)" class="flex-1 bg-gray-100 p-2 rounded text-xs border uppercase focus:outline-none">
+                        <button onclick="applyPromoCode()" class="bg-gray-800 text-white px-3 py-2 rounded text-xs font-bold hover:bg-black">Apply</button>
+                    </div>
+                    <p id="promo-msg" class="text-[11px] mt-1 text-green-600 font-medium hidden">Promo code applied: 10% OFF!</p>
+                </div>
+
+                <div class="space-y-1 mb-4">
+                    <div class="flex justify-between text-sm text-gray-600">
+                        <span>Subtotal:</span>
+                        <span id="cart-subtotal">KSh 0</span>
+                    </div>
+                    <div id="discount-row" class="flex justify-between text-sm text-green-600 hidden">
+                        <span>Discount (10%):</span>
+                        <span id="cart-discount">-KSh 0</span>
+                    </div>
+                    <div class="flex justify-between font-bold text-base border-t pt-2">
+                        <span>Total:</span>
+                        <span id="cart-total-price" class="text-red-600">KSh 0</span>
+                    </div>
+                </div>
+
+                <!-- Checkout Form -->
+                <div id="checkout-form-section" class="space-y-3 hidden">
+                    <h4 class="font-semibold text-sm text-gray-700">Delivery & M-Pesa Details</h4>
+                    <input type="text" id="cust-name" placeholder="Full Name" class="w-full bg-gray-100 p-2.5 rounded text-xs border focus:outline-none focus:ring-1 focus:ring-red-500">
+                    <input type="tel" id="cust-phone" placeholder="M-Pesa Phone Number (e.g. 0712345678)" class="w-full bg-gray-100 p-2.5 rounded text-xs border focus:outline-none focus:ring-1 focus:ring-red-500">
+                    <input type="text" id="cust-address" placeholder="Delivery Town / Location (e.g. Nairobi, CBD)" class="w-full bg-gray-100 p-2.5 rounded text-xs border focus:outline-none focus:ring-1 focus:ring-red-500">
+                    
+                    <button onclick="triggerMpesaPrompt()" class="w-full bg-green-600 text-white font-bold py-3 rounded-lg text-sm hover:bg-green-700 transition shadow flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-mobile-screen-button"></i> Pay via M-Pesa STK Push
+                    </button>
+                </div>
+
+                <button id="proceed-btn" onclick="showCheckoutForm()" class="w-full bg-red-600 text-white font-bold py-3 rounded-lg text-sm hover:bg-red-700 transition shadow hidden">
+                    Proceed to Checkout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NATIVE M-PESA STK PUSH PROMPT MODAL -->
+    <div id="mpesa-prompt-modal" class="fixed inset-0 bg-black bg-opacity-70 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center">
+            <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
+                <i class="fa-solid fa-sim-card"></i>
+            </div>
+            <h3 class="font-bold text-lg text-gray-800 mb-1">M-Pesa STK Push Sent</h3>
+            <p id="mpesa-phone-display" class="text-xs text-gray-500 mb-4">Prompt sent to 07xxxxxxxx</p>
+            
+            <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 mb-5 text-left space-y-2">
+                <div class="flex justify-between text-xs"><span class="text-gray-500">Merchant:</span> <span class="font-semibold">Kili Mall</span></div>
+                <div class="flex justify-between text-xs"><span class="text-gray-500">Amount:</span> <span id="mpesa-modal-amount" class="font-bold text-red-600">KSh 0</span></div>
+                <div class="border-t pt-2 mt-2">
+                    <p class="text-[11px] text-gray-600 font-medium">Please check your phone and enter your **M-Pesa PIN** to complete payment.</p>
+                </div>
+            </div>
+
+            <div id="mpesa-loading-spinner" class="py-3">
+                <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-green-500 border-t-transparent"></div>
+                <p class="text-xs text-gray-500 mt-2">Waiting for payment confirmation...</p>
+            </div>
+
+            <div id="mpesa-success-box" class="hidden py-2">
+                <div class="text-green-600 font-bold text-sm mb-3">✅ Payment Confirmed Successfully!</div>
+                <button onclick="completeOrderAfterPayment()" class="w-full bg-green-600 text-white font-bold py-2.5 rounded-lg text-xs hover:bg-green-700 transition">
+                    View Order Details
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- OWNER ADMIN ORDERS DASHBOARD MODAL -->
+    <div id="admin-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-2xl max-h-[80vh] flex flex-col rounded-xl shadow-2xl p-6">
+            <div class="flex justify-between items-center border-b pb-4 mb-4">
+                <h3 class="font-bold text-lg flex items-center gap-2"><i class="fa-solid fa-clipboard-list text-red-600"></i> Store Orders Dashboard</h3>
+                <button onclick="closeAdminModal()" class="text-gray-400 hover:text-black font-bold text-xl">&times;</button>
+            </div>
+            
+            <div id="admin-orders-list" class="flex-1 space-y-4 overflow-y-auto mb-4 pr-2">
+                <!-- Orders populate here -->
+            </div>
+
+            <div class="border-t pt-3 flex justify-between items-center">
+                <button onclick="clearAllOrders()" class="text-xs text-red-500 hover:underline">Clear Order History</button>
+                <button onclick="closeAdminModal()" class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg text-xs font-semibold">Close</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer class="bg-white border-t border-gray-200 text-center py-4 text-xs text-gray-500">
         &copy; 2026 Kili mall Kenya. All rights reserved.
     </footer>
 
-    <!-- JavaScript Logic: 10 Strict Categories & Infinite Scroll -->
+    <!-- JavaScript Logic -->
     <script>
         const categoryBrands = {
             'Smartphones': ['Samsung', 'Apple', 'Xiaomi', 'Oppo', 'Tecno', 'Infinix', 'Huawei', 'OnePlus'],
@@ -95,9 +211,13 @@
 
         const categories = Object.keys(categoryBrands);
         const allProducts = [];
+        let cart = [];
+        let orders = JSON.parse(localStorage.getItem('kili_orders')) || [];
+        let discountApplied = false;
+        let pendingOrderData = null;
 
         let idCounter = 1;
-        const itemsPerCategory = 300; // Exactly 300 items per category * 10 categories = 3,000 total unique products
+        const itemsPerCategory = 300; 
 
         categories.forEach(cat => {
             const brandsList = categoryBrands[cat];
@@ -150,6 +270,9 @@
                         </div>
                         <div class="mt-2">
                             <p class="text-red-600 font-bold text-sm">KSh ${product.price.toLocaleString()}</p>
+                            <button onclick="addToCart(${product.id})" class="mt-2 w-full bg-red-600 text-white text-xs font-bold py-1.5 rounded hover:bg-red-700 transition shadow-sm">
+                                <i class="fa-solid fa-cart-plus"></i> Add to Cart
+                            </button>
                         </div>
                     </div>
                 `;
@@ -167,6 +290,206 @@
                 loader.style.display = displayLimit >= filtered.length ? 'none' : 'block';
             }
         }
+
+        // Cart & Promotion Functions
+        function addToCart(productId) {
+            const product = allProducts.find(p => p.id === productId);
+            if (!product) return;
+            
+            const existing = cart.find(item => item.id === productId);
+            if (existing) {
+                existing.qty += 1;
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+            updateCartUI();
+            openCartModal();
+        }
+
+        function updateCartUI() {
+            document.getElementById('cart-count').innerText = cart.reduce((sum, item) => sum + item.qty, 0);
+            const container = document.getElementById('cart-items-container');
+            const proceedBtn = document.getElementById('proceed-btn');
+            const promoSection = document.getElementById('promo-section');
+            
+            if (cart.length === 0) {
+                container.innerHTML = `<p class="text-gray-500 text-center py-8">Your cart is empty.</p>`;
+                document.getElementById('cart-subtotal').innerText = 'KSh 0';
+                document.getElementById('cart-total-price').innerText = 'KSh 0';
+                promoSection.classList.add('hidden');
+                proceedBtn.classList.add('hidden');
+                document.getElementById('checkout-form-section').classList.add('hidden');
+                discountApplied = false;
+                return;
+            }
+
+            promoSection.classList.remove('hidden');
+
+            let html = '';
+            let subtotal = 0;
+            cart.forEach(item => {
+                subtotal += item.price * item.qty;
+                html += `
+                    <div class="flex items-center justify-between border-b pb-2">
+                        <div class="flex items-center gap-2">
+                            <img src="${item.image}" class="w-12 h-12 object-cover rounded bg-gray-100" />
+                            <div>
+                                <h4 class="text-xs font-semibold truncate max-w-[140px]">${item.name}</h4>
+                                <p class="text-xs text-red-600 font-bold">KSh ${item.price.toLocaleString()} x ${item.qty}</p>
+                            </div>
+                        </div>
+                        <button onclick="removeFromCart(${item.id})" class="text-red-500 hover:text-red-700 text-xs px-2 py-1"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            document.getElementById('cart-subtotal').innerText = `KSh ${subtotal.toLocaleString()}`;
+
+            let total = subtotal;
+            if (discountApplied) {
+                let discountAmount = subtotal * 0.10;
+                total = subtotal - discountAmount;
+                document.getElementById('discount-row').classList.remove('hidden');
+                document.getElementById('cart-discount').innerText = `-KSh ${Math.round(discountAmount).toLocaleString()}`;
+            } else {
+                document.getElementById('discount-row').classList.add('hidden');
+            }
+
+            document.getElementById('cart-total-price').innerText = `KSh ${Math.round(total).toLocaleString()}`;
+            proceedBtn.classList.remove('hidden');
+        }
+
+        function applyPromoCode() {
+            const code = document.getElementById('promo-input').value.trim().toUpperCase();
+            if (code === 'KILI2026') {
+                discountApplied = true;
+                document.getElementById('promo-msg').classList.remove('hidden');
+                updateCartUI();
+            } else {
+                alert('Invalid promo code. Try using: KILI2026');
+            }
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCartUI();
+        }
+
+        function openCartModal() {
+            document.getElementById('cart-modal').classList.remove('hidden');
+        }
+
+        function closeCartModal() {
+            document.getElementById('cart-modal').classList.add('hidden');
+            document.getElementById('checkout-form-section').classList.add('hidden');
+        }
+
+        function showCheckoutForm() {
+            document.getElementById('proceed-btn').classList.add('hidden');
+            document.getElementById('checkout-form-section').classList.remove('hidden');
+        }
+
+        // Native On-Site M-Pesa STK Prompt Trigger
+        function triggerMpesaPrompt() {
+            const name = document.getElementById('cust-name').value.trim();
+            const phone = document.getElementById('cust-phone').value.trim();
+            const address = document.getElementById('cust-address').value.trim();
+
+            if (!name || !phone || !address) {
+                alert('Please fill in all checkout details (Name, Phone, and Delivery Address).');
+                return;
+            }
+
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const total = discountApplied ? subtotal * 0.90 : subtotal;
+
+            pendingOrderData = {
+                id: 'ORD-' + Math.floor(100000 + Math.random() * 900000),
+                date: new Date().toLocaleString(),
+                customer: name,
+                phone: phone,
+                address: address,
+                items: [...cart],
+                total: Math.round(total),
+                promoUsed: discountApplied ? 'KILI2026 (10% OFF)' : 'None'
+            };
+
+            // Display M-Pesa Prompt Modal
+            document.getElementById('mpesa-phone-display').innerText = `STK Push sent to ${phone}`;
+            document.getElementById('mpesa-modal-amount').innerText = `KSh ${pendingOrderData.total.toLocaleString()}`;
+            document.getElementById('mpesa-loading-spinner').classList.remove('hidden');
+            document.getElementById('mpesa-success-box').classList.add('hidden');
+            document.getElementById('mpesa-prompt-modal').classList.remove('hidden');
+
+            // Simulate user entering PIN on phone (takes 3 seconds)
+            setTimeout(() => {
+                document.getElementById('mpesa-loading-spinner').classList.add('hidden');
+                document.getElementById('mpesa-success-box').classList.remove('hidden');
+            }, 3000);
+        }
+
+        function completeOrderAfterPayment() {
+            if (!pendingOrderData) return;
+
+            orders.unshift(pendingOrderData);
+            localStorage.setItem('kili_orders', JSON.stringify(orders));
+            document.getElementById('order-badge').innerText = orders.length;
+
+            document.getElementById('mpesa-prompt-modal').classList.add('hidden');
+            
+            alert(`🎉 Payment Successful!\n\nOrder ID: ${pendingOrderData.id}\nSaved to your store orders dashboard.`);
+            
+            cart = [];
+            discountApplied = false;
+            updateCartUI();
+            closeCartModal();
+            pendingOrderData = null;
+        }
+
+        // Admin Dashboard Functions
+        function openAdminModal() {
+            const container = document.getElementById('admin-orders-list');
+            document.getElementById('order-badge').innerText = orders.length;
+
+            if (orders.length === 0) {
+                container.innerHTML = `<p class="text-gray-500 text-center py-8">No orders received yet.</p>`;
+            } else {
+                let html = '';
+                orders.forEach(ord => {
+                    let itemsHtml = ord.items.map(i => `<li class="text-xs text-gray-600">• ${i.name} (x${i.qty}) - KSh ${(i.price * i.qty).toLocaleString()}</li>`).join('');
+                    html += `
+                        <div class="bg-gray-50 border p-3 rounded-lg shadow-sm">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-xs text-green-600">${ord.id} (Paid)</span>
+                                <span class="text-[10px] text-gray-400">${ord.date}</span>
+                            </div>
+                            <p class="text-xs font-semibold text-gray-800">Customer: ${ord.customer} (${ord.phone})</p>
+                            <p class="text-xs text-gray-500 mb-1">Delivery to: ${ord.address}</p>
+                            <p class="text-xs text-green-600 font-medium mb-2">Promo Applied: ${ord.promoUsed}</p>
+                            <ul class="bg-white p-2 rounded border border-gray-100 mb-2 space-y-1">${itemsHtml}</ul>
+                            <p class="text-xs font-bold text-right text-red-600">Total Paid: KSh ${ord.total.toLocaleString()}</p>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            }
+            document.getElementById('admin-modal').classList.remove('hidden');
+        }
+
+        function closeAdminModal() {
+            document.getElementById('admin-modal').classList.add('hidden');
+        }
+
+        function clearAllOrders() {
+            if (confirm('Are you sure you want to clear all order history?')) {
+                orders = [];
+                localStorage.removeItem('kili_orders');
+                openAdminModal();
+            }
+        }
+
+        document.getElementById('order-badge').innerText = orders.length;
 
         function filterCategory(category) {
             currentCategory = category;
