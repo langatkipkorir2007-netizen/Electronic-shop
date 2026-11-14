@@ -12,7 +12,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        /* Smooth category tab scrolling on mobile */
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
@@ -21,7 +20,7 @@
 
     <!-- Top Announcement Bar -->
     <div class="bg-red-700 text-white text-xs py-1.5 px-4 text-center font-medium">
-        🔥 Flash Sale: Up to 60% OFF on Smartphones & Electronics! Free delivery on orders over KSh 2,500.
+        🔥 Flash Sale: Up to 60% OFF Across All 10 Departments! Free delivery on orders over KSh 2,500.
     </div>
 
     <!-- Main Navigation Header -->
@@ -33,19 +32,24 @@
                 </div>
             </div>
             <div class="flex-1 max-w-xl relative">
-                <input type="text" id="search-input" placeholder="Search products..." oninput="handleSearch(this.value)" class="w-full bg-gray-100 rounded-full py-2 pl-4 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-red-500">
+                <input type="text" id="search-input" placeholder="Search products across 3000 items..." oninput="handleSearch(this.value)" class="w-full bg-gray-100 rounded-full py-2 pl-4 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-red-500">
                 <button class="absolute right-3 top-2.5 text-red-600"><i class="fa-solid fa-magnifying-glass"></i></button>
             </div>
         </div>
 
-        <!-- Category Group Filter Bar -->
+        <!-- 10 Strict Category Filter Bar -->
         <div class="bg-white border-t border-gray-100 px-4 py-2 flex gap-2 overflow-x-auto hide-scrollbar max-w-7xl mx-auto">
-            <button onclick="filterCategory('All')" id="btn-All" class="cat-btn bg-red-600 text-white px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition">All Products</button>
-            <button onclick="filterCategory('Smartphones')" id="btn-Smartphones" class="cat-btn bg-gray-100 text-gray-700 px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap hover:bg-gray-200 transition">Smartphones</button>
-            <button onclick="filterCategory('Electronics')" id="btn-Electronics" class="cat-btn bg-gray-100 text-gray-700 px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap hover:bg-gray-200 transition">Electronics</button>
-            <button onclick="filterCategory('Home Appliances')" id="btn-Home Appliances" class="cat-btn bg-gray-100 text-gray-700 px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap hover:bg-gray-200 transition">Home Appliances</button>
-            <button onclick="filterCategory('Fashion')" id="btn-Fashion" class="cat-btn bg-gray-100 text-gray-700 px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap hover:bg-gray-200 transition">Fashion</button>
-            <button onclick="filterCategory('Accessories')" id="btn-Accessories" class="cat-btn bg-gray-100 text-gray-700 px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap hover:bg-gray-200 transition">Accessories</button>
+            <button onclick="filterCategory('All')" id="btn-All" class="cat-btn bg-red-600 text-white px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition">All Groups</button>
+            <button onclick="filterCategory('Smartphones')" id="btn-Smartphones" class="cat-btn bg-gray-100 text-gray-700 px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap hover:bg-gray-200 transition">📱 Smartphones</button>
+            <button onclick="filterCategory('Computers & Laptops')" id="btn-Computers & Laptops" class="cat-btn bg-gray-100 text-gray-700 px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap hover:bg-gray-200 transition">💻 Computers</button>
+            <button onclick="filterCategory('Electronics & TVs')" id="btn-Electronics & TVs" class="cat-btn bg-gray-100 text-gray-700 px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap hover:bg-gray-200 transition">📺 Electronics & TVs</button>
+            <button onclick="filterCategory('Home Appliances')" id="btn-Home Appliances" class="cat-btn bg-gray-100 text-gray-700 px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap hover:bg-gray-200 transition">🧊 Home Appliances</button>
+            <button onclick="filterCategory('Kitchen & Dining')" id="btn-Kitchen & Dining" class="cat-btn bg-gray-100 text-gray-700 px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap hover:bg-gray-200 transition">🍳 Kitchen & Dining</button>
+            <button onclick="filterCategory('Fashion & Clothing')" id="btn-Fashion & Clothing" class="cat-btn bg-gray-100 text-gray-700 px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap hover:bg-gray-200 transition">👕 Fashion</button>
+            <button onclick="filterCategory('Footwear')" id="btn-Footwear" class="cat-btn bg-gray-100 text-gray-700 px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap hover:bg-gray-200 transition">👟 Footwear</button>
+            <button onclick="filterCategory('Beauty & Personal Care')" id="btn-Beauty & Personal Care" class="cat-btn bg-gray-100 text-gray-700 px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap hover:bg-gray-200 transition">💄 Beauty & Care</button>
+            <button onclick="filterCategory('Accessories & Gadgets')" id="btn-Accessories & Gadgets" class="cat-btn bg-gray-100 text-gray-700 px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap hover:bg-gray-200 transition">🎧 Accessories</button>
+            <button onclick="filterCategory('Groceries & Essentials')" id="btn-Groceries & Essentials" class="cat-btn bg-gray-100 text-gray-700 px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap hover:bg-gray-200 transition">🛒 Groceries</button>
         </div>
     </header>
 
@@ -53,7 +57,7 @@
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full">
         <div class="flex justify-between items-center mb-4">
             <h2 id="catalog-title" class="text-xl font-bold flex items-center gap-2">
-                <i class="fa-solid fa-fire text-red-600"></i> All Products Catalog
+                <i class="fa-solid fa-fire text-red-600"></i> All 3,000 Grouped Products
             </h2>
             <span id="item-counter" class="text-sm text-gray-500 font-medium">Loading items...</span>
         </div>
@@ -74,31 +78,46 @@
         &copy; 2026 Kili mall Kenya. All rights reserved.
     </footer>
 
-    <!-- JavaScript Logic: 3,000 Unique Products + Infinite Scroll + Category Groups -->
+    <!-- JavaScript Logic: 10 Strict Categories & Infinite Scroll -->
     <script>
-        const categories = ['Smartphones', 'Electronics', 'Home Appliances', 'Fashion', 'Accessories'];
-        const brands = ['Samsung', 'Apple', 'Xiaomi', 'Sony', 'LG', 'Huawei', 'OnePlus', 'Anker', 'JBL', 'Oppo', 'Tecno', 'Infinix', 'Nokia', 'Hisense'];
+        const categoryBrands = {
+            'Smartphones': ['Samsung', 'Apple', 'Xiaomi', 'Oppo', 'Tecno', 'Infinix', 'Huawei', 'OnePlus'],
+            'Computers & Laptops': ['HP Pro', 'Dell Latitude', 'Lenovo ThinkPad', 'Asus ZenBook', 'Apple MacBook', 'Acer Aspire'],
+            'Electronics & TVs': ['Sony Bravia', 'LG Smart', 'JBL Soundbar', 'Hisense LED', 'TCL Roku', 'VisionPlus'],
+            'Home Appliances': ['Philips Iron', 'Panasonic', 'Ramtons Fridge', 'Bruhm Washer', 'Von Hotpoint', 'Binatone Fan'],
+            'Kitchen & Dining': ['Pigeon Blender', 'Prestige Cooker', 'Tefal Pan', 'NutriBullet', 'Cuisinart', 'ChefMaster'],
+            'Fashion & Clothing': ['Nike Hoodie', 'Adidas Tee', 'Zara Jacket', 'Gucci Shirt', 'Levis Jeans', 'Puma Hoodie'],
+            'Footwear': ['Nike Air Max', 'Adidas Boost', 'Vans OldSkool', 'Converse AllStar', 'Crocs Classic', 'Puma Runner'],
+            'Beauty & Personal Care': ['Nivea Lotion', 'Dove Soap', "L'Oreal Cream", 'Maybelline Kit', 'CeraVe Cleanser', 'Vaseline'],
+            'Accessories & Gadgets': ['Logitech Mouse', 'Baseus Charger', 'Anker PowerBank', 'Oraimo Earbuds', 'Spigen Case', 'JBL Clip'],
+            'Groceries & Essentials': ['Brookside Milk', 'Jogoo Unga', 'Keringet Water', 'Mumias Sugar', 'Ajab Flour', 'Indomie Pack']
+        };
+
+        const categories = Object.keys(categoryBrands);
         const allProducts = [];
 
-        // Generate 3,000 completely unique products programmatically
-        for (let i = 1; i <= 3000; i++) {
-            const category = categories[Math.floor(Math.random() * categories.length)];
-            const brand = brands[Math.floor(Math.random() * brands.length)];
-            
-            allProducts.push({
-                id: i,
-                name: `${brand} Pro Item #${i}`,
-                category: category,
-                price: Math.floor(Math.random() * 45000) + 1000,
-                discount: Math.floor(Math.random() * 50) + 10,
-                image: `https://picsum.photos/seed/kili_product_${i}/300/300`
-            });
-        }
+        let idCounter = 1;
+        const itemsPerCategory = 300; // Exactly 300 items per category * 10 categories = 3,000 total unique products
+
+        categories.forEach(cat => {
+            const brandsList = categoryBrands[cat];
+            for (let i = 1; i <= itemsPerCategory; i++) {
+                const brand = brandsList[Math.floor(Math.random() * brandsList.length)];
+                allProducts.push({
+                    id: idCounter++,
+                    name: `${brand} #${i}`,
+                    category: cat,
+                    price: Math.floor(Math.random() * 45000) + 1000,
+                    discount: Math.floor(Math.random() * 50) + 10,
+                    image: `https://picsum.photos/300/300?random=${idCounter}`
+                });
+            }
+        });
 
         let currentCategory = 'All';
         let searchQuery = '';
-        let displayLimit = 20; // Number of items to show initially
-        const batchSize = 20;  // How many more items load when scrolling down
+        let displayLimit = 20; 
+        const batchSize = 20;  
 
         function getFilteredProducts() {
             return allProducts.filter(p => {
@@ -125,9 +144,9 @@
                     <div class="product-card bg-white p-3 rounded-lg shadow-sm border border-gray-100 flex flex-col justify-between">
                         <div>
                             <span class="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded font-bold">-${product.discount}%</span>
-                            <img src="${product.image}" alt="${product.name}" class="w-full h-36 object-cover my-2 rounded" loading="lazy" />
+                            <img src="${product.image}" alt="${product.name}" class="w-full h-36 object-cover my-2 rounded bg-gray-100" loading="lazy" />
                             <h3 class="font-semibold text-xs text-gray-800 truncate">${product.name}</h3>
-                            <p class="text-xs text-gray-400 mt-0.5">${product.category}</p>
+                            <span class="inline-block mt-1 text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-medium truncate max-w-full">${product.category}</span>
                         </div>
                         <div class="mt-2">
                             <p class="text-red-600 font-bold text-sm">KSh ${product.price.toLocaleString()}</p>
@@ -138,25 +157,21 @@
 
             container.innerHTML = html;
 
-            // Update item counter
             const counter = document.getElementById('item-counter');
             if (counter) {
                 counter.innerText = `Showing ${Math.min(displayLimit, filtered.length)} of ${filtered.length} items`;
             }
 
-            // Hide/Show loading indicator if all items in filter are loaded
             const loader = document.getElementById('loading-indicator');
             if (loader) {
                 loader.style.display = displayLimit >= filtered.length ? 'none' : 'block';
             }
         }
 
-        // Filter by category tabs
         function filterCategory(category) {
             currentCategory = category;
-            displayLimit = 20; // Reset scroll batch count
+            displayLimit = 20; 
             
-            // Update active button styles
             document.querySelectorAll('.cat-btn').forEach(btn => {
                 btn.className = "cat-btn bg-gray-100 text-gray-700 px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap hover:bg-gray-200 transition";
             });
@@ -165,21 +180,19 @@
                 activeBtn.className = "cat-btn bg-red-600 text-white px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition";
             }
 
-            // Update title text
-            document.getElementById('catalog-title').innerHTML = `<i class="fa-solid fa-fire text-red-600"></i> ${category === 'All' ? 'All Products Catalog' : category + ' Catalog'}`;
+            document.getElementById('catalog-title').innerHTML = `<i class="fa-solid fa-fire text-red-600"></i> ${category === 'All' ? 'All 3,000 Grouped Products' : category}`;
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
             renderCatalog(true);
         }
 
-        // Handle search input
         function handleSearch(query) {
             searchQuery = query;
             displayLimit = 20;
             renderCatalog(true);
         }
 
-        // Infinite Scroll Event Listener (Detects when user scrolls near the bottom)
+        // Downward Infinite Scroll Listener
         window.addEventListener('scroll', () => {
             const filtered = getFilteredProducts();
             if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 600) {
@@ -190,7 +203,6 @@
             }
         });
 
-        // Initial load
         renderCatalog(true);
     </script>
 </body>
