@@ -72,4 +72,15 @@ document.querySelectorAll('.card').forEach(function(card){
   }
 });
 </script>
+<script>
+// FIX LAST 3 BLANK ONES
+document.querySelectorAll('.card').forEach(function(card){
+  var t = card.querySelector('h3').innerText.toLowerCase();
+  var img = card.querySelector('img');
+  if(t.includes('electric kettle')) img.src = 'https://merhein.com/img/public-site/products/3l-stainless-steel-eletric-kettle/0.jpg';
+  if(t.includes('bluetooth speaker')) img.src = 'https://s3.eu-central-1.amazonaws.com/market.public/products/images/be39714a-b260-4bfd-8ee2-d780a1ffef40.jpg';
+  if(t.includes('sandwich maker')) img.src = 'https://i.ebayimg.com/00/s/MTYwMFgxNjAw/z/cSIAAOSw1rBbRIsk/$_57.JPG';
+  img.style.objectFit='contain'; img.style.background='#fff';
+});
+</script>
 </body></html>
