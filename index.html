@@ -83,4 +83,45 @@ document.querySelectorAll('.card').forEach(function(card){
   img.style.objectFit='contain'; img.style.background='#fff';
 });
 </script>
+<style>.old{text-decoration:line-through;color:#888;font-size:13px}.disc{background:#ff0000;color:#fff;padding:2px 7px;border-radius:10px;font-size:12px;font-weight:700}.new{color:#0a4db3;font-weight:800;font-size:17px}</style>
+<script>
+// ADD ALL NEW DEVICES WITH DISCOUNT - ELECTRO SOLVERS
+var NEW = [
+["Portable Power Station 600W","https://ae01.alicdn.com/kf/S97488d6bf426486c867595489e9ab391I.jpg","45000","38999","-13%"],
+["Generator 2.5KVA Petrol","https://outboundpower.com/cdn/shop/files/Generac_GP8000E_Portable_Generator_50ST_1500x1500.jpg?v=1753630291","52000","45999","-12%"],
+["Electric Water Pump QB60","https://i5.walmartimages.com/asr/376d176e-af83-4dc4-9c68-7b2da92b0aca.e771d6fe6cb9d1c5cbf2cd76251d92c7.jpeg","6500","5400","-17%"],
+["Digital Multimeter","https://adjlietrlpsmvfwlxkke.supabase.co/storage/v1/object/public/content-images/products/product-grok-astroai-digital-multimeter-1773331666960.jpg","2200","1799","-18%"],
+["Soldering Iron 60W","https://kb-3d.com/store/13690-large_default/kb3d-digital-soldering-iron-80w-500c-auto-sleep-900m.jpg","1500","1199","-20%"],
+["Electronic Calculator Scientific","https://kmartau.mo.cloudinary.net/c7bc0fbb-e424-41ed-b581-466852a01345.jpg","1800","1450","-19%"],
+["Digital Clock Wall LED","https://i5.walmartimages.com/asr/ac2792ec-dbb0-42ce-8411-664f6c1bae73.319cd0441e584fc859e7afefabb68ffa.jpeg","2500","1999","-20%"],
+["Smart Watch","https://static.zegarek.net/imageslib/produkty/duze/5903246286984-garett-smartwatch-garett-men-3s-rt-czarny-skorzany-1.jpg","4500","3499","-22%"],
+["Fitness Band","https://cdn.shopify.com/s/files/1/0022/8491/2686/files/01_2d630bce-20c4-4776-86d9-bf78f6105629.jpg?v=1730200925","3500","2799","-20%"],
+["Digital Thermometer","http://desishopper.net/wp-content/uploads/2024/03/41aqyE9ZZAL._SL1500_.jpg","800","550","-31%"],
+["Bluetooth Tracker Tag","https://i5.walmartimages.com/asr/d91682c2-9e69-43d8-adaa-c8829de9d439.40ae071520744045cf736c7706a166fa.jpeg","1500","1199","-20%"],
+["Wireless Microphone","https://ae04.alicdn.com/kf/Sd0c3deeca6014f249357f9c7da54e205D.jpg","3200","2599","-19%"],
+["Public Address System PA","https://cdn11.bigcommerce.com/s-ppfezay55x/images/stencil/1280x1280/products/777/2960/__92162.1618813855.jpg?c=1","18500","15499","-16%"],
+["Amplifier 200W","https://ae01.alicdn.com/kf/Sf08aad97acb14b94948de6aded5217d8Y.jpg","9500","7999","-16%"],
+["DJ Mixer Controller","https://cdn.shopify.com/s/files/1/0024/9803/5810/products/997704-Product-0-I-637497863347051587.jpg?v=1614150004","22000","18999","-14%"],
+["Microphone Wired Pro","https://img.joomcdn.net/1310d545e85ed7ef39e268a805db822167c5ecf3_original.jpeg","1800","1399","-22%"],
+["Electronic Keyboard 61 Keys","https://m.media-amazon.com/images/I/71uTbYl7MaL._AC_UF1000,1000_QL80_.jpg","12500","9999","-20%"],
+["Electronic Drum Kit","https://img.kirstein.de/out/pictures/generated/product/3/2000_2000_75/00e8b037ff617e63b7a0c44d367fb125_3.jpg","48000","41999","-13%"],
+["Electric Guitar Amplifier 40W","https://cdn.shopaccino.com/procraftindia/products/p1100883-94307552942122_l.jpg?v=503?param=3","8500","6999","-18%"],
+["Portable Projector HD","https://us.dangbei.com/cdn/shop/files/N2Mini-H5_4_800x.jpg","15500","12999","-16%"],
+["Wi-Fi Extender 1200Mbps","https://m.media-amazon.com/images/I/61EjX0nddGL.jpg","2800","2199","-21%"],
+["Network Switch 8 Port","https://img.networks-equipments.com/photo/pl215196303-s5732_h48xum2cc_02353mlh_24_100m_1g_2_5g_5g_10g_ethernet_ports_network_switch.jpg","3200","2599","-19%"],
+["Modem 4G Router","https://www.bbmarket.hu/img/60248/BL-W1210M/500x500/BL-W1210M.webp?time=1773792280","4500","3699","-18%"],
+["Ethernet Cable 10M Cat6","https://cbu01.alicdn.com/img/ibank/14374131416_378993036.jpg","700","499","-29%"],
+["Network Adapter USB WiFi","https://m.media-amazon.com/images/I/51ILrig7woL.jpg","1200","899","-25%"],
+["Access Point WiFi","https://images-na.ssl-images-amazon.com/images/I/51trWKyqwCL.jpg","5500","4499","-18%"],
+["Walkie-Talkie Pair","https://s13emagst.akamaized.net/products/39029/39028520/images/res_8263faba37a1fbb5852df82d1c990749.jpg?width=720&height=720&hash=1B458F91DEC256DC45675F0E8A3C620B","5800","4799","-17%"],
+["Landline Telephone","https://growthify.zozothemes.com/wp-content/uploads/2025/03/Landline.jpg","2200","1799","-18%"],
+["Wireless Landline Phone","https://i5.walmartimages.com/asr/69899086-b3e1-4a7b-b6f6-79c1b279646b_1.9b5008939bd76eb42db8632d5fe803d3.jpeg","3500","2899","-17%"]
+];
+var grid=document.getElementById('grid');
+NEW.forEach(function(p){
+  var d=document.createElement('div'); d.className='card';
+  d.innerHTML='<img src="'+p[1]+'" style="object-fit:contain;background:#fff" onerror="this.src=\'https://via.placeholder.com/400x300?text='+encodeURIComponent(p[0])+'\'"><div><h3>'+p[0]+'</h3><p><span class="old">KSh '+p[2]+'</span> <span class="disc">'+p[4]+' OFF</span></p><p class="new">KSh '+p[3]+'</p><a class="order" href="https://wa.me/254712555279?text=Hi, I want '+encodeURIComponent(p[0])+' at KSh '+p[3]+'">Order - Save!</a></div>';
+  grid.appendChild(d);
+});
+</script>
 </body></html>
