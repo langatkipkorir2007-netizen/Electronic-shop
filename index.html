@@ -208,41 +208,31 @@ document.querySelectorAll('.card').forEach(function(card){
     }
   }
 });
-</script>
 <script>
-// FIX BROKEN ONES + Fallback so no blank ever again
+// REAL PICTURES - Fix only the broken ones
 var fix = {
-  'instant shower': 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=600',
-  'water heater': 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=600',
-  'standing fan': 'https://images.unsplash.com/photo-1565151443833-29d38ba0c2d8?w=600',
-  'fan 16': 'https://images.unsplash.com/photo-1565151443833-29d38ba0c2d8?w=600',
-  'hisense 32': 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=600',
-  'skyworth 50': 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=600',
-  'lg 43': 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=600',
-  'wifi router': 'https://images.unsplash.com/photo-1606904829115-9e5e0e1e1e1e?w=600',
-  'router 4': 'https://images.unsplash.com/photo-1606904829115-9e5e0e1e1e1e?w=600',
-  'sandwich maker': 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=600',
-  'sandwich': 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=600'
+  'instant shower': 'https://www.prisjakt.nu/offers-images/0930bd2581e3b972f96728532601062c.jpg',
+  'water heater': 'https://www.prisjakt.nu/offers-images/0930bd2581e3b972f96728532601062c.jpg',
+  'standing fan': 'https://img2.tradewheel.com/uploads/images/products/2/4/10-off-cooling-16quot-electric-pedestal-stand-fan1-0844572001620216786.jpg.webp',
+  'fan 16': 'https://img2.tradewheel.com/uploads/images/products/2/4/10-off-cooling-16quot-electric-pedestal-stand-fan1-0844572001620216786.jpg.webp',
+  'hisense': 'http://www.icentre.am/photos/cat1914/173309_12365.jpg',
+  'skyworth': 'http://www.icentre.am/photos/cat1914/173309_12365.jpg',
+  'wifi router': 'https://www.bbmarket.hu/img/60248/BL-W1210M/500x500/BL-W1210M.webp?time=1773792280',
+  'router 4': 'https://www.bbmarket.hu/img/60248/BL-W1210M/500x500/BL-W1210M.webp?time=1773792280',
+  'sandwich maker': 'https://www.picclickimg.com/kBgAAOSwVa5mwgfo/Electric-Waffle-Maker-Panini-750W-Sandwich-Maker-Cooking.webp',
+  'sandwich': 'https://www.picclickimg.com/kBgAAOSwVa5mwgfo/Electric-Waffle-Maker-Panini-750W-Sandwich-Maker-Cooking.webp'
 };
 document.querySelectorAll('.card').forEach(function(card){
   var title = card.querySelector('h3').innerText.toLowerCase();
   for(var key in fix){
     if(title.includes(key)){
       var img = card.querySelector('img');
-      if(img){ img.src = fix[key]; }
+      if(img){ img.src = fix[key]; img.style.objectFit='contain'; img.style.background='#fff'; }
       break;
     }
   }
 });
-// If ANY image still fails, show product name instead of blank
-document.querySelectorAll('.card img').forEach(function(img){
-  img.onerror = function(){
-    var div = document.createElement('div');
-    div.innerText = '📦 ' + img.closest('.card').querySelector('h3').innerText;
-    div.style.cssText = 'background:#ff6600;color:#fff;font-weight:bold;text-align:center;padding:50px 10px;font-size:18px;';
-    img.replaceWith(div);
-  };
-});
+</script>
 </script>
 </body>
 </html>
