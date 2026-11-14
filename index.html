@@ -1,184 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LANGAT SHOP</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-body{background:#f5f5f5;padding:12px;padding-bottom:95px}
-.top{background:#111;color:#fff;text-align:center;padding:8px;font-size:12px}
-header{background:#fff;padding:14px;border-radius:12px;margin-top:10px;text-align:center}
-header h1{color:#f68b1e;font-size:24px}
-header p{color:#555;font-size:12px;margin-top:4px}
-.search{margin:12px 0;display:flex;gap:8px}
-.search input{flex:1;padding:12px;border-radius:10px;border:1px solid #ddd;font-size:15px}
-.search button{background:#f68b1e;color:#fff;border:none;padding:0 18px;border-radius:10px;font-weight:bold}
-.cats{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px}
-.cats button{white-space:nowrap;background:#fff;border:1px solid #ddd;padding:8px 14px;border-radius:20px}
-.cats button.on{background:#f68b1e;color:#fff;border-color:#f68b1e}
-.count{text-align:center;font-weight:bold;margin-bottom:10px;font-size:14px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.card{background:#fff;border-radius:14px;overflow:hidden;padding-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,0.08)}
-.card img{width:100%;height:150px;object-fit:cover;display:block}
-.card .pad{padding:10px}
-.cat{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.5px}
-.card h3{font-size:14px;margin:4px 0 8px;line-height:1.3}
-.old{color:#999;text-decoration:line-through;font-size:12px}
-.new{font-weight:bold;font-size:16px}
-.disc{color:#e53935;font-size:11px;font-weight:bold}
-.add{width:100%;background:#f68b1e;color:#fff;border:none;padding:11px;border-radius:10px;font-weight:bold;margin-top:10px}
-.cartbar{position:fixed;bottom:12px;left:12px;right:12px;background:#111;color:#fff;padding:14px 16px;border-radius:14px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 4px 15px rgba(0,0,0,0.3)}
-.cartbar button{background:#25D366;color:#fff;border:none;padding:10px 18px;border-radius:10px;font-weight:bold}
-footer{background:#fff;padding:16px;border-radius:12px;text-align:center;margin-top:14px;font-size:13px;line-height:1.7}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LANGAT SHOP</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f9f9f9; color: #333; padding-bottom: 80px; }
+    header { background: #111; color: #fff; text-align: center; padding: 15px; }
+    header h1 { margin: 0; font-size: 24px; color: #25D366; }
+    header p { margin: 5px 0 0; font-size: 13px; color: #ccc; }
+    .search-container { padding: 10px; background: #222; text-align: center; }
+    .search-container input { width: 90%; max-width: 400px; padding: 10px; border-radius: 8px; border: none; font-size: 16px; }
+    .cats { display: flex; gap: 8px; overflow-x: auto; padding: 10px; background: #222; white-space: nowrap; }
+    .cats button { background: #444; color: #fff; border: none; padding: 8px 14px; border-radius: 20px; cursor: pointer; font-weight: bold; }
+    .cats button.active { background: #25D366; color: #fff; }
+    .info-bar { text-align: center; font-weight: bold; margin: 15px 0; font-size: 14px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; padding: 0 10px; }
+    .card { background: #fff; border-radius: 8px; padding: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; flex-direction: column; justify-content: space-between; }
+    .card img { width: 100%; height: 130px; object-fit: cover; border-radius: 6px; }
+    .card h3 { font-size: 15px; margin: 8px 0 4px; }
+    .card .desc { font-size: 12px; color: #666; margin: 0 0 8px; }
+    .card .old { text-decoration: line-through; color: #888; font-size: 12px; }
+    .card .disc { color: #e44d26; font-size: 12px; font-weight: bold; margin-left: 5px; }
+    .card .new { font-weight: bold; color: #b12704; font-size: 15px; margin: 4px 0 8px; }
+    .card .add { background: #25D366; color: #fff; border: none; padding: 8px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; font-size: 13px; }
+    footer { text-align: center; padding: 20px; font-size: 13px; color: #666; background: #eee; margin-top: 30px; }
+    #cartBar { position: fixed; bottom: 0; left: 0; right: 0; background: #111; color: #fff; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; z-index: 99; }
+    #cartText { font-size: 14px; font-weight: bold; }
+    .cart-btns button { border: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; }
+    .btn-clear { background: #444; color: #fff; margin-right: 5px; }
+    .btn-checkout { background: #25D366; color: #fff; }
+  </style>
 </head>
 <body>
-<div class="top">Welcome to LANGAT SHOP - Convenient shopping in Kenya</div>
-<header><h1>LANGAT SHOP</h1><p>80 Products | Real Pictures | Browse FREE | Pay Later</p></header>
-<div class="search"><input id="search" placeholder="Search products..." oninput="doFilter()"><button onclick="doFilter()">Search</button></div>
-<div class="cats" id="cats">
-<button class="on" onclick="setCat('all',this)">All</button>
-<button onclick="setCat('phone',this)">Phones</button>
-<button onclick="setCat('laptop',this)">Laptops</button>
-<button onclick="setCat('tv',this)">TV & Audio</button>
-<button onclick="setCat('kitchen',this)">Kitchen</button>
-<button onclick="setCat('fashion',this)">Fashion</button>
-<button onclick="setCat('beauty',this)">Beauty</button>
-<button onclick="setCat('kids',this)">Kids</button>
-<button onclick="setCat('home',this)">Home</button>
-<button onclick="setCat('solar',this)">Solar</button>
-</div>
-<p class="count" id="count">Showing 80 Products</p>
-<div class="grid">
-<div class="card" data-name="fridge double door" data-cat="home"><img src="https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=400&q=70"><div class="pad"><span class="cat">Home</span><h3>Fridge Double Door 200L</h3><p><span class="new">KSh 37,999</span> <span class="old">KSh 45,000</span> <span class="disc">-16% OFF</span></p><button class="add" onclick="add('Fridge Double Door',37999)">Add to cart</button></div></div>
-<div class="card" data-name="smartphone phone" data-cat="phone"><img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&q=70"><div class="pad"><span class="cat">Phones</span><h3>Smartphone 128GB</h3><p><span class="new">KSh 17,999</span> <span class="old">KSh 22,000</span> <span class="disc">-18% OFF</span></p><button class="add" onclick="add('Smartphone 128GB',17999)">Add to cart</button></div></div>
-<div class="card" data-name="laptop computer" data-cat="laptop"><img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&q=70"><div class="pad"><span class="cat">Laptops</span><h3>Laptop 14 Inch</h3><p><span class="new">KSh 37,999</span> <span class="old">KSh 45,000</span> <span class="disc">-16% OFF</span></p><button class="add" onclick="add('Laptop 14 Inch',37999)">Add to cart</button></div></div>
-<div class="card" data-name="tv television" data-cat="tv"><img src="https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&q=70"><div class="pad"><span class="cat">TV & Audio</span><h3>LED TV 43 Inch</h3><p><span class="new">KSh 28,999</span> <span class="old">KSh 35,000</span> <span class="disc">-17% OFF</span></p><button class="add" onclick="add('LED TV 43 Inch',28999)">Add to cart</button></div></div>
-<div class="card" data-name="tv smart 50" data-cat="tv"><img src="https://images.unsplash.com/photo-1552975084-6e027cd345c2?w=400&q=70"><div class="pad"><span class="cat">TV & Audio</span><h3>Smart TV 50 Inch</h3><p><span class="new">KSh 42,999</span> <span class="old">KSh 49,400</span> <span class="disc">-13% OFF</span></p><button class="add" onclick="add('Smart TV 50 Inch',42999)">Add to cart</button></div></div>
-<div class="card" data-name="tv smart 55" data-cat="tv"><img src="https://images.unsplash.com/photo-1593784991095-a205069470b6?w=400&q=70"><div class="pad"><span class="cat">TV & Audio</span><h3>Smart TV 55 Inch</h3><p><span class="new">KSh 54,999</span> <span class="old">KSh 63,200</span> <span class="disc">-13% OFF</span></p><button class="add" onclick="add('Smart TV 55 Inch',54999)">Add to cart</button></div></div>
-<div class="card" data-name="sound bar speaker" data-cat="tv"><img src="https://images.unsplash.com/photo-1545454675-3531b543be5d?w=400&q=70"><div class="pad"><span class="cat">TV & Audio</span><h3>Sound Bar</h3><p><span class="new">KSh 8,500</span> <span class="old">KSh 9,800</span> <span class="disc">-13% OFF</span></p><button class="add" onclick="add('Sound Bar',8500)">Add to cart</button></div></div>
-<div class="card" data-name="bluetooth speaker" data-cat="tv"><img src="https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&q=70"><div class="pad"><span class="cat">TV & Audio</span><h3>Bluetooth Speaker</h3><p><span class="new">KSh 2,500</span> <span class="old">KSh 2,900</span> <span class="disc">-14% OFF</span></p><button class="add" onclick="add('Bluetooth Speaker',2500)">Add to cart</button></div></div>
-<div class="card" data-name="kettle" data-cat="kitchen"><img src="https://images.unsplash.com/photo-1594213114663-d94db9b17125?w=400&q=70"><div class="pad"><span class="cat">Kitchen</span><h3>Electric Kettle 1.8L</h3><p><span class="new">KSh 2,899</span> <span class="old">KSh 3,500</span> <span class="disc">-17% OFF</span></p><button class="add" onclick="add('Electric Kettle',2899)">Add to cart</button></div></div>
-<div class="card" data-name="microwave" data-cat="kitchen"><img src="https://images.unsplash.com/photo-157426990
-9909862-7e1d70bb8078?w=400&q=70"><div class="pad"><span class="cat">Kitchen</span><h3>Microwave</h3><p><span class="new">KSh 9,999</span> <span class="old">KSh 12,000</span> <span class="disc">-17% OFF</span></p><button class="add" onclick="add('Microwave',9999)">Add to cart</button></div></div>
 
-<!-- CONTINUE FROM HERE - NEW PRODUCTS -->
-<div class="card" data-name="blender" data-cat="kitchen"><img src="https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=400&q=70"><div class="pad"><span class="cat">Kitchen</span><h3>Blender 2 in 1</h3><p><span class="new">KSh 3,499</span> <span class="old">KSh 4,200</span> <span class="disc">-17% OFF</span></p><button class="add" onclick="add('Blender 2 in 1',3499)">Add to cart</button></div></div>
+<header>
+  <h1>LANGAT SHOP</h1>
+  <p>Real Pictures | Browse FREE | Pay Later</p>
+</header>
 
-<div class="card" data-name="rice cooker" data-cat="kitchen"><img src="https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&q=70"><div class="pad"><span class="cat">Kitchen</span><h3>Rice Cooker 1.8L</h3><p><span class="new">KSh 3,999</span> <span class="old">KSh 4,800</span> <span class="disc">-17% OFF</span></p><button class="add" onclick="add('Rice Cooker',3999)">Add to cart</button></div></div>
-
-<div class="card" data-name="gas cooker" data-cat="kitchen"><img src="https://images.unsplash.com/photo-1556911220-bff31c812dba?w=400&q=70"><div class="pad"><span class="cat">Kitchen</span><h3>Gas Cooker 4 Burner</h3><p><span class="new">KSh 18,999</span> <span class="old">KSh 22,000</span> <span class="disc">-14% OFF</span></p><button class="add" onclick="add('Gas Cooker 4 Burner',18999)">Add to cart</button></div></div>
-
-<div class="card" data-name="washing machine" data-cat="home"><img src="https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?w=400&q=70"><div class="pad"><span class="cat">Home</span><h3>Washing Machine 7KG</h3><p><span class="new">KSh 28,999</span> <span class="old">KSh 34,000</span> <span class="disc">-15% OFF</span></p><button class="add" onclick="add('Washing Machine 7KG',28999)">Add to cart</button></div></div>
-
-<div class="card" data-name="air fryer" data-cat="kitchen"><img src="https://images.unsplash.com/photo-1626074353765-517a681e40be?w=400&q=70"><div class="pad"><span class="cat">Kitchen</span><h3>Air Fryer 5L</h3><p><span class="new">KSh 7,999</span> <span class="old">KSh 9,500</span> <span class="disc">-16% OFF</span></p><button class="add" onclick="add('Air Fryer 5L',7999)">Add to cart</button></div></div>
-
-<div class="card" data-name="water dispenser" data-cat="home"><img src="https://images.unsplash.com/photo-1523362628745-0c100150b504?w=400&q=70"><div class="pad"><span class="cat">Home</span><h3>Water Dispenser</h3><p><span class="new">KSh 6,999</span> <span class="old">KSh 8,500</span> <span class="disc">-18% OFF</span></p><button class="add" onclick="add('Water Dispenser',6999)">Add to cart</button></div></div>
-
-</div>
-<!-- AUDIO & PHONE ACCESSORIES -->
-<div class="card" data-name="wireless earbuds bluetooth earphones pods" data-cat="phones">
-  <img src="https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=300&q=60" loading="lazy">
-  <h3>Wireless Bluetooth Earbuds</h3>
-  <p class="desc">Noise Cancelling, Charging Case, Bass</p>
-  <p><span class="old">KSh 2,500</span> <span class="disc">-40% OFF</span></p>
-  <p class="new">KSh 1,499</p>
-  <button class="add" onclick="add('Wireless Bluetooth Earbuds', 1499)">🛒 ADD TO CART</button>
+<div class="search-container">
+  <input id="search" placeholder="🔍 Search phones, tv, kettle, watch..." oninput="filter()">
 </div>
 
-<div class="card" data-name="power bank 20000mah fast charger" data-cat="phones">
-  <img src="https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=300&q=60" loading="lazy">
-  <h3>20,000mAh Fast Power Bank</h3>
-  <p class="desc">Dual USB + Type-C Output, LED Display</p>
-  <p><span class="old">KSh 3,200</span> <span class="disc">-25% OFF</span></p>
-  <p class="new">KSh 2,399</p>
-  <button class="add" onclick="add('20000mAh Power Bank', 2399)">🛒 ADD TO CART</button>
+<div class="cats">
+  <button class="active" onclick="setCat('all', this)">All</button>
+  <button onclick="setCat('phones', this)">Phones & Tech</button>
+  <button onclick="setCat('kitchen', this)">Kitchen & Home</button>
+  <button onclick="setCat('fashion', this)">Fashion</button>
 </div>
 
-<!-- HOME & LIVING -->
-<div class="card" data-name="electric kettle stainless steel" data-cat="kitchen">
-  <img src="https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=300&q=60" loading="lazy">
-  <h3>2.0L Electric Kettle</h3>
-  <p class="desc">Stainless Steel, Auto Shut-Off, Fast Boil</p>
-  <p><span class="old">KSh 2,200</span> <span class="disc">-32% OFF</span></p>
-  <p class="new">KSh 1,499</p>
-  <button class="add" onclick="add('2.0L Electric Kettle', 1499)">🛒 ADD TO CART</button>
+<div class="info-bar">
+  Showing <span id="count">8</span> Products - Fast Loading
 </div>
 
-<div class="card" data-name="non stick cookware sufuria set pots" data-cat="kitchen">
-  <img src="https://images.unsplash.com/photo-1584990347449-a2d4c2c044c9?w=300&q=60" loading="lazy">
-  <h3>Non-Stick Cookware Set</h3>
-  <p class="desc">Granite Coated Pots with Glass Lids</p>
-  <p><span class="old">KSh 6,500</span> <span class="disc">-23% OFF</span></p>
-  <p class="new">KSh 4,999</p>
-  <button class="add" onclick="add('Non-Stick Cookware Set', 4999)">🛒 ADD TO CART</button>
-</div>
+<div class="grid" id="grid">
+  <!-- 1 -->
+  <div class="card" data-name="smartphone 128gb phone" data-cat="phones">
+    <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300&q=60" loading="lazy">
+    <h3>Smartphone 128GB</h3>
+    <p class="desc">6.5 Inch, Dual SIM, 5000mAh</p>
+    <p><span class="old">KSh 22,000</span> <span class="disc">-18% OFF</span></p>
+    <p class="new">KSh 17,999</p>
+    <button class="add" onclick="add('Smartphone 128GB', 17999)">🛒 ADD TO CART</button>
+  </div>
 
-<!-- BEAUTY & PERSONAL CARE -->
-<div class="card" data-name="skincare beauty face serum moisturizer set" data-cat="beauty">
-  <img src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=300&q=60" loading="lazy">
-  <h3>Vitamin C Skincare Set</h3>
-  <p class="desc">Hydrating Face Serum & Daily Moisturizer</p>
-  <p><span class="old">KSh 2,400</span> <span class="disc">-25% OFF</span></p>
-  <p class="new">KSh 1,800</p>
-  <button class="add" onclick="add('Vitamin C Skincare Set', 1800)">🛒 ADD TO CART</button>
-</div>
+  <!-- 2 -->
+  <div class="card" data-name="led tv 43 inch television" data-cat="phones">
+    <img src="https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=300&q=60" loading="lazy">
+    <h3>LED TV 43 Inch</h3>
+    <p class="desc">Full HD, HDMI + USB ports</p>
+    <p><span class="old">KSh 35,000</span> <span class="disc">-17% OFF</span></p>
+    <p class="new">KSh 28,999</p>
+    <button class="add" onclick="add('LED TV 43 Inch', 28999)">🛒 ADD TO CART</button>
+  </div>
 
-<!-- FASHION & BAGS -->
-<div class="card" data-name="ladies handbag shoulder bag leather" data-cat="fashion">
-  <img src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=300&q=60" loading="lazy">
-  <h3>Ladies Classic Handbag</h3>
-  <p class="desc">PU Leather, Crossbody Strap, Spacious</p>
-  <p><span class="old">KSh 3,000</span> <span class="disc">-33% OFF</span></p>
-  <p class="new">KSh 1,999</p>
-  <button class="add" onclick="add('Ladies Classic Handbag', 1999)">🛒 ADD TO CART</button>
-</div>
+  <!-- 3 -->
+  <div class="card" data-name="wireless earbuds bluetooth earphones" data-cat="phones">
+    <img src="https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=300&q=60" loading="lazy">
+    <h3>Wireless Bluetooth Earbuds</h3>
+    <p class="desc">Noise Cancelling, Charging Case</p>
+    <p><span class="old">KSh 2,500</span> <span class="disc">-40% OFF</span></p>
+    <p class="new">KSh 1,499</p>
+    <button class="add" onclick="add('Wireless Bluetooth Earbuds', 1499)">🛒 ADD TO CART</button>
+  </div>
 
-<!-- END OF PRODUCTS GRID -->
-<div class="card" data-name="YOUR PRODUCT NAME HERE" data-cat="YOUR CATEGORY">
-  <img src="PASTE_IMAGE_LINK_HERE" loading="lazy">
-  <h3>Product Title</h3>
-  <p class="desc">Short description (e.g., Specs, color, size)</p>
-  <p><span class="old">KSh 00,000</span> <span class="disc">-XX% OFF</span></p>
-  <p class="new">KSh 00,000</p>
-  <button class="add" onclick="add('Product Title', 00000)">🛒 ADD TO CART</button>
-</div>
-<div class="card" data-name="smart watch bluetooth" data-cat="phones">
-  <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&q=60" loading="lazy">
-  <h3>Smart Watch Ultra</h3>
-  <p class="desc">Bluetooth Calls, Fitness Tracker, IP68</p>
-  <p><span class="old">KSh 4,500</span> <span class="disc">-30% OFF</span></p>
-  <p class="new">KSh 3,150</p>
-  <button class="add" onclick="add('Smart Watch Ultra', 3150)">🛒 ADD TO CART</button>
-</div>
-<div class="card" data-name="blender electric juicer" data-cat="kitchen">
-  <img src="https://images.unsplash.com/photo-1570222094114-d074f7e1e5e5?w=300&q=60" loading="lazy">
-  <h3>Electric Blender & Grinder</h3>
-  <p class="desc">1.5L Heavy Duty, Copper Motor</p>
-  <p><span class="old">KSh 5,000</span> <span class="disc">-20% OFF</span></p>
-  <p class="new">KSh 3,999</p>
-  <button class="add" onclick="add('Electric Blender', 3999)">🛒 ADD TO CART</button>
-</div>
-<div class="card" data-name="mens running sneakers shoes" data-cat="fashion">
-  <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&q=60" loading="lazy">
-  <h3>Men's Sports Sneakers</h3>
-  <p class="desc">Breathable, Lightweight, Comfortable</p>
-  <p><span class="old">KSh 2,800</span> <span class="disc">-25% OFF</span></p>
-  <p class="new">KSh 2,100</p>
-  <button class="add" onclick="add('Mens Sports Sneakers', 2100)">🛒 ADD TO CART</button>
-</div>
+  <!-- 4 -->
+  <div class="card" data-name="power bank 20000mah fast charger" data-cat="phones">
+    <img src="https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=300&q=60" loading="lazy">
+    <h3>20,000mAh Power Bank</h3>
+    <p class="desc">Dual USB + Type-C, LED Display</p>
+    <p><span class="old">KSh 3,200</span> <span class="disc">-25% OFF</span></p>
+    <p class="new">KSh 2,399</p>
+    <button class="add" onclick="add('20000mAh Power Bank', 2399)">🛒 ADD TO CART</button>
+  </div>
 
+  <!-- 5 -->
+  <div class="card" data-name="electric kettle stainless steel" data-cat="kitchen">
+    <img src="https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=300&q=60" loading="lazy">
+    <h3>2.0L Electric Kettle</h3>
+    <p class="desc">Stainless Steel, Auto Shut-Off</p>
+    <p><span class="old">KSh 2,200</span> <span class="disc">-32% OFF</span></p>
+    <p class="new">KSh 1,499</p>
+    <button class="add" onclick="add('2.0L Electric Kettle', 1499)">🛒 ADD TO CART</button>
+  </div>
+
+  <!-- 6 -->
+  <div class="card" data-name="non stick cookware sufuria set pots" data-cat="kitchen">
+    <img src="https://images.unsplash.com/photo-1584990347449-a2d4c2c044c9?w=300&q=60" loading="lazy">
+    <h3>Non-Stick Cookware Set</h3>
+    <p class="desc">Granite Coated Pots with Lids</p>
+    <p><span class="old">KSh 6,500</span> <span class="disc">-23% OFF</span></p>
+    <p class="new">KSh 4,999</p>
+    <button class="add" onclick="add('Non-Stick Cookware Set', 4999)">🛒 ADD TO CART</button>
+  </div>
+
+  <!-- 7 -->
+  <div class="card" data-name="mens running sneakers shoes" data-cat="fashion">
+    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&q=60" loading="lazy">
+    <h3>Men's Sports Sneakers</h3>
+    <p class="desc">Breathable, Lightweight, Comfortable</p>
+    <p><span class="old">KSh 2,800</span> <span class="disc">-25% OFF</span></p>
+    <p class="new">KSh 2,100</p>
+    <button class="add" onclick="add('Mens Sports Sneakers', 2100)">🛒 ADD TO CART</button>
+  </div>
+
+  <!-- 8 -->
+  <div class="card" data-name="ladies handbag shoulder bag leather" data-cat="fashion">
+    <img src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=300&q=60" loading="lazy">
+    <h3>Ladies Classic Handbag</h3>
+    <p class="desc">PU Leather, Crossbody Strap</p>
+    <p><span class="old">KSh 3,000</span> <span class="disc">-33% OFF</span></p>
+    <p class="new">KSh 1,999</p>
+    <button class="add" onclick="add('Ladies Classic Handbag', 1999)">🛒 ADD TO CART</button>
+  </div>
+</div>
 
 <footer>
-<b>Contact Us: +254 701 416556 | 0708535057</b><br>
-Fast Delivery Across Kenya • Secure Payment • Trusted by Thousands
+  <b>Contact Us: +254 701 416 556</b><br>
+  Fast Delivery Across Kenya • Secure Payment • Trusted by Thousands
 </footer>
 
-<!-- CART BAR -->
-<div id="cartBar" style="position:fixed;bottom:0;left:0;right:0;background:#111;color:#fff;padding:14px;display:flex;justify-content:space-between;align-items:center;z-index:99">
-<span id="cartText">🛒 Cart: 0 items - KSh 0</span>
-<button onclick="checkout()" style="background:#25D366;color:#fff;border:none;padding:10px 16px;border-radius:10px;font-weight:bold">Order on WhatsApp</button>
+<div id="cartBar">
+  <span id="cartText">🛒 Cart: 0 items - KSh 0</span>
+  <div class="cart-btns">
+    <button class="btn-clear" onclick="clearCart()">Clear</button>
+    <button class="btn-checkout" onclick="checkout()">Order on WhatsApp</button>
+  </div>
 </div>
 
 <script>
@@ -193,7 +161,7 @@ function filter() {
     let name = c.getAttribute('data-name').toLowerCase();
     let cat = c.getAttribute('data-cat');
     let show = (currentCat == 'all' || cat == currentCat) && name.includes(q);
-    c.style.display = show ? 'block' : 'none';
+    c.style.display = show ? 'flex' : 'none';
     if (show) count++;
   });
   document.getElementById('count').innerText = count;
@@ -230,7 +198,6 @@ function checkout() {
   window.open("https://wa.me/254701416556?text=" + msg);
 }
 </script>
-
 
 </body>
 </html>
