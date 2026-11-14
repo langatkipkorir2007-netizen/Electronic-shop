@@ -94,35 +94,51 @@ Fast Delivery Across Kenya • Secure Payment • Trusted by Thousands
 let cart = [];
 let currentCat = 'all';
 
-function filter(){
+function filter() {
   let q = document.getElementById('search').value.toLowerCase();
   let cards = document.querySelectorAll('.card');
   let count = 0;
-  cards.forEach(c=>{
-    let name = c.getAttribute('data-name');
+  cards.forEach(c => {
+    let name = c.getAttribute('data-name').toLowerCase();
     let cat = c.getAttribute('data-cat');
-    let show = (currentCat=='all' || cat==currentCat) && name.includes(q);
+    let show = (currentCat == 'all' || cat == currentCat) && name.includes(q);
     c.style.display = show ? 'block' : 'none';
-    if(show) count++;
+    if (show) count++;
   });
   document.getElementById('count').innerText = count;
 }
-function setCat(c,el){
+
+function setCat(c, el) {
   currentCat = c;
-  document.querySelectorAll('.cats button').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.cats button').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
   filter();
 }
-function add(name,price){
-  cart.push({name:name,price:price});
-  let total = cart.reduce((s,p)=>s+p.price,0);
-  document.getElementById('cartText').innerText = '🛒 Cart: ' + cart.length + ' items - KSh ' + total.toLocaleString();
+
+function add(name, price) {
+  cart.push({ name: name, price: price });
+  updateCartUI();
 }
-function checkout(){
-  if(cart.length==0){ alert('Cart is empty'); return; }
-  let msg = "Hello LANGAT SHOP, I want to order:%0A" + cart.map(p=>"- "+p.name+" - KSh "+p.price.toLocaleString()).join("%0A");
-  window.open("https://wa.me/254701416556?text="+msg);
+
+function clearCart() {
+  cart = [];
+  updateCartUI();
+}
+
+function updateCartUI() {
+  let total = cart.reduce((s, p) => s + p.price, 0);
+  document.getElementById('cartText').innerText = 
+    '🛒 Cart: ' + cart.length + ' items - KSh ' + total.toLocaleString();
+}
+
+function checkout() {
+  if (cart.length == 0) { alert('Cart is empty'); return; }
+  let total = cart.reduce((s, p) => s + p.price, 0);
+  let itemsList = cart.map(p => "- " + p.name + " - KSh " + p.price.toLocaleString()).join("%0A");
+  let msg = "Hello LANGAT SHOP, I want to order:%0A" + itemsList + "%0A%0A*Total: KSh " + total.toLocaleString() + "*";
+  window.open("https://wa.me/254701416556?text=" + msg);
 }
 </script>
+
 </body>
 </html>
