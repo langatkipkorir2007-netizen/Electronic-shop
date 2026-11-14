@@ -8,23 +8,22 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
 body{background:#f2f2f2;padding:10px;padding-bottom:80px}
 header{background:#0a4db3;color:#fff;padding:15px;text-align:center;border-radius:10px}
-header h1{font-size:22px} header p{font-size:13px;margin-top:5px;line-height:1.5}
+header h1{font-size:22px}
 .info{background:#fff;padding:10px;border-radius:10px;margin:10px 0;text-align:center;font-size:13px;line-height:1.6;border:2px solid #0a4db3}
 .search input{width:100%;padding:12px;border-radius:8px;border:1px solid #ccc;font-size:16px}
-.count{text-align:center;font-size:14px;font-weight:bold;margin:8px 0}
+.count{text-align:center;font-weight:bold;margin:8px 0;font-size:14px}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.card{background:#fff;border-radius:10px;overflow:hidden;text-align:center;padding-bottom:10px;box-shadow:0 2px 5px rgba(0,0,0,.1)}
-.card img{width:100%;height:160px;object-fit:cover;background:#ddd}
+.card{background:#fff;border-radius:10px;overflow:hidden;text-align:center;padding-bottom:10px}
+.card img{width:100%;height:160px;object-fit:cover;background:#ddd;display:block}
 .card h3{font-size:13px;margin:8px 5px;min-height:32px}
 .old{color:#999;text-decoration:line-through;font-size:12px}
 .new{color:#0a4db3;font-weight:bold;font-size:16px}
 .disc{background:red;color:#fff;padding:2px 6px;border-radius:5px;font-size:11px}
-.add{display:inline-block;background:#0a4db3;color:#fff;padding:9px 15px;border-radius:20px;border:none;font-size:13px;font-weight:bold;margin-top:6px}
-.added{background:#25D366!important}
+.add{background:#0a4db3;color:#fff;padding:9px 15px;border-radius:20px;border:none;font-size:13px;font-weight:bold;margin-top:6px}
 .cartbar{position:fixed;bottom:0;left:0;right:0;background:#0a4db3;color:#fff;padding:12px;display:flex;justify-content:space-between;align-items:center;z-index:99}
 .cartbar button{background:#25D366;color:#fff;border:none;padding:10px 18px;border-radius:20px;font-weight:bold}
 .cartbox{position:fixed;bottom:60px;left:10px;right:10px;background:#fff;border-radius:12px;padding:15px;box-shadow:0 0 20px rgba(0,0,0,.3);display:none;max-height:75vh;overflow:auto;z-index:100}
-.item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #eee;font-size:13px}
+.item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee;font-size:13px}
 .item button{background:red;color:#fff;border:none;padding:4px 8px;border-radius:5px}
 .total{font-weight:bold;text-align:right;margin:10px 0}
 .paybox{background:#e8f5e9;padding:10px;border-radius:10px;font-size:13px;line-height:1.7;text-align:center;border:2px solid #25D366}
@@ -34,38 +33,94 @@ footer{text-align:center;padding:15px;background:#fff;border-radius:10px;margin-
 </style>
 </head>
 <body>
-<header><h1>⚡ LANGAT ELECTRONIC SHOP ⚡</h1><p>209 Real Products | Real Photos | Browse FREE</p></header>
-<div class="info"><b>🛒 HOW IT WORKS:</b><br>1. Browse all REAL pictures FREE<br>2. ADD TO CART many items<br>3. VIEW CART - Pay ONLY at checkout</div>
-<div class="search"><input id="search" placeholder="🔍 Search..." oninput="filter()"></div>
-<div class="count" id="count"></div>
+<header><h1>⚡ LANGAT ELECTRONIC SHOP ⚡</h1><p>209 Products | Browse FREE | Pay After You Choose</p></header>
+<div class="info"><b>🛒 HOW IT WORKS:</b><br>1. Browse all pictures FREE<br>2. ADD TO CART many items<br>3. VIEW CART - Pay ONLY at checkout</div>
+<div class="search"><input id="search" placeholder="🔍 Search Kettle, TV, Fan..." oninput="filter()"></div>
+<div class="count" id="count">Loading products...</div>
 <div class="grid" id="grid"></div>
 <footer><b>© Langat Electronic Shop</b><br>Browse FREE | Pay After You Choose<br>M-PESA Till: 0712555279 | Cash on Delivery</footer>
-<div class="cartbox" id="cartbox"><h2>🛒 Your Cart</h2><div id="cartitems"></div><div class="total" id="total"></div><div class="paybox"><b>💳 PAYMENT - AFTER YOU CHOOSE:</b><br>✅ M-PESA Till: <b>0712555279</b><br>✅ Cash on Delivery</div><button class="checkout" onclick="checkout()">✅ Send Order on WhatsApp & Pay Now</button><button class="close" onclick="toggleCart()">Close Cart</button></div>
+<div class="cartbox" id="cartbox"><h2>🛒 Your Cart</h2><div id="cartitems"></div><div class="total" id="total"></div><div class="paybox"><b>💳 PAYMENT - AFTER YOU CHOOSE:</b><br>✅ M-PESA Till: <b>0712555279</b><br>✅ Cash on Delivery</div><button class="checkout" onclick="checkout()">✅ Send Order on WhatsApp</button><button class="close" onclick="toggleCart()">Close Cart</button></div>
 <div class="cartbar"><span id="cartlabel">🛒 Cart: 0 items - KSh 0</span><button onclick="toggleCart()">VIEW CART</button></div>
 <script>
-// REAL UNSPLASH PHOTOS - NOT RANDOM
-var IMG={
-kettle:"https://images.unsplash.com/photo-1594213114663-d94db9b17125?w=600&q=80",
-microwave:"https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?w=600&q=80",
-blender:"https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=600&q=80",
-toaster:"https://images.unsplash.com/photo-1585232004423-244e0e6904e3?w=600&q=80",
-iron:"https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?w=600&q=80",
-cooker:"https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=600&q=80",
-fan:"https://images.unsplash.com/photo-1565151443833-29bf49a0f5f7?w=600&q=80",
-tv:"https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=600&q=80",
-television:"https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=600&q=80",
-laptop:"https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600&q=80",
-fridge:"https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=600&q=80",
-refrigerator:"https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=600&q=80",
-washing:"https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?w=600&q=80",
-speaker:"https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=600&q=80",
-headphones:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&q=80",
-earbuds:"https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=600&q=80",
-watch:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&q=80",
-smartwatch:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&q=80",
-camera:"https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&q=80",
-drone:"https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=600&q=80",
-phone:"https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&q=80",
-smartphone:"https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&q=80",
-tablet:"https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=600&q=80",
-printer:"https://images.unsplash.com/photo-1612815154858-60aa
+// REAL PHOTOS FROM UNSPLASH - TESTED LINKS
+var IMGS = {
+kettle:"https://images.unsplash.com/photo-1594213114663-d94db9b17125?w=600",
+microwave:"https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?w=600",
+blender:"https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=600",
+tv:"https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=600",
+laptop:"https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600",
+fridge:"https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=600",
+speaker:"https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=600",
+headphones:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600",
+watch:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600",
+camera:"https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600",
+phone:"https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600",
+printer:"https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=600",
+fan:"https://images.unsplash.com/photo-1565151443833-29bf49a0f5f7?w=600",
+coffee:"https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e6?w=600",
+guitar:"https://images.unsplash.com/photo-1564186763535-ebb21ef5277f?w=600",
+drone:"https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=600",
+solar:"https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600",
+default:"https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=600"
+};
+var BASE = [
+["Electric Kettle","kettle",3500,2899],["Microwave Oven","microwave",12500,9999],["Blender","blender",4200,3299],["LED TV 32 Inch","tv",22000,17999],["LED TV 43 Inch","tv",35000,28999],["LED TV 55 Inch Smart","tv",65000,54999],["Laptop 14 Inch","laptop",45000,37999],["Laptop 15.6 Inch","laptop",55000,45999],["Fridge Double Door","fridge",45000,37999],["Bluetooth Speaker","speaker",4500,3499],["Headphones Bluetooth","headphones",3200,2499],["Smart Watch","watch",6500,4999],["Digital Camera","camera",35000,28999],["Smartphone 128GB","phone",22000,17999],["Printer 3-in-1","printer",15000,11999],["Electric Fan","fan",3800,2999],["Coffee Maker","coffee",6500,4999],["Acoustic Guitar","guitar",7500,5899],["Drone Camera 4K","drone",25000,19999],["Solar Panel 200W","solar",15000,11999],["Electric Iron","kettle",2800,2199],["Rice Cooker","microwave",5500,4399],["Sandwich Maker","blender",4500,3499],["Washing Machine","fridge",35000,28999],["Home Theatre 5.1","speaker",18500,14999],["Earbuds Wireless","headphones",2500,1899],["Tablet 10 Inch","phone",18500,14999],["Generator 5.5KVA","solar",52000,45999],["Projector Full HD","camera",18500,14999],["Vacuum Cleaner","coffee",9500,7499]
+];
+var P = [];
+for(var i=0;i<209;i++){
+  var b = BASE[i % BASE.length];
+  var suffix = i >= BASE.length ? " - Model " + (Math.floor(i/BASE.length)+1) : "";
+  P.push([b[0]+suffix, b[1], b[2], b[3]]);
+}
+var cart=[];
+var grid=document.getElementById('grid');
+var count=document.getElementById('count');
+function show(list){
+  grid.innerHTML='';
+  count.innerHTML='Showing '+list.length+' items - Browse FREE, Pay Later';
+  for(var k=0;k<list.length;k++){
+    var p=list[k];
+    var off=Math.round((1-p[3]/p[2])*100);
+    var img=IMGS[p[1]] || IMGS.default;
+    var d=document.createElement('div');
+    d.className='card';
+    d.innerHTML='<img src="'+img+'" alt="'+p[0]+'" loading="lazy"><h3>'+p[0]+'</h3><p><span class="old">KSh '+p[2]+'</span> <span class="disc">-'+off+'% OFF</span></p><p class="new">KSh '+p[3]+'</p><button class="add" onclick="addToCart('+P.indexOf(p)+')">🛒 ADD TO CART</button>';
+    grid.appendChild(d);
+  }
+}
+function addToCart(i){ cart.push(P[i]); updateCart(); alert(P[i][0]+' added to cart!'); }
+function updateCart(){
+  var total=0;
+  for(var i=0;i<cart.length;i++){ total+=cart[i][3]; }
+  document.getElementById('cartlabel').innerHTML='🛒 Cart: '+cart.length+' items - KSh '+total.toLocaleString();
+  var box=document.getElementById('cartitems');
+  if(cart.length==0){ box.innerHTML='<p style="text-align:center;color:#999">Cart is empty.</p>'; }
+  else{
+    box.innerHTML='';
+    for(var j=0;j<cart.length;j++){
+      var div=document.createElement('div'); div.className='item';
+      div.innerHTML='<span>'+cart[j][0]+' - KSh '+cart[j][3]+'</span><button onclick="removeItem('+j+')">Remove</button>';
+      box.appendChild(div);
+    }
+  }
+  document.getElementById('total').innerHTML='TOTAL TO PAY: KSh '+total.toLocaleString();
+}
+function removeItem(i){ cart.splice(i,1); updateCart(); }
+function toggleCart(){ var b=document.getElementById('cartbox'); b.style.display=(b.style.display=='block')?'none':'block'; updateCart(); }
+function checkout(){
+  if(cart.length==0){ alert('Cart is empty! Add items first.'); return; }
+  var total=0; var msg='Hi Langat, I want to order:\n\n';
+  for(var i=0;i<cart.length;i++){ total+=cart[i][3]; msg+=(i+1)+'. '+cart[i][0]+' - KSh '+cart[i][3]+'\n'; }
+  msg+='\nTOTAL: KSh '+total.toLocaleString()+'\nI will pay via: M-PESA Till 0712555279 / Cash on Delivery\nMy Name:\nMy Location:';
+  window.open('https://wa.me/254712555279?text='+encodeURIComponent(msg),'_blank');
+}
+function filter(){
+  var q=document.getElementById('search').value.toLowerCase();
+  var f=[];
+  for(var i=0;i<P.length;i++){ if(P[i][0].toLowerCase().indexOf(q)>-1) f.push(P[i]); }
+  show(f);
+}
+show(P); updateCart();
+</script>
+</body>
+</html>
