@@ -51,5 +51,25 @@ footer{background:#0a1931;color:#fff;text-align:center;padding:20px}
 <footer><b>ELECTRO SOLVERS</b><br>Phone: 0712555279 - Chuka, Kenya<br><a style="color:#25D366" href="https://wa.me/254712555279">Chat on WhatsApp</a></footer>
 <script>
 function doSearch(){var q=document.getElementById('searchBox').value.toLowerCase();document.querySelectorAll('.card').forEach(function(c){c.style.display=c.innerText.toLowerCase().includes(q)?'':'none'})}
+</script><script>
+// FIX ONLY WRONG PICTURES - No mistakes
+var fix2 = {
+  'electric kettle': 'https://mall.icbc.com.ar/38290033-thickbox_default/pava-el-ctrica-zenith-crystal-jarra-vidrio-led-1-8l-1500w-corte-para-mate.jpg',
+  'microwave': 'https://imgs.qasralawani.net/media/catalog/product/e/-/e-20mv-2bk_2_.jpg?width=1920&quality=80&format=webp',
+  'bluetooth speaker': 'https://richyibpify.sogood.business/images/product-speaker/1x1.webp',
+  'extension cable': 'https://static.vecteezy.com/system/resources/previews/010/583/825/non_2x/extension-power-strip-or-trailer-plug-or-extension-cord-with-6-usb-charging-hub-ports-isolated-on-white-background-clipping-path-free-photo.jpg',
+  'wifi router': 'https://dmtrade.store/hpeciai/d7fb91046bcda222266e8c9b35c21912/eng_il_GL-Inet-Spitz-Plus-GL-X2000-LTE-Wi-Fi-6-Router-16168jpg',
+  'sandwich maker': 'https://lanleima.com/wp-content/uploads/2026/07/toaster.webp'
+};
+document.querySelectorAll('.card').forEach(function(card){
+  var t = card.querySelector('h3').innerText.toLowerCase();
+  for(var k in fix2){
+    if(t.includes(k)){
+      var img = card.querySelector('img');
+      if(img){ img.src = fix2[k]; img.style.objectFit='contain'; img.style.background='#fff'; }
+      break;
+    }
+  }
+});
 </script>
 </body></html>
