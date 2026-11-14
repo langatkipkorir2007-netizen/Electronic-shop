@@ -278,6 +278,32 @@
 </body>
 </html>
 
+async function handleMpesaPayment() {
+    const phone = document.getElementById('phone-input').value;
+    const email = document.getElementById('email-input').value;
+
+    try {
+        const response = await fetch('http://localhost:3000/api/create-mpesa-payment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                amount: currentAmount,
+                phoneNumber: phone,
+                email: email
+            })
+        });
+
+        const data = await response.json();
+        if (response.ok && data.success) {
+            alert('Check your phone and enter your M-Pesa PIN to complete payment!');
+        } else {
+            alert('Payment failed: ' + (data.error?.detail || 'Check your backend server.'));
+        }
+    } catch (error) {
+        console.error('Connection Error:', error);
+        alert('Could not reach payment server.');
+    }
+}
 
 </body>
 </html>
