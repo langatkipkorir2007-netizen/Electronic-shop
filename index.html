@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LANGAT SHOP - 80+ Best Sellers</title>
+  <title>LANGAT SHOP - Kenya's Ultimate Store</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f4f4f4; color: #333; padding-bottom: 85px; }
     header { background: #111; color: #fff; text-align: center; padding: 15px; }
@@ -51,24 +51,27 @@
 
 <header>
   <h1>LANGAT SHOP</h1>
-  <p>80+ Best Sellers • Tap Any Photo to Inspect All Angles</p>
+  <p>All Departments • Tap Any Photo to Inspect All Angles</p>
 </header>
 
 <div class="search-container">
-  <input id="search" placeholder="🔍 Search 80 items (phone, fridge, watch, shoes)..." oninput="filter()">
+  <input id="search" placeholder="🔍 Search products (phone, oil, diapers, shoes)..." oninput="filter()">
 </div>
 
 <div class="cats">
-  <button class="active" onclick="setCat('all', this)">All (80)</button>
+  <button class="active" onclick="setCat('all', this)">All Items</button>
   <button onclick="setCat('phones', this)">Phones & Tech</button>
   <button onclick="setCat('tv', this)">TV & Audio</button>
   <button onclick="setCat('kitchen', this)">Kitchen & Home</button>
   <button onclick="setCat('fashion', this)">Fashion & Shoes</button>
   <button onclick="setCat('beauty', this)">Beauty & Bags</button>
+  <button onclick="setCat('supermarket', this)">Supermarket</button>
+  <button onclick="setCat('baby', this)">Baby & Kids</button>
+  <button onclick="setCat('auto', this)">Car & Auto</button>
 </div>
 
 <div class="info-bar">
-  Showing <span id="count">80</span> Products • Tap photo to inspect
+  Showing <span id="count">0</span> Products • Tap photo to inspect
 </div>
 
 <div class="grid" id="grid"></div>
@@ -101,97 +104,74 @@
 </div>
 
 <script>
-// 80 KILIMALL-STYLE ITEMS WITH MULTI-ANGLE GALLERY
+// FULL KILIMALL-STYLE PRODUCT CATALOG ACROSS ALL DEPARTMENTS
 const products = [
-  // --- PHONES & TECH (16 ITEMS) ---
-  { name: "Smartphone 128GB", cat: "phones", oldPrice: 22000, price: 17999, disc: "-18%", desc: "6.5\" HD+, Dual SIM, 5000mAh", imgs: ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&q=70", "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=400&q=70", "https://images.unsplash.com/photo-1565849904461-04a58ad377e0?w=400&q=70"] },
+  // --- PHONES & TECH ---
+  { name: "Smartphone 128GB", cat: "phones", oldPrice: 22000, price: 17999, disc: "-18%", desc: "6.5\" HD+, Dual SIM, 5000mAh", imgs: ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&q=70", "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=400&q=70"] },
   { name: "Smartphone 256GB 5G", cat: "phones", oldPrice: 32000, price: 26500, disc: "-17%", desc: "6.7\" AMOLED, 8GB RAM, 50MP", imgs: ["https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=400&q=70", "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&q=70"] },
   { name: "Budget Android Phone 64GB", cat: "phones", oldPrice: 13500, price: 10999, disc: "-19%", desc: "6.5\" Display, Fingerprint, 4G", imgs: ["https://images.unsplash.com/photo-1565849904461-04a58ad377e0?w=400&q=70", "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&q=70"] },
-  { name: "Kids Learning Tablet 7\"", cat: "phones", oldPrice: 9500, price: 7499, disc: "-21%", desc: "Wi-Fi, Shockproof Case, 32GB", imgs: ["https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&q=70", "https://images.unsplash.com/photo-1585790050230-5dd28404ccb9?w=400&q=70"] },
-  { name: "10.1 Inch HD Tablet", cat: "phones", oldPrice: 18500, price: 14999, disc: "-19%", desc: "Dual SIM 4G, Keyboard Case", imgs: ["https://images.unsplash.com/photo-1585790050230-5dd28404ccb9?w=400&q=70", "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&q=70"] },
-  { name: "Smart Watch Ultra", cat: "phones", oldPrice: 4500, price: 3150, disc: "-30%", desc: "Bluetooth Calls, Heart Rate, IP68", imgs: ["https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=70", "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=400&q=70", "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=400&q=70"] },
-  { name: "Fitness Smart Band", cat: "phones", oldPrice: 2200, price: 1499, disc: "-32%", desc: "Step Counter, Sleep Monitor", imgs: ["https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=400&q=70", "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=70"] },
+  { name: "Smart Watch Ultra", cat: "phones", oldPrice: 4500, price: 3150, disc: "-30%", desc: "Bluetooth Calls, Heart Rate, IP68", imgs: ["https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=70", "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=400&q=70"] },
   { name: "Wireless Bluetooth Earbuds", cat: "phones", oldPrice: 2500, price: 1499, disc: "-40%", desc: "Noise Cancelling, Charging Case", imgs: ["https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400&q=70", "https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=400&q=70"] },
-  { name: "Pro ANC Wireless Pods", cat: "phones", oldPrice: 3800, price: 2499, disc: "-34%", desc: "Deep Bass, Touch Control, 24h", imgs: ["https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=400&q=70", "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400&q=70"] },
   { name: "20,000mAh Fast Power Bank", cat: "phones", oldPrice: 3200, price: 2399, disc: "-25%", desc: "Dual USB + Type-C, LED Display", imgs: ["https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=400&q=70", "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=400&q=70"] },
-  { name: "10,000mAh Slim Power Bank", cat: "phones", oldPrice: 2000, price: 1399, disc: "-30%", desc: "Pocket Size, Dual Output", imgs: ["https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=400&q=70", "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=400&q=70"] },
   { name: "33W Type-C Fast Charger", cat: "phones", oldPrice: 1500, price: 999, disc: "-33%", desc: "Adapter + Braided Cable", imgs: ["https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=400&q=70", "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=400&q=70"] },
-  { name: "LED Ring Light with Tripod", cat: "phones", oldPrice: 3500, price: 2299, disc: "-34%", desc: "10-Inch, 3 Light Modes, Phone Holder", imgs: ["https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=400&q=70", "https://images.unsplash.com/photo-1527011046414-4781f1f94f8c?w=400&q=70"] },
-  { name: "Wireless Clip Microphone", cat: "phones", oldPrice: 2400, price: 1599, disc: "-33%", desc: "Type-C / iPhone, TikTok & YouTube", imgs: ["https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=400&q=70", "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=400&q=70"] },
-  { name: "Car Phone Holder Mount", cat: "phones", oldPrice: 1200, price: 750, disc: "-38%", desc: "360° Dashboard & Windshield Grip", imgs: ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&q=70", "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=400&q=70"] },
-  { name: "128GB High Speed Memory Card", cat: "phones", oldPrice: 1800, price: 1299, disc: "-28%", desc: "Class 10 MicroSD + Adapter", imgs: ["https://images.unsplash.com/photo-1565849904461-04a58ad377e0?w=400&q=70", "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&q=70"] },
+  { name: "LED Ring Light with Tripod", cat: "phones", oldPrice: 3500, price: 2299, disc: "-34%", desc: "10-Inch, 3 Light Modes", imgs: ["https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=400&q=70", "https://images.unsplash.com/photo-1527011046414-4781f1f94f8c?w=400&q=70"] },
 
-  // --- TV, AUDIO & COMPUTING (16 ITEMS) ---
+  // --- TV, AUDIO & COMPUTING ---
   { name: "LED TV 43 Inch Smart", cat: "tv", oldPrice: 35000, price: 28999, disc: "-17%", desc: "Full HD, Netflix, YouTube, HDMI", imgs: ["https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&q=70", "https://images.unsplash.com/photo-1593784991095-a205069470b6?w=400&q=70"] },
   { name: "LED TV 32 Inch Digital", cat: "tv", oldPrice: 19500, price: 15499, disc: "-21%", desc: "HD Ready, Free-to-Air, USB", imgs: ["https://images.unsplash.com/photo-1593784991095-a205069470b6?w=400&q=70", "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&q=70"] },
-  { name: "55 Inch 4K UHD Smart TV", cat: "tv", oldPrice: 58000, price: 47999, disc: "-17%", desc: "Frameless, Android TV, Dolby", imgs: ["https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&q=70", "https://images.unsplash.com/photo-1593784991095-a205069470b6?w=400&q=70"] },
   { name: "2.1CH Subwoofer Home Theater", cat: "tv", oldPrice: 9500, price: 7299, disc: "-23%", desc: "Bluetooth, FM Radio, USB, Remote", imgs: ["https://images.unsplash.com/photo-1545454675-3531b543be5d?w=400&q=70", "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&q=70"] },
-  { name: "3.1CH Heavy Bass Woofer", cat: "tv", oldPrice: 13500, price: 10499, disc: "-22%", desc: "120W Output, LED Display, BT", imgs: ["https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&q=70", "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=400&q=70"] },
   { name: "Portable Bluetooth Speaker", cat: "tv", oldPrice: 2800, price: 1899, disc: "-32%", desc: "Waterproof, RGB Lights, 10h Play", imgs: ["https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&q=70", "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=400&q=70"] },
-  { name: "TV Soundbar with Subwoofer", cat: "tv", oldPrice: 11000, price: 8499, disc: "-23%", desc: "Slim Design, HDMI ARC, Bluetooth", imgs: ["https://images.unsplash.com/photo-1545454675-3531b543be5d?w=400&q=70", "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&q=70"] },
-  { name: "Over-Ear Wireless Headphones", cat: "tv", oldPrice: 3500, price: 2299, disc: "-34%", desc: "Foldable, Soft Cushions, SD Slot", imgs: ["https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=70", "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400&q=70"] },
   { name: "Laptop 14 Inch Core i5", cat: "tv", oldPrice: 45000, price: 37999, disc: "-16%", desc: "8GB RAM, 256GB SSD, Windows 11", imgs: ["https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&q=70", "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=400&q=70"] },
-  { name: "Student Laptop 15.6 Inch", cat: "tv", oldPrice: 32000, price: 25999, disc: "-19%", desc: "8GB RAM, 512GB SSD, Office Ready", imgs: ["https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=400&q=70", "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&q=70"] },
   { name: "Wireless Keyboard & Mouse", cat: "tv", oldPrice: 2500, price: 1799, disc: "-28%", desc: "2.4GHz USB Receiver, Silent Keys", imgs: ["https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&q=70", "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&q=70"] },
-  { name: "Rechargeable Wireless Mouse", cat: "tv", oldPrice: 1200, price: 799, disc: "-33%", desc: "Silent Click, LED Light, Slim", imgs: ["https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&q=70", "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&q=70"] },
-  { name: "Heavy Duty TV Wall Bracket", cat: "tv", oldPrice: 1800, price: 1199, disc: "-33%", desc: "Fits 32\" to 65\" TVs + Spirit Level", imgs: ["https://images.unsplash.com/photo-1593784991095-a205069470b6?w=400&q=70", "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&q=70"] },
-  { name: "Android 4K Smart TV Box", cat: "tv", oldPrice: 4500, price: 3299, disc: "-27%", desc: "4GB RAM, 64GB ROM, Netflix Ready", imgs: ["https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&q=70", "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=400&q=70"] },
-  { name: "4-Way Surge Extension Cable", cat: "tv", oldPrice: 1500, price: 999, disc: "-33%", desc: "3 Meters, Individual Switches + USB", imgs: ["https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=400&q=70", "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=400&q=70"] },
-  { name: "500GB External Hard Drive", cat: "tv", oldPrice: 4800, price: 3699, disc: "-23%", desc: "USB 3.0 High Speed Portable HDD", imgs: ["https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=400&q=70", "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&q=70"] },
 
-  // --- KITCHEN & HOME APPLIANCES (18 ITEMS) ---
+  // --- KITCHEN & HOME APPLIANCES ---
   { name: "Fridge Double Door 200L", cat: "kitchen", oldPrice: 45000, price: 37999, disc: "-16%", desc: "No Frost, Energy Saving, Silver", imgs: ["https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=400&q=70", "https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=400&q=70"] },
-  { name: "Single Door Fridge 130L", cat: "kitchen", oldPrice: 28000, price: 22999, disc: "-18%", desc: "Freezer Compartment, Low Noise", imgs: ["https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=400&q=70", "https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=400&q=70"] },
   { name: "Twin Tub Washing Machine 8kg", cat: "kitchen", oldPrice: 24000, price: 19499, disc: "-19%", desc: "Wash & Spin Dryer, Rust-Proof", imgs: ["https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?w=400&q=70", "https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?w=400&q=70"] },
-  { name: "20L Digital Microwave Oven", cat: "kitchen", oldPrice: 11500, price: 8999, disc: "-22%", desc: "700W, Defrost, Glass Turntable", imgs: ["https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?w=400&q=70", "https://images.unsplash.com/photo-1585659722983-3a675dabf23d?w=400&q=70"] },
   { name: "4.5L Digital Air Fryer", cat: "kitchen", oldPrice: 9500, price: 6999, disc: "-26%", desc: "Oil-Free Cooking, Touch Screen", imgs: ["https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400&q=70", "https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?w=400&q=70"] },
   { name: "2-in-1 Heavy Duty Blender", cat: "kitchen", oldPrice: 4800, price: 3499, disc: "-27%", desc: "1.5L Jar + Dry Mill Grinder", imgs: ["https://images.unsplash.com/photo-1570222094114-d074f7e1e5e5?w=400&q=70", "https://images.unsplash.com/photo-1585515320310-259814833e62?w=400&q=70"] },
   { name: "2.0L Electric Kettle", cat: "kitchen", oldPrice: 2200, price: 1399, disc: "-36%", desc: "Stainless Steel, Auto Shut-Off", imgs: ["https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=400&q=70", "https://images.unsplash.com/photo-1522012188892-24beb302783d?w=400&q=70"] },
-  { name: "Hot & Normal Water Dispenser", cat: "kitchen", oldPrice: 8500, price: 6499, disc: "-24%", desc: "Storage Cabinet, Child Safety Lock", imgs: ["https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=400&q=70", "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=400&q=70"] },
-  { name: "2-Burner Stainless Gas Cooker", cat: "kitchen", oldPrice: 4200, price: 2999, disc: "-29%", desc: "Auto Ignition, Brass Burners", imgs: ["https://images.unsplash.com/photo-1556911220-bff31c812dba?w=400&q=70", "https://images.unsplash.com/photo-1584990347449-a2d4c2c044c9?w=400&q=70"] },
   { name: "Non-Stick Cookware Set (7 Pcs)", cat: "kitchen", oldPrice: 6800, price: 4999, disc: "-26%", desc: "Granite Coated Pots + Glass Lids", imgs: ["https://images.unsplash.com/photo-1584990347449-a2d4c2c044c9?w=400&q=70", "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=400&q=70"] },
-  { name: "Dry Steam Iron Box", cat: "kitchen", oldPrice: 2000, price: 1399, disc: "-30%", desc: "Non-Stick Soleplate, Temp Control", imgs: ["https://images.unsplash.com/photo-1585659722983-3a675dabf23d?w=400&q=70", "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=400&q=70"] },
-  { name: "4-Slice Sandwich Maker", cat: "kitchen", oldPrice: 2800, price: 1999, disc: "-29%", desc: "Non-Stick Grill Plates, Indicator", imgs: ["https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?w=400&q=70", "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400&q=70"] },
   { name: "16-Inch Standing Pedestal Fan", cat: "kitchen", oldPrice: 4500, price: 3299, disc: "-27%", desc: "3 Speeds, Quiet Motor, Adjustable", imgs: ["https://images.unsplash.com/photo-1618941716939-553df3c6c278?w=400&q=70", "https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=400&q=70"] },
-  { name: "2.0L Vacuum Thermos Flask", cat: "kitchen", oldPrice: 1800, price: 1299, disc: "-28%", desc: "Keeps Hot 24 Hours, Stainless Steel", imgs: ["https://images.unsplash.com/photo-1522012188892-24beb302783d?w=400&q=70", "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=400&q=70"] },
-  { name: "360° Spin Mop & Bucket Set", cat: "kitchen", oldPrice: 2400, price: 1699, disc: "-29%", desc: "2 Microfiber Heads, Self-Wringing", imgs: ["https://images.unsplash.com/photo-1584990347449-a2d4c2c044c9?w=400&q=70", "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?w=400&q=70"] },
-  { name: "5x6 Heavy Warm Duvet Set", cat: "kitchen", oldPrice: 3800, price: 2799, disc: "-26%", desc: "1 Duvet + 1 Bed Sheet + 2 Pillowcases", imgs: ["https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=400&q=70", "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=400&q=70"] },
-  { name: "6x6 Cotton Bed Sheet Set", cat: "kitchen", oldPrice: 2200, price: 1599, disc: "-27%", desc: "Non-Fading Pure Cotton + 4 Pillowcases", imgs: ["https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=400&q=70", "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=400&q=70"] },
-  { name: "3-Tier Metallic Shoe Rack", cat: "kitchen", oldPrice: 2200, price: 1499, disc: "-32%", desc: "Holds 12 Pairs, Easy Assembly", imgs: ["https://images.unsplash.com/photo-1556911220-bff31c812dba?w=400&q=70", "https://images.unsplash.com/photo-1584990347449-a2d4c2c044c9?w=400&q=70"] },
+  { name: "5x6 Heavy Warm Duvet Set", cat: "kitchen", oldPrice: 3800, price: 2799, desc: "1 Duvet + Sheets + Pillowcases", imgs: ["https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=400&q=70", "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=400&q=70"] },
 
-  // --- FASHION & SHOES (16 ITEMS) ---
-  { name: "Men's Sports Running Sneakers", cat: "fashion", oldPrice: 2800, price: 2100, disc: "-25%", desc: "Breathable Mesh, Sizes 40 - 45", imgs: ["https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=70", "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=400&q=70", "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=400&q=70"] },
+  // --- FASHION & SHOES ---
+  { name: "Men's Sports Running Sneakers", cat: "fashion", oldPrice: 2800, price: 2100, disc: "-25%", desc: "Breathable Mesh, Sizes 40 - 45", imgs: ["https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=70", "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=400&q=70"] },
   { name: "Classic White Casual Sneakers", cat: "fashion", oldPrice: 2600, price: 1899, disc: "-27%", desc: "Unisex PU Leather, Sizes 37 - 44", imgs: ["https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=400&q=70", "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=70"] },
-  { name: "Men's Leather Official Shoes", cat: "fashion", oldPrice: 3800, price: 2799, disc: "-26%", desc: "Durable Rubber Sole, Sizes 40 - 45", imgs: ["https://images.unsplash.com/photo-1614252369475-531eba835eb1?w=400&q=70", "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=70"] },
-  { name: "Ladies Flat Doll Shoes", cat: "fashion", oldPrice: 1600, price: 1099, disc: "-31%", desc: "Soft Cushion Insole, Sizes 37 - 42", imgs: ["https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=400&q=70", "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=400&q=70"] },
-  { name: "Unisex Cushion Foam Slides", cat: "fashion", oldPrice: 1200, price: 799, disc: "-33%", desc: "Non-Slip Bathroom & Outdoor Sandals", imgs: ["https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=400&q=70", "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=70"] },
-  { name: "Men's Slim Fit Cargo Pants", cat: "fashion", oldPrice: 2400, price: 1799, disc: "-25%", desc: "Stretch Cotton, 6 Pockets, Sizes 30-38", imgs: ["https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=400&q=70", "https://images.unsplash.com/photo-1542272604-787c3835535d?w=400&q=70"] },
   { name: "Men's Stretch Denim Jeans", cat: "fashion", oldPrice: 2200, price: 1599, disc: "-27%", desc: "Non-Fading Navy Blue, Sizes 30-38", imgs: ["https://images.unsplash.com/photo-1542272604-787c3835535d?w=400&q=70", "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=400&q=70"] },
-  { name: "3-Pack Men's Cotton T-Shirts", cat: "fashion", oldPrice: 1800, price: 1299, disc: "-28%", desc: "Black, White & Grey Crew Neck", imgs: ["https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&q=70", "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=400&q=70"] },
   { name: "Unisex Warm Fleece Hoodie", cat: "fashion", oldPrice: 2200, price: 1599, disc: "-27%", desc: "Heavy Cotton Fleece, Sizes M - XXL", imgs: ["https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400&q=70", "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&q=70"] },
   { name: "Ladies High-Waist Skinny Jeans", cat: "fashion", oldPrice: 2000, price: 1450, disc: "-28%", desc: "Super Stretch Denim, Sizes 28 - 36", imgs: ["https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=400&q=70", "https://images.unsplash.com/photo-1542272604-787c3835535d?w=400&q=70"] },
-  { name: "Ladies Bodycon Midi Dress", cat: "fashion", oldPrice: 2200, price: 1599, disc: "-27%", desc: "Stretch Ribbed Fabric, Sizes S - XL", imgs: ["https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400&q=70", "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=400&q=70"] },
   { name: "Men's Stainless Steel Watch", cat: "fashion", oldPrice: 2500, price: 1699, disc: "-32%", desc: "Water Resistant, Luminous Hands", imgs: ["https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=400&q=70", "https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?w=400&q=70"] },
-  { name: "Ladies Rose Gold Watch Set", cat: "fashion", oldPrice: 2200, price: 1499, disc: "-32%", desc: "Watch + Matching Bracelet", imgs: ["https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?w=400&q=70", "https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=400&q=70"] },
-  { name: "Polarized UV400 Sunglasses", cat: "fashion", oldPrice: 1400, price: 899, disc: "-36%", desc: "Unisex Classic Frame + Hard Case", imgs: ["https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=400&q=70", "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400&q=70"] },
-  { name: "6-Pack Men's Cotton Boxers", cat: "fashion", oldPrice: 1600, price: 1099, disc: "-31%", desc: "Breathable Stretch Waistband", imgs: ["https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&q=70", "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=400&q=70"] },
-  { name: "Men's Reversible Leather Belt", cat: "fashion", oldPrice: 1300, price: 850, disc: "-35%", desc: "Black & Brown, Auto-Lock Buckle", imgs: ["https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=400&q=70", "https://images.unsplash.com/photo-1614252369475-531eba835eb1?w=400&q=70"] },
 
-  // --- BEAUTY, BAGS & BABY (14 ITEMS) ---
+  // --- BEAUTY, BAGS & PERSONAL CARE ---
   { name: "Ladies Classic Handbag (3-in-1)", cat: "beauty", oldPrice: 3200, price: 2199, disc: "-31%", desc: "Tote Bag + Crossbody + Wallet", imgs: ["https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=70", "https://images.unsplash.com/photo-1591561954557-26941169b49e?w=400&q=70"] },
   { name: "Anti-Theft Laptop Backpack", cat: "beauty", oldPrice: 2800, price: 1999, disc: "-29%", desc: "USB Charging Port, Water Resistant", imgs: ["https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&q=70", "https://images.unsplash.com/photo-1581605405669-fcdf81165afa?w=400&q=70"] },
-  { name: "Men's Leather Crossbody Bag", cat: "beauty", oldPrice: 1800, price: 1250, disc: "-31%", desc: "Multiple Zip Pockets, Adjustable Strap", imgs: ["https://images.unsplash.com/photo-1581605405669-fcdf81165afa?w=400&q=70", "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&q=70"] },
-  { name: "Men's Slim Bi-Fold Wallet", cat: "beauty", oldPrice: 1200, price: 750, disc: "-38%", desc: "Card Slots + Coin Pocket + ID Window", imgs: ["https://images.unsplash.com/photo-1627123424574-724758594e93?w=400&q=70", "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=70"] },
   { name: "Vitamin C Face Serum & Cream", cat: "beauty", oldPrice: 2400, price: 1699, disc: "-29%", desc: "Brightening & Hydrating Skincare Set", imgs: ["https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400&q=70", "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400&q=70"] },
-  { name: "Rechargeable Hair Clipper Trimmer", cat: "beauty", oldPrice: 2200, price: 1499, disc: "-32%", desc: "Cordless Barber Shaver + 4 Guide Combs", imgs: ["https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&q=70", "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400&q=70"] },
+  { name: "Rechargeable Hair Clipper Trimmer", cat: "beauty", oldPrice: 2200, price: 1499, disc: "-32%", desc: "Cordless Shaver + 4 Guide Combs", imgs: ["https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&q=70", "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400&q=70"] },
   { name: "2000W Salon Hair Blow Dryer", cat: "beauty", oldPrice: 2600, price: 1850, disc: "-29%", desc: "Hot & Cold Settings + Concentrator", imgs: ["https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&q=70", "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&q=70"] },
-  { name: "Ceramic Hair Straightener Flat Iron", cat: "beauty", oldPrice: 2000, price: 1399, disc: "-30%", desc: "Fast Heat-Up, Temperature Display", imgs: ["https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&q=70", "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400&q=70"] },
-  { name: "24-Piece Makeup Brush Set", cat: "beauty", oldPrice: 1800, price: 1199, disc: "-33%", desc: "Soft Synthetic Bristles + Leather Pouch", imgs: ["https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&q=70", "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400&q=70"] },
-  { name: "Long-Lasting Men's Perfume 100ml", cat: "beauty", oldPrice: 2500, price: 1750, disc: "-30%", desc: "Woody & Fresh Eau de Parfum", imgs: ["https://images.unsplash.com/photo-1541643600914-78b084683601?w=400&q=70", "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=400&q=70"] },
-  { name: "Ladies Sweet Floral Perfume 100ml", cat: "beauty", oldPrice: 2500, price: 1750, disc: "-30%", desc: "All-Day Scent, Elegant Glass Bottle", imgs: ["https://images.unsplash.com/photo-1594035910387-fea47794261f?w=400&q=70", "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400&q=70"] },
-  { name: "Digital Bathroom Weighing Scale", cat: "beauty", oldPrice: 2000, price: 1399, disc: "-30%", desc: "Tempered Glass, LCD Display, 180kg", imgs: ["https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400&q=70", "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400&q=70"] },
-  { name: "Baby Diaper Maternity Backpack", cat: "beauty", oldPrice: 2800, price: 1999, disc: "-29%", desc: "Insulated Bottle Pockets, Waterproof", imgs: ["https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&q=70", "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=70"] },
-  { name: "4-Piece Gold Jewelry Gift Set", cat: "beauty", oldPrice: 1600, price: 1050, disc: "-34%", desc: "Necklace, Earrings, Bracelet & Ring", imgs: ["https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&q=70", "https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?w=400&q=70"] }
+
+  // --- SUPERMARKET & GROCERIES ---
+  { name: "Fresh Cooking Oil 5 Litres", cat: "supermarket", oldPrice: 1450, price: 1199, disc: "-17%", desc: "Pure Vegetable Cooking Oil Canister", imgs: ["https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400&q=70", "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=400&q=70"] },
+  { name: "Premium Long Grain Rice 5kg", cat: "supermarket", oldPrice: 950, price: 799, disc: "-16%", desc: "Pishori Grade A Clean Rice", imgs: ["https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&q=70", "https://images.unsplash.com/photo-1584990347449-a2d4c2c044c9?w=400&q=70"] },
+  { name: "Cached Wheat Flour 2kg (Pack of 3)", cat: "supermarket", oldPrice: 480, price: 399, disc: "-17%", desc: "For Chapati, Mandazi & Baking", imgs: ["https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&q=70", "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&q=70"] },
+  { name: "Instant Breakfast Tea Bags 100s", cat: "supermarket", oldPrice: 350, price: 280, disc: "-20%", desc: "Rich Aroma Black Tea Leaves", imgs: ["https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=400&q=70", "https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=400&q=70"] },
+  { name: "Sugar White Refined 2kg", cat: "supermarket", oldPrice: 320, price: 270, disc: "-15%", desc: "Clean Sweet Cane Sugar", imgs: ["https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&q=70", "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400&q=70"] },
+  { name: "Laundry Washing Powder 3kg", cat: "supermarket", oldPrice: 750, price: 599, disc: "-20%", desc: "High Foam Stain Remover Detergent", imgs: ["https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=400&q=70", "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?w=400&q=70"] },
+  { name: "Antiseptic Liquid Soap 750ml", cat: "supermarket", oldPrice: 600, price: 450, disc: "-25%", desc: "Kills 99.9% Germs Disinfectant", imgs: ["https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=70", "https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=400&q=70"] },
+  { name: "Toilet Tissue Paper (10 Pack)", cat: "supermarket", oldPrice: 500, price: 399, disc: "-22%", desc: "2-Ply Soft & Strong Rolls", imgs: ["https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=400&q=70", "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=70"] },
+
+  // --- BABY CARE & TOYS ---
+  { name: "Baby Jumbo Diapers Size 3 (80pcs)", cat: "baby", oldPrice: 1800, price: 1499, disc: "-17%", desc: "Super Absorbent, Leak Guard", imgs: ["https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&q=70", "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=400&q=70"] },
+  { name: "Baby Jumbo Diapers Size 4 (70pcs)", cat: "baby", oldPrice: 1800, price: 1499, disc: "-17%", desc: "Soft Breathable Cotton, All Night Dry", imgs: ["https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=400&q=70", "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&q=70"] },
+  { name: "Baby Wipes Sensitive (3 Packs)", cat: "baby", oldPrice: 450, price: 320, disc: "-28%", desc: "Alcohol-Free with Aloe Vera", imgs: ["https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=70", "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&q=70"] },
+  { name: "Foldable Baby Walker with Music", cat: "baby", oldPrice: 3500, price: 2699, disc: "-23%", desc: "Adjustable Height, Safety Brakes", imgs: ["https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=400&q=70", "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&q=70"] },
+  { name: "Kids Ride-On Tricycle Bicycle", cat: "baby", oldPrice: 4200, price: 3199, disc: "-24%", desc: "Sturdy Steel Frame + Storage Basket", imgs: ["https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?w=400&q=70", "https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=400&q=70"] },
+
+  // --- CAR & AUTO ACCESSORIES ---
+  { name: "Car Dash Camera 1080P HD", cat: "auto", oldPrice: 3500, price: 2499, disc: "-28%", desc: "Night Vision, G-Sensor, Loop Rec", imgs: ["https://images.unsplash.com/photo-1502877338535-766e1452684a?w=400&q=70", "https://images.unsplash.com/photo-1563720223185-11003d516935?w=400&q=70"] },
+  { name: "Dual USB Car Charger Fast", cat: "auto", oldPrice: 900, price: 550, disc: "-38%", desc: "QC 3.0 Metal Voltage Display", imgs: ["https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=400&q=70", "https://images.unsplash.com/photo-1502877338535-766e1452684a?w=400&q=70"] },
+  { name: "Heavy Duty Car Vacuum Cleaner", cat: "auto", oldPrice: 2400, price: 1699, disc: "-29%", desc: "12V Powerful Suction Wet & Dry", imgs: ["https://images.unsplash.com/photo-1563720223185-11003d516935?w=400&q=70", "https://images.unsplash.com/photo-1502877338535-766e1452684a?w=400&q=70"] },
+  { name: "Waterproof Car Cover Medium", cat: "auto", oldPrice: 2800, price: 1999, disc: "-29%", desc: "UV Protected All-Weather Shield", imgs: ["https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400&q=70", "https://images.unsplash.com/photo-1563720223185-11003d516935?w=400&q=70"] },
+  { name: "Leather Car Seat Cushion Set", cat: "auto", oldPrice: 4500, price: 3399, disc: "-24%", desc: "Universal Front & Rear Protection", imgs: ["https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&q=70", "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400&q=70"] }
 ];
 
 let cart = [];
