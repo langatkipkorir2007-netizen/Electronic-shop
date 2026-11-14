@@ -24,612 +24,126 @@
     <!-- Main Navigation Header -->
     <header class="sticky top-0 z-40 bg-white shadow-sm border-b border-gray-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-            <!-- Logo -->
             <div class="flex items-center gap-2 cursor-pointer" onclick="resetFilters()">
-                <div class="bg-red-600 text-white font-bold px-3 py-1.5 rounded-lg text-lg tracking-wider flex items-center gap-1 shadow-md">
-                    <i class="fa-solid fa-bag-shopping"></i> Kili<span class="text-yellow-300">mall</span>
+                <div class="bg-red-600 text-white font-bold px-3 py-1.5 rounded-lg tracking-wider flex items-center gap-1 shadow-md">
+                    <i class="fa-solid fa-bag-shopping"></i> Kili mall
                 </div>
             </div>
-
-            <!-- Search Bar -->
-            <div class="flex-1 max-w-xl hidden md:flex items-center">
-                <div class="relative w-full">
-                    <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Search products, brands and categories..." class="w-full bg-gray-100 border border-transparent focus:border-red-500 focus:bg-white text-sm rounded-full pl-4 pr-12 py-2.5 transition outline-none">
-                    <button class="absolute right-1 top-1/2 -translate-y-1/2 bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-full text-sm transition">
-                        <i class="fa-solid fa-search"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Header Actions -->
-            <div class="flex items-center gap-4 sm:gap-6">
-                <button onclick="toggleCart()" class="relative flex items-center gap-2 text-gray-700 hover:text-red-600 transition p-2 rounded-xl hover:bg-red-50">
-                    <i class="fa-solid fa-cart-shopping text-xl"></i>
-                    <span class="hidden sm:inline font-medium text-sm">Cart</span>
-                    <span id="cartBadge" class="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full shadow-sm">0</span>
-                </button>
-            </div>
-        </div>
-        <!-- Mobile Search Bar -->
-        <div class="p-3 bg-white border-t border-gray-100 md:hidden">
-            <div class="relative w-full">
-                <input type="text" id="mobileSearchInput" oninput="handleMobileSearch()" placeholder="Search products..." class="w-full bg-gray-100 border border-transparent focus:border-red-500 focus:bg-white text-sm rounded-full pl-4 pr-12 py-2 transition outline-none">
-                <button class="absolute right-1 top-1/2 -translate-y-1/2 bg-red-600 text-white px-3 py-1 rounded-full text-xs">
-                    <i class="fa-solid fa-search"></i>
-                </button>
+            <div class="flex-1 max-w-xl relative">
+                <input type="text" placeholder="Search products..." class="w-full bg-gray-100 rounded-full py-2 pl-4 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-red-500">
+                <button class="absolute right-3 top-2.5 text-red-600"><i class="fa-solid fa-magnifying-glass"></i></button>
             </div>
         </div>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <!-- Hero Banner -->
-        <div class="bg-gradient-to-r from-red-600 to-orange-500 rounded-2xl p-6 sm:p-10 text-white shadow-lg mb-8 flex flex-col md:flex-row items-center justify-between">
-            <div class="max-w-lg mb-6 md:mb-0">
-                <span class="bg-white/20 text-yellow-300 text-xs uppercase tracking-wider px-3 py-1 rounded-full font-semibold mb-3 inline-block">Mega M-Pesa Deals</span>
-                <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-3">Shop Quality & Save More</h1>
-                <p class="text-red-100 text-sm sm:text-base mb-5">Pay instantly via M-Pesa STK push and get your items delivered within 24 hours across major towns in Kenya.</p>
-                <button onclick="document.getElementById('productsSection').scrollIntoView({behavior: 'smooth'})" class="bg-white text-red-600 hover:bg-yellow-300 hover:text-red-900 font-bold px-6 py-3 rounded-xl shadow transition text-sm">
-                    Explore Catalog
-                </button>
-            </div>
-            <div class="flex items-center justify-center">
-                <div class="bg-white/10 p-6 rounded-2xl backdrop-blur-md border border-white/20 text-center">
-                    <i class="fa-solid fa-shield-halved text-5xl text-yellow-300 mb-2"></i>
-                    <h3 class="font-bold text-lg">100% Safe Checkout</h3>
-                    <p class="text-xs text-red-100 mt-1">Instant M-Pesa Payment Integration</p>
-                </div>
-            </div>
+    <!-- Main Content Catalog -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-bold flex items-center gap-2">
+                <i class="fa-solid fa-fire text-red-600"></i> All Products Catalog
+            </h2>
+            <span id="item-counter" class="text-sm text-gray-500 font-medium">Showing items...</span>
         </div>
 
-        <!-- Category Filter Tabs -->
-        <div id="productsSection" class="mb-6">
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
-                    <i class="fa-solid fa-fire text-red-600"></i> All Products Catalog
-                </h2>
-                <span id="productCount" class="text-sm text-gray-500 font-medium">Showing all items</span>
-            </div>
-            
-            <!-- Category Buttons -->
-            <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-                <button onclick="filterByCategory('All')" class="category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-red-600 text-white shadow-sm transition shrink-0">All Products</button>
-                <button onclick="filterByCategory('Smartphones')" class="category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 transition shrink-0">Smartphones</button>
-                <button onclick="filterByCategory('Electronics')" class="category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 transition shrink-0">Electronics</button>
-                <button onclick="filterByCategory('Home Appliances')" class="category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 transition shrink-0">Home Appliances</button>
-                <button onclick="filterByCategory('Fashion')" class="category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 transition shrink-0">Fashion</button>
-                <button onclick="filterByCategory('Beauty')" class="category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 transition shrink-0">Beauty & Care</button>
-            </div>
+        <!-- Product Grid Container -->
+        <div id="product-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            <!-- Dynamic products load here automatically -->
         </div>
 
-        <!-- Product Grid (Displays all diverse products immediately) -->
-        <div id="productsGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-            <!-- Rendered via JS -->
+        <!-- Pagination Controls -->
+        <div class="flex justify-center items-center gap-4 mt-8 mb-4">
+            <button onclick="changePage(-1)" class="bg-white border border-gray-300 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-gray-100 shadow-sm">Previous</button>
+            <span id="page-indicator" class="text-sm font-medium text-gray-600">Page 1</span>
+            <button onclick="changePage(1)" class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-red-700 shadow-sm">Next</button>
         </div>
     </main>
 
-    <!-- Shopping Cart Modal / Drawer -->
-    <div id="cartModal" class="fixed inset-0 z-50 hidden">
-        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onclick="toggleCart()"></div>
-        <div class="absolute inset-y-0 right-0 max-w-md w-full bg-white shadow-2xl flex flex-col transform transition-transform">
-            <!-- Modal Header -->
-            <div class="p-4 sm:p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50">
-                <h3 class="font-bold text-lg text-gray-900 flex items-center gap-2">
-                    <i class="fa-solid fa-cart-shopping text-red-600"></i> Your Shopping Cart
-                </h3>
-                <button onclick="toggleCart()" class="text-gray-400 hover:text-gray-600 p-2 rounded-lg hover:bg-gray-200 transition">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
-
-            <!-- Cart Items Container -->
-            <div id="cartItemsContainer" class="flex-1 overflow-y-auto p-4 sm:p-6 divide-y divide-gray-100 space-y-4">
-                <!-- Dynamically populated cart items -->
-            </div>
-
-            <!-- Cart Footer & Checkout -->
-            <div class="p-4 sm:p-6 border-t border-gray-100 bg-gray-50">
-                <div class="flex items-center justify-between mb-4">
-                    <span class="text-gray-600 font-medium">Subtotal:</span>
-                    <span id="cartSubtotal" class="text-xl font-extrabold text-red-600">KSh 0</span>
-                </div>
-                <button onclick="checkout()" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-mobile-screen-button"></i> Checkout with M-Pesa
-                </button>
-                <p class="text-center text-xs text-gray-400 mt-3"><i class="fa-solid fa-lock"></i> Secured by Safaricom Daraja API</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Custom Notification Toast / Modal -->
-    <div id="notificationModal" class="fixed inset-0 z-50 hidden flex items-center justify-center px-4">
-        <div class="absolute inset-0 bg-black/40 backdrop-blur-xs" onclick="closeNotification()"></div>
-        <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 relative z-10 transform transition-all text-center">
-            <div id="notificationIcon" class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 shadow-inner">
-                <i class="fa-solid fa-check"></i>
-            </div>
-            <h3 id="notificationTitle" class="text-lg font-bold text-gray-900 mb-2">Success</h3>
-            <p id="notificationMessage" class="text-sm text-gray-600 mb-6 leading-relaxed">Action completed successfully.</p>
-            <button onclick="closeNotification()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-xl transition shadow">
-                OK
-            </button>
-        </div>
-    </div>
-
     <!-- Footer -->
-    <footer class="bg-white border-t border-gray-100 mt-12 py-8 text-center text-xs text-gray-500">
-        <p>&copy; 2026 Kilimall E-Commerce Kenya. All rights reserved.</p>
+    <footer class="bg-white border-t border-gray-200 text-center py-4 text-xs text-gray-500">
+        &copy; 2026 Kili mall Kenya. All rights reserved.
     </footer>
 
-    <!-- JavaScript Application Logic -->
+    <!-- JavaScript Logic for 3,000 Products & Pagination -->
     <script>
-        // Comprehensive Catalog of Products with High-Quality Unsplash Image URLs
-        const products = [
-            {
-                id: 1,
-                name: "XIAOMI Redmi 13C 6.74\" 4GB/128GB Smartphone - Starry Black",
-                price: 14499,
-                originalPrice: 18999,
-                rating: 4.6,
-                reviews: 1240,
-                category: "Smartphones",
-                image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=500&q=80"
-            },
-            {
-                id: 2,
-                name: "Oraimo FreePods 4 True Wireless Earbuds ANC Transparency Mode",
-                price: 2899,
-                originalPrice: 4500,
-                rating: 4.8,
-                reviews: 3510,
-                category: "Electronics",
-                image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=500&q=80"
-            },
-            {
-                id: 3,
-                name: "Binatone 1.5L Blender with Grinder Mill - White/Silver",
-                price: 3650,
-                originalPrice: 4800,
-                rating: 4.5,
-                reviews: 820,
-                category: "Home Appliances",
-                image: "https://images.unsplash.com/photo-1570222094114-d074f7e2e836?auto=format&fit=crop&w=500&q=80"
-            },
-            {
-                id: 4,
-                name: "Havit RGB Gaming Mechanical Keyboard & Mouse Combo",
-                price: 2499,
-                originalPrice: 3500,
-                rating: 4.4,
-                reviews: 540,
-                category: "Electronics",
-                image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=500&q=80"
-            },
-            {
-                id: 5,
-                name: "Smart Watch Ultra 8 Series with Bluetooth Calls & Fitness Tracker",
-                price: 1299,
-                originalPrice: 2999,
-                rating: 4.2,
-                reviews: 2150,
-                category: "Electronics",
-                image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80"
-            },
-            {
-                id: 6,
-                name: "Von 32\" Digital HD LED TV + Free Wall Bracket",
-                price: 13999,
-                originalPrice: 17500,
-                rating: 4.7,
-                reviews: 930,
-                category: "Home Appliances",
-                image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=500&q=80"
-            },
-            {
-                id: 7,
-                name: "Generic 10-Inch Ring Light with Tripod Stand for TikTok & Vlogging",
-                price: 1150,
-                originalPrice: 2200,
-                rating: 4.3,
-                reviews: 1420,
-                category: "Electronics",
-                image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=500&q=80"
-            },
-            {
-                id: 8,
-                name: "Bruhm 2-Burner Table Top Gas Cooker Heavy Duty",
-                price: 3200,
-                originalPrice: 4100,
-                rating: 4.6,
-                reviews: 710,
-                category: "Home Appliances",
-                image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=500&q=80"
-            },
-            {
-                id: 9,
-                name: "SAMSUNG Galaxy A15 6.5\" 4GB/128GB 5G Smartphone - Blue Black",
-                price: 19999,
-                originalPrice: 24500,
-                rating: 4.8,
-                reviews: 620,
-                category: "Smartphones",
-                image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=500&q=80"
-            },
-            {
-                id: 10,
-                name: "Ramtons 1.8L Stainless Steel Electric Kettle - Fast Boil",
-                price: 1850,
-                originalPrice: 2600,
-                rating: 4.5,
-                reviews: 1890,
-                category: "Home Appliances",
-                image: "https://images.unsplash.com/photo-1594385208974-2e75f8d7bb48?auto=format&fit=crop&w=500&q=80"
-            },
-            {
-                id: 11,
-                name: "JBL Go 3 Portable Waterproof Wireless Bluetooth Speaker",
-                price: 4200,
-                originalPrice: 5999,
-                rating: 4.9,
-                reviews: 2400,
-                category: "Electronics",
-                image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=500&q=80"
-            },
-            {
-                id: 12,
-                name: "Men's Casual Canvas Sneakers Slip-on Comfortable Shoes",
-                price: 1499,
-                originalPrice: 3000,
-                rating: 4.1,
-                reviews: 430,
-                category: "Fashion",
-                image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=500&q=80"
-            },
-            {
-                id: 13,
-                name: "NIVEA Perfect & Radiant Face Cream for Women 50ml",
-                price: 680,
-                originalPrice: 950,
-                rating: 4.8,
-                reviews: 4120,
-                category: "Beauty",
-                image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=500&q=80"
-            },
-            {
-                id: 14,
-                name: "OPPO A18 6.56\" 4GB/64GB Smartphone - Glowing Cyan",
-                price: 13499,
-                originalPrice: 16999,
-                rating: 4.5,
-                reviews: 980,
-                category: "Smartphones",
-                image: "https://images.unsplash.com/photo-1565849904461-04a58ad377e0?auto=format&fit=crop&w=500&q=80"
-            },
-            {
-                id: 15,
-                name: "Unisex Oversized Heavyweight Cotton Hoodie - Black",
-                price: 1899,
-                originalPrice: 3200,
-                rating: 4.4,
-                reviews: 670,
-                category: "Fashion",
-                image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=500&q=80"
-            },
-            {
-                id: 16,
-                name: "Professional Ionic Hair Dryer 2200W with Diffuser",
-                price: 2100,
-                originalPrice: 3400,
-                rating: 4.6,
-                reviews: 510,
-                category: "Beauty",
-                image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=500&q=80"
-            },
-            {
-                id: 17,
-                name: "Geepas 3-in-1 Multifunctional Sandwich Maker & Grill",
-                price: 3499,
-                originalPrice: 4999,
-                rating: 4.5,
-                reviews: 320,
-                category: "Home Appliances",
-                image: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=500&q=80"
-            },
-            {
-                id: 18,
-                name: "Infinix Hot 40i 6.56\" 8GB/256GB Smartphone - Horizon Gold",
-                price: 16999,
-                originalPrice: 21000,
-                rating: 4.7,
-                reviews: 1450,
-                category: "Smartphones",
-                image: "https://images.unsplash.com/photo-1575695342320-d2d2d2f9b73f?auto=format&fit=crop&w=500&q=80"
-            }
-        ];
+        const categories = ['Smartphones', 'Electronics', 'Home Appliances', 'Fashion', 'Accessories'];
+        const brands = ['Samsung', 'Apple', 'Xiaomi', 'Sony', 'LG', 'Huawei', 'OnePlus', 'Anker', 'JBL', 'Oppo', 'Tecno', 'Infinix'];
+        const allProducts = [];
 
-        // Application State
-        let cart = [];
-        let currentCategory = 'All';
-        let searchQuery = '';
-
-        // Format Currency in KSh
-        function formatCurrency(amount) {
-            return "KSh " + amount.toLocaleString();
-        }
-
-        // Custom Notification Handler
-        function showNotification(title, message, isSuccess = true) {
-            const modal = document.getElementById('notificationModal');
-            const titleEl = document.getElementById('notificationTitle');
-            const msgEl = document.getElementById('notificationMessage');
-            const iconEl = document.getElementById('notificationIcon');
-
-            titleEl.textContent = title;
-            msgEl.textContent = message;
-
-            if (isSuccess) {
-                iconEl.className = "w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 shadow-inner";
-                iconEl.innerHTML = '<i class="fa-solid fa-check"></i>';
-            } else {
-                iconEl.className = "w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 shadow-inner";
-                iconEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
-            }
-
-            modal.classList.remove('hidden');
-        }
-
-        function closeNotification() {
-            document.getElementById('notificationModal').classList.add('hidden');
-        }
-
-        // Filter by Category Tab
-        function filterByCategory(category) {
-            currentCategory = category;
+        // Generate 3,000 unique products programmatically
+        for (let i = 1; i <= 3000; i++) {
+            const category = categories[Math.floor(Math.random() * categories.length)];
+            const brand = brands[Math.floor(Math.random() * brands.length)];
             
-            // Update active button styles
-            const buttons = document.querySelectorAll('.category-btn');
-            buttons.forEach(btn => {
-                if (btn.textContent.includes(category) || (category === 'All' && btn.textContent === 'All Products')) {
-                    btn.className = "category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-red-600 text-white shadow-sm transition shrink-0";
-                } else {
-                    btn.className = "category-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 transition shrink-0";
-                }
+            allProducts.push({
+                id: i,
+                name: `${brand} Pro Item #${i}`,
+                category: category,
+                price: Math.floor(Math.random() * 45000) + 1000,
+                discount: Math.floor(Math.random() * 50) + 10,
+                image: `https://picsum.photos/seed/kili_product_${i}/300/300`
+            });
+        }
+
+        let currentPage = 1;
+        const itemsPerPage = 20;
+
+        function renderCatalog(page = 1) {
+            const startIndex = (page - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const currentItems = allProducts.slice(startIndex, endIndex);
+
+            const container = document.getElementById('product-container');
+            if (!container) return;
+            
+            container.innerHTML = '';
+
+            currentItems.forEach(product => {
+                container.innerHTML += `
+                    <div class="product-card bg-white p-3 rounded-lg shadow-sm border border-gray-100 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded font-bold">-${product.discount}%</span>
+                            <img src="${product.image}" alt="${product.name}" class="w-full h-36 object-cover my-2 rounded" />
+                            <h3 class="font-semibold text-xs text-gray-800 truncate">${product.name}</h3>
+                            <p class="text-xs text-gray-400 mt-0.5">${product.category}</p>
+                        </div>
+                        <div class="mt-2">
+                            <p class="text-red-600 font-bold text-sm">KSh ${product.price.toLocaleString()}</p>
+                        </div>
+                    </div>
+                `;
             });
 
-            applyFilters();
+            // Update counter text
+            const counter = document.getElementById('item-counter');
+            if (counter) {
+                counter.innerText = `Showing ${startIndex + 1}–${Math.min(endIndex, allProducts.length)} of ${allProducts.length} items`;
+            }
+
+            // Update page indicator
+            const pageIndicator = document.getElementById('page-indicator');
+            if (pageIndicator) {
+                pageIndicator.innerText = `Page ${page} of ${Math.ceil(allProducts.length / itemsPerPage)}`;
+            }
         }
 
-        // Handle Search Inputs
-        function handleSearch() {
-            searchQuery = document.getElementById('searchInput').value.toLowerCase();
-            document.getElementById('mobileSearchInput').value = document.getElementById('searchInput').value;
-            applyFilters();
+        function changePage(direction) {
+            const totalPages = Math.ceil(allProducts.length / itemsPerPage);
+            currentPage += direction;
+            
+            if (currentPage < 1) currentPage = 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            
+            renderCatalog(currentPage);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function handleMobileSearch() {
-            searchQuery = document.getElementById('mobileSearchInput').value.toLowerCase();
-            document.getElementById('searchInput').value = document.getElementById('mobileSearchInput').value;
-            applyFilters();
-        }
-
-        // Reset Filters
         function resetFilters() {
-            currentCategory = 'All';
-            searchQuery = '';
-            document.getElementById('searchInput').value = '';
-            document.getElementById('mobileSearchInput').value = '';
-            filterByCategory('All');
+            currentPage = 1;
+            renderCatalog(currentPage);
         }
 
-        // Core Filter & Render Engine
-        function applyFilters() {
-            let filtered = products;
-
-            if (currentCategory !== 'All') {
-                filtered = filtered.filter(p => p.category === currentCategory);
-            }
-
-            if (searchQuery.trim() !== '') {
-                filtered = filtered.filter(p => p.name.toLowerCase().includes(searchQuery));
-            }
-
-            renderProducts(filtered);
-        }
-
-        // Render Products Grid
-        function renderProducts(items) {
-            const grid = document.getElementById('productsGrid');
-            document.getElementById('productCount').textContent = `Showing ${items.length} items`;
-
-            if (items.length === 0) {
-                grid.innerHTML = `<div class="col-span-full py-16 text-center text-gray-400">
-                    <i class="fa-solid fa-box-open text-4xl mb-3 text-gray-300"></i>
-                    <p class="text-sm font-medium">No products found matching your criteria.</p>
-                </div>`;
-                return;
-            }
-
-            grid.innerHTML = items.map(product => {
-                const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
-                return `
-                    <div class="bg-white rounded-2xl p-3 sm:p-4 shadow-xs hover:shadow-xl transition border border-gray-100 flex flex-col justify-between group">
-                        <div>
-                            <div class="relative bg-gray-100 rounded-xl overflow-hidden mb-3 aspect-square flex items-center justify-center">
-                                <span class="absolute top-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md z-10">-${discount}%</span>
-                                <span class="absolute top-2 right-2 bg-white/80 backdrop-blur-xs text-gray-600 text-[10px] font-medium px-2 py-0.5 rounded-md z-10">${product.category}</span>
-                                <img src="${product.image}" alt="${product.name}" class="object-cover w-full h-full group-hover:scale-105 transition duration-300">
-                            </div>
-                            <h3 class="text-xs sm:text-sm font-medium text-gray-800 line-clamp-2 mb-2 group-hover:text-red-600 transition">${product.name}</h3>
-                            <div class="flex items-baseline gap-2 mb-1">
-                                <span class="text-sm sm:text-base font-extrabold text-red-600">${formatCurrency(product.price)}</span>
-                                <span class="text-[11px] text-gray-400 line-through">${formatCurrency(product.originalPrice)}</span>
-                            </div>
-                            <div class="flex items-center gap-1 text-xs text-gray-400 mb-3">
-                                <i class="fa-solid fa-star text-yellow-400"></i>
-                                <span class="font-medium text-gray-600">${product.rating}</span>
-                                <span>(${product.reviews})</span>
-                            </div>
-                        </div>
-                        <button onclick="addToCart(${product.id})" class="w-full bg-red-50 hover:bg-red-600 text-red-600 hover:text-white font-semibold py-2 px-3 rounded-xl text-xs sm:text-sm transition flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-cart-plus"></i> Add to Cart
-                        </button>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // Add to Cart
-        function addToCart(id) {
-            const product = products.find(p => p.id === id);
-            if (!product) return;
-
-            const existingItem = cart.find(i => i.id === id);
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                cart.push({ ...product, quantity: 1 });
-            }
-
-            updateCartUI();
-            showNotification("Added to Cart", `${product.name} has been added to your cart.`, true);
-        }
-
-        // Update Cart UI
-        function updateCartUI() {
-            const container = document.getElementById('cartItemsContainer');
-            const badge = document.getElementById('cartBadge');
-            const subtotalEl = document.getElementById('cartSubtotal');
-
-            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-            badge.textContent = totalItems;
-
-            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            subtotalEl.textContent = formatCurrency(subtotal);
-
-            if (cart.length === 0) {
-                container.innerHTML = `
-                    <div class="py-16 text-center text-gray-400">
-                        <i class="fa-solid fa-cart-shopping text-4xl mb-3 text-gray-300"></i>
-                        <p class="text-sm">Your cart is currently empty.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = cart.map(item => `
-                <div class="flex items-center gap-4 py-4">
-                    <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-xl bg-gray-100 shrink-0">
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-xs sm:text-sm font-medium text-gray-800 truncate">${item.name}</h4>
-                        <div class="text-red-600 font-bold text-sm mt-0.5">${formatCurrency(item.price)}</div>
-                        <div class="flex items-center gap-3 mt-2">
-                            <div class="flex items-center border border-gray-200 rounded-lg overflow-hidden bg-gray-50">
-                                <button onclick="updateQty(${item.id}, -1)" class="px-2.5 py-1 text-gray-600 hover:bg-gray-200 transition text-xs"><i class="fa-solid fa-minus"></i></button>
-                                <span class="px-3 text-xs font-semibold">${item.quantity}</span>
-                                <button onclick="updateQty(${item.id}, 1)" class="px-2.5 py-1 text-gray-600 hover:bg-gray-200 transition text-xs"><i class="fa-solid fa-plus"></i></button>
-                            </div>
-                            <button onclick="removeFromCart(${item.id})" class="text-gray-400 hover:text-red-600 text-sm transition">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Update Quantity (`updateQty`)
-        function updateQty(id, change) {
-            const item = cart.find(i => i.id === id);
-            if (item) {
-                item.quantity += change;
-                if (item.quantity <= 0) {
-                    cart = cart.filter(i => i.id !== id);
-                }
-                updateCartUI();
-            }
-        }
-
-        // Remove From Cart (`removeFromCart`)
-        function removeFromCart(id) {
-            cart = cart.filter(i => i.id !== id);
-            updateCartUI();
-        }
-
-        // Toggle Cart Modal
-        function toggleCart() {
-            document.getElementById('cartModal').classList.toggle('hidden');
-        }
-
-        // Checkout simulating M-Pesa STK Push
-        function checkout() {
-            if (cart.length === 0) {
-                showNotification("Cart Empty", "Your cart is empty! Add items before proceeding to checkout.", false);
-                return;
-            }
-
-            showNotification("STK Push Sent", "STK Push sent to your phone! Complete the M-Pesa payment to finalize your order.", true);
-
-            cart = [];
-            updateCartUI();
-            toggleCart();
-        }
-
-        // Initial Launch Render
-        renderProducts(products);
+        // Initial render on page load
+        renderCatalog(currentPage);
     </script>
-// 1. Generate 3,000 unique products dynamically
-const categories = ['Smartphones', 'Electronics', 'Home Appliances', 'Fashion', 'Accessories'];
-const brands = ['Samsung', 'Apple', 'Xiaomi', 'Sony', 'LG', 'Huawei', 'OnePlus', 'Anker', 'JBL'];
-const allProducts = [];
-
-for (let i = 1; i <= 3000; i++) {
-    const category = categories[Math.floor(Math.random() * categories.length)];
-    const brand = brands[Math.floor(Math.random() * brands.length)];
-    
-    allProducts.push({
-        id: i,
-        name: `${brand} Pro Item #${i}`,
-        category: category,
-        price: Math.floor(Math.random() * 45000) + 1000,
-        discount: Math.floor(Math.random() * 50) + 10,
-        image: `[https://picsum.photos/seed/kili_product_$](https://picsum.photos/seed/kili_product_$){i}/300/300`
-    });
-}
-
-// 2. Pagination Logic
-let currentPage = 1;
-const itemsPerPage = 20;
-
-function renderCatalog(page = 1) {
-    const startIndex = (page - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const currentItems = allProducts.slice(startIndex, endIndex);
-
-    const container = document.getElementById('product-container');
-    if (!container) return;
-    
-    container.innerHTML = '';
-
-    currentItems.forEach(product => {
-        container.innerHTML += `
-            <div class="product-card bg-white p-3 rounded-lg shadow-sm border border-gray-100">
-                <span class="text-xs bg-red-100 text-red-600 px-2 py-1 rounded">-${product.discount}%</span>
-                <img src="${product.image}" alt="${product.name}" class="w-full h-40 object-cover my-2 rounded" />
-                <h3 class="font-semibold text-sm truncate">${product.name}</h3>
-                <p class="text-red-600 font-bold mt-1">KSh ${product.price.toLocaleString()}</p>
-            </div>
-        `;
-    });
-
-    const counter = document.getElementById('item-counter');
-    if (counter) {
-        counter.innerText = `Showing ${startIndex + 1}–${endIndex} of ${allProducts.length} items`;
-    }
-}
-
-// Initial render
-renderCatalog(currentPage);
-
 </body>
 </html>
-```
