@@ -120,7 +120,10 @@ var NEW = [
 var grid=document.getElementById('grid') || document.querySelector('.products') || document.querySelector('main') || document.body;
 NEW.forEach(function(p){
   var d=document.createElement('div'); d.className='card';
-  d.innerHTML='<img src="'+p[1]+'" style="object-fit:contain;background:#fff" onerror="this.src=\'https://via.placeholder.com/400x300?text='+encodeURIComponent(p[0])+'\'"><div><h3>'+p[0]+'</h3><p><span class="old">KSh '+p[2]+'</span> <span class="disc">'+p[4]+' OFF</span></p><p class="new">KSh '+p[3]+'</p><a class="order" href="https://wa.me/254712555279?text=Hi, I want '+encodeURIComponent(p[0])+' at KSh '+p[3]+'">Order - Save!</a></div>';
+  d.innerHTML='<img src="'+p[1]+'" style="object-fit:contain;background:#fff" onerror="this.src=\'https://
+loremflickr.com/600/400/
+
+'+encodeURIComponent(p[0])+'\'"><div><h3>'+p[0]+'</h3><p><span class="old">KSh '+p[2]+'</span> <span class="disc">'+p[4]+' OFF</span></p><p class="new">KSh '+p[3]+'</p><a class="order" href="https://wa.me/254712555279?text=Hi, I want '+encodeURIComponent(p[0])+' at KSh '+p[3]+'">Order - Save!</a></div>';
   grid.appendChild(d);
 });
 </script>
