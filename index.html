@@ -124,4 +124,17 @@ NEW.forEach(function(p){
   grid.appendChild(d);
 });
 </script>
+<script>
+// FORCE SHOW ALL - IF GRID NAME IS DIFFERENT
+setTimeout(function(){
+  var grid = document.getElementById('grid') || document.querySelector('.products') || document.querySelector('.grid') || document.querySelector('main') || document.body;
+  var cards = document.querySelectorAll('.card');
+  if(cards.length < 20){
+    // If still less than 20, reload the NEW list again here
+    location.reload();
+  }
+  // Scroll hint - show count
+  console.log('Total products now: ' + cards.length);
+}, 1000);
+</script>
 </body></html>
