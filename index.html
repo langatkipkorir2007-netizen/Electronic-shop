@@ -29,6 +29,22 @@ footer{background:#0a1931;color:#fff;text-align:center;padding:20px}
 <header><b>ELECTRO<span>SOLVERS</span></b><a href="https://wa.me/25412555279">WhatsApp</a></header>
 <div class="hero"><h1>All Electronic Devices<br><span>One Trusted Shop</span></h1><p>Phones, Laptops, TVs, Fridges, Speakers - Best Prices in Kenya</p><a class="btn green" href="https://wa.me/25412555279">Order on WhatsApp</a><a class="btn yellow" href="#shop">Shop Now</a><p style="margin-top:10px">Phone: 012555279 - Chuka, Kenya</p></div>
 <div class="wrap" id="shop"><h2>Shop - 12 Best Sellers</h2><br><div class="grid">
+<div style="padding:15px;background:#fff;position:sticky;top:0;z-index:99;box-shadow:0 2px 10px rgba(0,0,0,0.1)">
+<input id="searchBox" onkeyup="doSearch()" placeholder="🔍 Search in ELECTROSOLVERS... e.g. Kettle, TV, Fridge" style="width:100%;padding:14px;border:2px solid #ff6600;border-radius:25px;font-size:16px;outline:none;box-sizing:border-box">
+<div style="display:flex;gap:8px;overflow-x:auto;margin-top:10px;padding-bottom:5px">
+<button onclick="filterCat('all',this)" style="background:#ff6600;color:#fff;border:none;padding:8px 15px;border-radius:20px;white-space:nowrap">All</button>
+<button onclick="filterCat('phone',this)" style="background:#eee;border:none;padding:8px 15px;border-radius:20px;white-space:nowrap">📱 Phones</button>
+<button onclick="filterCat('tv',this)" style="background:#eee;border:none;padding:8px 15px;border-radius:20px;white-space:nowrap">📺 TV</button>
+<button onclick="filterCat('fridge',this)" style="background:#eee;border:none;padding:8px 15px;border-radius:20px;white-space:nowrap">🧊 Fridge</button>
+<button onclick="filterCat('kettle',this)" style="background:#eee;border:none;padding:8px 15px;border-radius:20px;white-space:nowrap">🍵 Kettle</button>
+<button onclick="filterCat('solar',this)" style="background:#eee;border:none;padding:8px 15px;border-radius:20px;white-space:nowrap">☀️ Solar</button>
+<button onclick="filterCat('bulb',this)" style="background:#eee;border:none;padding:8px 15px;border-radius:20px;white-space:nowrap">💡 Bulb</button>
+<button onclick="filterCat('laptop',this)" style="background:#eee;border:none;padding:8px 15px;border-radius:20px;white-space:nowrap">💻 Laptop</button>
+<button onclick="filterCat('cooker',this)" style="background:#eee;border:none;padding:8px 15px;border-radius:20px;white-space:nowrap">🍳 Cooker</button>
+<button onclick="filterCat('charger',this)" style="background:#eee;border:none;padding:8px 15px;border-radius:20px;white-space:nowrap">🔌 Charger</button>
+</div>
+<p id="resultCount" style="text-align:center;color:#666;font-size:14px;margin:5px 0 0 0"></p>
+</div>
 <div class="card"><img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600"><div><h3>iPhone 13 128GB</h3><p>New Sealed A15 Bionic Dual Camera 5G</p><p class="price">KSh 58,000</p><a class="order" href="https://wa.me/25412555279?text=Hi%20I%20want%20iPhone%2013">Order</a></div></div>
 <div class="card"><img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600"><div><h3>Samsung Galaxy A55</h3><p>New 50MP OIS Camera AMOLED 5000mAh</p><p class="price">KSh 42,500</p><a class="order" href="https://wa.me/25412555279?text=Hi%20I%20want%20Samsung%20A55">Order</a></div></div>
 <div class="card"><img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600"><div><h3>HP Pavilion 15 Core i5</h3><p>New 8GB 512GB SSD Windows 11</p><p class="price">KSh 78,500</p><a class="order" href="https://wa.me/25412555279?text=Hi%20I%20want%20HP%20Pavilion">Order</a></div></div>
