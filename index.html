@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -578,6 +577,59 @@
         // Initial Launch Render
         renderProducts(products);
     </script>
+// 1. Generate 3,000 unique products dynamically
+const categories = ['Smartphones', 'Electronics', 'Home Appliances', 'Fashion', 'Accessories'];
+const brands = ['Samsung', 'Apple', 'Xiaomi', 'Sony', 'LG', 'Huawei', 'OnePlus', 'Anker', 'JBL'];
+const allProducts = [];
+
+for (let i = 1; i <= 3000; i++) {
+    const category = categories[Math.floor(Math.random() * categories.length)];
+    const brand = brands[Math.floor(Math.random() * brands.length)];
+    
+    allProducts.push({
+        id: i,
+        name: `${brand} Pro Item #${i}`,
+        category: category,
+        price: Math.floor(Math.random() * 45000) + 1000,
+        discount: Math.floor(Math.random() * 50) + 10,
+        image: `[https://picsum.photos/seed/kili_product_$](https://picsum.photos/seed/kili_product_$){i}/300/300`
+    });
+}
+
+// 2. Pagination Logic
+let currentPage = 1;
+const itemsPerPage = 20;
+
+function renderCatalog(page = 1) {
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const currentItems = allProducts.slice(startIndex, endIndex);
+
+    const container = document.getElementById('product-container');
+    if (!container) return;
+    
+    container.innerHTML = '';
+
+    currentItems.forEach(product => {
+        container.innerHTML += `
+            <div class="product-card bg-white p-3 rounded-lg shadow-sm border border-gray-100">
+                <span class="text-xs bg-red-100 text-red-600 px-2 py-1 rounded">-${product.discount}%</span>
+                <img src="${product.image}" alt="${product.name}" class="w-full h-40 object-cover my-2 rounded" />
+                <h3 class="font-semibold text-sm truncate">${product.name}</h3>
+                <p class="text-red-600 font-bold mt-1">KSh ${product.price.toLocaleString()}</p>
+            </div>
+        `;
+    });
+
+    const counter = document.getElementById('item-counter');
+    if (counter) {
+        counter.innerText = `Showing ${startIndex + 1}–${endIndex} of ${allProducts.length} items`;
+    }
+}
+
+// Initial render
+renderCatalog(currentPage);
+
 </body>
 </html>
 ```
