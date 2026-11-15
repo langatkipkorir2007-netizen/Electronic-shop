@@ -44,7 +44,7 @@
             <!-- Search Bar -->
             <div class="flex-1 max-w-2xl relative">
                 <div class="flex border-2 border-kiliOrange rounded-lg overflow-hidden">
-                    <input type="text" id="searchInput" placeholder="Search unique phones, TVs, home appliances..." class="w-full px-4 py-2 text-sm focus:outline-none" oninput="filterProducts()">
+                    <input type="text" id="searchInput" placeholder="Search unique phones, TVs, home appliances..." class="w-full px-4 py-2 text-sm focus:outline-none" oninput="filterProducts()" onkeyup="filterProducts()">
                     <button onclick="filterProducts()" class="bg-kiliOrange text-white px-6 font-semibold hover:bg-orange-600 transition">Search</button>
                 </div>
             </div>
@@ -115,7 +115,7 @@
                 <h3 class="text-white font-bold mb-3">Customer Service</h3>
                 <ul class="space-y-2 text-xs">
                     <li><a href="javascript:void(0)" onclick="openOrderTracker()" class="hover:text-white">Track Your Order</a></li>
-                    <li><a href="https://wa.me/254700000000?text=Hello%20Kilimall%20Support,%20I%20need%20help%20with%20my%20order." target="_blank" class="hover:text-white text-green-400"><i class="fa-brands fa-whatsapp"></i> WhatsApp Support</a></li>
+                    <li><a href="https://wa.me/254700000000?text=Hello%20Kilimall%20Support,%20I%20need%20help%20mit%20my%20order." target="_blank" class="hover:text-white text-green-400"><i class="fa-brands fa-whatsapp"></i> WhatsApp Support</a></li>
                     <li><a href="#" class="hover:text-white">Shipping & Pickup Stations</a></li>
                     <li><a href="#" class="hover:text-white">Returns & M-Pesa Refunds</a></li>
                 </ul>
@@ -302,4 +302,475 @@
                 </div>
 
                 <div>
-                    <h4 class="font-bold text-gray-900 mb-2">Incoming Custome
+                    <h4 class="font-bold text-gray-900 mb-2">Incoming Customer Orders & Status Manager</h4>
+                    <div class="overflow-x-auto border rounded-xl">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-gray-100 border-b">
+                                <tr>
+                                    <th class="p-3">Order ID</th>
+                                    <th class="p-3">Customer</th>
+                                    <th class="p-3">Items</th>
+                                    <th class="p-3">Total KSh</th>
+                                    <th class="p-3">Status</th>
+                                    <th class="p-3">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminOrderTableBody" class="divide-y"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Script Engine with Instant DOM Initialization -->
+    <script>
+        const categories = [
+            "All", "Smartphones", "Home Appliances", "Electronics", "Fashion", 
+            "Power Banks & Audio", "Kitchenware", "Computing", "Health & Beauty", "Sports & Outdoors"
+        ];
+
+        const brandPools = {
+            "Smartphones": ["Samsung Galaxy", "Xiaomi Redmi", "Infinix Hot", "Tecno Spark", "Oppo A-Series", "Itel Power", "Realme Note", "Vivo Y-Series", "Nokia G-Series", "Poco M-Series"],
+            "Home Appliances": ["Vitron Smart TV", "Von Double Door Fridge", "Ramtons Gas Cooker", "Bruhm Iron Box", "Bruhm Blender", "Armco Microwave", "Haier Washing Machine", "Hisense Chest Freezer"],
+            "Electronics": ["JBL Wireless Earpods", "Sony Bass Neckband", "Oraimo Power Bank", "Infinix Bluetooth Speaker", "Vitron Soundbar", "Anker Soundcore", "Tronsmart Mega", "Bose QuietComfort"],
+            "Fashion": ["Men Casual Watch", "Waterproof Backpack", "Unisex Canvas Sneakers", "Classic Leather Wallet", "Oxford Formal Shoes", "Sport Jogger Pants", "Designer Hoodie", "Polarized Sunglasses"],
+            "Power Banks & Audio": ["Oraimo BoomPop", "Joyroom Fast PowerBank", "Anker PowerCore", "Remax TruePods", "Baseus Magnetic PowerBank", "Romoss Sense", "Ugreen Portable Charger"],
+            "Kitchenware": ["Non-Stick Cookware Set", "Stainless Steel Kettle", "Thermal Insulated Flask", "Digital Pressure Cooker", "Air Fryer 6L", "Blender & Grinder Combo", "Ceramic Dinnerware Set"],
+            "Computing": ["HP EliteBook Laptop", "Lenovo ThinkPad", "Dell Latitude", "Wireless Optical Mouse", "Laptop Sleeve Bag", "Mechanical Gaming Keyboard", "Portable SSD 1TB", "HD Webcam Pro"],
+            "Health & Beauty": ["Professional Hair Clipper", "Facial Cleansing Brush", "Men Grooming Trimmer", "Organic Argan Hair Oil", "Ionic Hair Dryer", "Electric Shaver Pro", "Skincare LED Mask"],
+            "Sports & Outdoors": ["Professional Football", "Resistance Workout Bands", "Dumbbell Set", "Cycling Water Bottle", "Yoga Exercise Mat", "Camping LED Lantern", "Running Arm Pouch"]
+        };
+
+        const specsPool = [
+            "32GB ROM / 2GB RAM", "64GB ROM / 4GB RAM", "128GB ROM / 6GB RAM", "256GB ROM / 8GB RAM", 
+            "Standard Edition", "Pro Max Edition", "Ultra Series", "Deluxe Pack", "2026 Upgraded Edition", "Heavy Duty Spec"
+        ];
+
+        const imagePool = {
+            "Smartphones": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&auto=format&fit=crop&q=80",
+            "Home Appliances": "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=400&auto=format&fit=crop&q=80",
+            "Electronics": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&auto=format&fit=crop&q=80",
+            "Fashion": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&auto=format&fit=crop&q=80",
+            "Power Banks & Audio": "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=400&auto=format&fit=crop&q=80",
+            "Kitchenware": "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=400&auto=format&fit=crop&q=80",
+            "Computing": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&auto=format&fit=crop&q=80",
+            "Health & Beauty": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&auto=format&fit=crop&q=80",
+            "Sports & Outdoors": "https://images.unsplash.com/photo-1517649763962-0c623066013b?w=400&auto=format&fit=crop&q=80"
+        };
+
+        let products = [];
+        let currentCategory = "All";
+        let cart = JSON.parse(localStorage.getItem('kili_cart')) || [];
+        let currentUser = JSON.parse(localStorage.getItem('kili_user')) || null;
+        let orders = JSON.parse(localStorage.getItem('kili_orders')) || [];
+        let registeredUsers = JSON.parse(localStorage.getItem('kili_reg_users')) || [
+            {name: "Brian Kiprop", phone: "0712345678", email: "brian@gmail.com", location: "Nairobi CBD"}
+        ];
+
+        function generateCatalog() {
+            let idCounter = 1;
+            const catKeys = Object.keys(brandPools);
+            
+            catKeys.forEach(cat => {
+                const brands = brandPools[cat];
+                for (let i = 0; i < 335; i++) {
+                    const brand = brands[i % brands.length];
+                    const spec = specsPool[i % specsPool.length];
+                    const batchNum = Math.floor(i / brands.length) + 1;
+                    
+                    const title = `${brand} Mark-${batchNum} (${spec})`;
+                    const id = `KM-${String(idCounter).padStart(4, '0')}`;
+                    
+                    let basePrice = 500;
+                    if (cat === "Smartphones") basePrice = 6499 + (i * 53) % 15000;
+                    else if (cat === "Home Appliances") basePrice = 1199 + (i * 127) % 23000;
+                    else if (cat === "Electronics") basePrice = 299 + (i * 31) % 5000;
+                    else if (cat === "Fashion") basePrice = 279 + (i * 17) % 1800;
+                    else if (cat === "Computing") basePrice = 15500 + (i * 211) % 30000;
+                    else basePrice = 399 + (i * 41) % 4000;
+
+                    products.push({
+                        id: id,
+                        title: title,
+                        category: cat,
+                        price: basePrice,
+                        image: imagePool[cat] || imagePool["Electronics"],
+                        desc: `Genuine ${title}. Verified authentic Kilimall stock with 1-year warranty and countrywide pickup across Kenya.`
+                    });
+                    idCounter++;
+                }
+            });
+        }
+
+        generateCatalog();
+
+        // Ensure DOM is fully loaded before rendering
+        document.addEventListener("DOMContentLoaded", function() {
+            renderCategories();
+            renderProducts();
+            updateCartBadge();
+            if(currentUser) {
+                const label = document.getElementById('headerUserLabel');
+                if(label) label.innerText = currentUser.name.split(' ')[0];
+            }
+        });
+
+        function renderCategories() {
+            const nav = document.getElementById('categoryNav');
+            if(!nav) return;
+            nav.innerHTML = categories.map(cat => `
+                <button onclick="filterByCategory('${cat}')" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition ${currentCategory === cat ? 'bg-kiliOrange text-white shadow' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}">
+                    ${cat}
+                </button>
+            `).join('');
+        }
+
+        function filterByCategory(cat) {
+            currentCategory = cat;
+            const titleEl = document.getElementById('activeCategoryTitle');
+            if(titleEl) titleEl.innerText = cat === 'All' ? 'All Products (3,000 Unique Verified Items)' : `${cat} (Kilimall Collection)`;
+            renderCategories();
+            renderProducts();
+        }
+
+        function filterProducts() {
+            renderProducts();
+        }
+
+        function renderProducts() {
+            const searchInput = document.getElementById('searchInput');
+            const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+            const grid = document.getElementById('productGrid');
+            if(!grid) return;
+            
+            let filtered = products.filter(p => {
+                const matchCat = currentCategory === 'All' || p.category === currentCategory;
+                const matchQuery = !query || p.title.toLowerCase().includes(query) || p.id.toLowerCase().includes(query);
+                return matchCat && matchQuery;
+            });
+
+            const countLabel = document.getElementById('productCountLabel');
+            if(countLabel) countLabel.innerText = `Showing ${filtered.length} items`;
+
+            if(filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-gray-500 text-sm">No products found matching your search.</div>`;
+                return;
+            }
+
+            grid.innerHTML = filtered.slice(0, 100).map(p => `
+                <div onclick="openProductModal('${p.id}')" class="bg-white border rounded-xl p-3 shadow-xs hover:shadow-lg transition cursor-pointer flex flex-col justify-between group">
+                    <div>
+                        <div class="relative overflow-hidden rounded-lg bg-gray-100 mb-2 aspect-square">
+                            <img src="${p.image}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                            <span class="absolute top-2 left-2 bg-orange-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">KiliExpress</span>
+                        </div>
+                        <h3 class="text-xs font-semibold text-gray-800 line-clamp-2 h-8">${p.title}</h3>
+                    </div>
+                    <div class="mt-3">
+                        <div class="text-kiliOrange font-black text-sm">KSh ${p.price.toLocaleString()}</div>
+                        <div class="text-[10px] text-gray-400 mt-0.5">${p.id} • Free Pickup Hub</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function closeModal() {
+            const overlay = document.getElementById('modalOverlay');
+            if(overlay) overlay.classList.add('hidden');
+            document.querySelectorAll('#modalOverlay > div').forEach(el => el.classList.add('hidden'));
+        }
+
+        function openAuthModal() {
+            const overlay = document.getElementById('modalOverlay');
+            const modal = document.getElementById('authModal');
+            if(overlay) overlay.classList.remove('hidden');
+            if(modal) modal.classList.remove('hidden');
+        }
+
+        function openOrderTracker() {
+            const overlay = document.getElementById('modalOverlay');
+            const modal = document.getElementById('trackerModal');
+            if(overlay) overlay.classList.remove('hidden');
+            if(modal) modal.classList.remove('hidden');
+            
+            const content = document.getElementById('trackerContent');
+            if(!content) return;
+            
+            if(orders.length === 0) {
+                content.innerHTML = `<p class="text-gray-500 text-center py-6">No active orders found. Place an order to track delivery progress.</p>`;
+            } else {
+                const lastOrder = orders[orders.length - 1];
+                content.innerHTML = `
+                    <div class="bg-orange-50 p-3 rounded-lg border border-orange-200">
+                        <div class="font-bold text-orange-900">Order ID: ${lastOrder.id}</div>
+                        <div class="text-xs text-orange-700">Status: <span class="uppercase font-extrabold">${lastOrder.status}</span></div>
+                    </div>
+                    <div class="space-y-3 mt-4">
+                        <div class="flex items-center gap-3"><div class="w-4 h-4 rounded-full bg-kiliGreen text-white flex items-center justify-center text-[10px]">✓</div><span class="text-xs">Order Confirmed & M-Pesa Verified</span></div>
+                        <div class="flex items-center gap-3"><div class="w-4 h-4 rounded-full ${lastOrder.status !== 'Pending' ? 'bg-kiliGreen text-white' : 'bg-gray-300'} flex items-center justify-center text-[10px]">✓</div><span class="text-xs">Dispatched to Local Hub</span></div>
+                        <div class="flex items-center gap-3"><div class="w-4 h-4 rounded-full ${lastOrder.status === 'Delivered' ? 'bg-kiliGreen text-white' : 'bg-gray-300'} flex items-center justify-center text-[10px]">✓</div><span class="text-xs">Ready for Pickup / Delivered</span></div>
+                    </div>
+                `;
+            }
+        }
+
+        function openAdminPortal() {
+            const overlay = document.getElementById('modalOverlay');
+            const modal = document.getElementById('adminModal');
+            if(overlay) overlay.classList.remove('hidden');
+            if(modal) modal.classList.remove('hidden');
+        }
+
+        function verifyAdminPin() {
+            const pinInput = document.getElementById('adminPinInput');
+            const pin = pinInput ? pinInput.value : '';
+            if(pin === 'admin2026') {
+                const loginSec = document.getElementById('adminLoginSection');
+                const dashSec = document.getElementById('adminDashboardSection');
+                if(loginSec) loginSec.classList.add('hidden');
+                if(dashSec) dashSec.classList.remove('hidden');
+                loadAdminData();
+            } else {
+                alert('Incorrect PIN. Default is admin2026');
+            }
+        }
+
+        function loadAdminData() {
+            let totalRev = orders.reduce((sum, o) => sum + o.total, 0);
+            const revEl = document.getElementById('adminTotalRev');
+            const ordEl = document.getElementById('adminTotalOrders');
+            const custEl = document.getElementById('adminTotalCustomers');
+            
+            if(revEl) revEl.innerText = `KSh ${totalRev.toLocaleString()}`;
+            if(ordEl) ordEl.innerText = orders.length;
+            if(custEl) custEl.innerText = registeredUsers.length;
+
+            const custTable = document.getElementById('adminCustomerTableBody');
+            if(custTable) {
+                custTable.innerHTML = registeredUsers.map(u => `
+                    <tr>
+                        <td class="p-3 font-medium">${u.name}</td>
+                        <td class="p-3">${u.phone}</td>
+                        <td class="p-3">${u.email}</td>
+                        <td class="p-3">${u.location}</td>
+                    </tr>
+                `).join('');
+            }
+
+            const ordTable = document.getElementById('adminOrderTableBody');
+            if(ordTable) {
+                ordTable.innerHTML = orders.map((o, idx) => `
+                    <tr>
+                        <td class="p-3 font-medium">${o.id}</td>
+                        <td class="p-3">${o.customerName} (${o.phone})</td>
+                        <td class="p-3">${o.itemsSummary}</td>
+                        <td class="p-3 font-bold text-kiliOrange">KSh ${o.total.toLocaleString()}</td>
+                        <td class="p-3"><span class="bg-orange-100 text-orange-800 px-2 py-0.5 rounded font-bold">${o.status}</span></td>
+                        <td class="p-3">
+                            <select onchange="updateOrderStatus(${idx}, this.value)" class="border rounded px-2 py-1 text-xs">
+                                <option ${o.status==='Pending'?'selected':''}>Pending</option>
+                                <option ${o.status==='Processing'?'selected':''}>Processing</option>
+                                <option ${o.status==='Dispatched'?'selected':''}>Dispatched</option>
+                                <option ${o.status==='Delivered'?'selected':''}>Delivered</option>
+                            </select>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        function updateOrderStatus(index, newStatus) {
+            orders[index].status = newStatus;
+            localStorage.setItem('kili_orders', JSON.stringify(orders));
+            loadAdminData();
+        }
+
+        function handleUserAuth() {
+            const nameEl = document.getElementById('authName');
+            const phoneEl = document.getElementById('authPhone');
+            const emailEl = document.getElementById('authEmail');
+            const locEl = document.getElementById('authLocation');
+
+            const name = nameEl ? nameEl.value : '';
+            const phone = phoneEl ? phoneEl.value : '';
+            const email = emailEl ? emailEl.value : '';
+            const location = locEl ? locEl.value : '';
+
+            if(!name || !phone) {
+                alert('Please enter your name and phone number.');
+                return;
+            }
+
+            currentUser = { name, phone, email, location };
+            localStorage.setItem('kili_user', JSON.stringify(currentUser));
+            
+            if(!registeredUsers.some(u => u.phone === phone)) {
+                registeredUsers.push(currentUser);
+                localStorage.setItem('kili_reg_users', JSON.stringify(registeredUsers));
+            }
+
+            const label = document.getElementById('headerUserLabel');
+            if(label) label.innerText = name.split(' ')[0];
+            closeModal();
+            alert(`Welcome ${name}! Your Kilimall account is active.`);
+        }
+
+        function openProductModal(id) {
+            const p = products.find(x => x.id === id);
+            if(!p) return;
+
+            const overlay = document.getElementById('modalOverlay');
+            const modal = document.getElementById('productModal');
+            if(overlay) overlay.classList.remove('hidden');
+            if(modal) modal.classList.remove('hidden');
+
+            const titleEl = document.getElementById('modalProdTitle');
+            const imgEl = document.getElementById('modalProdImg');
+            const catEl = document.getElementById('modalProdCat');
+            const priceEl = document.getElementById('modalProdPrice');
+            const descEl = document.getElementById('modalProdDesc');
+
+            if(titleEl) titleEl.innerText = p.title;
+            if(imgEl) imgEl.src = p.image;
+            if(catEl) catEl.innerText = p.category;
+            if(priceEl) priceEl.innerText = `KSh ${p.price.toLocaleString()}`;
+            if(descEl) descEl.innerText = p.desc;
+
+            const colorOpts = document.getElementById('modalColorOptions');
+            const varOpts = document.getElementById('modalVariantOptions');
+            if(colorOpts) colorOpts.innerHTML = `<button class="px-3 py-1 border-2 border-kiliOrange rounded text-xs font-bold bg-orange-50">Black Matte</button><button class="px-3 py-1 border rounded text-xs font-semibold">Pearl Silver</button>`;
+            if(varOpts) varOpts.innerHTML = `<button class="px-3 py-1 border-2 border-kiliOrange rounded text-xs font-bold bg-orange-50">Standard Stock</button>`;
+
+            const addBtn = document.getElementById('modalAddBtn');
+            if(addBtn) {
+                addBtn.onclick = function() {
+                    addToCart(p.id);
+                    closeModal();
+                };
+            }
+        }
+
+        function toggleCartDrawer() {
+            const drawer = document.getElementById('cartDrawer');
+            if(drawer) drawer.classList.toggle('hidden');
+            renderCartItems();
+        }
+
+        function addToCart(id) {
+            const p = products.find(x => x.id === id);
+            const existing = cart.find(x => x.id === id);
+            if(existing) {
+                existing.qty++;
+            } else {
+                cart.push({...p, qty: 1});
+            }
+            updateCartBadge();
+            localStorage.setItem('kili_cart', JSON.stringify(cart));
+            toggleCartDrawer();
+        }
+
+        function updateCartBadge() {
+            const badge = document.getElementById('cartBadge');
+            if(!badge) return;
+            const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+            badge.innerText = totalQty;
+        }
+
+        function renderCartItems() {
+            const container = document.getElementById('cartItemsContainer');
+            const totalElement = document.getElementById('cartTotalPrice');
+            if(!container) return;
+
+            if(cart.length === 0) {
+                container.innerHTML = `<p class="text-center text-gray-500 py-8 text-sm">Your cart is empty.</p>`;
+                if(totalElement) totalElement.innerText = 'KSh 0';
+                return;
+            }
+
+            let total = 0;
+            container.innerHTML = cart.map((item, idx) => {
+                total += item.price * item.qty;
+                return `
+                    <div class="py-3 flex items-center justify-between gap-3">
+                        <img src="${item.image}" class="w-12 h-12 object-cover rounded">
+                        <div class="flex-1">
+                            <h4 class="text-xs font-semibold line-clamp-1">${item.title}</h4>
+                            <div class="text-xs text-kiliOrange font-bold">KSh ${item.price.toLocaleString()}</div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="changeQty(${idx}, -1)" class="px-2 bg-gray-200 rounded text-xs font-bold">-</button>
+                            <span class="text-xs font-bold">${item.qty}</span>
+                            <button onclick="changeQty(${idx}, 1)" class="px-2 bg-gray-200 rounded text-xs font-bold">+</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            if(totalElement) totalElement.innerText = `KSh ${total.toLocaleString()}`;
+        }
+
+        function changeQty(idx, delta) {
+            cart[idx].qty += delta;
+            if(cart[idx].qty <= 0) cart.splice(idx, 1);
+            localStorage.setItem('kili_cart', JSON.stringify(cart));
+            updateCartBadge();
+            renderCartItems();
+        }
+
+        function proceedToCheckout() {
+            if(cart.length === 0) {
+                alert('Your cart is empty');
+                return;
+            }
+            toggleCartDrawer();
+            const overlay = document.getElementById('modalOverlay');
+            const modal = document.getElementById('checkoutModal');
+            if(overlay) overlay.classList.remove('hidden');
+            if(modal) modal.classList.remove('hidden');
+            
+            if(currentUser) {
+                const phoneInput = document.getElementById('checkoutPhone');
+                const addrInput = document.getElementById('checkoutAddress');
+                if(phoneInput) phoneInput.value = currentUser.phone;
+                if(addrInput) addrInput.value = currentUser.location;
+            }
+            const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const totalAmt = document.getElementById('checkoutTotalAmount');
+            if(totalAmt) totalAmt.innerText = `KSh ${total.toLocaleString()}`;
+        }
+
+        function completeOrder() {
+            const phoneInput = document.getElementById('checkoutPhone');
+            const addrInput = document.getElementById('checkoutAddress');
+            const phone = phoneInput ? phoneInput.value : '';
+            const address = addrInput ? addrInput.value : '';
+            
+            if(!phone) {
+                alert('Please enter your M-Pesa phone number.');
+                return;
+            }
+
+            const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const newOrder = {
+                id: 'ORD-' + Math.floor(100000 + Math.random() * 900000),
+                customerName: currentUser ? currentUser.name : 'Guest Shopper',
+                phone: phone,
+                address: address || 'Nairobi Hub',
+                itemsSummary: cart.map(i => `${i.qty}x ${i.title}`).join(', '),
+                total: total,
+                status: 'Pending'
+            };
+
+            orders.push(newOrder);
+            localStorage.setItem('kili_orders', JSON.stringify(orders));
+            cart = [];
+            localStorage.setItem('kili_cart', JSON.stringify(cart));
+            updateCartBadge();
+
+            closeModal();
+            alert(`M-Pesa STK push initiated for ${phone}. Order ${newOrder.id} successfully placed!`);
+        }
+    </script>
+</body>
+</html>
