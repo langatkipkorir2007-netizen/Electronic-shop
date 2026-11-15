@@ -44,7 +44,7 @@
             <!-- Search Bar -->
             <div class="flex-1 max-w-2xl relative">
                 <div class="flex border-2 border-kiliOrange rounded-lg overflow-hidden">
-                    <input type="text" id="searchInput" placeholder="Search 3,000+ phones, TVs, home appliances..." class="w-full px-4 py-2 text-sm focus:outline-none" oninput="filterProducts()">
+                    <input type="text" id="searchInput" placeholder="Search unique phones, TVs, home appliances..." class="w-full px-4 py-2 text-sm focus:outline-none" oninput="filterProducts()">
                     <button onclick="filterProducts()" class="bg-kiliOrange text-white px-6 font-semibold hover:bg-orange-600 transition">Search</button>
                 </div>
             </div>
@@ -75,7 +75,7 @@
                 <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight">Dry Irons KSh 629 • Blenders KSh 1,199 • Smart TVs</h1>
                 <p class="text-sm text-gray-200 max-w-xl">Authentic Kenyan retail prices verified against Kilimall Kenya. Fast countrywide dispatch to 1,500+ pickup stations.</p>
                 <div class="pt-2 flex flex-wrap gap-3 justify-center md:justify-start">
-                    <button onclick="filterByCategory('All')" class="bg-white text-kiliOrange font-bold px-5 py-2.5 rounded-lg shadow hover:bg-gray-100 transition">Shop All 3,000 Deals ↓</button>
+                    <button onclick="filterByCategory('All')" class="bg-white text-kiliOrange font-bold px-5 py-2.5 rounded-lg shadow hover:bg-gray-100 transition">Shop All Unique Deals ↓</button>
                     <button onclick="openOrderTracker()" class="bg-black/40 border border-white/30 text-white font-medium px-5 py-2.5 rounded-lg hover:bg-black/60 transition">Track Delivery</button>
                 </div>
             </div>
@@ -89,21 +89,17 @@
 
     <!-- Categories Bar -->
     <nav class="bg-white border-b sticky top-[65px] z-30 shadow-xs">
-        <div class="max-w-7xl mx-auto px-4 overflow-x-auto flex gap-6 py-3 no-scrollbar" id="categoryNav">
-            <!-- Populated via JS -->
-        </div>
+        <div class="max-w-7xl mx-auto px-4 overflow-x-auto flex gap-6 py-3 no-scrollbar" id="categoryNav"></div>
     </nav>
 
     <!-- Main Content Grid -->
     <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full">
         <div class="flex justify-between items-center mb-4">
-            <h2 id="activeCategoryTitle" class="text-xl font-bold text-gray-900">All Products (3,000 Verified Items)</h2>
-            <div class="text-sm text-gray-500" id="productCountLabel">Showing 3,000 items</div>
+            <h2 id="activeCategoryTitle" class="text-xl font-bold text-gray-900">All Products (100% Unique Verified Items)</h2>
+            <div class="text-sm text-gray-500" id="productCountLabel">Showing items</div>
         </div>
 
-        <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            <!-- Products injected by JS -->
-        </div>
+        <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
     </main>
 
     <!-- Footer -->
@@ -113,7 +109,7 @@
                 <div class="text-white font-black text-xl mb-3 flex items-center gap-2">
                     <span class="bg-kiliOrange text-white px-2 py-0.5 rounded">K</span> Kilimall Kenya
                 </div>
-                <p class="text-xs text-gray-400 leading-relaxed">East Africa's leading e-commerce platform. Bringing you unbeatable daily deals, M-Pesa payments, and countrywide pickup hubs.</p>
+                <p class="text-xs text-gray-400 leading-relaxed">East Africa's leading e-commerce platform. Unbeatable daily deals, M-Pesa payments, and countrywide pickup hubs.</p>
             </div>
             <div>
                 <h3 class="text-white font-bold mb-3">Customer Service</h3>
@@ -151,9 +147,7 @@
                 <h3 class="font-bold text-lg"><i class="fa-solid fa-cart-shopping mr-2"></i> Your Shopping Cart</h3>
                 <button onclick="toggleCartDrawer()" class="text-white text-xl font-bold">&times;</button>
             </div>
-            <div id="cartItemsContainer" class="flex-1 overflow-y-auto p-4 space-y-4 divide-y">
-                <!-- Cart items -->
-            </div>
+            <div id="cartItemsContainer" class="flex-1 overflow-y-auto p-4 space-y-4 divide-y"></div>
             <div class="p-4 border-t bg-gray-50">
                 <div class="flex justify-between font-bold text-lg mb-4">
                     <span>Total:</span>
@@ -164,13 +158,13 @@
         </div>
     </div>
 
-    <!-- Modals (Auth, Product Details, Checkout, Order Tracker, Admin) -->
+    <!-- Modals -->
     <div id="modalOverlay" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
         
         <!-- Auth Modal -->
         <div id="authModal" class="bg-white rounded-2xl max-w-md w-full p-6 hidden shadow-2xl">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold text-gray-900" id="authTitle">Sign In to Kilimall</h3>
+                <h3 class="text-xl font-bold text-gray-900">Sign In to Kilimall</h3>
                 <button onclick="closeModal()" class="text-gray-400 hover:text-gray-700 text-xl">&times;</button>
             </div>
             <div class="space-y-4">
@@ -260,9 +254,7 @@
                 <h3 class="text-xl font-bold text-gray-900">Order Delivery Tracker</h3>
                 <button onclick="closeModal()" class="text-gray-400 hover:text-gray-700 text-xl">&times;</button>
             </div>
-            <div id="trackerContent" class="space-y-4 text-sm">
-                <!-- Injected via JS -->
-            </div>
+            <div id="trackerContent" class="space-y-4 text-sm"></div>
         </div>
 
         <!-- Admin Portal Modal -->
@@ -303,4 +295,11 @@
                                     <th class="p-3">Email</th>
                                     <th class="p-3">Location</th>
                                 </tr>
-                      
+                            </thead>
+                            <tbody id="adminCustomerTableBody" class="divide-y"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-gray-900 mb-2">Incoming Custome
