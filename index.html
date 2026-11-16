@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kili-Jumia East Africa | Discounted Online Shopping</title>
+  <title>KiliMall East Africa | E-Commerce & Admin Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -20,86 +20,34 @@
   <script type="text/babel">
     const { useState, useMemo } = React;
 
-    // Self-contained high-resolution embedded product visuals (never fail or get blocked)
-    const createProductImage = (bgStart, bgEnd, accent, label, sublabel, shapeType) => {
+    // Guaranteed working self-contained SVG product artwork generator
+    const createProductImage = (bgStart, bgEnd, accent, label, badge, shapeType) => {
       let illustration = '';
       if (shapeType === 'phone') {
-        illustration = `
-          <rect x="195" y="45" width="110" height="210" rx="18" fill="#1e293b" stroke="#94a3b8" stroke-width="4"/>
-          <rect x="203" y="58" width="94" height="180" rx="10" fill="${accent}"/>
-          <circle cx="250" cy="52" r="3" fill="#475569"/>
-          <circle cx="222" cy="76" r="8" fill="#0f172a"/>
-          <circle cx="222" cy="98" r="8" fill="#0f172a"/>
-        `;
+        illustration = `<rect x="195" y="45" width="110" height="210" rx="18" fill="#1e293b" stroke="#94a3b8" stroke-width="4"/><rect x="203" y="58" width="94" height="180" rx="10" fill="${accent}"/><circle cx="250" cy="52" r="3" fill="#475569"/><circle cx="222" cy="76" r="8" fill="#0f172a"/>`;
       } else if (shapeType === 'laptop') {
-        illustration = `
-          <rect x="135" y="65" width="230" height="140" rx="10" fill="#1e293b" stroke="#64748b" stroke-width="4"/>
-          <rect x="145" y="75" width="210" height="118" rx="4" fill="${accent}"/>
-          <path d="M110 205 L390 205 L370 220 L130 220 Z" fill="#94a3b8"/>
-        `;
+        illustration = `<rect x="135" y="65" width="230" height="140" rx="10" fill="#1e293b" stroke="#64748b" stroke-width="4"/><rect x="145" y="75" width="210" height="118" rx="4" fill="${accent}"/><path d="M110 205 L390 205 L370 220 L130 220 Z" fill="#94a3b8"/>`;
       } else if (shapeType === 'tv') {
-        illustration = `
-          <rect x="120" y="60" width="260" height="145" rx="6" fill="#0f172a" stroke="#334155" stroke-width="5"/>
-          <rect x="128" y="68" width="244" height="129" fill="${accent}"/>
-          <path d="M210 205 L190 230 M290 205 L310 230 M175 230 L325 230" stroke="#334155" stroke-width="6" stroke-linecap="round"/>
-        `;
-      } else if (shapeType === 'bag') {
-        illustration = `
-          <rect x="175" y="60" width="150" height="185" rx="12" fill="${accent}" stroke="#ffffff" stroke-width="3"/>
-          <rect x="190" y="85" width="120" height="55" rx="6" fill="#ffffff" opacity="0.9"/>
-          <text x="250" y="118" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1e293b" text-anchor="middle">${sublabel}</text>
-        `;
-      } else if (shapeType === 'appliance') {
-        illustration = `
-          <rect x="145" y="65" width="210" height="160" rx="14" fill="#334155"/>
-          <rect x="160" y="82" width="130" height="125" rx="8" fill="#0f172a" stroke="${accent}" stroke-width="3"/>
-          <circle cx="322" cy="110" r="14" fill="${accent}"/>
-          <circle cx="322" cy="155" r="14" fill="#94a3b8"/>
-        `;
-      } else if (shapeType === 'shoe') {
-        illustration = `
-          <path d="M130 185 Q130 140 185 135 L235 105 L275 145 Q340 150 365 185 L365 205 L130 205 Z" fill="${accent}"/>
-          <rect x="125" y="195" width="245" height="18" rx="8" fill="#ffffff"/>
-          <path d="M200 135 L235 150 M220 123 L255 138" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
-        `;
-      } else if (shapeType === 'bottle') {
-        illustration = `
-          <rect x="225" y="45" width="50" height="28" rx="4" fill="#334155"/>
-          <rect x="195" y="73" width="110" height="165" rx="22" fill="${accent}"/>
-          <rect x="208" y="115" width="84" height="75" rx="8" fill="#ffffff" opacity="0.9"/>
-        `;
+        illustration = `<rect x="120" y="60" width="260" height="145" rx="6" fill="#0f172a" stroke="#334155" stroke-width="5"/><rect x="128" y="68" width="244" height="129" fill="${accent}"/><path d="M210 205 L190 230 M290 205 L310 230" stroke="#334155" stroke-width="6" stroke-linecap="round"/>`;
+      } else if (shapeType === 'bag' || shapeType === 'shoe') {
+        illustration = `<rect x="175" y="60" width="150" height="185" rx="12" fill="${accent}" stroke="#ffffff" stroke-width="3"/><rect x="190" y="85" width="120" height="55" rx="6" fill="#ffffff" opacity="0.9"/><text x="250" y="118" font-family="Arial" font-size="16" font-weight="bold" fill="#1e293b" text-anchor="middle">${badge}</text>`;
       } else {
-        illustration = `
-          <circle cx="250" cy="145" r="82" fill="${accent}" stroke="#ffffff" stroke-width="6"/>
-          <circle cx="250" cy="145" r="52" fill="none" stroke="#ffffff" stroke-width="3" stroke-dasharray="10,8"/>
-        `;
+        illustration = `<circle cx="250" cy="145" r="82" fill="${accent}" stroke="#ffffff" stroke-width="6"/><circle cx="250" cy="145" r="52" fill="none" stroke="#ffffff" stroke-width="3" stroke-dasharray="10,8"/>`;
       }
 
-      const svg = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="500" height="320" viewBox="0 0 500 320">
-          <defs>
-            <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="${bgStart}"/>
-              <stop offset="100%" stop-color="${bgEnd}"/>
-            </linearGradient>
-          </defs>
-          <rect width="500" height="320" fill="url(#g)"/>
-          ${illustration}
-          <rect x="40" y="262" width="420" height="38" rx="19" fill="rgba(15,23,42,0.75)"/>
-          <text x="250" y="286" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#ffffff" text-anchor="middle">${label}</text>
-        </svg>
-      `;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="500" height="320" viewBox="0 0 500 320"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${bgStart}"/><stop offset="100%" stop-color="${bgEnd}"/></linearGradient></defs><rect width="500" height="320" fill="url(#g)"/><span class="code-block">${illustration}</span><rect x="40" y="262" width="420" height="38" rx="19" fill="rgba(15,23,42,0.8)"/><text x="250" y="286" font-family="Arial" font-size="15" font-weight="bold" fill="#ffffff" text-anchor="middle">${label}</text></svg>`;
       return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
     };
 
-    const JumiaKilimallStorefront = () => {
+    const KiliMallApp = () => {
+      const [viewMode, setViewMode] = useState('store'); // 'store' | 'admin'
       const [selectedCategory, setSelectedCategory] = useState('All');
       const [searchQuery, setSearchQuery] = useState('');
       const [cart, setCart] = useState([]);
       const [isCartOpen, setIsCartOpen] = useState(false);
 
       // Checkout & Payment States
-      const [checkoutStep, setCheckoutStep] = useState('cart');
+      const [checkoutStep, setCheckoutStep] = useState('cart'); // 'cart' | 'checkout' | 'success'
       const [paymentMethod, setPaymentMethod] = useState('mpesa');
       const [selectedCurrency, setSelectedCurrency] = useState('KSh');
       const [destinationCountry, setDestinationCountry] = useState('Kenya');
@@ -109,6 +57,12 @@
       const [phoneNumber, setPhoneNumber] = useState('');
       const [shippingAddress, setShippingAddress] = useState('');
       const [isProcessing, setIsProcessing] = useState(false);
+
+      // Centralized Orders State for the Admin Dashboard
+      const [orders, setOrders] = useState([
+        { id: 'ORD-9821', customer: 'David Ochieng', country: 'Kenya', phone: '+254712345678', total: 18500, deposit: 5550, balance: 12950, status: 'Pending Delivery', date: '2026-11-17' },
+        { id: 'ORD-9822', customer: 'Grace Namubiru', country: 'Uganda', phone: '+256772987654', total: 29900, deposit: 8970, balance: 20930, status: 'Dispatched', date: '2026-11-17' }
+      ]);
 
       const categories = [
         'Supermarket & Groceries',
@@ -123,108 +77,65 @@
         'Sporting Goods'
       ];
 
-      // All African Currencies + USD exchange rates relative to KSh
       const currencyRates = {
         KSh: { symbol: 'KSh ', rate: 1, label: 'KES (Kenya Shilling)' },
         USD: { symbol: '$', rate: 0.0077, label: 'USD (US Dollar)' },
         UGX: { symbol: 'USh ', rate: 29.5, label: 'UGX (Uganda Shilling)' },
         TZS: { symbol: 'TSh ', rate: 20.2, label: 'TZS (Tanzania Shilling)' },
         RWF: { symbol: 'FRw ', rate: 10.5, label: 'RWF (Rwandan Franc)' },
-        BIF: { symbol: 'FBu ', rate: 22.8, label: 'BIF (Burundian Franc)' },
-        SSP: { symbol: 'SSP ', rate: 10.1, label: 'SSP (South Sudanese Pound)' },
         NGN: { symbol: '₦', rate: 12.2, label: 'NGN (Nigerian Naira)' },
         ZAR: { symbol: 'R ', rate: 0.14, label: 'ZAR (South African Rand)' }
       };
 
-      // Complete 40-Item Multi-Department Catalog with guaranteed visible product artwork
+      // Comprehensive Product Catalog covering 10 Departments
       const masterCatalog = useMemo(() => [
-        // 1. Supermarket & Groceries
         { id: 101, name: 'Jogoo Maize Meal Flour 2kg', category: 'Supermarket & Groceries', price: 130, originalPrice: 190, discount: '32% OFF', image: createProductImage('#fef3c7', '#fde68a', '#d97706', 'MAIZE FLOUR 2KG', '2 KG', 'bag') },
-        { id: 102, name: 'Brookside Fresh Whole Milk 1L', category: 'Supermarket & Groceries', price: 145, originalPrice: 180, discount: '19% OFF', image: createProductImage('#e0f2fe', '#bae6fd', '#0284c7', 'FRESH MILK 1L', '1 LITRE', 'bag') },
-        { id: 103, name: 'Kabras Brown Cane Sugar 2kg', category: 'Supermarket & Groceries', price: 250, originalPrice: 320, discount: '22% OFF', image: createProductImage('#ffedd5', '#fed7aa', '#ea580c', 'BROWN SUGAR 2KG', '2 KG', 'bag') },
-        { id: 104, name: 'Golden Fry Cooking Oil 3L', category: 'Supermarket & Groceries', price: 850, originalPrice: 1100, discount: '23% OFF', image: createProductImage('#fef9c3', '#fef08a', '#ca8a04', 'COOKING OIL 3L', '3 LITRES', 'bottle') },
+        { id: 102, name: 'Brookside Fresh Whole Milk 1L', category: 'Supermarket & Groceries', price: 145, originalPrice: 180, discount: '19% OFF', image: createProductImage('#e0f2fe', '#bae6fd', '#0284c7', 'FRESH MILK 1L', '1L', 'bag') },
+        { id: 103, name: 'Kabras Brown Cane Sugar 2kg', category: 'Supermarket & Groceries', price: 250, originalPrice: 320, discount: '22% OFF', image: createProductImage('#ffedd5', '#fed7aa', '#ea580c', 'BROWN SUGAR 2KG', '2KG', 'bag') },
+        { id: 104, name: 'Golden Fry Cooking Oil 3L', category: 'Supermarket & Groceries', price: 850, originalPrice: 1100, discount: '23% OFF', image: createProductImage('#fef9c3', '#fef08a', '#ca8a04', 'COOKING OIL 3L', '3L', 'bag') },
 
-        // 2. Phones & Tablets
         { id: 201, name: 'Samsung Galaxy A15 6.5" 128GB/4GB', category: 'Phones & Tablets', price: 18500, originalPrice: 24000, discount: '23% OFF', image: createProductImage('#dbeafe', '#bfdbfe', '#2563eb', 'GALAXY A15 128GB', '5G', 'phone') },
         { id: 202, name: 'Redmi Note 13 Pro 256GB/8GB', category: 'Phones & Tablets', price: 28000, originalPrice: 35000, discount: '20% OFF', image: createProductImage('#f3e8ff', '#e9d5ff', '#7c3aed', 'REDMI NOTE 13 PRO', '256GB', 'phone') },
         { id: 203, name: 'Infinix Hot 40i 256GB Dual SIM', category: 'Phones & Tablets', price: 14200, originalPrice: 18500, discount: '23% OFF', image: createProductImage('#dcfce7', '#bbf7d0', '#16a34a', 'INFINIX HOT 40i', '256GB', 'phone') },
         { id: 204, name: 'Apple iPhone 13 128GB Midnight', category: 'Phones & Tablets', price: 79000, originalPrice: 98000, discount: '19% OFF', image: createProductImage('#f1f5f9', '#cbd5e1', '#0f172a', 'IPHONE 13 128GB', 'iOS', 'phone') },
 
-        // 3. Computing & Laptops
-        { id: 301, name: 'HP Pavilion 15 Core i5 16GB/512GB SSD', category: 'Computing & Laptops', price: 69000, originalPrice: 85000, discount: '19% OFF', image: createProductImage('#e0e7ff', '#c7d2fe', '#4f46e5', 'HP PAVILION 15 i5', '16GB RAM', 'laptop') },
-        { id: 302, name: 'Lenovo V15 G4 Ryzen 3 8GB/256GB', category: 'Computing & Laptops', price: 39000, originalPrice: 49000, discount: '20% OFF', image: createProductImage('#fee2e2', '#fecaca', '#dc2626', 'LENOVO V15 RYZEN', '256GB SSD', 'laptop') },
-        { id: 303, name: 'Logitech Wireless Keyboard & Mouse', category: 'Computing & Laptops', price: 2100, originalPrice: 2900, discount: '28% OFF', image: createProductImage('#f1f5f9', '#e2e8f0', '#475569', 'WIRELESS COMBO', '2.4GHz', 'laptop') },
-        { id: 304, name: 'Seagate 1TB Portable External HDD', category: 'Computing & Laptops', price: 6500, originalPrice: 8500, discount: '24% OFF', image: createProductImage('#ecfeff', '#cffafe', '#0891b2', 'SEAGATE 1TB HDD', 'USB 3.0', 'bag') },
+        { id: 301, name: 'HP Pavilion 15 Core i5 16GB/512GB SSD', category: 'Computing & Laptops', price: 69000, originalPrice: 85000, discount: '19% OFF', image: createProductImage('#e0e7ff', '#c7d2fe', '#4f46e5', 'HP PAVILION 15 i5', '16GB', 'laptop') },
+        { id: 302, name: 'Lenovo V15 G4 Ryzen 3 8GB/256GB', category: 'Computing & Laptops', price: 39000, originalPrice: 49000, discount: '20% OFF', image: createProductImage('#fee2e2', '#fecaca', '#dc2626', 'LENOVO V15 RYZEN', '256GB', 'laptop') },
+        { id: 303, name: 'Logitech Wireless Keyboard & Mouse', category: 'Computing & Laptops', price: 2100, originalPrice: 2900, discount: '28% OFF', image: createProductImage('#f1f5f9', '#e2e8f0', '#475569', 'WIRELESS COMBO', '2.4G', 'laptop') },
 
-        // 4. Electronics & Audio
-        { id: 401, name: 'Hisense 43" Smart Frameless LED TV', category: 'Electronics & Audio', price: 29900, originalPrice: 38000, discount: '21% OFF', image: createProductImage('#dbeafe', '#93c5fd', '#1d4ed8', 'HISENSE 43" SMART TV', '4K UHD', 'tv') },
-        { id: 402, name: 'Sony WH-1000XM5 ANC Headphones', category: 'Electronics & Audio', price: 36000, originalPrice: 46000, discount: '22% OFF', image: createProductImage('#f3f4f6', '#d1d5db', '#111827', 'SONY WH-1000XM5', 'ANC', 'sport') },
-        { id: 403, name: 'JBL Charge 5 Bluetooth Speaker', category: 'Electronics & Audio', price: 15500, originalPrice: 19900, discount: '22% OFF', image: createProductImage('#ffedd5', '#fdba74', '#ea580c', 'JBL CHARGE 5', 'BASS', 'sport') },
-        { id: 404, name: 'Vision Plus 32" Digital HD TV', category: 'Electronics & Audio', price: 11500, originalPrice: 15000, discount: '23% OFF', image: createProductImage('#e0f2fe', '#7dd3fc', '#0369a1', 'VISION PLUS 32" TV', 'HD', 'tv') },
+        { id: 401, name: 'Hisense 43" Smart Frameless LED TV', category: 'Electronics & Audio', price: 29900, originalPrice: 38000, discount: '21% OFF', image: createProductImage('#dbeafe', '#93c5fd', '#1d4ed8', 'HISENSE 43" SMART TV', '4K', 'tv') },
+        { id: 402, name: 'Sony WH-1000XM5 ANC Headphones', category: 'Electronics & Audio', price: 36000, originalPrice: 46000, discount: '22% OFF', image: createProductImage('#f3f4f6', '#d1d5db', '#111827', 'SONY XM5', 'ANC', 'bag') },
+        { id: 403, name: 'JBL Charge 5 Bluetooth Speaker', category: 'Electronics & Audio', price: 15500, originalPrice: 19900, discount: '22% OFF', image: createProductImage('#ffedd5', '#fdba74', '#ea580c', 'JBL CHARGE 5', 'BASS', 'bag') },
 
-        // 5. Home & Office Appliances
-        { id: 501, name: 'Ramtons 20L Digital Microwave Oven', category: 'Home & Office Appliances', price: 10900, originalPrice: 14000, discount: '22% OFF', image: createProductImage('#f1f5f9', '#cbd5e1', '#ea580c', 'MICROWAVE OVEN 20L', '700W', 'appliance') },
-        { id: 502, name: 'Heavy Duty 2L Fruit & Spice Blender', category: 'Home & Office Appliances', price: 5500, originalPrice: 7500, discount: '27% OFF', image: createProductImage('#fef2f2', '#fecaca', '#b91c1c', 'COMMERCIAL BLENDER', '2.0L', 'bottle') },
-        { id: 503, name: '2-Burner Stainless Table Gas Cooker', category: 'Home & Office Appliances', price: 3600, originalPrice: 4800, discount: '25% OFF', image: createProductImage('#f8fafc', '#e2e8f0', '#334155', '2-BURNER GAS STOVE', 'LPG', 'appliance') },
-        { id: 504, name: 'Executive Ergonomic Mesh Office Chair', category: 'Home & Office Appliances', price: 12500, originalPrice: 16500, discount: '24% OFF', image: createProductImage('#eff6ff', '#bfdbfe', '#1e40af', 'ERGONOMIC CHAIR', 'MESH', 'appliance') },
+        { id: 501, name: 'Ramtons 20L Digital Microwave Oven', category: 'Home & Office Appliances', price: 10900, originalPrice: 14000, discount: '22% OFF', image: createProductImage('#f1f5f9', '#cbd5e1', '#ea580c', 'MICROWAVE 20L', '700W', 'bag') },
+        { id: 502, name: 'Heavy Duty 2L Fruit & Spice Blender', category: 'Home & Office Appliances', price: 5500, originalPrice: 7500, discount: '27% OFF', image: createProductImage('#fef2f2', '#fecaca', '#b91c1c', 'COMMERCIAL BLENDER', '2.0L', 'bag') },
 
-        // 6. Fashion & Apparel
         { id: 601, name: 'Men Breathable Sports Running Sneakers', category: 'Fashion & Apparel', price: 2200, originalPrice: 3500, discount: '37% OFF', image: createProductImage('#fee2e2', '#fca5a5', '#dc2626', 'RUNNING SNEAKERS', 'AIR', 'shoe') },
         { id: 602, name: 'Unisex Heavyweight Cotton Hoodie', category: 'Fashion & Apparel', price: 1700, originalPrice: 2600, discount: '35% OFF', image: createProductImage('#f3f4f6', '#9ca3af', '#1f2937', 'COTTON HOODIE', 'FLEECE', 'bag') },
-        { id: 603, name: 'Men Slim-Fit Formal Office Shirt', category: 'Fashion & Apparel', price: 1200, originalPrice: 1800, discount: '33% OFF', image: createProductImage('#e0f2fe', '#bae6fd', '#0284c7', 'FORMAL OFFICE SHIRT', 'SLIM', 'bag') },
-        { id: 604, name: 'Genuine Leather Belt & Wallet Set', category: 'Fashion & Apparel', price: 950, originalPrice: 1500, discount: '37% OFF', image: createProductImage('#fef3c7', '#fcd34d', '#78350f', 'LEATHER GIFT SET', '100%', 'bag') },
 
-        // 7. Health & Beauty
-        { id: 701, name: 'Hydrating Vitamin C Face Serum 50ml', category: 'Health & Beauty', price: 3500, originalPrice: 4800, discount: '27% OFF', image: createProductImage('#ffedd5', '#fed7aa', '#ea580c', 'VITAMIN C SERUM', '50ML', 'bottle') },
-        { id: 702, name: 'Daily Moisturizing Facial Cleanser', category: 'Health & Beauty', price: 2700, originalPrice: 3800, discount: '29% OFF', image: createProductImage('#dcfce7', '#86efac', '#15803d', 'FACIAL CLEANSER', '473ML', 'bottle') },
-        { id: 703, name: 'Luxury Eau De Parfum Spray 100ml', category: 'Health & Beauty', price: 1850, originalPrice: 2600, discount: '29% OFF', image: createProductImage('#fae8ff', '#f0abfc', '#86198f', 'EAU DE PARFUM', '100ML', 'bottle') },
-        { id: 704, name: 'Organic Shea Butter Body Lotion 400ml', category: 'Health & Beauty', price: 650, originalPrice: 950, discount: '32% OFF', image: createProductImage('#fef9c3', '#fde047', '#a16207', 'SHEA BODY LOTION', '400ML', 'bottle') },
-
-        // 8. Baby Products
+        { id: 701, name: 'Hydrating Vitamin C Face Serum 50ml', category: 'Health & Beauty', price: 3500, originalPrice: 4800, discount: '27% OFF', image: createProductImage('#ffedd5', '#fed7aa', '#ea580c', 'VITAMIN C SERUM', '50ML', 'bag') },
         { id: 801, name: 'Soft Baby Diapers Jumbo Pack (64s)', category: 'Baby Products', price: 2100, originalPrice: 2800, discount: '25% OFF', image: createProductImage('#e0f2fe', '#bae6fd', '#0ea5e9', 'BABY DIAPERS 64S', 'SIZE 3', 'bag') },
-        { id: 802, name: 'Gentle Baby Bedtime Lotion 500ml', category: 'Baby Products', price: 700, originalPrice: 1000, discount: '30% OFF', image: createProductImage('#fce7f3', '#fbcfe8', '#db2777', 'BABY LOTION 500ML', 'MILD', 'bottle') },
-        { id: 803, name: 'Foldable Lightweight Baby Stroller', category: 'Baby Products', price: 9500, originalPrice: 13000, discount: '27% OFF', image: createProductImage('#f1f5f9', '#cbd5e1', '#475569', 'BABY STROLLER', 'FOLD', 'sport') },
-        { id: 804, name: 'Cotton Newborn Baby Romper 3-Pc Set', category: 'Baby Products', price: 1350, originalPrice: 1900, discount: '29% OFF', image: createProductImage('#fef3c7', '#fde68a', '#d97706', 'BABY ROMPER 3-PC', 'COTTON', 'bag') },
-
-        // 9. Gaming & Toys
-        { id: 901, name: 'PS5 DualSense Wireless Controller', category: 'Gaming & Toys', price: 8200, originalPrice: 11000, discount: '25% OFF', image: createProductImage('#eff6ff', '#bfdbfe', '#1d4ed8', 'PS5 CONTROLLER', 'WIRELESS', 'sport') },
-        { id: 902, name: 'PlayStation 5 Console Disc Edition', category: 'Gaming & Toys', price: 72000, originalPrice: 88000, discount: '18% OFF', image: createProductImage('#f8fafc', '#cbd5e1', '#0f172a', 'PLAYSTATION 5', '825GB', 'appliance') },
-        { id: 903, name: 'RGB Mechanical Gaming Keyboard & Mouse', category: 'Gaming & Toys', price: 2900, originalPrice: 4200, discount: '31% OFF', image: createProductImage('#f3e8ff', '#d8b4fe', '#6b21a8', 'RGB GAMING SET', 'LED', 'laptop') },
-        { id: 904, name: 'Educational Building Blocks 500-Pc Set', category: 'Gaming & Toys', price: 1600, originalPrice: 2300, discount: '30% OFF', image: createProductImage('#fee2e2', '#fca5a5', '#dc2626', 'BUILDING BLOCKS', '500 PCS', 'bag') },
-
-        // 10. Sporting Goods
-        { id: 1001, name: 'FIFA Match Training Football Size 5', category: 'Sporting Goods', price: 1700, originalPrice: 2500, discount: '32% OFF', image: createProductImage('#dcfce7', '#86efac', '#16a34a', 'PRO FOOTBALL SIZE 5', 'FIFA', 'sport') },
-        { id: 1002, name: 'Adjustable Cast Iron Dumbbell Pair 10kg', category: 'Sporting Goods', price: 3800, originalPrice: 5500, discount: '31% OFF', image: createProductImage('#f1f5f9', '#94a3b8', '#1e293b', 'DUMBBELL PAIR 10KG', 'IRON', 'sport') },
-        { id: 1003, name: 'Non-Slip 10mm High-Density Yoga Mat', category: 'Sporting Goods', price: 1400, originalPrice: 2100, discount: '33% OFF', image: createProductImage('#fae8ff', '#e879f9', '#a21caf', 'FITNESS YOGA MAT', '10MM', 'bag') },
-        { id: 1004, name: '26" Mountain Alloy Suspension Bicycle', category: 'Sporting Goods', price: 19500, originalPrice: 26000, discount: '25% OFF', image: createProductImage('#ffedd5', '#fdba74', '#c2410c', '26" MOUNTAIN BIKE', '21-SPD', 'sport') }
+        { id: 901, name: 'PS5 DualSense Wireless Controller', category: 'Gaming & Toys', price: 8200, originalPrice: 11000, discount: '25% OFF', image: createProductImage('#eff6ff', '#bfdbfe', '#1d4ed8', 'PS5 CONTROLLER', 'WIRELESS', 'bag') },
+        { id: 1001, name: 'FIFA Match Training Football Size 5', category: 'Sporting Goods', price: 1700, originalPrice: 2500, discount: '32% OFF', image: createProductImage('#dcfce7', '#86efac', '#16a34a', 'PRO FOOTBALL SIZE 5', 'FIFA', 'bag') }
       ], []);
 
       const formatPrice = (amountInKsh) => {
         const config = currencyRates[selectedCurrency] || currencyRates.KSh;
         const converted = amountInKsh * config.rate;
-        if (selectedCurrency === 'USD') {
-          return `${config.symbol}${converted.toFixed(2)}`;
-        }
+        if (selectedCurrency === 'USD') return `${config.symbol}${converted.toFixed(2)}`;
         return `${config.symbol}${Math.round(converted).toLocaleString()}`;
       };
 
       const filteredProducts = useMemo(() => {
         return masterCatalog.filter((product) => {
           const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
-          const matchesSearch =
-            product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            product.category.toLowerCase().includes(searchQuery.toLowerCase());
+          const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || product.category.toLowerCase().includes(searchQuery.toLowerCase());
           return matchesCategory && matchesSearch;
         });
       }, [masterCatalog, selectedCategory, searchQuery]);
 
-      const addToCart = (product) => {
-        setCart((prev) => [...prev, product]);
-      };
-
-      const removeFromCart = (index) => {
-        setCart((prev) => prev.filter((_, i) => i !== index));
-      };
+      const addToCart = (product) => setCart((prev) => [...prev, product]);
+      const removeFromCart = (index) => setCart((prev) => prev.filter((_, i) => i !== index));
 
       const cartTotalKsh = cart.reduce((sum, item) => sum + item.price, 0);
       const depositAmountKsh = Math.round(cartTotalKsh * 0.3);
@@ -235,6 +146,19 @@
         setIsProcessing(true);
         setTimeout(() => {
           setIsProcessing(false);
+          // Register order in admin state
+          const newOrder = {
+            id: `ORD-${Math.floor(1000 + Math.random() * 9000)}`,
+            customer: customerName,
+            country: destinationCountry,
+            phone: phoneNumber,
+            total: cartTotalKsh,
+            deposit: depositAmountKsh,
+            balance: balanceOnDeliveryKsh,
+            status: 'Pending Delivery',
+            date: new Date().toISOString().split('T')[0]
+          };
+          setOrders(prev => [newOrder, ...prev]);
           setCheckoutStep('success');
           setCart([]);
         }, 2000);
@@ -248,58 +172,34 @@
           <header className="bg-orange-600 text-white sticky top-0 z-50 shadow-md">
             <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-3">
               <div className="flex items-center justify-between w-full md:w-auto">
-                <h1
-                  className="text-xl md:text-2xl font-black tracking-wider cursor-pointer"
-                  onClick={() => {
-                    setSelectedCategory('All');
-                    setSearchQuery('');
-                  }}
-                >
-                  KILI-JUMIA EAST AFRICA
+                <h1 className="text-xl md:text-2xl font-black tracking-wider cursor-pointer" onClick={() => { setSelectedCategory('All'); setSearchQuery(''); setViewMode('store'); }}>
+                  KILI-MALL EAST AFRICA
                 </h1>
 
                 <div className="flex items-center gap-2 md:hidden">
-                  <select
-                    value={selectedCurrency}
-                    onChange={(e) => setSelectedCurrency(e.target.value)}
-                    className="bg-orange-700 text-white text-xs font-bold px-2 py-1.5 rounded border border-orange-500"
-                  >
-                    {Object.keys(currencyRates).map((code) => (
-                      <option key={code} value={code}>{code}</option>
-                    ))}
-                  </select>
-                  <button
-                    onClick={() => {
-                      setIsCartOpen(true);
-                      setCheckoutStep('cart');
-                    }}
-                    className="bg-orange-700 px-3 py-1.5 rounded-lg font-bold text-xs"
-                  >
+                  <button onClick={() => setViewMode(viewMode === 'store' ? 'admin' : 'store')} className="bg-orange-800 px-2.5 py-1.5 rounded text-xs font-bold">
+                    {viewMode === 'store' ? '📊 Admin' : '🛍️ Store'}
+                  </button>
+                  <button onClick={() => { setIsCartOpen(true); setCheckoutStep('cart'); }} className="bg-orange-700 px-3 py-1.5 rounded-lg font-bold text-xs">
                     🛒 ({cart.length})
                   </button>
                 </div>
               </div>
 
-              <div className="w-full md:w-1/2 flex items-center bg-white rounded-lg overflow-hidden shadow-sm">
-                <input
-                  type="text"
-                  placeholder="Search phones, TVs, groceries, shoes..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full px-4 py-2 text-gray-800 text-sm focus:outline-none"
-                />
-                {searchQuery && (
-                  <button
-                    onClick={() => setSearchQuery('')}
-                    className="px-2 text-gray-400 hover:text-gray-700 text-xs font-bold"
-                  >
-                    ✕
+              {viewMode === 'store' && (
+                <div className="w-full md:w-1/2 flex items-center bg-white rounded-lg overflow-hidden shadow-sm">
+                  <input
+                    type="text"
+                    placeholder="Search heavy discounts across East Africa..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full px-4 py-2 text-gray-800 text-sm focus:outline-none"
+                  />
+                  <button className="bg-orange-500 px-5 py-2 text-white font-bold text-sm hover:bg-orange-700 transition">
+                    Search
                   </button>
-                )}
-                <button className="bg-orange-500 px-5 py-2 text-white font-bold text-sm hover:bg-orange-700 transition">
-                  Search
-                </button>
-              </div>
+                </div>
+              )}
 
               <div className="hidden md:flex items-center gap-3">
                 <select
@@ -313,136 +213,174 @@
                 </select>
 
                 <button
-                  onClick={() => {
-                    setIsCartOpen(true);
-                    setCheckoutStep('cart');
-                  }}
+                  onClick={() => setViewMode(viewMode === 'store' ? 'admin' : 'store')}
+                  className="bg-orange-800 hover:bg-orange-900 transition px-4 py-2 rounded-lg font-bold text-sm shadow-sm"
+                >
+                  {viewMode === 'store' ? '📊 Admin Dashboard' : '🛍️ Return to Store'}
+                </button>
+
+                <button
+                  onClick={() => { setIsCartOpen(true); setCheckoutStep('cart'); }}
                   className="bg-orange-700 hover:bg-orange-800 transition px-4 py-2 rounded-lg font-bold text-sm flex items-center gap-2 shadow-sm"
                 >
                   <span>🛒 Cart</span>
-                  <span className="bg-white text-orange-600 px-2 py-0.5 rounded-full text-xs font-black">
-                    {cart.length}
-                  </span>
+                  <span className="bg-white text-orange-600 px-2 py-0.5 rounded-full text-xs font-black">{cart.length}</span>
                 </button>
               </div>
             </div>
 
-            {/* Horizontal Category Bar for Downward Scrolling */}
-            <nav className="bg-orange-700 text-white text-xs overflow-x-auto no-scrollbar">
-              <div className="max-w-7xl mx-auto px-4 py-2 flex items-center gap-2 whitespace-nowrap">
-                <button
-                  onClick={() => setSelectedCategory('All')}
-                  className={`px-3 py-1 rounded-full font-bold transition ${
-                    selectedCategory === 'All' ? 'bg-white text-orange-700' : 'hover:bg-orange-600'
-                  }`}
-                >
-                  All 10 Departments
-                </button>
-                {categories.map((cat) => (
+            {/* Category Navigation Bar */}
+            {viewMode === 'store' && (
+              <nav className="bg-orange-700 text-white text-xs overflow-x-auto no-scrollbar">
+                <div className="max-w-7xl mx-auto px-4 py-2 flex items-center gap-2 whitespace-nowrap">
                   <button
-                    key={cat}
-                    onClick={() => setSelectedCategory(cat)}
-                    className={`px-3 py-1 rounded-full font-semibold transition ${
-                      selectedCategory === cat ? 'bg-white text-orange-700' : 'hover:bg-orange-600'
-                    }`}
+                    onClick={() => setSelectedCategory('All')}
+                    className={`px-3 py-1 rounded-full font-bold transition ${selectedCategory === 'All' ? 'bg-white text-orange-700' : 'hover:bg-orange-600'}`}
                   >
-                    {cat}
+                    All 10 Departments
                   </button>
-                ))}
-              </div>
-            </nav>
+                  {categories.map((cat) => (
+                    <button
+                      key={cat}
+                      onClick={() => setSelectedCategory(cat)}
+                      className={`px-3 py-1 rounded-full font-semibold transition ${selectedCategory === cat ? 'bg-white text-orange-700' : 'hover:bg-orange-600'}`}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+              </nav>
+            )}
           </header>
 
-          {/* East Africa Shipping & 30% Deposit Banner */}
+          {/* Banner: East Africa Shipping & 30% Deposit Rule */}
           <div className="bg-gray-900 text-white text-center py-2 text-xs font-semibold px-4">
-            🌍 East Africa Delivery (Kenya • Uganda • Tanzania • Rwanda • Burundi • South Sudan) | Pay <span className="text-orange-400 font-bold">30% Deposit Now</span> & <span className="text-green-400 font-bold">70% After Delivery</span>
+            🌍 East Africa Delivery (Kenya, Uganda, Tanzania, Rwanda, Burundi, South Sudan) | Pay <span className="text-orange-400 font-bold">30% Deposit Now</span> & <span className="text-green-400 font-bold">70% Balance After Delivery</span>
           </div>
 
-          {/* Downward-Scrolling Multi-Category Catalog */}
-          <main className="max-w-7xl mx-auto p-4 space-y-8">
-            {filteredProducts.length === 0 ? (
-              <div className="bg-white rounded-xl p-16 text-center shadow-sm">
-                <p className="text-gray-600 font-medium">No discounted products found matching "{searchQuery}".</p>
-                <button
-                  onClick={() => {
-                    setSelectedCategory('All');
-                    setSearchQuery('');
-                  }}
-                  className="mt-4 bg-orange-600 text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow hover:bg-orange-700 transition"
-                >
-                  Show All Products
-                </button>
-              </div>
-            ) : (
-              categoriesToRender.map((categoryName) => {
-                const sectionItems = filteredProducts.filter((p) => p.category === categoryName);
-                if (sectionItems.length === 0) return null;
+          {/* VIEW MODE SWITCHER: STOREFRONT vs ADMIN DASHBOARD */}
+          {viewMode === 'admin' ? (
+            <main className="max-w-7xl mx-auto p-4 md:p-6 space-y-6">
+              <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+                <div className="flex justify-between items-center mb-6">
+                  <div>
+                    <h2 className="text-xl font-black text-gray-800">Admin Dashboard & Order Management</h2>
+                    <p className="text-xs text-gray-500">Monitor customer deposits, balances due on delivery, and dispatch logs.</p>
+                  </div>
+                  <button onClick={() => setViewMode('store')} className="bg-orange-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-orange-700">
+                    Back to Storefront
+                  </button>
+                </div>
 
-                return (
-                  <section key={categoryName} className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-200">
-                    {/* Department Banner */}
-                    <div className="bg-orange-600 text-white px-4 py-3 flex items-center justify-between">
-                      <h2 className="text-base md:text-lg font-extrabold tracking-wide uppercase">
-                        {categoryName}
-                      </h2>
-                      <span className="text-xs bg-orange-800 px-2.5 py-1 rounded-full font-bold">
-                        {sectionItems.length} Discounted Deals
-                      </span>
-                    </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                  <div className="bg-orange-50 border border-orange-200 p-4 rounded-xl">
+                    <p className="text-xs text-orange-800 font-bold uppercase">Total Orders Logged</p>
+                    <p className="text-2xl font-black text-orange-600 mt-1">{orders.length}</p>
+                  </div>
+                  <div className="bg-green-50 border border-green-200 p-4 rounded-xl">
+                    <p className="text-xs text-green-800 font-bold uppercase">Total Deposits Collected (30%)</p>
+                    <p className="text-2xl font-black text-green-600 mt-1">KSh {orders.reduce((sum, o) => sum + o.deposit, 0).toLocaleString()}</p>
+                  </div>
+                  <div className="bg-blue-50 border border-blue-200 p-4 rounded-xl">
+                    <p className="text-xs text-blue-800 font-bold uppercase">Pending Balance on Delivery (70%)</p>
+                    <p className="text-2xl font-black text-blue-600 mt-1">KSh {orders.reduce((sum, o) => sum + o.balance, 0).toLocaleString()}</p>
+                  </div>
+                </div>
 
-                    {/* Product Cards Grid */}
-                    <div className="p-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                      {sectionItems.map((product) => (
-                        <div
-                          key={product.id}
-                          className="bg-white rounded-xl shadow-sm hover:shadow-md transition p-3 flex flex-col justify-between border border-gray-100 relative"
-                        >
-                          <span className="absolute top-4 left-4 bg-red-600 text-white text-[10px] font-black px-2 py-0.5 rounded shadow z-10">
-                            {product.discount}
-                          </span>
-
-                          <div>
-                            <div className="w-full h-40 bg-gray-100 rounded-lg overflow-hidden mb-2.5">
-                              <img
-                                src={product.image}
-                                alt={product.name}
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
-                            <h3 className="text-sm font-semibold text-gray-800 line-clamp-2">
-                              {product.name}
-                            </h3>
-                          </div>
-
-                          <div className="mt-3 pt-2 border-t border-gray-100">
-                            <div className="flex items-baseline gap-2">
-                              <span className="text-base font-black text-gray-900">
-                                {formatPrice(product.price)}
-                              </span>
-                              <span className="text-xs text-gray-400 line-through">
-                                {formatPrice(product.originalPrice)}
-                              </span>
-                            </div>
-                            <p className="text-[11px] text-green-700 font-bold mt-0.5">
-                              30% Deposit: {formatPrice(Math.round(product.price * 0.3))}
-                            </p>
-                            <button
-                              onClick={() => addToCart(product)}
-                              className="w-full mt-2.5 bg-orange-600 text-white text-xs font-bold py-2.5 rounded-lg hover:bg-orange-700 active:scale-95 transition shadow-sm"
-                            >
-                              Add to Cart
-                            </button>
-                          </div>
-                        </div>
+                <h3 className="text-sm font-bold text-gray-700 mb-3 uppercase tracking-wider">Recent Customer Orders</h3>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse text-xs">
+                    <thead>
+                      <tr className="bg-gray-100 text-gray-700 uppercase">
+                        <th className="p-3">Order ID</th>
+                        <th className="p-3">Customer</th>
+                        <th className="p-3">Country / Phone</th>
+                        <th className="p-3">Total Value</th>
+                        <th className="p-3 text-green-700">30% Deposit Paid</th>
+                        <th className="p-3 text-orange-700">70% Balance Due</th>
+                        <th className="p-3">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {orders.map((order) => (
+                        <tr key={order.id} className="hover:bg-gray-50">
+                          <td className="p-3 font-bold text-gray-900">{order.id}</td>
+                          <td className="p-3 font-semibold">{order.customer}</td>
+                          <td className="p-3 text-gray-600">🇰🇪 {order.country} ({order.phone})</td>
+                          <td className="p-3 font-bold">KSh {order.total.toLocaleString()}</td>
+                          <td className="p-3 font-black text-green-600">KSh {order.deposit.toLocaleString()}</td>
+                          <td className="p-3 font-black text-orange-600">KSh {order.balance.toLocaleString()}</td>
+                          <td className="p-3">
+                            <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded font-bold text-[10px]">
+                              {order.status}
+                            </span>
+                          </td>
+                        </tr>
                       ))}
-                    </div>
-                  </section>
-                );
-              })
-            )}
-          </main>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </main>
+          ) : (
+            <main className="max-w-7xl mx-auto p-4 space-y-8">
+              {filteredProducts.length === 0 ? (
+                <div className="bg-white rounded-xl p-16 text-center shadow-sm">
+                  <p className="text-gray-600 font-medium">No discounted products found matching "{searchQuery}".</p>
+                  <button onClick={() => { setSelectedCategory('All'); setSearchQuery(''); }} className="mt-4 bg-orange-600 text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow hover:bg-orange-700 transition">
+                    Show All Products
+                  </button>
+                </div>
+              ) : (
+                categoriesToRender.map((categoryName) => {
+                  const sectionItems = filteredProducts.filter((p) => p.category === categoryName);
+                  if (sectionItems.length === 0) return null;
 
-          {/* Cart & East Africa Multi-Currency Checkout Drawer */}
+                  return (
+                    <section key={categoryName} className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-200">
+                      <div className="bg-orange-600 text-white px-4 py-3 flex items-center justify-between">
+                        <h2 className="text-base md:text-lg font-extrabold tracking-wide uppercase">{categoryName}</h2>
+                        <span className="text-xs bg-orange-800 px-2.5 py-1 rounded-full font-bold">{sectionItems.length} Deals</span>
+                      </div>
+
+                      <div className="p-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {sectionItems.map((product) => (
+                          <div key={product.id} className="bg-white rounded-xl shadow-sm hover:shadow-md transition p-3 flex flex-col justify-between border border-gray-100 relative">
+                            <span className="absolute top-4 left-4 bg-red-600 text-white text-[10px] font-black px-2 py-0.5 rounded shadow z-10">
+                              {product.discount}
+                            </span>
+
+                            <div>
+                              <div className="w-full h-40 bg-gray-100 rounded-lg overflow-hidden mb-2.5">
+                                <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                              </div>
+                              <h3 className="text-sm font-semibold text-gray-800 line-clamp-2">{product.name}</h3>
+                            </div>
+
+                            <div className="mt-3 pt-2 border-t border-gray-100">
+                              <div className="flex items-baseline gap-2">
+                                <span className="text-base font-black text-gray-900">{formatPrice(product.price)}</span>
+                                <span className="text-xs text-gray-400 line-through">{formatPrice(product.originalPrice)}</span>
+                              </div>
+                              <p className="text-[11px] text-green-700 font-bold mt-0.5">30% Deposit: {formatPrice(Math.round(product.price * 0.3))}</p>
+                              <button
+                                onClick={() => addToCart(product)}
+                                className="w-full mt-2.5 bg-orange-600 text-white text-xs font-bold py-2.5 rounded-lg hover:bg-orange-700 active:scale-95 transition shadow-sm"
+                              >
+                                Add to Cart
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </section>
+                  );
+                })
+              )}
+            </main>
+          )}
+
+          {/* Cart & Checkout Drawer */}
           {isCartOpen && (
             <div className="fixed inset-0 z-50 flex justify-end bg-black bg-opacity-50">
               <div className="w-full max-w-md bg-white h-full shadow-2xl flex flex-col p-5 overflow-y-auto">
@@ -452,18 +390,11 @@
                     {checkoutStep === 'checkout' && 'East Africa 30% Deposit Payment'}
                     {checkoutStep === 'success' && 'Order Confirmed!'}
                   </h2>
-                  <button
-                    onClick={() => {
-                      setIsCartOpen(false);
-                      setCheckoutStep('cart');
-                    }}
-                    className="text-gray-400 hover:text-gray-700 text-xl font-bold"
-                  >
+                  <button onClick={() => { setIsCartOpen(false); setCheckoutStep('cart'); }} className="text-gray-400 hover:text-gray-700 text-xl font-bold">
                     ✕
                   </button>
                 </div>
 
-                {/* STEP 1: CART */}
                 {checkoutStep === 'cart' && (
                   <>
                     {cart.length === 0 ? (
@@ -475,27 +406,15 @@
                       <>
                         <div className="flex-1 space-y-3 overflow-y-auto pr-1">
                           {cart.map((item, index) => (
-                            <div
-                              key={index}
-                              className="flex items-center justify-between bg-gray-50 p-2.5 rounded-xl border border-gray-200"
-                            >
+                            <div key={index} className="flex items-center justify-between bg-gray-50 p-2.5 rounded-xl border border-gray-200">
                               <div className="flex items-center gap-3">
-                                <img
-                                  src={item.image}
-                                  alt={item.name}
-                                  className="w-12 h-12 object-cover rounded-lg"
-                                />
+                                <img src={item.image} alt={item.name} className="w-12 h-12 object-cover rounded-lg" />
                                 <div>
                                   <h4 className="text-xs font-bold text-gray-800 line-clamp-1">{item.name}</h4>
                                   <p className="text-xs text-orange-600 font-black mt-0.5">{formatPrice(item.price)}</p>
                                 </div>
                               </div>
-                              <button
-                                onClick={() => removeFromCart(index)}
-                                className="text-red-600 hover:text-red-800 text-xs font-bold px-2 py-1"
-                              >
-                                Remove
-                              </button>
+                              <button onClick={() => removeFromCart(index)} className="text-red-600 hover:text-red-800 text-xs font-bold px-2 py-1">Remove</button>
                             </div>
                           ))}
                         </div>
@@ -515,10 +434,7 @@
                           </div>
                         </div>
 
-                        <button
-                          onClick={() => setCheckoutStep('checkout')}
-                          className="w-full mt-4 bg-orange-600 text-white font-bold py-3 rounded-xl hover:bg-orange-700 transition shadow"
-                        >
+                        <button onClick={() => setCheckoutStep('checkout')} className="w-full mt-4 bg-orange-600 text-white font-bold py-3 rounded-xl hover:bg-orange-700 transition shadow">
                           Proceed to East Africa Checkout
                         </button>
                       </>
@@ -526,30 +442,18 @@
                   </>
                 )}
 
-                {/* STEP 2: CHECKOUT */}
                 {checkoutStep === 'checkout' && (
                   <form onSubmit={handlePaymentSubmit} className="flex-1 flex flex-col justify-between space-y-3">
                     <div className="space-y-3">
                       <div>
                         <label className="block text-xs font-bold text-gray-700 mb-1">Full Name</label>
-                        <input
-                          type="text"
-                          required
-                          placeholder="Enter full name"
-                          value={customerName}
-                          onChange={(e) => setCustomerName(e.target.value)}
-                          className="w-full p-2.5 text-sm border rounded-lg focus:outline-none focus:border-orange-600"
-                        />
+                        <input type="text" required placeholder="Enter full name" value={customerName} onChange={(e) => setCustomerName(e.target.value)} className="w-full p-2.5 text-sm border rounded-lg focus:outline-none focus:border-orange-600" />
                       </div>
 
                       <div className="grid grid-cols-2 gap-2">
                         <div>
                           <label className="block text-xs font-bold text-gray-700 mb-1">East Africa Country</label>
-                          <select
-                            value={destinationCountry}
-                            onChange={(e) => setDestinationCountry(e.target.value)}
-                            className="w-full p-2.5 text-sm border rounded-lg bg-white focus:outline-none focus:border-orange-600"
-                          >
+                          <select value={destinationCountry} onChange={(e) => setDestinationCountry(e.target.value)} className="w-full p-2.5 text-sm border rounded-lg bg-white">
                             <option value="Kenya">🇰🇪 Kenya</option>
                             <option value="Uganda">🇺🇬 Uganda</option>
                             <option value="Tanzania">🇹🇿 Tanzania</option>
@@ -560,11 +464,7 @@
                         </div>
                         <div>
                           <label className="block text-xs font-bold text-gray-700 mb-1">Currency</label>
-                          <select
-                            value={selectedCurrency}
-                            onChange={(e) => setSelectedCurrency(e.target.value)}
-                            className="w-full p-2.5 text-sm border rounded-lg bg-white focus:outline-none focus:border-orange-600"
-                          >
+                          <select value={selectedCurrency} onChange={(e) => setSelectedCurrency(e.target.value)} className="w-full p-2.5 text-sm border rounded-lg bg-white">
                             {Object.entries(currencyRates).map(([code, info]) => (
                               <option key={code} value={code}>{info.label}</option>
                             ))}
@@ -575,79 +475,17 @@
                       <div className="grid grid-cols-2 gap-2">
                         <div>
                           <label className="block text-xs font-bold text-gray-700 mb-1">Phone Number</label>
-                          <input
-                            type="tel"
-                            required
-                            placeholder="+254 / +256 / +255..."
-                            value={phoneNumber}
-                            onChange={(e) => setPhoneNumber(e.target.value)}
-                            className="w-full p-2.5 text-sm border rounded-lg focus:outline-none focus:border-orange-600"
-                          />
+                          <input type="tel" required placeholder="+254 / +256 / +255..." value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} className="w-full p-2.5 text-sm border rounded-lg focus:outline-none focus:border-orange-600" />
                         </div>
                         <div>
                           <label className="block text-xs font-bold text-gray-700 mb-1">Email Address</label>
-                          <input
-                            type="email"
-                            required
-                            placeholder="you@email.com"
-                            value={customerEmail}
-                            onChange={(e) => setCustomerEmail(e.target.value)}
-                            className="w-full p-2.5 text-sm border rounded-lg focus:outline-none focus:border-orange-600"
-                          />
+                          <input type="email" required placeholder="you@email.com" value={customerEmail} onChange={(e) => setCustomerEmail(e.target.value)} className="w-full p-2.5 text-sm border rounded-lg focus:outline-none focus:border-orange-600" />
                         </div>
                       </div>
 
                       <div>
                         <label className="block text-xs font-bold text-gray-700 mb-1">City & Delivery Point</label>
-                        <input
-                          type="text"
-                          required
-                          placeholder="e.g. Nairobi, Kampala, Dar es Salaam, Kigali"
-                          value={shippingAddress}
-                          onChange={(e) => setShippingAddress(e.target.value)}
-                          className="w-full p-2.5 text-sm border rounded-lg focus:outline-none focus:border-orange-600"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-xs font-bold text-gray-700 mb-1.5">
-                          Payment Method (All African Money & USD)
-                        </label>
-                        <div className="grid grid-cols-3 gap-2">
-                          <button
-                            type="button"
-                            onClick={() => setPaymentMethod('mpesa')}
-                            className={`p-2 rounded-xl border text-[11px] font-bold text-center ${
-                              paymentMethod === 'mpesa'
-                                ? 'border-green-600 bg-green-50 text-green-700'
-                                : 'border-gray-200 text-gray-600'
-                            }`}
-                          >
-                            📱 M-Pesa / MTN / Airtel Money
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setPaymentMethod('paystack')}
-                            className={`p-2 rounded-xl border text-[11px] font-bold text-center ${
-                              paymentMethod === 'paystack'
-                                ? 'border-blue-600 bg-blue-50 text-blue-700'
-                                : 'border-gray-200 text-gray-600'
-                            }`}
-                          >
-                            💳 Paystack (African Currencies)
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setPaymentMethod('usd')}
-                            className={`p-2 rounded-xl border text-[11px] font-bold text-center ${
-                              paymentMethod === 'usd'
-                                ? 'border-purple-600 bg-purple-50 text-purple-700'
-                                : 'border-gray-200 text-gray-600'
-                            }`}
-                          >
-                            💵 USD Visa / Mastercard
-                          </button>
-                        </div>
+                        <input type="text" required placeholder="e.g. Nairobi, Kampala, Dar es Salaam..." value={shippingAddress} onChange={(e) => setShippingAddress(e.target.value)} className="w-full p-2.5 text-sm border rounded-lg focus:outline-none focus:border-orange-600" />
                       </div>
 
                       <div className="bg-gray-50 p-3 rounded-lg border text-xs space-y-1">
@@ -663,44 +501,25 @@
                     </div>
 
                     <div className="border-t pt-3 flex gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setCheckoutStep('cart')}
-                        className="w-1/3 bg-gray-200 text-gray-800 font-bold py-3 rounded-xl hover:bg-gray-300 text-sm"
-                      >
-                        Back
-                      </button>
-                      <button
-                        type="submit"
-                        disabled={isProcessing}
-                        className="w-2/3 bg-orange-600 text-white font-bold py-3 rounded-xl hover:bg-orange-700 shadow text-sm"
-                      >
+                      <button type="button" onClick={() => setCheckoutStep('cart')} className="w-1/3 bg-gray-200 text-gray-800 font-bold py-3 rounded-xl text-sm">Back</button>
+                      <button type="submit" disabled={isProcessing} className="w-2/3 bg-orange-600 text-white font-bold py-3 rounded-xl shadow text-sm">
                         {isProcessing ? 'Processing...' : `Pay 30% (${formatPrice(depositAmountKsh)})`}
                       </button>
                     </div>
                   </form>
                 )}
 
-                {/* STEP 3: SUCCESS */}
                 {checkoutStep === 'success' && (
                   <div className="flex-1 flex flex-col items-center justify-center text-center">
-                    <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-3xl font-bold mb-4">
-                      ✓
-                    </div>
+                    <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-3xl font-bold mb-4">✓</div>
                     <h3 className="text-xl font-black text-gray-800 mb-1">30% Deposit Received!</h3>
                     <p className="text-xs text-gray-600 max-w-xs mb-4">
-                      Thank you, <span className="font-bold">{customerName}</span>. Your order is scheduled for East Africa courier dispatch to <span className="font-bold text-orange-600">{destinationCountry}</span> ({shippingAddress}).
+                      Thank you, <span className="font-bold">{customerName}</span>. Your order is logged in the Admin Dashboard and scheduled for dispatch to <span className="font-bold text-orange-600">{destinationCountry}</span> ({shippingAddress}).
                     </p>
                     <div className="bg-orange-50 p-3 rounded-xl border border-orange-200 text-xs text-orange-900 mb-6 w-full">
                       <span className="font-bold">Balance Due After Delivery:</span> {formatPrice(balanceOnDeliveryKsh)}
                     </div>
-                    <button
-                      onClick={() => {
-                        setIsCartOpen(false);
-                        setCheckoutStep('cart');
-                      }}
-                      className="w-full bg-orange-600 text-white font-bold py-3 rounded-xl hover:bg-orange-700 text-sm"
-                    >
+                    <button onClick={() => { setIsCartOpen(false); setCheckoutStep('cart'); }} className="w-full bg-orange-600 text-white font-bold py-3 rounded-xl text-sm">
                       Continue Shopping
                     </button>
                   </div>
@@ -713,7 +532,7 @@
     };
 
     const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<JumiaKilimallStorefront />);
+    root.render(<KiliMallApp />);
   </script>
 </body>
 </html>
