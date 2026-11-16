@@ -1,567 +1,661 @@
-import React, { useState, useMemo } from 'react';
-import { createRoot } from 'react-dom/client';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kili-Jumia East Africa | Discounted Online Shopping</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    html { scroll-behavior: smooth; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-900">
+  <div id="root"></div>
 
-const JumiaKilimallStorefront = () => {
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [cart, setCart] = useState([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  
-  // Checkout & Payment States
-  const [checkoutStep, setCheckoutStep] = useState('cart'); // 'cart' | 'checkout' | 'success'
-  const [paymentMethod, setPaymentMethod] = useState('mpesa'); // 'mpesa' | 'paystack' | 'usd'
-  const [selectedCurrency, setSelectedCurrency] = useState('KSh'); // KSh, USD, UGX, TZS, RWF
-  const [destinationCountry, setDestinationCountry] = useState('Kenya');
-  
-  const [customerName, setCustomerName] = useState('');
-  const [customerEmail, setCustomerEmail] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [shippingAddress, setShippingAddress] = useState('');
-  const [isProcessing, setIsProcessing] = useState(false);
+  <script type="text/babel">
+    const { useState, useMemo } = React;
 
-  // All 10 Core Departments
-  const categories = [
-    'All',
-    'Supermarket & Groceries',
-    'Phones & Tablets',
-    'Computing & Laptops',
-    'Electronics & Audio',
-    'Home & Office Appliances',
-    'Fashion & Apparel',
-    'Health & Beauty',
-    'Baby Products',
-    'Gaming & Toys',
-    'Sporting Goods'
-  ];
+    // Reliable fallback image generator if network blocks an external photo
+    const getFallbackImage = (name) =>
+      `https://placehold.co/500x400/fff7ed/ea580c?text=${encodeURIComponent(name.slice(0, 22))}`;
 
-  // Currency Exchange Multipliers relative to KSh base
-  const currencyRates = {
-    'KSh': { symbol: 'KSh ', rate: 1 },
-    'USD': { symbol: '$', rate: 0.0077 },
-    'UGX': { symbol: 'USh ', rate: 29.5 },
-    'TZS': { symbol: 'TSh ', rate: 20.2 },
-    'RWF': { symbol: 'FRw ', rate: 10.2 }
-  };
+    const JumiaKilimallStorefront = () => {
+      const [selectedCategory, setSelectedCategory] = useState('All');
+      const [searchQuery, setSearchQuery] = useState('');
+      const [cart, setCart] = useState([]);
+      const [isCartOpen, setIsCartOpen] = useState(false);
 
-  // Comprehensive Cheap & Heavily Discounted Product Catalog
-  const masterCatalog = useMemo(() => [
-    // Supermarket & Groceries
-    { id: 101, name: 'Jogoo Maize Meal Flour 2kg', category: 'Supermarket & Groceries', price: 130, originalPrice: 190, discount: '32% OFF', image: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500&q=80' },
-    { id: 102, name: 'Brookside Fresh Whole Milk 1L', category: 'Supermarket & Groceries', price: 145, originalPrice: 180, discount: '19% OFF', image: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=500&q=80' },
-    { id: 103, name: 'Kabras Sugar 2kg Brown', category: 'Supermarket & Groceries', price: 250, originalPrice: 320, discount: '22% OFF', image: 'https://images.unsplash.com/photo-1581403366938-164e62241bda?w=500&q=80' },
-    { id: 104, name: 'Golden Fry Cooking Oil 3L Jerrycan', category: 'Supermarket & Groceries', price: 850, originalPrice: 1100, discount: '23% OFF', image: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=500&q=80' },
-    { id: 105, name: 'Bio Natural Yoghurt 450g', category: 'Supermarket & Groceries', price: 200, originalPrice: 280, discount: '28% OFF', image: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=500&q=80' },
+      // Checkout & Payment States
+      const [checkoutStep, setCheckoutStep] = useState('cart'); // 'cart' | 'checkout' | 'success'
+      const [paymentMethod, setPaymentMethod] = useState('mpesa');
+      const [selectedCurrency, setSelectedCurrency] = useState('KSh');
+      const [destinationCountry, setDestinationCountry] = useState('Kenya');
 
-    // Phones & Tablets
-    { id: 201, name: 'Samsung Galaxy A15, 6.5" 128GB/4GB', category: 'Phones & Tablets', price: 18500, originalPrice: 24000, discount: '23% OFF', image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500&q=80' },
-    { id: 202, name: 'Xiaomi Redmi Note 13 Pro 4G, 256GB/8GB', category: 'Phones & Tablets', price: 28000, originalPrice: 35000, discount: '20% OFF', image: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500&q=80' },
-    { id: 203, name: 'Infinix Hot 40i, 6.6" 256GB/8GB', category: 'Phones & Tablets', price: 14200, originalPrice: 18500, discount: '23% OFF', image: 'https://images.unsplash.com/photo-1565849904461-04a58ad377e0?w=500&q=80' },
-    { id: 204, name: 'Tecno Spark 20 Pro, 256GB/8GB', category: 'Phones & Tablets', price: 16900, originalPrice: 21000, discount: '20% OFF', image: 'https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?w=500&q=80' },
-    { id: 205, name: 'Apple iPhone 13, 128GB (Midnight)', category: 'Phones & Tablets', price: 79000, originalPrice: 98000, discount: '19% OFF', image: 'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=500&q=80' },
+      const [customerName, setCustomerName] = useState('');
+      const [customerEmail, setCustomerEmail] = useState('');
+      const [phoneNumber, setPhoneNumber] = useState('');
+      const [shippingAddress, setShippingAddress] = useState('');
+      const [isProcessing, setIsProcessing] = useState(false);
 
-    // Computing & Laptops
-    { id: 301, name: 'HP Pavilion 15 Intel Core i5 16GB RAM 512GB SSD', category: 'Computing & Laptops', price: 69000, originalPrice: 85000, discount: '19% OFF', image: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=500&q=80' },
-    { id: 302, name: 'Lenovo V15 G4 AMD Ryzen 3 8GB RAM 256GB SSD', category: 'Computing & Laptops', price: 39000, originalPrice: 49000, discount: '20% OFF', image: 'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=500&q=80' },
-    { id: 303, name: 'Logitech MK220 Wireless Keyboard & Mouse Combo', category: 'Computing & Laptops', price: 2100, originalPrice: 2900, discount: '28% OFF', image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=500&q=80' },
-    { id: 304, name: 'Seagate One Touch 1TB External Hard Drive', category: 'Computing & Laptops', price: 6500, originalPrice: 8500, discount: '24% OFF', image: 'https://images.unsplash.com/photo-1531492736225-b2b52b04c86e?w=500&q=80' },
+      const categories = [
+        'Supermarket & Groceries',
+        'Phones & Tablets',
+        'Computing & Laptops',
+        'Electronics & Audio',
+        'Home & Office Appliances',
+        'Fashion & Apparel',
+        'Health & Beauty',
+        'Baby Products',
+        'Gaming & Toys',
+        'Sporting Goods'
+      ];
 
-    // Electronics & Audio
-    { id: 401, name: 'Hisense 43" Smart Frameless Full HD TV', category: 'Electronics & Audio', price: 29900, originalPrice: 38000, discount: '21% OFF', image: 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=500&q=80' },
-    { id: 402, name: 'Sony WH-1000XM5 Wireless Noise-Canceling Headphones', category: 'Electronics & Audio', price: 36000, originalPrice: 46000, discount: '22% OFF', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80' },
-    { id: 403, name: 'JBL Charge 5 Portable Waterproof Bluetooth Speaker', category: 'Electronics & Audio', price: 15500, originalPrice: 19900, discount: '22% OFF', image: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?w=500&q=80' },
-    { id: 404, name: 'Vision Plus 32" Digital LED TV', category: 'Electronics & Audio', price: 11500, originalPrice: 15000, discount: '23% OFF', image: 'https://images.unsplash.com/photo-1593784991095-a205069470b6?w=500&q=80' },
+      // All African Currencies + USD exchange rates relative to KSh
+      const currencyRates = {
+        KSh: { symbol: 'KSh ', rate: 1, label: 'KES (Kenya Shilling)' },
+        USD: { symbol: '$', rate: 0.0077, label: 'USD (US Dollar)' },
+        UGX: { symbol: 'USh ', rate: 29.5, label: 'UGX (Uganda Shilling)' },
+        TZS: { symbol: 'TSh ', rate: 20.2, label: 'TZS (Tanzania Shilling)' },
+        RWF: { symbol: 'FRw ', rate: 10.5, label: 'RWF (Rwandan Franc)' },
+        BIF: { symbol: 'FBu ', rate: 22.8, label: 'BIF (Burundian Franc)' },
+        SSP: { symbol: 'SSP ', rate: 10.1, label: 'SSP (South Sudanese Pound)' },
+        NGN: { symbol: '₦', rate: 12.2, label: 'NGN (Nigerian Naira)' },
+        ZAR: { symbol: 'R ', rate: 0.14, label: 'ZAR (South African Rand)' }
+      };
 
-    // Home & Office Appliances
-    { id: 501, name: 'Ramtons Digital Microwave Oven 20L', category: 'Home & Office Appliances', price: 10900, originalPrice: 14000, discount: '22% OFF', image: 'https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?w=500&q=80' },
-    { id: 502, name: 'Bruhm Heavy Duty Commercial Blender 2L', category: 'Home & Office Appliances', price: 5500, originalPrice: 7500, discount: '27% OFF', image: 'https://images.unsplash.com/photo-1570222094114-d0f7f75e5d1a?w=500&q=80' },
-    { id: 503, name: 'Von Hot Point 2-Burner Table Top Gas Cooker', category: 'Home & Office Appliances', price: 3600, originalPrice: 4800, discount: '25% OFF', image: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=500&q=80' },
-    { id: 504, name: 'Executive Ergonomic Office Mesh Swivel Chair', category: 'Home & Office Appliances', price: 12500, originalPrice: 16500, discount: '24% OFF', image: 'https://images.unsplash.com/photo-1580481077494-e3299ac2505e?w=500&q=80' },
+      // Verified real product photography across all 10 departments
+      const masterCatalog = useMemo(() => [
+        // 1. Supermarket & Groceries
+        { id: 101, name: 'Premium Maize Meal Flour 2kg', category: 'Supermarket & Groceries', price: 130, originalPrice: 190, discount: '32% OFF', image: 'https://images.pexels.com/photos/4110256/pexels-photo-4110256.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 102, name: 'Fresh Whole Pasteurized Milk 1L', category: 'Supermarket & Groceries', price: 145, originalPrice: 180, discount: '19% OFF', image: 'https://images.pexels.com/photos/248412/pexels-photo-248412.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 103, name: 'Pure Brown Cane Sugar 2kg', category: 'Supermarket & Groceries', price: 250, originalPrice: 320, discount: '22% OFF', image: 'https://images.pexels.com/photos/2523659/pexels-photo-2523659.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 104, name: 'Pure Vegetable Cooking Oil 3L', category: 'Supermarket & Groceries', price: 850, originalPrice: 1100, discount: '23% OFF', image: 'https://images.pexels.com/photos/33783/olive-oil-salad-dressing-cooking-olive.jpg?auto=compress&cs=tinysrgb&w=600' },
 
-    // Fashion & Apparel
-    { id: 601, name: 'Men Breathable Casual Sports Running Sneakers', category: 'Fashion & Apparel', price: 2200, originalPrice: 3500, discount: '37% OFF', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80' },
-    { id: 602, name: 'Unisex Heavyweight Oversized Cotton Hoodie', category: 'Fashion & Apparel', price: 1700, originalPrice: 2600, discount: '35% OFF', image: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=500&q=80' },
-    { id: 603, name: 'Men Formal Long Sleeve Button-Down Shirt', category: 'Fashion & Apparel', price: 1200, originalPrice: 1800, discount: '33% OFF', image: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=500&q=80' },
-    { id: 604, name: 'Classic Leather Casual Belt & Wallet Set', category: 'Fashion & Apparel', price: 950, originalPrice: 1500, discount: '37% OFF', image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&q=80' },
+        // 2. Phones & Tablets
+        { id: 201, name: 'Samsung Galaxy A15 6.5" 128GB/4GB', category: 'Phones & Tablets', price: 18500, originalPrice: 24000, discount: '23% OFF', image: 'https://images.pexels.com/photos/404280/pexels-photo-404280.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 202, name: 'Redmi Note 13 Pro 256GB/8GB', category: 'Phones & Tablets', price: 28000, originalPrice: 35000, discount: '20% OFF', image: 'https://images.pexels.com/photos/699122/pexels-photo-699122.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 203, name: 'Infinix Hot 40i 256GB Dual SIM', category: 'Phones & Tablets', price: 14200, originalPrice: 18500, discount: '23% OFF', image: 'https://images.pexels.com/photos/1092644/pexels-photo-1092644.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 204, name: 'Apple iPhone 13 128GB Midnight', category: 'Phones & Tablets', price: 79000, originalPrice: 98000, discount: '19% OFF', image: 'https://images.pexels.com/photos/788946/pexels-photo-788946.jpeg?auto=compress&cs=tinysrgb&w=600' },
 
-    // Health & Beauty
-    { id: 701, name: 'Vichy Mineralizing Thermal Spa Face Serum 50ml', category: 'Health & Beauty', price: 3500, originalPrice: 4800, discount: '27% OFF', image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500&q=80' },
-    { id: 702, name: 'CeraVe Hydrating Facial Cleanser 473ml', category: 'Health & Beauty', price: 2700, originalPrice: 3800, discount: '29% OFF', image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=500&q=80' },
-    { id: 703, name: 'Nivea Men Deep Impact Body Spray 150ml', category: 'Health & Beauty', price: 380, originalPrice: 550, discount: '31% OFF', image: 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=500&q=80' },
+        // 3. Computing & Laptops
+        { id: 301, name: 'HP Pavilion 15 Core i5 16GB/512GB SSD', category: 'Computing & Laptops', price: 69000, originalPrice: 85000, discount: '19% OFF', image: 'https://images.pexels.com/photos/18105/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 302, name: 'Lenovo V15 G4 Ryzen 3 8GB/256GB', category: 'Computing & Laptops', price: 39000, originalPrice: 49000, discount: '20% OFF', image: 'https://images.pexels.com/photos/303383/pexels-photo-303383.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 303, name: 'Logitech Wireless Keyboard & Mouse', category: 'Computing & Laptops', price: 2100, originalPrice: 2900, discount: '28% OFF', image: 'https://images.pexels.com/photos/1772123/pexels-photo-1772123.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 304, name: 'Seagate 1TB Portable External HDD', category: 'Computing & Laptops', price: 6500, originalPrice: 8500, discount: '24% OFF', image: 'https://images.pexels.com/photos/4792728/pexels-photo-4792728.jpeg?auto=compress&cs=tinysrgb&w=600' },
 
-    // Baby Products
-    { id: 801, name: 'Pampers Baby-Dry Diapers Mega Pack Size 3 (64s)', category: 'Baby Products', price: 2100, originalPrice: 2800, discount: '25% OFF', image: 'https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=500&q=80' },
-    { id: 802, name: 'Johnson & Johnson Baby Bedtime Lotion 500ml', category: 'Baby Products', price: 700, originalPrice: 1000, discount: '30% OFF', image: 'https://images.unsplash.com/photo-1519689680058-324335c77eba?w=500&q=80' },
-    { id: 803, name: 'Cerelac Baby Infant Cereal Wheat 1kg', category: 'Baby Products', price: 820, originalPrice: 1150, discount: '29% OFF', image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&q=80' },
+        // 4. Electronics & Audio
+        { id: 401, name: 'Hisense 43" Smart Frameless LED TV', category: 'Electronics & Audio', price: 29900, originalPrice: 38000, discount: '21% OFF', image: 'https://images.pexels.com/photos/5721908/pexels-photo-5721908.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 402, name: 'Sony WH-1000XM5 ANC Headphones', category: 'Electronics & Audio', price: 36000, originalPrice: 46000, discount: '22% OFF', image: 'https://images.pexels.com/photos/3394650/pexels-photo-3394650.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 403, name: 'JBL Charge 5 Bluetooth Speaker', category: 'Electronics & Audio', price: 15500, originalPrice: 19900, discount: '22% OFF', image: 'https://images.pexels.com/photos/1279107/pexels-photo-1279107.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 404, name: 'Smart Digital 32" HD Television', category: 'Electronics & Audio', price: 11500, originalPrice: 15000, discount: '23% OFF', image: 'https://images.pexels.com/photos/1444416/pexels-photo-1444416.jpeg?auto=compress&cs=tinysrgb&w=600' },
 
-    // Gaming & Toys
-    { id: 901, name: 'Sony PlayStation 5 DualSense Wireless Controller', category: 'Gaming & Toys', price: 8200, originalPrice: 11000, discount: '25% OFF', image: 'https://images.unsplash.com/photo-1606318801954-d46d46d3360a?w=500&q=80' },
-    { id: 902, name: 'EA Sports FC 24 Standard Edition for PS5', category: 'Gaming & Toys', price: 5800, originalPrice: 7900, discount: '27% OFF', image: 'https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=500&q=80' },
-    { id: 903, name: 'RGB Backlit Gaming Keyboard & Mouse Set', category: 'Gaming & Toys', price: 2900, originalPrice: 4200, discount: '31% OFF', image: 'https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=500&q=80' },
+        // 5. Home & Office Appliances
+        { id: 501, name: 'Ramtons 20L Digital Microwave Oven', category: 'Home & Office Appliances', price: 10900, originalPrice: 14000, discount: '22% OFF', image: 'https://images.pexels.com/photos/4686822/pexels-photo-4686822.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 502, name: 'Heavy Duty 2L Fruit & Spice Blender', category: 'Home & Office Appliances', price: 5500, originalPrice: 7500, discount: '27% OFF', image: 'https://images.pexels.com/photos/4397840/pexels-photo-4397840.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 503, name: '2-Burner Stainless Table Gas Cooker', category: 'Home & Office Appliances', price: 3600, originalPrice: 4800, discount: '25% OFF', image: 'https://images.pexels.com/photos/3926542/pexels-photo-3926542.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 504, name: 'Executive Ergonomic Mesh Office Chair', category: 'Home & Office Appliances', price: 12500, originalPrice: 16500, discount: '24% OFF', image: 'https://images.pexels.com/photos/1957477/pexels-photo-1957477.jpeg?auto=compress&cs=tinysrgb&w=600' },
 
-    // Sporting Goods
-    { id: 1001, name: 'Professional FIFA Approved Training Football Size 5', category: 'Sporting Goods', price: 1700, originalPrice: 2500, discount: '32% OFF', image: 'https://images.unsplash.com/photo-1614632537456-c30d719003f5?w=500&q=80' },
-    { id: 1002, name: 'Adjustable Dumbbell Hand Weights Pair (10kg)', category: 'Sporting Goods', price: 3800, originalPrice: 5500, discount: '31% OFF', image: 'https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=500&q=80' },
-    { id: 1003, name: 'Non-Slip Fitness Exercise Yoga Mat 10mm', category: 'Sporting Goods', price: 1400, originalPrice: 2100, discount: '33% OFF', image: 'https://images.unsplash.com/photo-1592432678016-e910b452f9a2?w=500&q=80' }
-  ], []);
+        // 6. Fashion & Apparel
+        { id: 601, name: 'Men Breathable Sports Running Sneakers', category: 'Fashion & Apparel', price: 2200, originalPrice: 3500, discount: '37% OFF', image: 'https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 602, name: 'Unisex Heavyweight Cotton Hoodie', category: 'Fashion & Apparel', price: 1700, originalPrice: 2600, discount: '35% OFF', image: 'https://images.pexels.com/photos/6311392/pexels-photo-6311392.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 603, name: 'Men Slim-Fit Formal Office Shirt', category: 'Fashion & Apparel', price: 1200, originalPrice: 1800, discount: '33% OFF', image: 'https://images.pexels.com/photos/297933/pexels-photo-297933.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 604, name: 'Genuine Leather Belt & Wallet Gift Set', category: 'Fashion & Apparel', price: 950, originalPrice: 1500, discount: '37% OFF', image: 'https://images.pexels.com/photos/4452526/pexels-photo-4452526.jpeg?auto=compress&cs=tinysrgb&w=600' },
 
-  // Format currency helper
-  const formatPrice = (amountInKsh) => {
-    const config = currencyRates[selectedCurrency] || currencyRates['KSh'];
-    const converted = amountInKsh * config.rate;
-    return `${config.symbol}${Math.round(converted).toLocaleString()}`;
-  };
+        // 7. Health & Beauty
+        { id: 701, name: 'Hydrating Vitamin C Face Serum 50ml', category: 'Health & Beauty', price: 3500, originalPrice: 4800, discount: '27% OFF', image: 'https://images.pexels.com/photos/3685530/pexels-photo-3685530.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 702, name: 'Daily Moisturizing Facial Cleanser', category: 'Health & Beauty', price: 2700, originalPrice: 3800, discount: '29% OFF', image: 'https://images.pexels.com/photos/3735657/pexels-photo-3735657.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 703, name: 'Luxury Eau De Parfum Spray 100ml', category: 'Health & Beauty', price: 1850, originalPrice: 2600, discount: '29% OFF', image: 'https://images.pexels.com/photos/965989/pexels-photo-965989.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 704, name: 'Organic Shea Butter Body Lotion 400ml', category: 'Health & Beauty', price: 650, originalPrice: 950, discount: '32% OFF', image: 'https://images.pexels.com/photos/4465124/pexels-photo-4465124.jpeg?auto=compress&cs=tinysrgb&w=600' },
 
-  // Filter products by selected category and search string
-  const filteredProducts = useMemo(() => {
-    return masterCatalog.filter(product => {
-      const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
-      const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                            product.category.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesCategory && matchesSearch;
-    });
-  }, [masterCatalog, selectedCategory, searchQuery]);
+        // 8. Baby Products
+        { id: 801, name: 'Soft Baby Diapers Jumbo Pack (64 Count)', category: 'Baby Products', price: 2100, originalPrice: 2800, discount: '25% OFF', image: 'https://images.pexels.com/photos/3662667/pexels-photo-3662667.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 802, name: 'Gentle Baby Bedtime Lotion 500ml', category: 'Baby Products', price: 700, originalPrice: 1000, discount: '30% OFF', image: 'https://images.pexels.com/photos/3933275/pexels-photo-3933275.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 803, name: 'Foldable Lightweight Baby Stroller', category: 'Baby Products', price: 9500, originalPrice: 13000, discount: '27% OFF', image: 'https://images.pexels.com/photos/3661350/pexels-photo-3661350.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 804, name: 'Cotton Newborn Baby Romper 3-Piece Set', category: 'Baby Products', price: 1350, originalPrice: 1900, discount: '29% OFF', image: 'https://images.pexels.com/photos/459976/pexels-photo-459976.jpeg?auto=compress&cs=tinysrgb&w=600' },
 
-  const addToCart = (product) => {
-    setCart(prev => [...prev, product]);
-  };
+        // 9. Gaming & Toys
+        { id: 901, name: 'PS5 DualSense Wireless Controller', category: 'Gaming & Toys', price: 8200, originalPrice: 11000, discount: '25% OFF', image: 'https://images.pexels.com/photos/3945659/pexels-photo-3945659.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 902, name: 'PlayStation 5 Console Disc Edition', category: 'Gaming & Toys', price: 72000, originalPrice: 88000, discount: '18% OFF', image: 'https://images.pexels.com/photos/13189272/pexels-photo-13189272.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 903, name: 'RGB Mechanical Gaming Keyboard & Mouse', category: 'Gaming & Toys', price: 2900, originalPrice: 4200, discount: '31% OFF', image: 'https://images.pexels.com/photos/2115257/pexels-photo-2115257.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 904, name: 'Educational Building Blocks 500-Pc Set', category: 'Gaming & Toys', price: 1600, originalPrice: 2300, discount: '30% OFF', image: 'https://images.pexels.com/photos/163036/mario-luigi-yoschi-figures-163036.jpeg?auto=compress&cs=tinysrgb&w=600' },
 
-  const removeFromCart = (index) => {
-    setCart(prev => prev.filter((_, i) => i !== index));
-  };
+        // 10. Sporting Goods
+        { id: 1001, name: 'FIFA Match Training Football Size 5', category: 'Sporting Goods', price: 1700, originalPrice: 2500, discount: '32% OFF', image: 'https://images.pexels.com/photos/47730/the-ball-stadion-football-the-pitch-47730.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 1002, name: 'Adjustable Cast Iron Dumbbell Pair 10kg', category: 'Sporting Goods', price: 3800, originalPrice: 5500, discount: '31% OFF', image: 'https://images.pexels.com/photos/416717/pexels-photo-416717.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 1003, name: 'Non-Slip 10mm High-Density Yoga Mat', category: 'Sporting Goods', price: 1400, originalPrice: 2100, discount: '33% OFF', image: 'https://images.pexels.com/photos/4056723/pexels-photo-4056723.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 1004, name: '26" Mountain Alloy Suspension Bicycle', category: 'Sporting Goods', price: 19500, originalPrice: 26000, discount: '25% OFF', image: 'https://images.pexels.com/photos/100582/pexels-photo-100582.jpeg?auto=compress&cs=tinysrgb&w=600' }
+      ], []);
 
-  const cartTotalKsh = cart.reduce((sum, item) => sum + item.price, 0);
-  const depositAmountKsh = Math.round(cartTotalKsh * 0.3); // 30% Deposit
-  const balanceOnDeliveryKsh = cartTotalKsh - depositAmountKsh; // 70% Balance on Delivery
+      const formatPrice = (amountInKsh) => {
+        const config = currencyRates[selectedCurrency] || currencyRates.KSh;
+        const converted = amountInKsh * config.rate;
+        if (selectedCurrency === 'USD') {
+          return `${config.symbol}${converted.toFixed(2)}`;
+        }
+        return `${config.symbol}${Math.round(converted).toLocaleString()}`;
+      };
 
-  // Handle Payment Execution
-  const handlePaymentSubmit = (e) => {
-    e.preventDefault();
-    setIsProcessing(true);
+      const filteredProducts = useMemo(() => {
+        return masterCatalog.filter((product) => {
+          const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
+          const matchesSearch =
+            product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            product.category.toLowerCase().includes(searchQuery.toLowerCase());
+          return matchesCategory && matchesSearch;
+        });
+      }, [masterCatalog, selectedCategory, searchQuery]);
 
-    setTimeout(() => {
-      setIsProcessing(false);
-      setCheckoutStep('success');
-      setCart([]); // Clear cart upon successful order
-    }, 2500);
-  };
+      const addToCart = (product) => {
+        setCart((prev) => [...prev, product]);
+      };
 
-  return (
-    <div className="bg-gray-100 min-h-screen font-sans text-gray-900">
-      
-      {/* Header */}
-      <header className="bg-orange-600 text-white sticky top-0 z-50 shadow-md">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-3">
-          <div className="flex items-center justify-between w-full md:w-auto">
-            <h1 className="text-2xl font-black tracking-wider cursor-pointer" onClick={() => { setSelectedCategory('All'); setCheckoutStep('cart'); }}>
-              KILI-JUMIA EAST AFRICA
-            </h1>
-            <div className="flex items-center gap-2">
-              <select 
-                value={selectedCurrency}
-                onChange={(e) => setSelectedCurrency(e.target.value)}
-                className="bg-orange-700 text-white text-xs font-bold px-2 py-1.5 rounded border border-orange-500 focus:outline-none"
-              >
-                <option value="KSh">KES (KSh)</option>
-                <option value="USD">USD ($)</option>
-                <option value="UGX">UGX (USh)</option>
-                <option value="TZS">TZS (TSh)</option>
-                <option value="RWF">RWF (FRw)</option>
-              </select>
+      const removeFromCart = (index) => {
+        setCart((prev) => prev.filter((_, i) => i !== index));
+      };
 
-              <button 
-                onClick={() => { setIsCartOpen(true); setCheckoutStep('cart'); }}
-                className="md:hidden bg-orange-700 px-3 py-1.5 rounded-lg font-bold text-xs"
-              >
-                🛒 ({cart.length})
-              </button>
-            </div>
-          </div>
-          
-          <div className="w-full md:w-1/2 flex items-center bg-white rounded-lg overflow-hidden shadow-sm">
-            <input 
-              type="text"
-              placeholder="Search cheap deals across East Africa..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-2.5 text-gray-800 text-sm focus:outline-none"
-            />
-            <button className="bg-orange-500 px-6 py-2.5 text-white font-bold text-sm hover:bg-orange-700 transition">
-              Search
-            </button>
-          </div>
+      const cartTotalKsh = cart.reduce((sum, item) => sum + item.price, 0);
+      const depositAmountKsh = Math.round(cartTotalKsh * 0.3);
+      const balanceOnDeliveryKsh = cartTotalKsh - depositAmountKsh;
 
-          <div className="hidden md:flex items-center gap-4">
-            <select 
-              value={selectedCurrency}
-              onChange={(e) => setSelectedCurrency(e.target.value)}
-              className="bg-orange-700 text-white text-sm font-bold px-3 py-2 rounded-lg border border-orange-500 focus:outline-none"
-            >
-              <option value="KSh">KES (KSh)</option>
-              <option value="USD">USD ($)</option>
-              <option value="UGX">UGX (USh)</option>
-              <option value="TZS">TZS (TSh)</option>
-              <option value="RWF">RWF (FRw)</option>
-            </select>
+      const handlePaymentSubmit = (e) => {
+        e.preventDefault();
+        setIsProcessing(true);
+        setTimeout(() => {
+          setIsProcessing(false);
+          setCheckoutStep('success');
+          setCart([]);
+        }, 2000);
+      };
 
-            <button 
-              onClick={() => { setIsCartOpen(true); setCheckoutStep('cart'); }}
-              className="bg-orange-700 hover:bg-orange-800 transition px-5 py-2.5 rounded-lg font-bold text-sm flex items-center gap-2 shadow-sm"
-            >
-              <span>🛒 Cart</span>
-              <span className="bg-white text-orange-600 px-2 py-0.5 rounded-full text-xs font-black">{cart.length}</span>
-            </button>
-          </div>
-        </div>
-      </header>
+      // Downward-scrolling category sections when viewing "All"
+      const categoriesToRender = selectedCategory === 'All' ? categories : [selectedCategory];
 
-      {/* Promo Banner */}
-      <div className="bg-orange-500 text-white text-center py-2 text-xs font-bold tracking-wide px-4 shadow-inner">
-        🌍 East Africa Express Delivery (Kenya, Uganda, Tanzania, Rwanda, Burundi, South Sudan) • Pay 30% Deposit, Balance After Delivery!
-      </div>
+      return (
+        <div className="bg-gray-100 min-h-screen font-sans text-gray-900">
+          {/* Top Sticky Header */}
+          <header className="bg-orange-600 text-white sticky top-0 z-50 shadow-md">
+            <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-3">
+              <div className="flex items-center justify-between w-full md:w-auto">
+                <h1
+                  className="text-xl md:text-2xl font-black tracking-wider cursor-pointer"
+                  onClick={() => {
+                    setSelectedCategory('All');
+                    setSearchQuery('');
+                  }}
+                >
+                  KILI-JUMIA EAST AFRICA
+                </h1>
 
-      {/* Main Body */}
-      <div className="max-w-7xl mx-auto p-4 flex flex-col md:flex-row gap-6 mt-2">
-        
-        {/* Sidebar Categories */}
-        <aside className="w-full md:w-72 bg-white rounded-xl shadow-sm p-4 h-fit sticky top-20">
-          <h3 className="font-bold text-gray-700 border-b pb-2 mb-3 text-sm uppercase tracking-wider">All Categories</h3>
-          <ul className="space-y-1">
-            {categories.map((cat) => (
-              <li key={cat}>
+                <div className="flex items-center gap-2 md:hidden">
+                  <select
+                    value={selectedCurrency}
+                    onChange={(e) => setSelectedCurrency(e.target.value)}
+                    className="bg-orange-700 text-white text-xs font-bold px-2 py-1.5 rounded border border-orange-500"
+                  >
+                    {Object.keys(currencyRates).map((code) => (
+                      <option key={code} value={code}>{code}</option>
+                    ))}
+                  </select>
+                  <button
+                    onClick={() => {
+                      setIsCartOpen(true);
+                      setCheckoutStep('cart');
+                    }}
+                    className="bg-orange-700 px-3 py-1.5 rounded-lg font-bold text-xs"
+                  >
+                    🛒 ({cart.length})
+                  </button>
+                </div>
+              </div>
+
+              <div className="w-full md:w-1/2 flex items-center bg-white rounded-lg overflow-hidden shadow-sm">
+                <input
+                  type="text"
+                  placeholder="Search phones, TVs, groceries, shoes..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full px-4 py-2 text-gray-800 text-sm focus:outline-none"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="px-2 text-gray-400 hover:text-gray-700 text-xs font-bold"
+                  >
+                    ✕
+                  </button>
+                )}
+                <button className="bg-orange-500 px-5 py-2 text-white font-bold text-sm hover:bg-orange-700 transition">
+                  Search
+                </button>
+              </div>
+
+              <div className="hidden md:flex items-center gap-3">
+                <select
+                  value={selectedCurrency}
+                  onChange={(e) => setSelectedCurrency(e.target.value)}
+                  className="bg-orange-700 text-white text-xs font-bold px-3 py-2.5 rounded-lg border border-orange-500 focus:outline-none"
+                >
+                  {Object.entries(currencyRates).map(([code, info]) => (
+                    <option key={code} value={code}>{info.label}</option>
+                  ))}
+                </select>
+
                 <button
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition ${
-                    selectedCategory === cat 
-                      ? 'bg-orange-100 text-orange-600 font-bold' 
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                  onClick={() => {
+                    setIsCartOpen(true);
+                    setCheckoutStep('cart');
+                  }}
+                  className="bg-orange-700 hover:bg-orange-800 transition px-4 py-2 rounded-lg font-bold text-sm flex items-center gap-2 shadow-sm"
+                >
+                  <span>🛒 Cart</span>
+                  <span className="bg-white text-orange-600 px-2 py-0.5 rounded-full text-xs font-black">
+                    {cart.length}
+                  </span>
+                </button>
+              </div>
+            </div>
+
+            {/* Horizontal Category Bar for Downward Scrolling */}
+            <nav className="bg-orange-700 text-white text-xs overflow-x-auto no-scrollbar">
+              <div className="max-w-7xl mx-auto px-4 py-2 flex items-center gap-2 whitespace-nowrap">
+                <button
+                  onClick={() => setSelectedCategory('All')}
+                  className={`px-3 py-1 rounded-full font-bold transition ${
+                    selectedCategory === 'All' ? 'bg-white text-orange-700' : 'hover:bg-orange-600'
                   }`}
                 >
-                  {cat}
+                  All 10 Departments
                 </button>
-              </li>
-            ))}
-          </ul>
-        </aside>
+                {categories.map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setSelectedCategory(cat)}
+                    className={`px-3 py-1 rounded-full font-semibold transition ${
+                      selectedCategory === cat ? 'bg-white text-orange-700' : 'hover:bg-orange-600'
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </nav>
+          </header>
 
-        {/* Product Grid Catalog */}
-        <main className="flex-1">
-          <div className="bg-white p-4 rounded-xl shadow-sm mb-4 flex justify-between items-center">
-            <div>
-              <h2 className="text-lg font-bold text-gray-800">{selectedCategory}</h2>
-              <p className="text-xs text-gray-500 mt-0.5">Heavy Discounts Active • {filteredProducts.length} discounted items ready</p>
-            </div>
-            {selectedCategory !== 'All' && (
-              <button 
-                onClick={() => setSelectedCategory('All')} 
-                className="text-xs text-orange-600 font-bold hover:underline"
-              >
-                View All Categories
-              </button>
-            )}
+          {/* East Africa Shipping & 30% Deposit Banner */}
+          <div className="bg-gray-900 text-white text-center py-2 text-xs font-semibold px-4">
+            🌍 East Africa Delivery (Kenya • Uganda • Tanzania • Rwanda • Burundi • South Sudan) | Pay <span className="text-orange-400 font-bold">30% Deposit Now</span> & <span className="text-green-400 font-bold">70% After Delivery</span>
           </div>
 
-          {filteredProducts.length === 0 ? (
-            <div className="bg-white rounded-xl p-16 text-center shadow-sm">
-              <p className="text-gray-600 font-medium">No discounted products found matching your filter.</p>
-              <button 
-                onClick={() => { setSelectedCategory('All'); setSearchQuery(''); }}
-                className="mt-4 bg-orange-600 text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow hover:bg-orange-700 transition"
-              >
-                Reset Store Filters
-              </button>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              {filteredProducts.map(product => (
-                <div key={product.id} className="bg-white rounded-xl shadow-sm hover:shadow-md transition p-3 flex flex-col justify-between border border-gray-100 relative">
-                  <span className="absolute top-5 left-5 bg-red-600 text-white text-[10px] font-black px-2 py-0.5 rounded shadow z-10">
-                    {product.discount}
-                  </span>
-                  <div>
-                    <img 
-                      src={product.image} 
-                      alt={product.name} 
-                      className="w-full h-40 object-cover rounded-lg mb-2 bg-gray-50" 
-                    />
-                    <span className="text-[10px] bg-orange-50 text-orange-600 px-2 py-0.5 rounded font-bold uppercase tracking-wide">
-                      {product.category}
-                    </span>
-                    <h4 className="text-sm font-medium text-gray-800 line-clamp-2 mt-1.5">{product.name}</h4>
-                  </div>
-                  <div className="mt-4 pt-2 border-t border-gray-50">
-                    <div className="flex items-center gap-2">
-                      <p className="text-sm font-black text-gray-900">{formatPrice(product.price)}</p>
-                      <p className="text-xs text-gray-400 line-through">{formatPrice(product.originalPrice)}</p>
+          {/* Downward-Scrolling Multi-Category Catalog */}
+          <main className="max-w-7xl mx-auto p-4 space-y-8">
+            {filteredProducts.length === 0 ? (
+              <div className="bg-white rounded-xl p-16 text-center shadow-sm">
+                <p className="text-gray-600 font-medium">No discounted products found matching "{searchQuery}".</p>
+                <button
+                  onClick={() => {
+                    setSelectedCategory('All');
+                    setSearchQuery('');
+                  }}
+                  className="mt-4 bg-orange-600 text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow hover:bg-orange-700 transition"
+                >
+                  Show All Products
+                </button>
+              </div>
+            ) : (
+              categoriesToRender.map((categoryName) => {
+                const sectionItems = filteredProducts.filter((p) => p.category === categoryName);
+                if (sectionItems.length === 0) return null;
+
+                return (
+                  <section key={categoryName} className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-200">
+                    {/* Department Banner */}
+                    <div className="bg-orange-600 text-white px-4 py-3 flex items-center justify-between">
+                      <h2 className="text-base md:text-lg font-extrabold tracking-wide uppercase">
+                        {categoryName}
+                      </h2>
+                      <span className="text-xs bg-orange-800 px-2.5 py-1 rounded-full font-bold">
+                        {sectionItems.length} Discounted Deals
+                      </span>
                     </div>
-                    <p className="text-[10px] text-green-600 font-bold mt-0.5">Pay 30% Deposit (Balance on Delivery)</p>
-                    <button 
-                      onClick={() => addToCart(product)}
-                      className="w-full mt-2 bg-orange-600 text-white text-xs font-bold py-2 rounded-lg hover:bg-orange-700 transition shadow-sm"
-                    >
-                      Add to Cart
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </main>
-      </div>
 
-      {/* Cart & Integrated Payment Drawer Modal */}
-      {isCartOpen && (
-        <div className="fixed inset-0 z-50 flex justify-end bg-black bg-opacity-50 transition-opacity">
-          <div className="w-full max-w-md bg-white h-full shadow-2xl flex flex-col p-6 overflow-y-auto">
-            
-            {/* Modal Header */}
-            <div className="flex justify-between items-center border-b pb-4 mb-4">
-              <h2 className="text-xl font-bold text-gray-800">
-                {checkoutStep === 'cart' && `Shopping Cart (${cart.length})`}
-                {checkoutStep === 'checkout' && 'East Africa 30% Deposit Checkout'}
-                {checkoutStep === 'success' && 'Order Placed Successfully!'}
-              </h2>
-              <button 
-                onClick={() => { setIsCartOpen(false); setCheckoutStep('cart'); }}
-                className="text-gray-400 hover:text-gray-600 text-xl font-bold"
-              >
-                ✕
-              </button>
-            </div>
+                    {/* Product Cards Grid */}
+                    <div className="p-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                      {sectionItems.map((product) => (
+                        <div
+                          key={product.id}
+                          className="bg-white rounded-xl shadow-sm hover:shadow-md transition p-3 flex flex-col justify-between border border-gray-100 relative"
+                        >
+                          <span className="absolute top-4 left-4 bg-red-600 text-white text-[10px] font-black px-2 py-0.5 rounded shadow z-10">
+                            {product.discount}
+                          </span>
 
-            {/* STEP 1: CART REVIEW */}
-            {checkoutStep === 'cart' && (
-              <>
-                {cart.length === 0 ? (
-                  <div className="flex-1 flex flex-col items-center justify-center text-center text-gray-500">
-                    <p className="text-base font-medium">Your cart is currently empty.</p>
-                    <p className="text-xs mt-1 text-gray-400">Add discounted items from any category to begin checkout.</p>
-                  </div>
-                ) : (
-                  <>
-                    <div className="flex-1 space-y-3 overflow-y-auto pr-1">
-                      {cart.map((item, index) => (
-                        <div key={index} className="flex items-center justify-between bg-gray-50 p-3 rounded-xl border border-gray-100">
-                          <div className="flex items-center gap-3">
-                            <img src={item.image} alt={item.name} className="w-12 h-12 object-cover rounded-lg" />
-                            <div>
-                              <h4 className="text-xs font-bold text-gray-800 line-clamp-1">{item.name}</h4>
-                              <p className="text-xs text-orange-600 font-bold mt-0.5">{formatPrice(item.price)}</p>
+                          <div>
+                            <div className="w-full h-44 bg-gray-100 rounded-lg overflow-hidden mb-2.5">
+                              <img
+                                src={product.image}
+                                alt={product.name}
+                                loading="lazy"
+                                onError={(e) => {
+                                  e.target.onerror = null;
+                                  e.target.src = getFallbackImage(product.name);
+                                }}
+                                className="w-full h-full object-cover hover:scale-105 transition duration-300"
+                              />
                             </div>
+                            <h3 className="text-sm font-semibold text-gray-800 line-clamp-2">
+                              {product.name}
+                            </h3>
                           </div>
-                          <button 
-                            onClick={() => removeFromCart(index)}
-                            className="text-red-500 hover:text-red-700 text-xs font-bold px-2 py-1"
-                          >
-                            Remove
-                          </button>
+
+                          <div className="mt-3 pt-2 border-t border-gray-100">
+                            <div className="flex items-baseline gap-2">
+                              <span className="text-base font-black text-gray-900">
+                                {formatPrice(product.price)}
+                              </span>
+                              <span className="text-xs text-gray-400 line-through">
+                                {formatPrice(product.originalPrice)}
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-green-700 font-bold mt-0.5">
+                              30% Deposit: {formatPrice(Math.round(product.price * 0.3))}
+                            </p>
+                            <button
+                              onClick={() => addToCart(product)}
+                              className="w-full mt-2.5 bg-orange-600 text-white text-xs font-bold py-2.5 rounded-lg hover:bg-orange-700 active:scale-95 transition shadow-sm"
+                            >
+                              Add to Cart
+                            </button>
+                          </div>
                         </div>
                       ))}
                     </div>
+                  </section>
+                );
+              })
+            )}
+          </main>
 
-                    <div className="border-t pt-4 mt-4 bg-orange-50 p-3 rounded-xl">
-                      <div className="flex justify-between items-center mb-1">
-                        <span className="text-xs text-gray-600 font-bold">Total Order Value:</span>
-                        <span className="font-bold text-sm text-gray-800">{formatPrice(cartTotalKsh)}</span>
-                      </div>
-                      <div className="flex justify-between items-center mb-1 text-green-700">
-                        <span className="text-xs font-bold">Pay 30% Deposit Now:</span>
-                        <span className="font-black text-sm">{formatPrice(depositAmountKsh)}</span>
-                      </div>
-                      <div className="flex justify-between items-center text-gray-700 border-t pt-1 border-orange-200">
-                        <span className="text-xs font-bold">Pay 70% Balance on Delivery:</span>
-                        <span className="font-black text-sm text-orange-700">{formatPrice(balanceOnDeliveryKsh)}</span>
-                      </div>
-                    </div>
+          {/* Cart & East Africa Multi-Currency Checkout Drawer */}
+          {isCartOpen && (
+            <div className="fixed inset-0 z-50 flex justify-end bg-black bg-opacity-50">
+              <div className="w-full max-w-md bg-white h-full shadow-2xl flex flex-col p-5 overflow-y-auto">
+                <div className="flex justify-between items-center border-b pb-3 mb-4">
+                  <h2 className="text-lg font-black text-gray-800">
+                    {checkoutStep === 'cart' && `Shopping Cart (${cart.length})`}
+                    {checkoutStep === 'checkout' && 'East Africa 30% Deposit Payment'}
+                    {checkoutStep === 'success' && 'Order Confirmed!'}
+                  </h2>
+                  <button
+                    onClick={() => {
+                      setIsCartOpen(false);
+                      setCheckoutStep('cart');
+                    }}
+                    className="text-gray-400 hover:text-gray-700 text-xl font-bold"
+                  >
+                    ✕
+                  </button>
+                </div>
 
-                    <div className="mt-4">
-                      <button 
-                        onClick={() => setCheckoutStep('checkout')}
-                        className="w-full bg-orange-600 text-white font-bold py-3 rounded-xl hover:bg-orange-700 transition shadow"
-                      >
-                        Proceed to East Africa Checkout
-                      </button>
-                    </div>
+                {/* STEP 1: CART */}
+                {checkoutStep === 'cart' && (
+                  <>
+                    {cart.length === 0 ? (
+                      <div className="flex-1 flex flex-col items-center justify-center text-center text-gray-500">
+                        <p className="text-base font-bold">Your cart is empty</p>
+                        <p className="text-xs mt-1">Select any discounted item across East Africa to start.</p>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="flex-1 space-y-3 overflow-y-auto pr-1">
+                          {cart.map((item, index) => (
+                            <div
+                              key={index}
+                              className="flex items-center justify-between bg-gray-50 p-2.5 rounded-xl border border-gray-200"
+                            >
+                              <div className="flex items-center gap-3">
+                                <img
+                                  src={item.image}
+                                  alt={item.name}
+                                  onError={(e) => {
+                                    e.target.onerror = null;
+                                    e.target.src = getFallbackImage(item.name);
+                                  }}
+                                  className="w-12 h-12 object-cover rounded-lg"
+                                />
+                                <div>
+                                  <h4 className="text-xs font-bold text-gray-800 line-clamp-1">{item.name}</h4>
+                                  <p className="text-xs text-orange-600 font-black mt-0.5">{formatPrice(item.price)}</p>
+                                </div>
+                              </div>
+                              <button
+                                onClick={() => removeFromCart(index)}
+                                className="text-red-600 hover:text-red-800 text-xs font-bold px-2 py-1"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="border-t pt-3 mt-4 bg-orange-50 p-3.5 rounded-xl space-y-1.5">
+                          <div className="flex justify-between text-xs text-gray-700 font-bold">
+                            <span>Total Goods Value:</span>
+                            <span>{formatPrice(cartTotalKsh)}</span>
+                          </div>
+                          <div className="flex justify-between text-xs text-green-700 font-black">
+                            <span>Pay 30% Deposit Now:</span>
+                            <span>{formatPrice(depositAmountKsh)}</span>
+                          </div>
+                          <div className="flex justify-between text-xs text-orange-800 font-black border-t border-orange-200 pt-1.5">
+                            <span>Pay 70% Balance After Delivery:</span>
+                            <span>{formatPrice(balanceOnDeliveryKsh)}</span>
+                          </div>
+                        </div>
+
+                        <button
+                          onClick={() => setCheckoutStep('checkout')}
+                          className="w-full mt-4 bg-orange-600 text-white font-bold py-3 rounded-xl hover:bg-orange-700 transition shadow"
+                        >
+                          Proceed to East Africa Checkout
+                        </button>
+                      </>
+                    )}
                   </>
                 )}
-              </>
-            )}
 
-            {/* STEP 2: CHECKOUT */}
-            {checkoutStep === 'checkout' && (
-              <form onSubmit={handlePaymentSubmit} className="flex-1 flex flex-col justify-between">
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-xs font-bold text-gray-700 mb-1">Full Name</label>
-                    <input 
-                      type="text" 
-                      required
-                      placeholder="John Doe" 
-                      value={customerName}
-                      onChange={(e) => setCustomerName(e.target.value)}
-                      className="w-full p-2.5 text-sm border rounded-lg focus:outline-none focus:border-orange-600"
-                    />
-                  </div>
+                {/* STEP 2: CHECKOUT */}
+                {checkoutStep === 'checkout' && (
+                  <form onSubmit={handlePaymentSubmit} className="flex-1 flex flex-col justify-between space-y-3">
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Full Name</label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="Enter full name"
+                          value={customerName}
+                          onChange={(e) => setCustomerName(e.target.value)}
+                          className="w-full p-2.5 text-sm border rounded-lg focus:outline-none focus:border-orange-600"
+                        />
+                      </div>
 
-                  <div>
-                    <label className="block text-xs font-bold text-gray-700 mb-1">Email Address</label>
-                    <input 
-                      type="email" 
-                      required
-                      placeholder="john@example.com" 
-                      value={customerEmail}
-                      onChange={(e) => setCustomerEmail(e.target.value)}
-                      className="w-full p-2.5 text-sm border rounded-lg focus:outline-none focus:border-orange-600"
-                    />
-                  </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="block text-xs font-bold text-gray-700 mb-1">East Africa Country</label>
+                          <select
+                            value={destinationCountry}
+                            onChange={(e) => setDestinationCountry(e.target.value)}
+                            className="w-full p-2.5 text-sm border rounded-lg bg-white focus:outline-none focus:border-orange-600"
+                          >
+                            <option value="Kenya">🇰🇪 Kenya</option>
+                            <option value="Uganda">🇺🇬 Uganda</option>
+                            <option value="Tanzania">🇹🇿 Tanzania</option>
+                            <option value="Rwanda">🇷🇼 Rwanda</option>
+                            <option value="Burundi">🇧🇮 Burundi</option>
+                            <option value="South Sudan">🇸🇸 South Sudan</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-700 mb-1">Currency</label>
+                          <select
+                            value={selectedCurrency}
+                            onChange={(e) => setSelectedCurrency(e.target.value)}
+                            className="w-full p-2.5 text-sm border rounded-lg bg-white focus:outline-none focus:border-orange-600"
+                          >
+                            {Object.entries(currencyRates).map(([code, info]) => (
+                              <option key={code} value={code}>{info.label}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
 
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <label className="block text-xs font-bold text-gray-700 mb-1">Destination Country</label>
-                      <select
-                        value={destinationCountry}
-                        onChange={(e) => setDestinationCountry(e.target.value)}
-                        className="w-full p-2.5 text-sm border rounded-lg focus:outline-none focus:border-orange-600 bg-white"
-                      >
-                        <option value="Kenya">🇰🇪 Kenya (2-3 Days)</option>
-                        <option value="Uganda">🇺🇬 Uganda (3-4 Days)</option>
-                        <option value="Tanzania">🇹🇿 Tanzania (3-5 Days)</option>
-                        <option value="Rwanda">🇷🇼 Rwanda (4-5 Days)</option>
-                        <option value="Burundi">🇧🇮 Burundi (4-6 Days)</option>
-                        <option value="South Sudan">🇸🇸 South Sudan (5-7 Days)</option>
-                      </select>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="block text-xs font-bold text-gray-700 mb-1">Phone Number</label>
+                          <input
+                            type="tel"
+                            required
+                            placeholder="+254 / +256 / +255..."
+                            value={phoneNumber}
+                            onChange={(e) => setPhoneNumber(e.target.value)}
+                            className="w-full p-2.5 text-sm border rounded-lg focus:outline-none focus:border-orange-600"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-700 mb-1">Email Address</label>
+                          <input
+                            type="email"
+                            required
+                            placeholder="you@email.com"
+                            value={customerEmail}
+                            onChange={(e) => setCustomerEmail(e.target.value)}
+                            className="w-full p-2.5 text-sm border rounded-lg focus:outline-none focus:border-orange-600"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">City & Delivery Point</label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="e.g. Nairobi, Kampala, Dar es Salaam, Kigali"
+                          value={shippingAddress}
+                          onChange={(e) => setShippingAddress(e.target.value)}
+                          className="w-full p-2.5 text-sm border rounded-lg focus:outline-none focus:border-orange-600"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1.5">
+                          Payment Method (All African Money & USD)
+                        </label>
+                        <div className="grid grid-cols-3 gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setPaymentMethod('mpesa')}
+                            className={`p-2 rounded-xl border text-[11px] font-bold text-center ${
+                              paymentMethod === 'mpesa'
+                                ? 'border-green-600 bg-green-50 text-green-700'
+                                : 'border-gray-200 text-gray-600'
+                            }`}
+                          >
+                            📱 M-Pesa / MTN / Airtel Money
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setPaymentMethod('paystack')}
+                            className={`p-2 rounded-xl border text-[11px] font-bold text-center ${
+                              paymentMethod === 'paystack'
+                                ? 'border-blue-600 bg-blue-50 text-blue-700'
+                                : 'border-gray-200 text-gray-600'
+                            }`}
+                          >
+                            💳 Paystack (African Currencies)
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setPaymentMethod('usd')}
+                            className={`p-2 rounded-xl border text-[11px] font-bold text-center ${
+                              paymentMethod === 'usd'
+                                ? 'border-purple-600 bg-purple-50 text-purple-700'
+                                : 'border-gray-200 text-gray-600'
+                            }`}
+                          >
+                            💵 USD Visa / Mastercard
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="bg-gray-50 p-3 rounded-lg border text-xs space-y-1">
+                        <div className="flex justify-between font-bold text-green-700">
+                          <span>30% Deposit Due Now:</span>
+                          <span>{formatPrice(depositAmountKsh)}</span>
+                        </div>
+                        <div className="flex justify-between font-bold text-orange-700">
+                          <span>70% Balance After Delivery ({destinationCountry}):</span>
+                          <span>{formatPrice(balanceOnDeliveryKsh)}</span>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <label className="block text-xs font-bold text-gray-700 mb-1">Phone Number</label>
-                      <input 
-                        type="tel" 
-                        required
-                        placeholder="+254 712..." 
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
-                        className="w-full p-2.5 text-sm border rounded-lg focus:outline-none focus:border-orange-600"
-                      />
-                    </div>
-                  </div>
 
-                  <div>
-                    <label className="block text-xs font-bold text-gray-700 mb-1">Delivery Address / City</label>
-                    <input 
-                      type="text" 
-                      required
-                      placeholder="e.g. Nairobi CBD, Kampala Road, etc." 
-                      value={shippingAddress}
-                      onChange={(e) => setShippingAddress(e.target.value)}
-                      className="w-full p-2.5 text-sm border rounded-lg focus:outline-none focus:border-orange-600"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-gray-700 mb-2">30% Deposit Payment Gateway ({selectedCurrency})</label>
-                    <div className="grid grid-cols-3 gap-2">
+                    <div className="border-t pt-3 flex gap-2">
                       <button
                         type="button"
-                        onClick={() => setPaymentMethod('mpesa')}
-                        className={`p-2.5 rounded-xl border text-[11px] font-bold transition flex flex-col items-center gap-1 ${
-                          paymentMethod === 'mpesa' ? 'border-green-600 bg-green-50 text-green-700' : 'border-gray-200 text-gray-600'
-                        }`}
+                        onClick={() => setCheckoutStep('cart')}
+                        className="w-1/3 bg-gray-200 text-gray-800 font-bold py-3 rounded-xl hover:bg-gray-300 text-sm"
                       >
-                        <span>🟢 M-Pesa / EA Mobile</span>
+                        Back
                       </button>
                       <button
-                        type="button"
-                        onClick={() => setPaymentMethod('paystack')}
-                        className={`p-2.5 rounded-xl border text-[11px] font-bold transition flex flex-col items-center gap-1 ${
-                          paymentMethod === 'paystack' ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-gray-200 text-gray-600'
-                        }`}
+                        type="submit"
+                        disabled={isProcessing}
+                        className="w-2/3 bg-orange-600 text-white font-bold py-3 rounded-xl hover:bg-orange-700 shadow text-sm"
                       >
-                        <span>💳 Cards / Visa</span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setPaymentMethod('usd')}
-                        className={`p-2.5 rounded-xl border text-[11px] font-bold transition flex flex-col items-center gap-1 ${
-                          paymentMethod === 'usd' ? 'border-purple-600 bg-purple-50 text-purple-700' : 'border-gray-200 text-gray-600'
-                        }`}
-                      >
-                        <span>💵 USD / Global</span>
+                        {isProcessing ? 'Processing...' : `Pay 30% (${formatPrice(depositAmountKsh)})`}
                       </button>
                     </div>
-                  </div>
+                  </form>
+                )}
 
-                  <div className="bg-gray-50 p-3 rounded-lg border text-xs text-gray-700 space-y-1">
-                    <div className="flex justify-between font-bold">
-                      <span>30% Deposit Due Now:</span>
-                      <span className="text-green-600">{formatPrice(depositAmountKsh)}</span>
+                {/* STEP 3: SUCCESS */}
+                {checkoutStep === 'success' && (
+                  <div className="flex-1 flex flex-col items-center justify-center text-center">
+                    <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-3xl font-bold mb-4">
+                      ✓
                     </div>
-                    <div className="flex justify-between font-bold text-orange-700">
-                      <span>70% Balance on Delivery ({destinationCountry}):</span>
-                      <span>{formatPrice(balanceOnDeliveryKsh)}</span>
-                    </div>
-                    <p className="text-[10px] text-gray-500 pt-1">
-                      You will complete the 70% balance in cash or mobile money directly to our East African courier agent upon safe arrival of your goods.
+                    <h3 className="text-xl font-black text-gray-800 mb-1">30% Deposit Received!</h3>
+                    <p className="text-xs text-gray-600 max-w-xs mb-4">
+                      Thank you, <span className="font-bold">{customerName}</span>. Your order is scheduled for East Africa courier dispatch to <span className="font-bold text-orange-600">{destinationCountry}</span> ({shippingAddress}).
                     </p>
-                  </div>
-                </div>
-
-                <div className="border-t pt-3 mt-3">
-                  <div className="flex gap-2">
-                    <button 
-                      type="button"
-                      onClick={() => setCheckoutStep('cart')}
-                      className="w-1/3 bg-gray-200 text-gray-800 font-bold py-3 rounded-xl hover:bg-gray-300 transition text-sm"
+                    <div className="bg-orange-50 p-3 rounded-xl border border-orange-200 text-xs text-orange-900 mb-6 w-full">
+                      <span className="font-bold">Balance Due After Delivery:</span> {formatPrice(balanceOnDeliveryKsh)}
+                    </div>
+                    <button
+                      onClick={() => {
+                        setIsCartOpen(false);
+                        setCheckoutStep('cart');
+                      }}
+                      className="w-full bg-orange-600 text-white font-bold py-3 rounded-xl hover:bg-orange-700 text-sm"
                     >
-                      Back
-                    </button>
-                    <button 
-                      type="submit"
-                      disabled={isProcessing}
-                      className="w-2/3 bg-orange-600 text-white font-bold py-3 rounded-xl hover:bg-orange-700 transition shadow text-sm flex items-center justify-center gap-2"
-                    >
-                      {isProcessing ? 'Processing 30% Deposit...' : `Pay Deposit (${formatPrice(depositAmountKsh)})`}
+                      Continue Shopping
                     </button>
                   </div>
-                </div>
-              </form>
-            )}
-
-            {/* STEP 3: SUCCESS SCREEN */}
-            {checkoutStep === 'success' && (
-              <div className="flex-1 flex flex-col items-center justify-center text-center">
-                <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-3xl mb-4">
-                  ✓
-                </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-1">Deposit Confirmed!</h3>
-                <p className="text-xs text-gray-500 max-w-xs mb-4">
-                  Thank you, <span className="font-bold text-gray-700">{customerName}</span>. Your 30% deposit was received. Your package is being dispatched to <span className="font-bold text-orange-600">{destinationCountry}</span> ({shippingAddress}).
-                </p>
-                <div className="bg-orange-50 p-3 rounded-xl border border-orange-200 text-xs text-orange-800 mb-6 w-full">
-                  <span className="font-bold">Balance Due Upon Delivery:</span> {formatPrice(balanceOnDeliveryKsh)} payable when goods arrive.
-                </div>
-                <button 
-                  onClick={() => { setIsCartOpen(false); setCheckoutStep('cart'); }}
-                  className="w-full bg-orange-600 text-white font-bold py-3 rounded-xl hover:bg-orange-700 transition shadow text-sm"
-                >
-                  Continue Shopping
-                </button>
+                )}
               </div>
-            )}
-
-          </div>
+            </div>
+          )}
         </div>
-      )}
-    </div>
-  );
-};
+      );
+    };
 
-// React DOM Entry Mount Point (CORRECTED EXPORT)
-const rootElement = document.getElementById('root');
-if (rootElement) {
-  const root = createRoot(rootElement);
-  root.render(
-    <React.StrictMode>
-      <JumiaKilimallStorefront />
-    </React.StrictMode>
-  );
-}
-
-export default JumiaKilimallStorefront;
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<JumiaKilimallStorefront />);
+  </script>
+</body>
+</html>
