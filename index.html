@@ -23,9 +23,9 @@
     const { useState, useMemo } = React;
 
     // =========================================================================
-    // PASTE YOUR FULL PAYSTACK LIVE PUBLIC KEY HERE (from Paystack -> API Keys)
+    // YOUR LIVE PAYSTACK PUBLIC KEY CONFIGURED
     // =========================================================================
-    const DEFAULT_PAYSTACK_PUBLIC_KEY = 'pk_live_96685dc1a36bc585d08a'; // Replace with full copied key
+    const DEFAULT_PAYSTACK_PUBLIC_KEY = 'pk_live_96685dc1a36bc585d08a7b5fd4a4891d8bce14cb';
 
     // Guaranteed working self-contained SVG product artwork generator
     const createProductImage = (bgStart, bgEnd, accent, label, badge, shapeType) => {
@@ -53,7 +53,7 @@
       const [cart, setCart] = useState([]);
       const [isCartOpen, setIsCartOpen] = useState(false);
 
-      // Paystack Live Public Key (editable in Admin Dashboard or code)
+      // Paystack Live Public Key state
       const [paystackKey, setPaystackKey] = useState(
         () => localStorage.getItem('kilimall_paystack_pk') || DEFAULT_PAYSTACK_PUBLIC_KEY
       );
@@ -88,7 +88,6 @@
         'Sporting Goods'
       ];
 
-      // Currency config including Paystack ISO currency codes
       const currencyRates = {
         KSh: { symbol: 'KSh ', iso: 'KES', rate: 1, label: 'KES (Kenya Shilling)' },
         USD: { symbol: '$', iso: 'USD', rate: 0.0077, label: 'USD (US Dollar)' },
@@ -158,20 +157,18 @@
         localStorage.setItem('kilimall_paystack_pk', trimmed);
       };
 
-      // Trigger Real Paystack Checkout Popup (M-Pesa, Cards, Mobile Money, Bank)
+      // Trigger Real Paystack Checkout Popup
       const handlePaystackCheckout = (e) => {
         e.preventDefault();
 
         if (!paystackKey || paystackKey.length < 30) {
-          alert('Please enter your complete Paystack Live Public Key (pk_live_...) in the Admin Dashboard first.');
+          alert('Please enter your complete Paystack Live Public Key in the Admin Dashboard first.');
           setIsCartOpen(false);
           setViewMode('admin');
           return;
         }
 
         const currencyConfig = currencyRates[selectedCurrency] || currencyRates.KSh;
-        // Paystack expects amount in lowest currency subunit (cents/kobo/pesewas -> multiply by 100)
-        // Defaulting to KES if the selected currency isn't enabled on your Paystack account
         const payCurrency = ['KES', 'NGN', 'GHS', 'ZAR', 'USD'].includes(currencyConfig.iso)
           ? currencyConfig.iso
           : 'KES';
@@ -205,7 +202,6 @@
             ]
           },
           callback: function (response) {
-            // Payment verified by Paystack
             const newOrder = {
               id: `ORD-${Math.floor(1000 + Math.random() * 9000)}`,
               ref: response.reference,
@@ -224,7 +220,7 @@
             setCart([]);
           },
           onClose: function () {
-            // Customer closed Paystack modal before completing payment
+            // Modal closed without completing
           }
         });
 
@@ -347,13 +343,12 @@
 
           {/* Banner */}
           <div className="bg-gray-900 text-white text-center py-2 text-xs font-semibold px-4">
-            🌍 East Africa Delivery (Kenya, Uganda, Tanzania, Rwanda, Burundi, South Sudan) | Pay <span className="text-orange-400 font-bold">30% Deposit via Paystack (M-Pesa / Cards)</span> & <span className="text-green-400 font-bold">70% After Delivery</span>
+            🌍 East Africa Delivery (Kenya, Uganda, Tanzania, Rwanda, Burundi, South Sudan) | Pay <span className="text-orange-400 font-bold">30% Deposit via Paystack</span> & <span className="text-green-400 font-bold">70% Balance After Delivery</span>
           </div>
 
           {/* ADMIN DASHBOARD vs STOREFRONT */}
           {viewMode === 'admin' ? (
             <main className="max-w-7xl mx-auto p-4 md:p-6 space-y-6">
-              {/* Paystack Live API Configuration Card */}
               <div className="bg-white rounded-xl shadow-sm p-6 border border-blue-200">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
@@ -364,7 +359,7 @@
                       <h2 className="text-lg font-black text-gray-800">Paystack Payment Gateway Settings</h2>
                     </div>
                     <p className="text-xs text-gray-600 mt-1">
-                      Paste your full <strong>Live Public Key</strong> (`pk_live_...`) from your Paystack Dashboard[span_3](start_span)[span_3](end_span). Never put your Secret Key in frontend code.
+                      Your Live Public Key is configured and ready. You can modify it anytime below.
                     </p>
                   </div>
                   <div className="flex flex-col sm:flex-row gap-2 w-full md:w-1/2">
@@ -372,7 +367,7 @@
                       type="text"
                       value={paystackKey}
                       onChange={(e) => savePaystackKey(e.target.value)}
-                      placeholder="pk_live_96685dc1a36bc585d08a..."
+                      placeholder="pk_live_..."
                       className="flex-1 p-2.5 text-xs font-mono border rounded-lg bg-gray-50 focus:outline-none focus:border-blue-600"
                     />
                     <button
@@ -385,7 +380,6 @@
                 </div>
               </div>
 
-              {/* Orders & Revenue Overview */}
               <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
                 <div className="flex justify-between items-center mb-6">
                   <div>
@@ -652,7 +646,7 @@
                           />
                         </div>
                         <div>
-                          <label className="block text-xs font-bold text-gray-700 mb-1">Email Address (Required by Paystack)</label>
+                          <label className="block text-xs font-bold text-gray-700 mb-1">Email Address (Required)</label>
                           <input
                             type="email"
                             required
