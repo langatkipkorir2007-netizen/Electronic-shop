@@ -9,8 +9,8 @@ const JumiaKilimallStorefront = () => {
   
   // Checkout & Payment States
   const [checkoutStep, setCheckoutStep] = useState('cart'); // 'cart' | 'checkout' | 'success'
-  const [paymentMethod, setPaymentMethod] = useState('mpesa'); // 'mpesa' | 'paystack' | 'airtel'
-  const [selectedCurrency, setSelectedCurrency] = useState('KSh'); // KSh, UGX, TZS, RWF, USD
+  const [paymentMethod, setPaymentMethod] = useState('mpesa'); // 'mpesa' | 'paystack' | 'usd'
+  const [selectedCurrency, setSelectedCurrency] = useState('KSh'); // KSh, USD, UGX, TZS, RWF
   const [destinationCountry, setDestinationCountry] = useState('Kenya');
   
   const [customerName, setCustomerName] = useState('');
@@ -86,7 +86,7 @@ const JumiaKilimallStorefront = () => {
     // Health & Beauty
     { id: 701, name: 'Vichy Mineralizing Thermal Spa Face Serum 50ml', category: 'Health & Beauty', price: 3500, originalPrice: 4800, discount: '27% OFF', image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500&q=80' },
     { id: 702, name: 'CeraVe Hydrating Facial Cleanser 473ml', category: 'Health & Beauty', price: 2700, originalPrice: 3800, discount: '29% OFF', image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=500&q=80' },
-    { id: 703, name: 'Nivea Men Deep Impact Body Spray 150ml', category: 'Health & Beauty', price: 380, originalPrice: 5500, discount: '31% OFF', image: 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=500&q=80' },
+    { id: 703, name: 'Nivea Men Deep Impact Body Spray 150ml', category: 'Health & Beauty', price: 380, originalPrice: 550, discount: '31% OFF', image: 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=500&q=80' },
 
     // Baby Products
     { id: 801, name: 'Pampers Baby-Dry Diapers Mega Pack Size 3 (64s)', category: 'Baby Products', price: 2100, originalPrice: 2800, discount: '25% OFF', image: 'https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=500&q=80' },
@@ -214,7 +214,7 @@ const JumiaKilimallStorefront = () => {
         </div>
       </header>
 
-      {/* Promo Banner for East Africa & Pay on Delivery */}
+      {/* Promo Banner */}
       <div className="bg-orange-500 text-white text-center py-2 text-xs font-bold tracking-wide px-4 shadow-inner">
         🌍 East Africa Express Delivery (Kenya, Uganda, Tanzania, Rwanda, Burundi, South Sudan) • Pay 30% Deposit, Balance After Delivery!
       </div>
@@ -274,7 +274,7 @@ const JumiaKilimallStorefront = () => {
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
               {filteredProducts.map(product => (
                 <div key={product.id} className="bg-white rounded-xl shadow-sm hover:shadow-md transition p-3 flex flex-col justify-between border border-gray-100 relative">
-                  <span className="absolute top-5 left-5 bg-red-600 text-white text-[10px] font-black px-2 py-0.5 rounded shadow">
+                  <span className="absolute top-5 left-5 bg-red-600 text-white text-[10px] font-black px-2 py-0.5 rounded shadow z-10">
                     {product.discount}
                   </span>
                   <div>
@@ -386,7 +386,7 @@ const JumiaKilimallStorefront = () => {
               </>
             )}
 
-            {/* STEP 2: CHECKOUT & MULTI-CURRENCY / MULTI-COUNTRY PAYMENT */}
+            {/* STEP 2: CHECKOUT */}
             {checkoutStep === 'checkout' && (
               <form onSubmit={handlePaymentSubmit} className="flex-1 flex flex-col justify-between">
                 <div className="space-y-3">
@@ -553,7 +553,7 @@ const JumiaKilimallStorefront = () => {
   );
 };
 
-// React DOM Entry Mount Point
+// React DOM Entry Mount Point (CORRECTED EXPORT)
 const rootElement = document.getElementById('root');
 if (rootElement) {
   const root = createRoot(rootElement);
