@@ -20,9 +20,77 @@
   <script type="text/babel">
     const { useState, useMemo } = React;
 
-    // Reliable fallback image generator if network blocks an external photo
-    const getFallbackImage = (name) =>
-      `https://placehold.co/500x400/fff7ed/ea580c?text=${encodeURIComponent(name.slice(0, 22))}`;
+    // Self-contained high-resolution embedded product visuals (never fail or get blocked)
+    const createProductImage = (bgStart, bgEnd, accent, label, sublabel, shapeType) => {
+      let illustration = '';
+      if (shapeType === 'phone') {
+        illustration = `
+          <rect x="195" y="45" width="110" height="210" rx="18" fill="#1e293b" stroke="#94a3b8" stroke-width="4"/>
+          <rect x="203" y="58" width="94" height="180" rx="10" fill="${accent}"/>
+          <circle cx="250" cy="52" r="3" fill="#475569"/>
+          <circle cx="222" cy="76" r="8" fill="#0f172a"/>
+          <circle cx="222" cy="98" r="8" fill="#0f172a"/>
+        `;
+      } else if (shapeType === 'laptop') {
+        illustration = `
+          <rect x="135" y="65" width="230" height="140" rx="10" fill="#1e293b" stroke="#64748b" stroke-width="4"/>
+          <rect x="145" y="75" width="210" height="118" rx="4" fill="${accent}"/>
+          <path d="M110 205 L390 205 L370 220 L130 220 Z" fill="#94a3b8"/>
+        `;
+      } else if (shapeType === 'tv') {
+        illustration = `
+          <rect x="120" y="60" width="260" height="145" rx="6" fill="#0f172a" stroke="#334155" stroke-width="5"/>
+          <rect x="128" y="68" width="244" height="129" fill="${accent}"/>
+          <path d="M210 205 L190 230 M290 205 L310 230 M175 230 L325 230" stroke="#334155" stroke-width="6" stroke-linecap="round"/>
+        `;
+      } else if (shapeType === 'bag') {
+        illustration = `
+          <rect x="175" y="60" width="150" height="185" rx="12" fill="${accent}" stroke="#ffffff" stroke-width="3"/>
+          <rect x="190" y="85" width="120" height="55" rx="6" fill="#ffffff" opacity="0.9"/>
+          <text x="250" y="118" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1e293b" text-anchor="middle">${sublabel}</text>
+        `;
+      } else if (shapeType === 'appliance') {
+        illustration = `
+          <rect x="145" y="65" width="210" height="160" rx="14" fill="#334155"/>
+          <rect x="160" y="82" width="130" height="125" rx="8" fill="#0f172a" stroke="${accent}" stroke-width="3"/>
+          <circle cx="322" cy="110" r="14" fill="${accent}"/>
+          <circle cx="322" cy="155" r="14" fill="#94a3b8"/>
+        `;
+      } else if (shapeType === 'shoe') {
+        illustration = `
+          <path d="M130 185 Q130 140 185 135 L235 105 L275 145 Q340 150 365 185 L365 205 L130 205 Z" fill="${accent}"/>
+          <rect x="125" y="195" width="245" height="18" rx="8" fill="#ffffff"/>
+          <path d="M200 135 L235 150 M220 123 L255 138" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+        `;
+      } else if (shapeType === 'bottle') {
+        illustration = `
+          <rect x="225" y="45" width="50" height="28" rx="4" fill="#334155"/>
+          <rect x="195" y="73" width="110" height="165" rx="22" fill="${accent}"/>
+          <rect x="208" y="115" width="84" height="75" rx="8" fill="#ffffff" opacity="0.9"/>
+        `;
+      } else {
+        illustration = `
+          <circle cx="250" cy="145" r="82" fill="${accent}" stroke="#ffffff" stroke-width="6"/>
+          <circle cx="250" cy="145" r="52" fill="none" stroke="#ffffff" stroke-width="3" stroke-dasharray="10,8"/>
+        `;
+      }
+
+      const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="500" height="320" viewBox="0 0 500 320">
+          <defs>
+            <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="${bgStart}"/>
+              <stop offset="100%" stop-color="${bgEnd}"/>
+            </linearGradient>
+          </defs>
+          <rect width="500" height="320" fill="url(#g)"/>
+          ${illustration}
+          <rect x="40" y="262" width="420" height="38" rx="19" fill="rgba(15,23,42,0.75)"/>
+          <text x="250" y="286" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#ffffff" text-anchor="middle">${label}</text>
+        </svg>
+      `;
+      return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+    };
 
     const JumiaKilimallStorefront = () => {
       const [selectedCategory, setSelectedCategory] = useState('All');
@@ -31,7 +99,7 @@
       const [isCartOpen, setIsCartOpen] = useState(false);
 
       // Checkout & Payment States
-      const [checkoutStep, setCheckoutStep] = useState('cart'); // 'cart' | 'checkout' | 'success'
+      const [checkoutStep, setCheckoutStep] = useState('cart');
       const [paymentMethod, setPaymentMethod] = useState('mpesa');
       const [selectedCurrency, setSelectedCurrency] = useState('KSh');
       const [destinationCountry, setDestinationCountry] = useState('Kenya');
@@ -68,67 +136,67 @@
         ZAR: { symbol: 'R ', rate: 0.14, label: 'ZAR (South African Rand)' }
       };
 
-      // Verified real product photography across all 10 departments
+      // Complete 40-Item Multi-Department Catalog with guaranteed visible product artwork
       const masterCatalog = useMemo(() => [
         // 1. Supermarket & Groceries
-        { id: 101, name: 'Premium Maize Meal Flour 2kg', category: 'Supermarket & Groceries', price: 130, originalPrice: 190, discount: '32% OFF', image: 'https://images.pexels.com/photos/4110256/pexels-photo-4110256.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { id: 102, name: 'Fresh Whole Pasteurized Milk 1L', category: 'Supermarket & Groceries', price: 145, originalPrice: 180, discount: '19% OFF', image: 'https://images.pexels.com/photos/248412/pexels-photo-248412.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { id: 103, name: 'Pure Brown Cane Sugar 2kg', category: 'Supermarket & Groceries', price: 250, originalPrice: 320, discount: '22% OFF', image: 'https://images.pexels.com/photos/2523659/pexels-photo-2523659.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { id: 104, name: 'Pure Vegetable Cooking Oil 3L', category: 'Supermarket & Groceries', price: 850, originalPrice: 1100, discount: '23% OFF', image: 'https://images.pexels.com/photos/33783/olive-oil-salad-dressing-cooking-olive.jpg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 101, name: 'Jogoo Maize Meal Flour 2kg', category: 'Supermarket & Groceries', price: 130, originalPrice: 190, discount: '32% OFF', image: createProductImage('#fef3c7', '#fde68a', '#d97706', 'MAIZE FLOUR 2KG', '2 KG', 'bag') },
+        { id: 102, name: 'Brookside Fresh Whole Milk 1L', category: 'Supermarket & Groceries', price: 145, originalPrice: 180, discount: '19% OFF', image: createProductImage('#e0f2fe', '#bae6fd', '#0284c7', 'FRESH MILK 1L', '1 LITRE', 'bag') },
+        { id: 103, name: 'Kabras Brown Cane Sugar 2kg', category: 'Supermarket & Groceries', price: 250, originalPrice: 320, discount: '22% OFF', image: createProductImage('#ffedd5', '#fed7aa', '#ea580c', 'BROWN SUGAR 2KG', '2 KG', 'bag') },
+        { id: 104, name: 'Golden Fry Cooking Oil 3L', category: 'Supermarket & Groceries', price: 850, originalPrice: 1100, discount: '23% OFF', image: createProductImage('#fef9c3', '#fef08a', '#ca8a04', 'COOKING OIL 3L', '3 LITRES', 'bottle') },
 
         // 2. Phones & Tablets
-        { id: 201, name: 'Samsung Galaxy A15 6.5" 128GB/4GB', category: 'Phones & Tablets', price: 18500, originalPrice: 24000, discount: '23% OFF', image: 'https://images.pexels.com/photos/404280/pexels-photo-404280.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { id: 202, name: 'Redmi Note 13 Pro 256GB/8GB', category: 'Phones & Tablets', price: 28000, originalPrice: 35000, discount: '20% OFF', image: 'https://images.pexels.com/photos/699122/pexels-photo-699122.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { id: 203, name: 'Infinix Hot 40i 256GB Dual SIM', category: 'Phones & Tablets', price: 14200, originalPrice: 18500, discount: '23% OFF', image: 'https://images.pexels.com/photos/1092644/pexels-photo-1092644.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { id: 204, name: 'Apple iPhone 13 128GB Midnight', category: 'Phones & Tablets', price: 79000, originalPrice: 98000, discount: '19% OFF', image: 'https://images.pexels.com/photos/788946/pexels-photo-788946.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 201, name: 'Samsung Galaxy A15 6.5" 128GB/4GB', category: 'Phones & Tablets', price: 18500, originalPrice: 24000, discount: '23% OFF', image: createProductImage('#dbeafe', '#bfdbfe', '#2563eb', 'GALAXY A15 128GB', '5G', 'phone') },
+        { id: 202, name: 'Redmi Note 13 Pro 256GB/8GB', category: 'Phones & Tablets', price: 28000, originalPrice: 35000, discount: '20% OFF', image: createProductImage('#f3e8ff', '#e9d5ff', '#7c3aed', 'REDMI NOTE 13 PRO', '256GB', 'phone') },
+        { id: 203, name: 'Infinix Hot 40i 256GB Dual SIM', category: 'Phones & Tablets', price: 14200, originalPrice: 18500, discount: '23% OFF', image: createProductImage('#dcfce7', '#bbf7d0', '#16a34a', 'INFINIX HOT 40i', '256GB', 'phone') },
+        { id: 204, name: 'Apple iPhone 13 128GB Midnight', category: 'Phones & Tablets', price: 79000, originalPrice: 98000, discount: '19% OFF', image: createProductImage('#f1f5f9', '#cbd5e1', '#0f172a', 'IPHONE 13 128GB', 'iOS', 'phone') },
 
         // 3. Computing & Laptops
-        { id: 301, name: 'HP Pavilion 15 Core i5 16GB/512GB SSD', category: 'Computing & Laptops', price: 69000, originalPrice: 85000, discount: '19% OFF', image: 'https://images.pexels.com/photos/18105/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=600' },
-        { id: 302, name: 'Lenovo V15 G4 Ryzen 3 8GB/256GB', category: 'Computing & Laptops', price: 39000, originalPrice: 49000, discount: '20% OFF', image: 'https://images.pexels.com/photos/303383/pexels-photo-303383.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { id: 303, name: 'Logitech Wireless Keyboard & Mouse', category: 'Computing & Laptops', price: 2100, originalPrice: 2900, discount: '28% OFF', image: 'https://images.pexels.com/photos/1772123/pexels-photo-1772123.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { id: 304, name: 'Seagate 1TB Portable External HDD', category: 'Computing & Laptops', price: 6500, originalPrice: 8500, discount: '24% OFF', image: 'https://images.pexels.com/photos/4792728/pexels-photo-4792728.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 301, name: 'HP Pavilion 15 Core i5 16GB/512GB SSD', category: 'Computing & Laptops', price: 69000, originalPrice: 85000, discount: '19% OFF', image: createProductImage('#e0e7ff', '#c7d2fe', '#4f46e5', 'HP PAVILION 15 i5', '16GB RAM', 'laptop') },
+        { id: 302, name: 'Lenovo V15 G4 Ryzen 3 8GB/256GB', category: 'Computing & Laptops', price: 39000, originalPrice: 49000, discount: '20% OFF', image: createProductImage('#fee2e2', '#fecaca', '#dc2626', 'LENOVO V15 RYZEN', '256GB SSD', 'laptop') },
+        { id: 303, name: 'Logitech Wireless Keyboard & Mouse', category: 'Computing & Laptops', price: 2100, originalPrice: 2900, discount: '28% OFF', image: createProductImage('#f1f5f9', '#e2e8f0', '#475569', 'WIRELESS COMBO', '2.4GHz', 'laptop') },
+        { id: 304, name: 'Seagate 1TB Portable External HDD', category: 'Computing & Laptops', price: 6500, originalPrice: 8500, discount: '24% OFF', image: createProductImage('#ecfeff', '#cffafe', '#0891b2', 'SEAGATE 1TB HDD', 'USB 3.0', 'bag') },
 
         // 4. Electronics & Audio
-        { id: 401, name: 'Hisense 43" Smart Frameless LED TV', category: 'Electronics & Audio', price: 29900, originalPrice: 38000, discount: '21% OFF', image: 'https://images.pexels.com/photos/5721908/pexels-photo-5721908.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { id: 402, name: 'Sony WH-1000XM5 ANC Headphones', category: 'Electronics & Audio', price: 36000, originalPrice: 46000, discount: '22% OFF', image: 'https://images.pexels.com/photos/3394650/pexels-photo-3394650.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { id: 403, name: 'JBL Charge 5 Bluetooth Speaker', category: 'Electronics & Audio', price: 15500, originalPrice: 19900, discount: '22% OFF', image: 'https://images.pexels.com/photos/1279107/pexels-photo-1279107.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { id: 404, name: 'Smart Digital 32" HD Television', category: 'Electronics & Audio', price: 11500, originalPrice: 15000, discount: '23% OFF', image: 'https://images.pexels.com/photos/1444416/pexels-photo-1444416.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 401, name: 'Hisense 43" Smart Frameless LED TV', category: 'Electronics & Audio', price: 29900, originalPrice: 38000, discount: '21% OFF', image: createProductImage('#dbeafe', '#93c5fd', '#1d4ed8', 'HISENSE 43" SMART TV', '4K UHD', 'tv') },
+        { id: 402, name: 'Sony WH-1000XM5 ANC Headphones', category: 'Electronics & Audio', price: 36000, originalPrice: 46000, discount: '22% OFF', image: createProductImage('#f3f4f6', '#d1d5db', '#111827', 'SONY WH-1000XM5', 'ANC', 'sport') },
+        { id: 403, name: 'JBL Charge 5 Bluetooth Speaker', category: 'Electronics & Audio', price: 15500, originalPrice: 19900, discount: '22% OFF', image: createProductImage('#ffedd5', '#fdba74', '#ea580c', 'JBL CHARGE 5', 'BASS', 'sport') },
+        { id: 404, name: 'Vision Plus 32" Digital HD TV', category: 'Electronics & Audio', price: 11500, originalPrice: 15000, discount: '23% OFF', image: createProductImage('#e0f2fe', '#7dd3fc', '#0369a1', 'VISION PLUS 32" TV', 'HD', 'tv') },
 
         // 5. Home & Office Appliances
-        { id: 501, name: 'Ramtons 20L Digital Microwave Oven', category: 'Home & Office Appliances', price: 10900, originalPrice: 14000, discount: '22% OFF', image: 'https://images.pexels.com/photos/4686822/pexels-photo-4686822.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { id: 502, name: 'Heavy Duty 2L Fruit & Spice Blender', category: 'Home & Office Appliances', price: 5500, originalPrice: 7500, discount: '27% OFF', image: 'https://images.pexels.com/photos/4397840/pexels-photo-4397840.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { id: 503, name: '2-Burner Stainless Table Gas Cooker', category: 'Home & Office Appliances', price: 3600, originalPrice: 4800, discount: '25% OFF', image: 'https://images.pexels.com/photos/3926542/pexels-photo-3926542.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { id: 504, name: 'Executive Ergonomic Mesh Office Chair', category: 'Home & Office Appliances', price: 12500, originalPrice: 16500, discount: '24% OFF', image: 'https://images.pexels.com/photos/1957477/pexels-photo-1957477.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 501, name: 'Ramtons 20L Digital Microwave Oven', category: 'Home & Office Appliances', price: 10900, originalPrice: 14000, discount: '22% OFF', image: createProductImage('#f1f5f9', '#cbd5e1', '#ea580c', 'MICROWAVE OVEN 20L', '700W', 'appliance') },
+        { id: 502, name: 'Heavy Duty 2L Fruit & Spice Blender', category: 'Home & Office Appliances', price: 5500, originalPrice: 7500, discount: '27% OFF', image: createProductImage('#fef2f2', '#fecaca', '#b91c1c', 'COMMERCIAL BLENDER', '2.0L', 'bottle') },
+        { id: 503, name: '2-Burner Stainless Table Gas Cooker', category: 'Home & Office Appliances', price: 3600, originalPrice: 4800, discount: '25% OFF', image: createProductImage('#f8fafc', '#e2e8f0', '#334155', '2-BURNER GAS STOVE', 'LPG', 'appliance') },
+        { id: 504, name: 'Executive Ergonomic Mesh Office Chair', category: 'Home & Office Appliances', price: 12500, originalPrice: 16500, discount: '24% OFF', image: createProductImage('#eff6ff', '#bfdbfe', '#1e40af', 'ERGONOMIC CHAIR', 'MESH', 'appliance') },
 
         // 6. Fashion & Apparel
-        { id: 601, name: 'Men Breathable Sports Running Sneakers', category: 'Fashion & Apparel', price: 2200, originalPrice: 3500, discount: '37% OFF', image: 'https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { id: 602, name: 'Unisex Heavyweight Cotton Hoodie', category: 'Fashion & Apparel', price: 1700, originalPrice: 2600, discount: '35% OFF', image: 'https://images.pexels.com/photos/6311392/pexels-photo-6311392.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { id: 603, name: 'Men Slim-Fit Formal Office Shirt', category: 'Fashion & Apparel', price: 1200, originalPrice: 1800, discount: '33% OFF', image: 'https://images.pexels.com/photos/297933/pexels-photo-297933.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { id: 604, name: 'Genuine Leather Belt & Wallet Gift Set', category: 'Fashion & Apparel', price: 950, originalPrice: 1500, discount: '37% OFF', image: 'https://images.pexels.com/photos/4452526/pexels-photo-4452526.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 601, name: 'Men Breathable Sports Running Sneakers', category: 'Fashion & Apparel', price: 2200, originalPrice: 3500, discount: '37% OFF', image: createProductImage('#fee2e2', '#fca5a5', '#dc2626', 'RUNNING SNEAKERS', 'AIR', 'shoe') },
+        { id: 602, name: 'Unisex Heavyweight Cotton Hoodie', category: 'Fashion & Apparel', price: 1700, originalPrice: 2600, discount: '35% OFF', image: createProductImage('#f3f4f6', '#9ca3af', '#1f2937', 'COTTON HOODIE', 'FLEECE', 'bag') },
+        { id: 603, name: 'Men Slim-Fit Formal Office Shirt', category: 'Fashion & Apparel', price: 1200, originalPrice: 1800, discount: '33% OFF', image: createProductImage('#e0f2fe', '#bae6fd', '#0284c7', 'FORMAL OFFICE SHIRT', 'SLIM', 'bag') },
+        { id: 604, name: 'Genuine Leather Belt & Wallet Set', category: 'Fashion & Apparel', price: 950, originalPrice: 1500, discount: '37% OFF', image: createProductImage('#fef3c7', '#fcd34d', '#78350f', 'LEATHER GIFT SET', '100%', 'bag') },
 
         // 7. Health & Beauty
-        { id: 701, name: 'Hydrating Vitamin C Face Serum 50ml', category: 'Health & Beauty', price: 3500, originalPrice: 4800, discount: '27% OFF', image: 'https://images.pexels.com/photos/3685530/pexels-photo-3685530.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { id: 702, name: 'Daily Moisturizing Facial Cleanser', category: 'Health & Beauty', price: 2700, originalPrice: 3800, discount: '29% OFF', image: 'https://images.pexels.com/photos/3735657/pexels-photo-3735657.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { id: 703, name: 'Luxury Eau De Parfum Spray 100ml', category: 'Health & Beauty', price: 1850, originalPrice: 2600, discount: '29% OFF', image: 'https://images.pexels.com/photos/965989/pexels-photo-965989.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { id: 704, name: 'Organic Shea Butter Body Lotion 400ml', category: 'Health & Beauty', price: 650, originalPrice: 950, discount: '32% OFF', image: 'https://images.pexels.com/photos/4465124/pexels-photo-4465124.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 701, name: 'Hydrating Vitamin C Face Serum 50ml', category: 'Health & Beauty', price: 3500, originalPrice: 4800, discount: '27% OFF', image: createProductImage('#ffedd5', '#fed7aa', '#ea580c', 'VITAMIN C SERUM', '50ML', 'bottle') },
+        { id: 702, name: 'Daily Moisturizing Facial Cleanser', category: 'Health & Beauty', price: 2700, originalPrice: 3800, discount: '29% OFF', image: createProductImage('#dcfce7', '#86efac', '#15803d', 'FACIAL CLEANSER', '473ML', 'bottle') },
+        { id: 703, name: 'Luxury Eau De Parfum Spray 100ml', category: 'Health & Beauty', price: 1850, originalPrice: 2600, discount: '29% OFF', image: createProductImage('#fae8ff', '#f0abfc', '#86198f', 'EAU DE PARFUM', '100ML', 'bottle') },
+        { id: 704, name: 'Organic Shea Butter Body Lotion 400ml', category: 'Health & Beauty', price: 650, originalPrice: 950, discount: '32% OFF', image: createProductImage('#fef9c3', '#fde047', '#a16207', 'SHEA BODY LOTION', '400ML', 'bottle') },
 
         // 8. Baby Products
-        { id: 801, name: 'Soft Baby Diapers Jumbo Pack (64 Count)', category: 'Baby Products', price: 2100, originalPrice: 2800, discount: '25% OFF', image: 'https://images.pexels.com/photos/3662667/pexels-photo-3662667.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { id: 802, name: 'Gentle Baby Bedtime Lotion 500ml', category: 'Baby Products', price: 700, originalPrice: 1000, discount: '30% OFF', image: 'https://images.pexels.com/photos/3933275/pexels-photo-3933275.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { id: 803, name: 'Foldable Lightweight Baby Stroller', category: 'Baby Products', price: 9500, originalPrice: 13000, discount: '27% OFF', image: 'https://images.pexels.com/photos/3661350/pexels-photo-3661350.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { id: 804, name: 'Cotton Newborn Baby Romper 3-Piece Set', category: 'Baby Products', price: 1350, originalPrice: 1900, discount: '29% OFF', image: 'https://images.pexels.com/photos/459976/pexels-photo-459976.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 801, name: 'Soft Baby Diapers Jumbo Pack (64s)', category: 'Baby Products', price: 2100, originalPrice: 2800, discount: '25% OFF', image: createProductImage('#e0f2fe', '#bae6fd', '#0ea5e9', 'BABY DIAPERS 64S', 'SIZE 3', 'bag') },
+        { id: 802, name: 'Gentle Baby Bedtime Lotion 500ml', category: 'Baby Products', price: 700, originalPrice: 1000, discount: '30% OFF', image: createProductImage('#fce7f3', '#fbcfe8', '#db2777', 'BABY LOTION 500ML', 'MILD', 'bottle') },
+        { id: 803, name: 'Foldable Lightweight Baby Stroller', category: 'Baby Products', price: 9500, originalPrice: 13000, discount: '27% OFF', image: createProductImage('#f1f5f9', '#cbd5e1', '#475569', 'BABY STROLLER', 'FOLD', 'sport') },
+        { id: 804, name: 'Cotton Newborn Baby Romper 3-Pc Set', category: 'Baby Products', price: 1350, originalPrice: 1900, discount: '29% OFF', image: createProductImage('#fef3c7', '#fde68a', '#d97706', 'BABY ROMPER 3-PC', 'COTTON', 'bag') },
 
         // 9. Gaming & Toys
-        { id: 901, name: 'PS5 DualSense Wireless Controller', category: 'Gaming & Toys', price: 8200, originalPrice: 11000, discount: '25% OFF', image: 'https://images.pexels.com/photos/3945659/pexels-photo-3945659.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { id: 902, name: 'PlayStation 5 Console Disc Edition', category: 'Gaming & Toys', price: 72000, originalPrice: 88000, discount: '18% OFF', image: 'https://images.pexels.com/photos/13189272/pexels-photo-13189272.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { id: 903, name: 'RGB Mechanical Gaming Keyboard & Mouse', category: 'Gaming & Toys', price: 2900, originalPrice: 4200, discount: '31% OFF', image: 'https://images.pexels.com/photos/2115257/pexels-photo-2115257.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { id: 904, name: 'Educational Building Blocks 500-Pc Set', category: 'Gaming & Toys', price: 1600, originalPrice: 2300, discount: '30% OFF', image: 'https://images.pexels.com/photos/163036/mario-luigi-yoschi-figures-163036.jpeg?auto=compress&cs=tinysrgb&w=600' },
+        { id: 901, name: 'PS5 DualSense Wireless Controller', category: 'Gaming & Toys', price: 8200, originalPrice: 11000, discount: '25% OFF', image: createProductImage('#eff6ff', '#bfdbfe', '#1d4ed8', 'PS5 CONTROLLER', 'WIRELESS', 'sport') },
+        { id: 902, name: 'PlayStation 5 Console Disc Edition', category: 'Gaming & Toys', price: 72000, originalPrice: 88000, discount: '18% OFF', image: createProductImage('#f8fafc', '#cbd5e1', '#0f172a', 'PLAYSTATION 5', '825GB', 'appliance') },
+        { id: 903, name: 'RGB Mechanical Gaming Keyboard & Mouse', category: 'Gaming & Toys', price: 2900, originalPrice: 4200, discount: '31% OFF', image: createProductImage('#f3e8ff', '#d8b4fe', '#6b21a8', 'RGB GAMING SET', 'LED', 'laptop') },
+        { id: 904, name: 'Educational Building Blocks 500-Pc Set', category: 'Gaming & Toys', price: 1600, originalPrice: 2300, discount: '30% OFF', image: createProductImage('#fee2e2', '#fca5a5', '#dc2626', 'BUILDING BLOCKS', '500 PCS', 'bag') },
 
         // 10. Sporting Goods
-        { id: 1001, name: 'FIFA Match Training Football Size 5', category: 'Sporting Goods', price: 1700, originalPrice: 2500, discount: '32% OFF', image: 'https://images.pexels.com/photos/47730/the-ball-stadion-football-the-pitch-47730.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { id: 1002, name: 'Adjustable Cast Iron Dumbbell Pair 10kg', category: 'Sporting Goods', price: 3800, originalPrice: 5500, discount: '31% OFF', image: 'https://images.pexels.com/photos/416717/pexels-photo-416717.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { id: 1003, name: 'Non-Slip 10mm High-Density Yoga Mat', category: 'Sporting Goods', price: 1400, originalPrice: 2100, discount: '33% OFF', image: 'https://images.pexels.com/photos/4056723/pexels-photo-4056723.jpeg?auto=compress&cs=tinysrgb&w=600' },
-        { id: 1004, name: '26" Mountain Alloy Suspension Bicycle', category: 'Sporting Goods', price: 19500, originalPrice: 26000, discount: '25% OFF', image: 'https://images.pexels.com/photos/100582/pexels-photo-100582.jpeg?auto=compress&cs=tinysrgb&w=600' }
+        { id: 1001, name: 'FIFA Match Training Football Size 5', category: 'Sporting Goods', price: 1700, originalPrice: 2500, discount: '32% OFF', image: createProductImage('#dcfce7', '#86efac', '#16a34a', 'PRO FOOTBALL SIZE 5', 'FIFA', 'sport') },
+        { id: 1002, name: 'Adjustable Cast Iron Dumbbell Pair 10kg', category: 'Sporting Goods', price: 3800, originalPrice: 5500, discount: '31% OFF', image: createProductImage('#f1f5f9', '#94a3b8', '#1e293b', 'DUMBBELL PAIR 10KG', 'IRON', 'sport') },
+        { id: 1003, name: 'Non-Slip 10mm High-Density Yoga Mat', category: 'Sporting Goods', price: 1400, originalPrice: 2100, discount: '33% OFF', image: createProductImage('#fae8ff', '#e879f9', '#a21caf', 'FITNESS YOGA MAT', '10MM', 'bag') },
+        { id: 1004, name: '26" Mountain Alloy Suspension Bicycle', category: 'Sporting Goods', price: 19500, originalPrice: 26000, discount: '25% OFF', image: createProductImage('#ffedd5', '#fdba74', '#c2410c', '26" MOUNTAIN BIKE', '21-SPD', 'sport') }
       ], []);
 
       const formatPrice = (amountInKsh) => {
@@ -172,7 +240,6 @@
         }, 2000);
       };
 
-      // Downward-scrolling category sections when viewing "All"
       const categoriesToRender = selectedCategory === 'All' ? categories : [selectedCategory];
 
       return (
@@ -335,16 +402,11 @@
                           </span>
 
                           <div>
-                            <div className="w-full h-44 bg-gray-100 rounded-lg overflow-hidden mb-2.5">
+                            <div className="w-full h-40 bg-gray-100 rounded-lg overflow-hidden mb-2.5">
                               <img
                                 src={product.image}
                                 alt={product.name}
-                                loading="lazy"
-                                onError={(e) => {
-                                  e.target.onerror = null;
-                                  e.target.src = getFallbackImage(product.name);
-                                }}
-                                className="w-full h-full object-cover hover:scale-105 transition duration-300"
+                                className="w-full h-full object-cover"
                               />
                             </div>
                             <h3 className="text-sm font-semibold text-gray-800 line-clamp-2">
@@ -421,10 +483,6 @@
                                 <img
                                   src={item.image}
                                   alt={item.name}
-                                  onError={(e) => {
-                                    e.target.onerror = null;
-                                    e.target.src = getFallbackImage(item.name);
-                                  }}
                                   className="w-12 h-12 object-cover rounded-lg"
                                 />
                                 <div>
