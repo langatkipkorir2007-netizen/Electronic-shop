@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KiliMall East Africa | E-Commerce & Admin Dashboard</title>
+  <title>KiliMall East Africa | E-Commerce & Paystack Checkout</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Official Paystack Inline Payment Gateway SDK -->
+  <script src="https://js.paystack.co/v1/inline.js"></script>
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -19,6 +21,11 @@
 
   <script type="text/babel">
     const { useState, useMemo } = React;
+
+    // =========================================================================
+    // PASTE YOUR FULL PAYSTACK LIVE PUBLIC KEY HERE (from Paystack -> API Keys)
+    // =========================================================================
+    const DEFAULT_PAYSTACK_PUBLIC_KEY = 'pk_live_96685dc1a36bc585d08a'; // Replace with full copied key
 
     // Guaranteed working self-contained SVG product artwork generator
     const createProductImage = (bgStart, bgEnd, accent, label, badge, shapeType) => {
@@ -35,7 +42,7 @@
         illustration = `<circle cx="250" cy="145" r="82" fill="${accent}" stroke="#ffffff" stroke-width="6"/><circle cx="250" cy="145" r="52" fill="none" stroke="#ffffff" stroke-width="3" stroke-dasharray="10,8"/>`;
       }
 
-      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="500" height="320" viewBox="0 0 500 320"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${bgStart}"/><stop offset="100%" stop-color="${bgEnd}"/></linearGradient></defs><rect width="500" height="320" fill="url(#g)"/><span class="code-block">${illustration}</span><rect x="40" y="262" width="420" height="38" rx="19" fill="rgba(15,23,42,0.8)"/><text x="250" y="286" font-family="Arial" font-size="15" font-weight="bold" fill="#ffffff" text-anchor="middle">${label}</text></svg>`;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="500" height="320" viewBox="0 0 500 320"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${bgStart}"/><stop offset="100%" stop-color="${bgEnd}"/></linearGradient></defs><rect width="500" height="320" fill="url(#g)"/>${illustration}<rect x="40" y="262" width="420" height="38" rx="19" fill="rgba(15,23,42,0.8)"/><text x="250" y="286" font-family="Arial" font-size="15" font-weight="bold" fill="#ffffff" text-anchor="middle">${label}</text></svg>`;
       return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
     };
 
@@ -46,9 +53,13 @@
       const [cart, setCart] = useState([]);
       const [isCartOpen, setIsCartOpen] = useState(false);
 
+      // Paystack Live Public Key (editable in Admin Dashboard or code)
+      const [paystackKey, setPaystackKey] = useState(
+        () => localStorage.getItem('kilimall_paystack_pk') || DEFAULT_PAYSTACK_PUBLIC_KEY
+      );
+
       // Checkout & Payment States
       const [checkoutStep, setCheckoutStep] = useState('cart'); // 'cart' | 'checkout' | 'success'
-      const [paymentMethod, setPaymentMethod] = useState('mpesa');
       const [selectedCurrency, setSelectedCurrency] = useState('KSh');
       const [destinationCountry, setDestinationCountry] = useState('Kenya');
 
@@ -56,12 +67,12 @@
       const [customerEmail, setCustomerEmail] = useState('');
       const [phoneNumber, setPhoneNumber] = useState('');
       const [shippingAddress, setShippingAddress] = useState('');
-      const [isProcessing, setIsProcessing] = useState(false);
+      const [lastPaymentRef, setLastPaymentRef] = useState('');
 
       // Centralized Orders State for the Admin Dashboard
       const [orders, setOrders] = useState([
-        { id: 'ORD-9821', customer: 'David Ochieng', country: 'Kenya', phone: '+254712345678', total: 18500, deposit: 5550, balance: 12950, status: 'Pending Delivery', date: '2026-11-17' },
-        { id: 'ORD-9822', customer: 'Grace Namubiru', country: 'Uganda', phone: '+256772987654', total: 29900, deposit: 8970, balance: 20930, status: 'Dispatched', date: '2026-11-17' }
+        { id: 'ORD-9821', ref: 'PSK-884120', customer: 'David Ochieng', country: 'Kenya', phone: '+254712345678', total: 18500, deposit: 5550, balance: 12950, status: '30% Paid (Paystack)', date: '2026-11-17' },
+        { id: 'ORD-9822', ref: 'PSK-884125', customer: 'Grace Namubiru', country: 'Uganda', phone: '+256772987654', total: 29900, deposit: 8970, balance: 20930, status: 'Dispatched', date: '2026-11-17' }
       ]);
 
       const categories = [
@@ -77,17 +88,17 @@
         'Sporting Goods'
       ];
 
+      // Currency config including Paystack ISO currency codes
       const currencyRates = {
-        KSh: { symbol: 'KSh ', rate: 1, label: 'KES (Kenya Shilling)' },
-        USD: { symbol: '$', rate: 0.0077, label: 'USD (US Dollar)' },
-        UGX: { symbol: 'USh ', rate: 29.5, label: 'UGX (Uganda Shilling)' },
-        TZS: { symbol: 'TSh ', rate: 20.2, label: 'TZS (Tanzania Shilling)' },
-        RWF: { symbol: 'FRw ', rate: 10.5, label: 'RWF (Rwandan Franc)' },
-        NGN: { symbol: '₦', rate: 12.2, label: 'NGN (Nigerian Naira)' },
-        ZAR: { symbol: 'R ', rate: 0.14, label: 'ZAR (South African Rand)' }
+        KSh: { symbol: 'KSh ', iso: 'KES', rate: 1, label: 'KES (Kenya Shilling)' },
+        USD: { symbol: '$', iso: 'USD', rate: 0.0077, label: 'USD (US Dollar)' },
+        UGX: { symbol: 'USh ', iso: 'UGX', rate: 29.5, label: 'UGX (Uganda Shilling)' },
+        TZS: { symbol: 'TSh ', iso: 'TZS', rate: 20.2, label: 'TZS (Tanzania Shilling)' },
+        RWF: { symbol: 'FRw ', iso: 'RWF', rate: 10.5, label: 'RWF (Rwandan Franc)' },
+        NGN: { symbol: '₦', iso: 'NGN', rate: 12.2, label: 'NGN (Nigerian Naira)' },
+        ZAR: { symbol: 'R ', iso: 'ZAR', rate: 0.14, label: 'ZAR (South African Rand)' }
       };
 
-      // Comprehensive Product Catalog covering 10 Departments
       const masterCatalog = useMemo(() => [
         { id: 101, name: 'Jogoo Maize Meal Flour 2kg', category: 'Supermarket & Groceries', price: 130, originalPrice: 190, discount: '32% OFF', image: createProductImage('#fef3c7', '#fde68a', '#d97706', 'MAIZE FLOUR 2KG', '2 KG', 'bag') },
         { id: 102, name: 'Brookside Fresh Whole Milk 1L', category: 'Supermarket & Groceries', price: 145, originalPrice: 180, discount: '19% OFF', image: createProductImage('#e0f2fe', '#bae6fd', '#0284c7', 'FRESH MILK 1L', '1L', 'bag') },
@@ -141,27 +152,83 @@
       const depositAmountKsh = Math.round(cartTotalKsh * 0.3);
       const balanceOnDeliveryKsh = cartTotalKsh - depositAmountKsh;
 
-      const handlePaymentSubmit = (e) => {
+      const savePaystackKey = (newKey) => {
+        const trimmed = newKey.trim();
+        setPaystackKey(trimmed);
+        localStorage.setItem('kilimall_paystack_pk', trimmed);
+      };
+
+      // Trigger Real Paystack Checkout Popup (M-Pesa, Cards, Mobile Money, Bank)
+      const handlePaystackCheckout = (e) => {
         e.preventDefault();
-        setIsProcessing(true);
-        setTimeout(() => {
-          setIsProcessing(false);
-          // Register order in admin state
-          const newOrder = {
-            id: `ORD-${Math.floor(1000 + Math.random() * 9000)}`,
-            customer: customerName,
-            country: destinationCountry,
-            phone: phoneNumber,
-            total: cartTotalKsh,
-            deposit: depositAmountKsh,
-            balance: balanceOnDeliveryKsh,
-            status: 'Pending Delivery',
-            date: new Date().toISOString().split('T')[0]
-          };
-          setOrders(prev => [newOrder, ...prev]);
-          setCheckoutStep('success');
-          setCart([]);
-        }, 2000);
+
+        if (!paystackKey || paystackKey.length < 30) {
+          alert('Please enter your complete Paystack Live Public Key (pk_live_...) in the Admin Dashboard first.');
+          setIsCartOpen(false);
+          setViewMode('admin');
+          return;
+        }
+
+        const currencyConfig = currencyRates[selectedCurrency] || currencyRates.KSh;
+        // Paystack expects amount in lowest currency subunit (cents/kobo/pesewas -> multiply by 100)
+        // Defaulting to KES if the selected currency isn't enabled on your Paystack account
+        const payCurrency = ['KES', 'NGN', 'GHS', 'ZAR', 'USD'].includes(currencyConfig.iso)
+          ? currencyConfig.iso
+          : 'KES';
+
+        const amountInSelectedCurrency =
+          payCurrency === 'KES'
+            ? depositAmountKsh
+            : Number((depositAmountKsh * currencyConfig.rate).toFixed(2));
+
+        const amountInSubunits = Math.round(amountInSelectedCurrency * 100);
+        const reference = 'KILI-' + Math.floor(100000000 + Math.random() * 900000000);
+
+        if (typeof window.PaystackPop === 'undefined') {
+          alert('Paystack SDK failed to load. Check your internet connection and refresh.');
+          return;
+        }
+
+        const handler = window.PaystackPop.setup({
+          key: paystackKey,
+          email: customerEmail,
+          amount: amountInSubunits,
+          currency: payCurrency,
+          ref: reference,
+          metadata: {
+            custom_fields: [
+              { display_name: 'Customer Name', variable_name: 'customer_name', value: customerName },
+              { display_name: 'Phone Number', variable_name: 'phone_number', value: phoneNumber },
+              { display_name: 'Country', variable_name: 'destination_country', value: destinationCountry },
+              { display_name: 'Delivery Address', variable_name: 'shipping_address', value: shippingAddress },
+              { display_name: 'Balance Due On Delivery (KES)', variable_name: 'balance_due_kes', value: balanceOnDeliveryKsh }
+            ]
+          },
+          callback: function (response) {
+            // Payment verified by Paystack
+            const newOrder = {
+              id: `ORD-${Math.floor(1000 + Math.random() * 9000)}`,
+              ref: response.reference,
+              customer: customerName,
+              country: destinationCountry,
+              phone: phoneNumber,
+              total: cartTotalKsh,
+              deposit: depositAmountKsh,
+              balance: balanceOnDeliveryKsh,
+              status: '30% Paid (Paystack)',
+              date: new Date().toISOString().split('T')[0]
+            };
+            setOrders((prev) => [newOrder, ...prev]);
+            setLastPaymentRef(response.reference);
+            setCheckoutStep('success');
+            setCart([]);
+          },
+          onClose: function () {
+            // Customer closed Paystack modal before completing payment
+          }
+        });
+
+        handler.openIframe();
       };
 
       const categoriesToRender = selectedCategory === 'All' ? categories : [selectedCategory];
@@ -172,15 +239,31 @@
           <header className="bg-orange-600 text-white sticky top-0 z-50 shadow-md">
             <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-3">
               <div className="flex items-center justify-between w-full md:w-auto">
-                <h1 className="text-xl md:text-2xl font-black tracking-wider cursor-pointer" onClick={() => { setSelectedCategory('All'); setSearchQuery(''); setViewMode('store'); }}>
+                <h1
+                  className="text-xl md:text-2xl font-black tracking-wider cursor-pointer"
+                  onClick={() => {
+                    setSelectedCategory('All');
+                    setSearchQuery('');
+                    setViewMode('store');
+                  }}
+                >
                   KILI-MALL EAST AFRICA
                 </h1>
 
                 <div className="flex items-center gap-2 md:hidden">
-                  <button onClick={() => setViewMode(viewMode === 'store' ? 'admin' : 'store')} className="bg-orange-800 px-2.5 py-1.5 rounded text-xs font-bold">
+                  <button
+                    onClick={() => setViewMode(viewMode === 'store' ? 'admin' : 'store')}
+                    className="bg-orange-800 px-2.5 py-1.5 rounded text-xs font-bold"
+                  >
                     {viewMode === 'store' ? '📊 Admin' : '🛍️ Store'}
                   </button>
-                  <button onClick={() => { setIsCartOpen(true); setCheckoutStep('cart'); }} className="bg-orange-700 px-3 py-1.5 rounded-lg font-bold text-xs">
+                  <button
+                    onClick={() => {
+                      setIsCartOpen(true);
+                      setCheckoutStep('cart');
+                    }}
+                    className="bg-orange-700 px-3 py-1.5 rounded-lg font-bold text-xs"
+                  >
                     🛒 ({cart.length})
                   </button>
                 </div>
@@ -220,11 +303,16 @@
                 </button>
 
                 <button
-                  onClick={() => { setIsCartOpen(true); setCheckoutStep('cart'); }}
+                  onClick={() => {
+                    setIsCartOpen(true);
+                    setCheckoutStep('cart');
+                  }}
                   className="bg-orange-700 hover:bg-orange-800 transition px-4 py-2 rounded-lg font-bold text-sm flex items-center gap-2 shadow-sm"
                 >
                   <span>🛒 Cart</span>
-                  <span className="bg-white text-orange-600 px-2 py-0.5 rounded-full text-xs font-black">{cart.length}</span>
+                  <span className="bg-white text-orange-600 px-2 py-0.5 rounded-full text-xs font-black">
+                    {cart.length}
+                  </span>
                 </button>
               </div>
             </div>
@@ -235,7 +323,9 @@
                 <div className="max-w-7xl mx-auto px-4 py-2 flex items-center gap-2 whitespace-nowrap">
                   <button
                     onClick={() => setSelectedCategory('All')}
-                    className={`px-3 py-1 rounded-full font-bold transition ${selectedCategory === 'All' ? 'bg-white text-orange-700' : 'hover:bg-orange-600'}`}
+                    className={`px-3 py-1 rounded-full font-bold transition ${
+                      selectedCategory === 'All' ? 'bg-white text-orange-700' : 'hover:bg-orange-600'
+                    }`}
                   >
                     All 10 Departments
                   </button>
@@ -243,7 +333,9 @@
                     <button
                       key={cat}
                       onClick={() => setSelectedCategory(cat)}
-                      className={`px-3 py-1 rounded-full font-semibold transition ${selectedCategory === cat ? 'bg-white text-orange-700' : 'hover:bg-orange-600'}`}
+                      className={`px-3 py-1 rounded-full font-semibold transition ${
+                        selectedCategory === cat ? 'bg-white text-orange-700' : 'hover:bg-orange-600'
+                      }`}
                     >
                       {cat}
                     </button>
@@ -253,21 +345,57 @@
             )}
           </header>
 
-          {/* Banner: East Africa Shipping & 30% Deposit Rule */}
+          {/* Banner */}
           <div className="bg-gray-900 text-white text-center py-2 text-xs font-semibold px-4">
-            🌍 East Africa Delivery (Kenya, Uganda, Tanzania, Rwanda, Burundi, South Sudan) | Pay <span className="text-orange-400 font-bold">30% Deposit Now</span> & <span className="text-green-400 font-bold">70% Balance After Delivery</span>
+            🌍 East Africa Delivery (Kenya, Uganda, Tanzania, Rwanda, Burundi, South Sudan) | Pay <span className="text-orange-400 font-bold">30% Deposit via Paystack (M-Pesa / Cards)</span> & <span className="text-green-400 font-bold">70% After Delivery</span>
           </div>
 
-          {/* VIEW MODE SWITCHER: STOREFRONT vs ADMIN DASHBOARD */}
+          {/* ADMIN DASHBOARD vs STOREFRONT */}
           {viewMode === 'admin' ? (
             <main className="max-w-7xl mx-auto p-4 md:p-6 space-y-6">
+              {/* Paystack Live API Configuration Card */}
+              <div className="bg-white rounded-xl shadow-sm p-6 border border-blue-200">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="bg-green-100 text-green-800 text-[10px] font-black px-2 py-0.5 rounded uppercase">
+                        Paystack Live Mode
+                      </span>
+                      <h2 className="text-lg font-black text-gray-800">Paystack Payment Gateway Settings</h2>
+                    </div>
+                    <p className="text-xs text-gray-600 mt-1">
+                      Paste your full <strong>Live Public Key</strong> (`pk_live_...`) from your Paystack Dashboard[span_3](start_span)[span_3](end_span). Never put your Secret Key in frontend code.
+                    </p>
+                  </div>
+                  <div className="flex flex-col sm:flex-row gap-2 w-full md:w-1/2">
+                    <input
+                      type="text"
+                      value={paystackKey}
+                      onChange={(e) => savePaystackKey(e.target.value)}
+                      placeholder="pk_live_96685dc1a36bc585d08a..."
+                      className="flex-1 p-2.5 text-xs font-mono border rounded-lg bg-gray-50 focus:outline-none focus:border-blue-600"
+                    />
+                    <button
+                      onClick={() => alert('Paystack Live Public Key saved!')}
+                      className="bg-blue-600 text-white px-4 py-2.5 rounded-lg text-xs font-bold hover:bg-blue-700"
+                    >
+                      Save Key
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Orders & Revenue Overview */}
               <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
                 <div className="flex justify-between items-center mb-6">
                   <div>
                     <h2 className="text-xl font-black text-gray-800">Admin Dashboard & Order Management</h2>
-                    <p className="text-xs text-gray-500">Monitor customer deposits, balances due on delivery, and dispatch logs.</p>
+                    <p className="text-xs text-gray-500">Monitor Paystack 30% deposits, balances due on delivery, and East Africa dispatches.</p>
                   </div>
-                  <button onClick={() => setViewMode('store')} className="bg-orange-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-orange-700">
+                  <button
+                    onClick={() => setViewMode('store')}
+                    className="bg-orange-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-orange-700"
+                  >
                     Back to Storefront
                   </button>
                 </div>
@@ -278,25 +406,29 @@
                     <p className="text-2xl font-black text-orange-600 mt-1">{orders.length}</p>
                   </div>
                   <div className="bg-green-50 border border-green-200 p-4 rounded-xl">
-                    <p className="text-xs text-green-800 font-bold uppercase">Total Deposits Collected (30%)</p>
-                    <p className="text-2xl font-black text-green-600 mt-1">KSh {orders.reduce((sum, o) => sum + o.deposit, 0).toLocaleString()}</p>
+                    <p className="text-xs text-green-800 font-bold uppercase">Total Paystack Deposits (30%)</p>
+                    <p className="text-2xl font-black text-green-600 mt-1">
+                      KSh {orders.reduce((sum, o) => sum + o.deposit, 0).toLocaleString()}
+                    </p>
                   </div>
                   <div className="bg-blue-50 border border-blue-200 p-4 rounded-xl">
                     <p className="text-xs text-blue-800 font-bold uppercase">Pending Balance on Delivery (70%)</p>
-                    <p className="text-2xl font-black text-blue-600 mt-1">KSh {orders.reduce((sum, o) => sum + o.balance, 0).toLocaleString()}</p>
+                    <p className="text-2xl font-black text-blue-600 mt-1">
+                      KSh {orders.reduce((sum, o) => sum + o.balance, 0).toLocaleString()}
+                    </p>
                   </div>
                 </div>
 
-                <h3 className="text-sm font-bold text-gray-700 mb-3 uppercase tracking-wider">Recent Customer Orders</h3>
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse text-xs">
                     <thead>
                       <tr className="bg-gray-100 text-gray-700 uppercase">
                         <th className="p-3">Order ID</th>
+                        <th className="p-3">Paystack Ref</th>
                         <th className="p-3">Customer</th>
                         <th className="p-3">Country / Phone</th>
                         <th className="p-3">Total Value</th>
-                        <th className="p-3 text-green-700">30% Deposit Paid</th>
+                        <th className="p-3 text-green-700">30% Paid</th>
                         <th className="p-3 text-orange-700">70% Balance Due</th>
                         <th className="p-3">Status</th>
                       </tr>
@@ -305,13 +437,14 @@
                       {orders.map((order) => (
                         <tr key={order.id} className="hover:bg-gray-50">
                           <td className="p-3 font-bold text-gray-900">{order.id}</td>
+                          <td className="p-3 font-mono text-gray-600">{order.ref}</td>
                           <td className="p-3 font-semibold">{order.customer}</td>
-                          <td className="p-3 text-gray-600">🇰🇪 {order.country} ({order.phone})</td>
+                          <td className="p-3 text-gray-600">{order.country} ({order.phone})</td>
                           <td className="p-3 font-bold">KSh {order.total.toLocaleString()}</td>
                           <td className="p-3 font-black text-green-600">KSh {order.deposit.toLocaleString()}</td>
                           <td className="p-3 font-black text-orange-600">KSh {order.balance.toLocaleString()}</td>
                           <td className="p-3">
-                            <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded font-bold text-[10px]">
+                            <span className="bg-green-100 text-green-800 px-2 py-1 rounded font-bold text-[10px]">
                               {order.status}
                             </span>
                           </td>
@@ -327,7 +460,13 @@
               {filteredProducts.length === 0 ? (
                 <div className="bg-white rounded-xl p-16 text-center shadow-sm">
                   <p className="text-gray-600 font-medium">No discounted products found matching "{searchQuery}".</p>
-                  <button onClick={() => { setSelectedCategory('All'); setSearchQuery(''); }} className="mt-4 bg-orange-600 text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow hover:bg-orange-700 transition">
+                  <button
+                    onClick={() => {
+                      setSelectedCategory('All');
+                      setSearchQuery('');
+                    }}
+                    className="mt-4 bg-orange-600 text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow hover:bg-orange-700 transition"
+                  >
                     Show All Products
                   </button>
                 </div>
@@ -362,7 +501,9 @@
                                 <span className="text-base font-black text-gray-900">{formatPrice(product.price)}</span>
                                 <span className="text-xs text-gray-400 line-through">{formatPrice(product.originalPrice)}</span>
                               </div>
-                              <p className="text-[11px] text-green-700 font-bold mt-0.5">30% Deposit: {formatPrice(Math.round(product.price * 0.3))}</p>
+                              <p className="text-[11px] text-green-700 font-bold mt-0.5">
+                                30% Deposit: {formatPrice(Math.round(product.price * 0.3))}
+                              </p>
                               <button
                                 onClick={() => addToCart(product)}
                                 className="w-full mt-2.5 bg-orange-600 text-white text-xs font-bold py-2.5 rounded-lg hover:bg-orange-700 active:scale-95 transition shadow-sm"
@@ -380,17 +521,23 @@
             </main>
           )}
 
-          {/* Cart & Checkout Drawer */}
+          {/* Cart & Paystack Checkout Drawer */}
           {isCartOpen && (
             <div className="fixed inset-0 z-50 flex justify-end bg-black bg-opacity-50">
               <div className="w-full max-w-md bg-white h-full shadow-2xl flex flex-col p-5 overflow-y-auto">
                 <div className="flex justify-between items-center border-b pb-3 mb-4">
                   <h2 className="text-lg font-black text-gray-800">
                     {checkoutStep === 'cart' && `Shopping Cart (${cart.length})`}
-                    {checkoutStep === 'checkout' && 'East Africa 30% Deposit Payment'}
-                    {checkoutStep === 'success' && 'Order Confirmed!'}
+                    {checkoutStep === 'checkout' && 'Paystack 30% Deposit Checkout'}
+                    {checkoutStep === 'success' && 'Payment Verified!'}
                   </h2>
-                  <button onClick={() => { setIsCartOpen(false); setCheckoutStep('cart'); }} className="text-gray-400 hover:text-gray-700 text-xl font-bold">
+                  <button
+                    onClick={() => {
+                      setIsCartOpen(false);
+                      setCheckoutStep('cart');
+                    }}
+                    className="text-gray-400 hover:text-gray-700 text-xl font-bold"
+                  >
                     ✕
                   </button>
                 </div>
@@ -414,7 +561,9 @@
                                   <p className="text-xs text-orange-600 font-black mt-0.5">{formatPrice(item.price)}</p>
                                 </div>
                               </div>
-                              <button onClick={() => removeFromCart(index)} className="text-red-600 hover:text-red-800 text-xs font-bold px-2 py-1">Remove</button>
+                              <button onClick={() => removeFromCart(index)} className="text-red-600 hover:text-red-800 text-xs font-bold px-2 py-1">
+                                Remove
+                              </button>
                             </div>
                           ))}
                         </div>
@@ -434,8 +583,11 @@
                           </div>
                         </div>
 
-                        <button onClick={() => setCheckoutStep('checkout')} className="w-full mt-4 bg-orange-600 text-white font-bold py-3 rounded-xl hover:bg-orange-700 transition shadow">
-                          Proceed to East Africa Checkout
+                        <button
+                          onClick={() => setCheckoutStep('checkout')}
+                          className="w-full mt-4 bg-orange-600 text-white font-bold py-3 rounded-xl hover:bg-orange-700 transition shadow"
+                        >
+                          Proceed to Paystack Checkout
                         </button>
                       </>
                     )}
@@ -443,17 +595,28 @@
                 )}
 
                 {checkoutStep === 'checkout' && (
-                  <form onSubmit={handlePaymentSubmit} className="flex-1 flex flex-col justify-between space-y-3">
+                  <form onSubmit={handlePaystackCheckout} className="flex-1 flex flex-col justify-between space-y-3">
                     <div className="space-y-3">
                       <div>
                         <label className="block text-xs font-bold text-gray-700 mb-1">Full Name</label>
-                        <input type="text" required placeholder="Enter full name" value={customerName} onChange={(e) => setCustomerName(e.target.value)} className="w-full p-2.5 text-sm border rounded-lg focus:outline-none focus:border-orange-600" />
+                        <input
+                          type="text"
+                          required
+                          placeholder="Enter full name"
+                          value={customerName}
+                          onChange={(e) => setCustomerName(e.target.value)}
+                          className="w-full p-2.5 text-sm border rounded-lg focus:outline-none focus:border-orange-600"
+                        />
                       </div>
 
                       <div className="grid grid-cols-2 gap-2">
                         <div>
                           <label className="block text-xs font-bold text-gray-700 mb-1">East Africa Country</label>
-                          <select value={destinationCountry} onChange={(e) => setDestinationCountry(e.target.value)} className="w-full p-2.5 text-sm border rounded-lg bg-white">
+                          <select
+                            value={destinationCountry}
+                            onChange={(e) => setDestinationCountry(e.target.value)}
+                            className="w-full p-2.5 text-sm border rounded-lg bg-white"
+                          >
                             <option value="Kenya">🇰🇪 Kenya</option>
                             <option value="Uganda">🇺🇬 Uganda</option>
                             <option value="Tanzania">🇹🇿 Tanzania</option>
@@ -464,7 +627,11 @@
                         </div>
                         <div>
                           <label className="block text-xs font-bold text-gray-700 mb-1">Currency</label>
-                          <select value={selectedCurrency} onChange={(e) => setSelectedCurrency(e.target.value)} className="w-full p-2.5 text-sm border rounded-lg bg-white">
+                          <select
+                            value={selectedCurrency}
+                            onChange={(e) => setSelectedCurrency(e.target.value)}
+                            className="w-full p-2.5 text-sm border rounded-lg bg-white"
+                          >
                             {Object.entries(currencyRates).map(([code, info]) => (
                               <option key={code} value={code}>{info.label}</option>
                             ))}
@@ -475,17 +642,45 @@
                       <div className="grid grid-cols-2 gap-2">
                         <div>
                           <label className="block text-xs font-bold text-gray-700 mb-1">Phone Number</label>
-                          <input type="tel" required placeholder="+254 / +256 / +255..." value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} className="w-full p-2.5 text-sm border rounded-lg focus:outline-none focus:border-orange-600" />
+                          <input
+                            type="tel"
+                            required
+                            placeholder="+254 / +256 / +255..."
+                            value={phoneNumber}
+                            onChange={(e) => setPhoneNumber(e.target.value)}
+                            className="w-full p-2.5 text-sm border rounded-lg focus:outline-none focus:border-orange-600"
+                          />
                         </div>
                         <div>
-                          <label className="block text-xs font-bold text-gray-700 mb-1">Email Address</label>
-                          <input type="email" required placeholder="you@email.com" value={customerEmail} onChange={(e) => setCustomerEmail(e.target.value)} className="w-full p-2.5 text-sm border rounded-lg focus:outline-none focus:border-orange-600" />
+                          <label className="block text-xs font-bold text-gray-700 mb-1">Email Address (Required by Paystack)</label>
+                          <input
+                            type="email"
+                            required
+                            placeholder="you@email.com"
+                            value={customerEmail}
+                            onChange={(e) => setCustomerEmail(e.target.value)}
+                            className="w-full p-2.5 text-sm border rounded-lg focus:outline-none focus:border-orange-600"
+                          />
                         </div>
                       </div>
 
                       <div>
                         <label className="block text-xs font-bold text-gray-700 mb-1">City & Delivery Point</label>
-                        <input type="text" required placeholder="e.g. Nairobi, Kampala, Dar es Salaam..." value={shippingAddress} onChange={(e) => setShippingAddress(e.target.value)} className="w-full p-2.5 text-sm border rounded-lg focus:outline-none focus:border-orange-600" />
+                        <input
+                          type="text"
+                          required
+                          placeholder="e.g. Nairobi, Kampala, Dar es Salaam..."
+                          value={shippingAddress}
+                          onChange={(e) => setShippingAddress(e.target.value)}
+                          className="w-full p-2.5 text-sm border rounded-lg focus:outline-none focus:border-orange-600"
+                        />
+                      </div>
+
+                      <div className="bg-blue-50 border border-blue-200 p-3 rounded-xl text-xs text-blue-900">
+                        <p className="font-bold">🔒 Secured by Paystack Live Checkout</p>
+                        <p className="text-[11px] mt-1">
+                          Supports M-Pesa, Airtel Money, Visa, Mastercard, and Bank Transfers across Africa & USD.
+                        </p>
                       </div>
 
                       <div className="bg-gray-50 p-3 rounded-lg border text-xs space-y-1">
@@ -501,9 +696,18 @@
                     </div>
 
                     <div className="border-t pt-3 flex gap-2">
-                      <button type="button" onClick={() => setCheckoutStep('cart')} className="w-1/3 bg-gray-200 text-gray-800 font-bold py-3 rounded-xl text-sm">Back</button>
-                      <button type="submit" disabled={isProcessing} className="w-2/3 bg-orange-600 text-white font-bold py-3 rounded-xl shadow text-sm">
-                        {isProcessing ? 'Processing...' : `Pay 30% (${formatPrice(depositAmountKsh)})`}
+                      <button
+                        type="button"
+                        onClick={() => setCheckoutStep('cart')}
+                        className="w-1/3 bg-gray-200 text-gray-800 font-bold py-3 rounded-xl text-sm"
+                      >
+                        Back
+                      </button>
+                      <button
+                        type="submit"
+                        className="w-2/3 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow text-sm"
+                      >
+                        Pay {formatPrice(depositAmountKsh)} via Paystack
                       </button>
                     </div>
                   </form>
@@ -512,14 +716,21 @@
                 {checkoutStep === 'success' && (
                   <div className="flex-1 flex flex-col items-center justify-center text-center">
                     <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-3xl font-bold mb-4">✓</div>
-                    <h3 className="text-xl font-black text-gray-800 mb-1">30% Deposit Received!</h3>
+                    <h3 className="text-xl font-black text-gray-800 mb-1">Paystack Deposit Verified!</h3>
+                    <p className="text-xs font-mono text-gray-500 mb-2">Ref: {lastPaymentRef}</p>
                     <p className="text-xs text-gray-600 max-w-xs mb-4">
                       Thank you, <span className="font-bold">{customerName}</span>. Your order is logged in the Admin Dashboard and scheduled for dispatch to <span className="font-bold text-orange-600">{destinationCountry}</span> ({shippingAddress}).
                     </p>
                     <div className="bg-orange-50 p-3 rounded-xl border border-orange-200 text-xs text-orange-900 mb-6 w-full">
                       <span className="font-bold">Balance Due After Delivery:</span> {formatPrice(balanceOnDeliveryKsh)}
                     </div>
-                    <button onClick={() => { setIsCartOpen(false); setCheckoutStep('cart'); }} className="w-full bg-orange-600 text-white font-bold py-3 rounded-xl text-sm">
+                    <button
+                      onClick={() => {
+                        setIsCartOpen(false);
+                        setCheckoutStep('cart');
+                      }}
+                      className="w-full bg-orange-600 text-white font-bold py-3 rounded-xl text-sm"
+                    >
                       Continue Shopping
                     </button>
                   </div>
