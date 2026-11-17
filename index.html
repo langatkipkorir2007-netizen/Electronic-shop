@@ -10,7 +10,7 @@
     <script src="https://js.paystack.co/v1/inline.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-gray-100 text-gray-800 font-sans antialiased pb-16">
+<body class="bg-gray-100 text-gray-800 font-sans antialiased pb-20">
 
     <!-- Top Alert / Info Bar -->
     <div class="bg-black text-white text-xs py-1.5 px-4 flex justify-between items-center">
@@ -42,20 +42,22 @@
     <!-- Horizontal Categories Navigation -->
     <nav class="bg-black text-gray-300 border-t border-gray-800 overflow-x-auto whitespace-nowrap px-4 py-2.5 text-xs font-semibold">
         <div class="max-w-7xl mx-auto flex space-x-6">
-            <button onclick="filterCategory('All')" class="text-amber-400 border-b-2 border-amber-400 pb-1">Hot Deals</button>
+            <button onclick="filterCategory('All')" class="text-amber-400 border-b-2 border-amber-400 pb-1">All Products</button>
             <button onclick="filterCategory('Phones & Accs')" class="hover:text-amber-400 pb-1">Phones & Accs</button>
             <button onclick="filterCategory('TV & Audio')" class="hover:text-amber-400 pb-1">TV & Audio</button>
+            <button onclick="filterCategory('Laptops')" class="hover:text-amber-400 pb-1">Laptops & Tablets</button>
             <button onclick="filterCategory('Men Fashion')" class="hover:text-amber-400 pb-1">Men's Fashion</button>
             <button onclick="filterCategory('Appliances')" class="hover:text-amber-400 pb-1">Appliances</button>
             <button onclick="filterCategory('Home Sale')" class="hover:text-amber-400 pb-1">Home & Kitchen</button>
             <button onclick="filterCategory('Women Fashion')" class="hover:text-amber-400 pb-1">Women's Fashion</button>
+            <button onclick="filterCategory('Beauty')" class="hover:text-amber-400 pb-1">Beauty & Health</button>
         </div>
     </nav>
 
     <!-- App Body Content -->
     <main class="max-w-7xl mx-auto px-2 sm:px-4 py-4 space-y-4">
 
-        <!-- Unbeatable Deals Banner Grid (Kilimall Style) -->
+        <!-- Unbeatable Deals Banner Grid -->
         <div class="bg-gradient-to-r from-red-600 via-orange-500 to-amber-500 rounded-xl p-3 shadow-md text-white">
             <div class="flex justify-between items-center mb-2">
                 <h2 class="font-black text-lg tracking-wide uppercase italic"><i class="fa-solid fa-fire mr-1 text-yellow-300"></i> Unbeatable Deals</h2>
@@ -81,16 +83,11 @@
             </div>
         </div>
 
-        <!-- Flash Sale Strip -->
+        <!-- Product Grid Header & List -->
         <div class="bg-white rounded-xl p-3 shadow-sm border border-gray-200">
             <div class="flex justify-between items-center mb-3">
-                <div class="flex items-center space-x-2">
-                    <span class="text-red-600 font-black italic flex items-center"><i class="fa-solid fa-bolt mr-1"></i> Flash Sale</span>
-                </div>
-                <div class="text-xs text-gray-500 flex items-center space-x-1">
-                    <span>Ends in</span>
-                    <span class="bg-red-600 text-white font-mono px-1.5 py-0.5 rounded text-xs font-bold">00 : 34 : 09</span>
-                </div>
+                <h2 id="categoryTitle" class="text-base font-black text-gray-900 uppercase italic">🔥 Flash Sale & All Products</h2>
+                <span class="text-xs text-gray-500 font-semibold" id="productCount">Showing all items</span>
             </div>
             
             <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -128,6 +125,7 @@
 
                     <div class="space-y-2 pt-1">
                         <input type="text" id="buyerName" placeholder="Full Name" class="w-full p-2.5 border rounded text-sm bg-white">
+                        <input type="email" id="buyerEmail" placeholder="Email Address (required for Paystack)" class="w-full p-2.5 border rounded text-sm bg-white">
                         <input type="text" id="buyerPhone" placeholder="Mobile Number (e.g., 254712345678)" class="w-full p-2.5 border rounded text-sm bg-white">
                         <input type="text" id="buyerAddress" placeholder="Delivery Town / Location" class="w-full p-2.5 border rounded text-sm bg-white">
                     </div>
@@ -180,7 +178,7 @@
         // Live Paystack Public Key
         const PAYSTACK_PUBLIC_KEY = 'pk_live_96685dc1a36bc585d08a7b5fd4a4891d8bce14cb';
 
-        // Expanded Product Catalog with real photography
+        // Massive Product Database modeled after Kilimall / Jumia
         const products = [
             { id: 1, name: "Samsung Galaxy Smartphone 5G", category: "Phones & Accs", price: 19899, image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500" },
             { id: 2, name: "Home Audio Subwoofer System", category: "TV & Audio", price: 3959, image: "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=500" },
@@ -191,7 +189,15 @@
             { id: 7, name: "Stainless Steel Electric Kettle 2L", category: "Appliances", price: 468, image: "https://images.unsplash.com/photo-1594897030264-ab7d49efc873?w=500" },
             { id: 8, name: "Smart Watch Ultra Series 8", category: "Phones & Accs", price: 2899, image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500" },
             { id: 9, name: "Blue Digital Electric Kettle", category: "Appliances", price: 999, image: "https://images.unsplash.com/photo-1563227812-0ea4c22e6cc8?w=500" },
-            { id: 10, name: "Wireless Bluetooth Bass Earbuds", category: "TV & Audio", price: 1599, image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500" }
+            { id: 10, name: "Wireless Bluetooth Bass Earbuds", category: "TV & Audio", price: 1599, image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500" },
+            { id: 11, name: "HP Core i5 14-inch Laptop 8GB RAM 256GB SSD", category: "Laptops", price: 34500, image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500" },
+            { id: 12, name: "Smart Android LED TV 43-inch Frameless", category: "TV & Audio", price: 22999, image: "https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=500" },
+            { id: 13, name: "Men's Formal Business Oxford Shoes", category: "Men Fashion", price: 2499, image: "https://images.unsplash.com/photo-1533867617858-e7d97e0afd8b?w=500" },
+            { id: 14, name: "Women Casual Summer Floral Dress", category: "Women Fashion", price: 1450, image: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=500" },
+            { id: 15, name: "Deep Tissue Muscle Massage Gun", category: "Beauty", price: 2850, image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=500" },
+            { id: 16, name: "Air Fryer Digital 5.5L Family Size", category: "Home Sale", price: 7800, image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=500" },
+            { id: 17, name: "Fast Power Bank 20,000mAh LED Display", category: "Phones & Accs", price: 1850, image: "https://images.unsplash.com/photo-1609592424104-97d4c4d16277?w=500" },
+            { id: 18, name: "Ionic Hair Dryer & Blowout Styler", category: "Beauty", price: 1950, image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500" }
         ];
 
         let cart = [];
@@ -199,6 +205,8 @@
 
         function renderProducts(itemsToRender) {
             const grid = document.getElementById('productGrid');
+            document.getElementById('productCount').innerText = `Showing ${itemsToRender.length} items`;
+            
             if (itemsToRender.length === 0) {
                 grid.innerHTML = `<p class="col-span-full text-center text-gray-500 py-8 text-sm">No products found in this category.</p>`;
                 return;
@@ -217,7 +225,7 @@
                         <div class="mt-2 pt-2 border-t border-gray-100 flex items-center justify-between">
                             <span class="text-[10px] text-gray-500">Dep: KSh ${Math.round(p.price * 0.3).toLocaleString()}</span>
                             <button onclick="addToCart(${p.id})" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-2.5 py-1 rounded transition">
-                                <i class="fa-solid fa-cart-plus"></i>
+                                <i class="fa-solid fa-cart-plus"></i> Add
                             </button>
                         </div>
                     </div>
@@ -226,6 +234,7 @@
         }
 
         function filterCategory(cat) {
+            document.getElementById('categoryTitle').innerText = cat === 'All' ? '🔥 Flash Sale & All Products' : cat;
             if (cat === 'All') {
                 renderProducts(products);
             } else {
@@ -315,7 +324,7 @@
                             <span>Ref: ${o.reference}</span>
                             <span class="text-red-600">Paid Deposit: KSh ${o.depositAmount.toLocaleString()}</span>
                         </div>
-                        <p class="text-gray-600"><strong>Customer:</strong> ${o.name} (${o.phone})</p>
+                        <p class="text-gray-600"><strong>Customer:</strong> ${o.name} (${o.email} / ${o.phone})</p>
                         <p class="text-gray-600"><strong>Location:</strong> ${o.address}</p>
                         <p class="text-gray-500">70% Balance Due on Delivery: KSh ${o.balanceDue.toLocaleString()}</p>
                     </div>
@@ -327,11 +336,12 @@
 
         function initiatePaystackCheckout() {
             const name = document.getElementById('buyerName').value.trim();
+            const email = document.getElementById('buyerEmail').value.trim();
             const phone = document.getElementById('buyerPhone').value.trim();
             const address = document.getElementById('buyerAddress').value.trim();
 
-            if (!name || !phone || !address) {
-                alert('Please provide your Name, Mobile Number, and Delivery Town.');
+            if (!name || !email || !phone || !address) {
+                alert('Please provide your Name, Email Address, Mobile Number, and Delivery Town.');
                 return;
             }
 
@@ -347,7 +357,7 @@
 
             let handler = PaystackPop.setup({
                 key: PAYSTACK_PUBLIC_KEY,
-                email: phone + '@kilishop.user',
+                email: email,
                 amount: depositAmount * 100, // Paystack minor units
                 currency: 'KES',
                 ref: reference,
@@ -365,6 +375,7 @@
                     orders.push({
                         reference: response.reference,
                         name: name,
+                        email: email,
                         phone: phone,
                         address: address,
                         subtotal: subtotal,
