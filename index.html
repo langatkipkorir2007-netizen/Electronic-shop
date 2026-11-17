@@ -1,936 +1,333 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>KiliShop East Africa | Online Shopping Mall</title>
-  <!-- Paystack InlineJS V2 SDK -->
-  <script src="https://js.paystack.co/v2/inline.js"></script>
-  <style>
-    :root {
-      --primary: #ff6600;
-      --primary-dark: #e05500;
-      --secondary: #1e293b;
-      --bg: #f1f5f9;
-      --card: #ffffff;
-      --text: #0f172a;
-      --muted: #64748b;
-      --border: #e2e8f0;
-      --success: #16a34a;
-      --danger: #dc2626;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background: var(--bg); color: var(--text); padding-bottom: 72px; }
-
-    /* Header */
-    header {
-      position: sticky; top: 0; z-index: 100;
-      background: linear-gradient(135deg, var(--primary), #ff8533);
-      color: #fff; padding: 10px 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-    }
-    .header-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
-    .brand { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.5px; display: flex; align-items: center; gap: 6px; }
-    .brand span { background: #fff; color: var(--primary); padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: 900; }
-    .header-controls { display: flex; align-items: center; gap: 6px; }
-    select.currency-select {
-      background: rgba(255,255,255,0.2); color: #fff; border: 1px solid rgba(255,255,255,0.4);
-      padding: 4px 6px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; outline: none;
-    }
-    select.currency-select option { color: #000; }
-    .icon-btn {
-      background: rgba(255,255,255,0.2); border: none; color: #fff;
-      padding: 6px 10px; border-radius: 6px; font-size: 0.82rem; font-weight: 600; cursor: pointer; position: relative;
-    }
-    .badge {
-      position: absolute; top: -5px; right: -5px; background: #0f172a; color: #fff;
-      font-size: 0.68rem; font-weight: 800; padding: 1px 5px; border-radius: 99px;
-    }
-    .search-bar { display: flex; gap: 6px; }
-    .search-bar input {
-      flex: 1; padding: 8px 12px; border: none; border-radius: 8px; font-size: 0.9rem; outline: none;
-    }
-    .search-bar button {
-      background: var(--secondary); color: #fff; border: none; padding: 0 14px; border-radius: 8px; font-weight: 700; cursor: pointer;
-    }
-
-    .promo-strip {
-      background: #0f172a; color: #f8fafc; text-align: center; font-size: 0.78rem; padding: 6px 10px; font-weight: 600;
-    }
-    .promo-strip b { color: #fbbf24; }
-
-    /* Horizontal Department Filter */
-    .dept-nav {
-      display: flex; overflow-x: auto; gap: 8px; padding: 10px 12px;
-      background: #fff; border-bottom: 1px solid var(--border); scrollbar-width: none;
-    }
-    .dept-nav::-webkit-scrollbar { display: none; }
-    .dept-pill {
-      white-space: nowrap; padding: 6px 12px; border-radius: 99px; font-size: 0.8rem; font-weight: 600;
-      background: var(--bg); color: var(--text); border: 1px solid var(--border); cursor: pointer;
-    }
-    .dept-pill.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-
-    /* Catalog Sections */
-    .container { max-width: 1200px; margin: 0 auto; padding: 10px; }
-    .dept-section { margin-bottom: 24px; }
-    .dept-header {
-      display: flex; justify-content: space-between; align-items: center;
-      background: #fff; padding: 10px 12px; border-radius: 8px 8px 0 0; border-bottom: 2px solid var(--primary);
-    }
-    .dept-header h2 { font-size: 1rem; font-weight: 800; color: var(--secondary); }
-    .dept-header span { font-size: 0.75rem; color: var(--muted); font-weight: 700; }
-
-    .product-grid {
-      display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; padding-top: 8px;
-    }
-    @media (min-width: 640px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
-    @media (min-width: 960px) { .product-grid { grid-template-columns: repeat(4, 1fr); } }
-
-    .product-card {
-      background: var(--card); border-radius: 8px; overflow: hidden; border: 1px solid var(--border);
-      display: flex; flex-direction: column; justify-content: space-between; position: relative;
-    }
-    .discount-tag {
-      position: absolute; top: 6px; left: 6px; background: var(--danger); color: #fff;
-      font-size: 0.7rem; font-weight: 800; padding: 2px 6px; border-radius: 4px; z-index: 2;
-    }
-    .product-img {
-      width: 100%; height: 155px; object-fit: cover; background: #e2e8f0; cursor: pointer;
-    }
-    .product-body { padding: 8px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
-    .product-title {
-      font-size: 0.84rem; font-weight: 700; line-height: 1.25; margin-bottom: 4px;
-      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-    }
-    .product-desc {
-      font-size: 0.72rem; color: var(--muted); line-height: 1.32; margin-bottom: 6px;
-      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-    }
-    .price-box { margin: 3px 0; }
-    .price-now { font-size: 0.95rem; font-weight: 800; color: var(--primary); }
-    .price-old { font-size: 0.73rem; color: var(--muted); text-decoration: line-through; margin-left: 4px; }
-    .deposit-hint { font-size: 0.7rem; color: var(--success); font-weight: 700; margin-bottom: 6px; }
-    .btn-add {
-      width: 100%; background: var(--primary); color: #fff; border: none; padding: 7px;
-      border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer;
-    }
-    .btn-add:active { background: var(--primary-dark); }
-
-    /* Modals */
-    .modal-backdrop {
-      display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.65);
-      z-index: 200; align-items: flex-end; justify-content: center;
-    }
-    .modal-backdrop.open { display: flex; }
-    @media (min-width: 640px) { .modal-backdrop { align-items: center; padding: 16px; } }
-    .modal {
-      background: #fff; width: 100%; max-width: 540px; max-height: 90vh; overflow-y: auto;
-      border-radius: 16px 16px 0 0; padding: 16px; animation: slideUp 0.2s ease;
-    }
-    @media (min-width: 640px) { .modal { border-radius: 12px; } }
-    @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 12px; }
-    .modal-header h3 { font-size: 1.02rem; font-weight: 800; }
-    .close-btn { background: var(--bg); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: 800; cursor: pointer; }
-
-    .pm-description {
-      font-size: 0.83rem; color: #334155; background: #f8fafc; padding: 8px 10px;
-      border-radius: 6px; border-left: 3px solid var(--primary); margin-bottom: 10px; line-height: 1.4;
-    }
-
-    /* Variant Selectors */
-    .variant-group { margin: 10px 0; }
-    .variant-group label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 6px; color: var(--secondary); }
-    .variant-options { display: flex; flex-wrap: wrap; gap: 6px; }
-    .var-chip {
-      padding: 6px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.8rem; cursor: pointer; background: #fff;
-    }
-    .var-chip.selected { border-color: var(--primary); background: #fff7ed; color: var(--primary); font-weight: 700; }
-
-    /* Forms & Checkout */
-    .form-group { margin-bottom: 10px; }
-    .form-group label { display: block; font-size: 0.78rem; font-weight: 700; margin-bottom: 4px; color: var(--secondary); }
-    .form-group input, .form-group select {
-      width: 100%; padding: 9px 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.88rem;
-    }
-    .summary-box {
-      background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 10px; margin: 10px 0; font-size: 0.85rem;
-    }
-    .summary-row { display: flex; justify-content: space-between; margin-bottom: 5px; }
-    .summary-row.highlight { font-weight: 800; color: var(--primary); font-size: 0.98rem; border-top: 1px dashed var(--border); padding-top: 6px; margin-top: 6px; }
-    .btn-primary {
-      width: 100%; background: var(--primary); color: #fff; border: none; padding: 12px;
-      border-radius: 8px; font-size: 0.95rem; font-weight: 800; cursor: pointer; margin-top: 6px;
-    }
-    .btn-secondary {
-      width: 100%; background: var(--secondary); color: #fff; border: none; padding: 10px;
-      border-radius: 8px; font-size: 0.88rem; font-weight: 700; cursor: pointer; margin-top: 6px;
-    }
-    .btn-danger {
-      background: var(--danger); color: #fff; border: none; padding: 6px 10px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer;
-    }
-
-    /* Cart & Order Items */
-    .cart-item { display: flex; gap: 10px; align-items: center; border-bottom: 1px solid var(--border); padding: 8px 0; }
-    .cart-item img { width: 54px; height: 54px; border-radius: 6px; object-fit: cover; }
-    .cart-info { flex: 1; }
-    .cart-info h4 { font-size: 0.85rem; }
-    .cart-info p { font-size: 0.75rem; color: var(--muted); }
-    .qty-controls { display: flex; align-items: center; gap: 6px; }
-    .qty-controls button { width: 24px; height: 24px; border: 1px solid var(--border); background: #fff; border-radius: 4px; font-weight: 800; }
-
-    .order-card { border: 1px solid var(--border); border-radius: 8px; padding: 10px; margin-bottom: 10px; background: #fff; }
-    .status-pill {
-      display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 0.72rem; font-weight: 800;
-      background: #dcfce7; color: var(--success);
-    }
-    .status-pill.cancelled { background: #fee2e2; color: var(--danger); }
-
-    /* Bottom Navigation */
-    .bottom-nav {
-      position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid var(--border);
-      display: flex; justify-content: space-around; padding: 8px 0; z-index: 150;
-    }
-    .nav-item {
-      background: none; border: none; display: flex; flex-direction: column; align-items: center;
-      font-size: 0.72rem; font-weight: 700; color: var(--muted); cursor: pointer; gap: 2px;
-    }
-    .nav-item.active { color: var(--primary); }
-    .nav-icon { font-size: 1.15rem; }
-
-    /* WhatsApp Customer Support Only */
-    .wa-support {
-      position: fixed; right: 14px; bottom: 76px; background: #25d366; color: #fff;
-      padding: 8px 12px; border-radius: 99px; font-size: 0.78rem; font-weight: 800;
-      text-decoration: none; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 140;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KiliShop | East Africa's Online Store</title>
+    <!-- Tailwind CSS for modern mobile-first styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Paystack Inline JS -->
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased">
 
-  <!-- Header -->
-  <header>
-    <div class="header-top">
-      <div class="brand">KiliShop <span>EA</span></div>
-      <div class="header-controls">
-        <select id="currencySelect" class="currency-select" onchange="changeCurrency(this.value)">
-          <option value="KES">KES (KSh)</option>
-          <option value="UGX">UGX (USh)</option>
-          <option value="TZS">TZS (TSh)</option>
-          <option value="USD">USD ($)</option>
-        </select>
-        <button class="icon-btn" onclick="openModal('cartModal')">
-          Cart <span id="cartCount" class="badge">0</span>
-        </button>
-      </div>
+    <!-- Top Bar -->
+    <div class="bg-emerald-700 text-white text-xs py-2 px-4 flex justify-between items-center">
+        <span><i class="fa-solid fa-truck-fast mr-1"></i> Fast Delivery across East Africa | Pay via M-Pesa, Airtel & Card</span>
+        <button onclick="openAdminModal()" class="underline hover:text-emerald-200">Admin Dashboard</button>
     </div>
-    <div class="search-bar">
-      <input type="text" id="searchInput" placeholder="Search unique phones, TVs, sneakers, solar, watches..." oninput="handleSearch()" />
-      <button onclick="handleSearch()">Search</button>
-    </div>
-  </header>
 
-  <div class="promo-strip">
-    Pay only <b>30% Deposit</b> via M-Pesa / Airtel / Card &amp; <b>70% on Delivery</b> across East Africa!
-  </div>
-
-  <!-- Horizontal Department Filter -->
-  <div id="deptNav" class="dept-nav"></div>
-
-  <!-- Main Catalog Container -->
-  <main id="catalogContainer" class="container"></main>
-
-  <!-- Floating WhatsApp Customer Support Only -->
-  <a class="wa-support" href="https://wa.me/254700000000?text=Hello%20KiliShop%20Support%2C%20I%20need%20help%20with%20my%20order." target="_blank">
-    Need Help? Support
-  </a>
-
-  <!-- Bottom Fixed Menu -->
-  <nav class="bottom-nav">
-    <button class="nav-item active" onclick="scrollToTop()"><span class="nav-icon">🏠</span>Home</button>
-    <button class="nav-item" onclick="openModal('cartModal')"><span class="nav-icon">🛒</span>Cart</button>
-    <button class="nav-item" onclick="openModal('accountModal')"><span class="nav-icon">📦</span>Orders</button>
-    <button class="nav-item" onclick="openAdmin()"><span class="nav-icon">⚙️</span>Admin</button>
-  </nav>
-
-  <!-- Product Detail & Variant Modal -->
-  <div id="productModal" class="modal-backdrop">
-    <div class="modal">
-      <div class="modal-header">
-        <h3 id="pmTitle">Product Details</h3>
-        <button class="close-btn" onclick="closeModal('productModal')">✕</button>
-      </div>
-      <img id="pmImg" src="" alt="" style="width:100%; height:220px; object-fit:cover; border-radius:8px; margin-bottom:10px;" />
-      <div id="pmDesc" class="pm-description"></div>
-      <div class="price-box">
-        <span id="pmPrice" class="price-now"></span>
-        <span id="pmOldPrice" class="price-old"></span>
-      </div>
-      <div id="pmDeposit" class="deposit-hint"></div>
-      <div class="variant-group">
-        <label>Select Color:</label>
-        <div id="pmColors" class="variant-options"></div>
-      </div>
-      <div class="variant-group">
-        <label>Select Type / Package:</label>
-        <div id="pmTypes" class="variant-options"></div>
-      </div>
-      <button class="btn-primary" onclick="confirmAddToCart()">Add to Cart</button>
-    </div>
-  </div>
-
-  <!-- Cart & Paystack Checkout Modal -->
-  <div id="cartModal" class="modal-backdrop">
-    <div class="modal">
-      <div class="modal-header">
-        <h3>Your Cart &amp; 30% Deposit Checkout</h3>
-        <button class="close-btn" onclick="closeModal('cartModal')">✕</button>
-      </div>
-      <div id="cartItemsList"></div>
-      <div id="checkoutSection" style="display:none;">
-        <div class="summary-box">
-          <div class="summary-row"><span>Order Total:</span><b id="sumTotal"></b></div>
-          <div class="summary-row"><span>Balance on Delivery (70%):</span><span id="sumBalance"></span></div>
-          <div class="summary-row highlight"><span>Pay Now (30% Deposit):</span><span id="sumDeposit"></span></div>
-        </div>
-        <div class="form-group">
-          <label>Full Name</label>
-          <input type="text" id="custName" placeholder="e.g. Brian Kamau" />
-        </div>
-        <div class="form-group">
-          <label>Email Address (Required for Paystack Receipt)</label>
-          <input type="email" id="custEmail" placeholder="e.g. brian@example.com" />
-        </div>
-        <div class="form-group">
-          <label>Mobile Number (M-Pesa / Airtel Money)</label>
-          <input type="tel" id="custPhone" placeholder="e.g. 0712345678" />
-        </div>
-        <div class="form-group">
-          <label>Delivery County / City &amp; Pick-up Point</label>
-          <input type="text" id="custLocation" placeholder="e.g. Nairobi CBD / Kampala / Dar es Salaam" />
-        </div>
-        <button class="btn-primary" onclick="payWithPaystack()">
-          Pay 30% Deposit Now (M-Pesa / Airtel / Card)
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Customer Account & Order Tracking Modal -->
-  <div id="accountModal" class="modal-backdrop">
-    <div class="modal">
-      <div class="modal-header">
-        <h3>My Account &amp; Orders</h3>
-        <button class="close-btn" onclick="closeModal('accountModal')">✕</button>
-      </div>
-      <div id="ordersList"></div>
-    </div>
-  </div>
-
-  <!-- Admin Dashboard Modal -->
-  <div id="adminModal" class="modal-backdrop">
-    <div class="modal">
-      <div class="modal-header">
-        <h3>KiliShop Admin Dashboard</h3>
-        <button class="close-btn" onclick="closeModal('adminModal')">✕</button>
-      </div>
-      <div class="summary-box">
-        <div class="summary-row"><span>Active Paystack Key:</span><b>pk_live_9668...14cb</b></div>
-        <div class="summary-row"><span>Total Unique Store Items:</span><b id="adminTotalProducts">0</b></div>
-        <div class="summary-row"><span>Total Customer Orders:</span><b id="adminTotalOrders">0</b></div>
-        <div class="summary-row highlight"><span>30% Deposits Collected:</span><span id="adminRevenue">KES 0</span></div>
-      </div>
-      <h4 style="margin:10px 0 6px; font-size:0.9rem;">Add Custom Product to Top of Store</h4>
-      <div class="form-group"><input type="text" id="admTitle" placeholder="Product Name" /></div>
-      <div class="form-group"><input type="text" id="admDesc" placeholder="Product Description & Specs" /></div>
-      <div class="form-group"><input type="number" id="admPrice" placeholder="Discounted Price in KES" /></div>
-      <div class="form-group"><input type="url" id="admImg" placeholder="Image URL (optional)" /></div>
-      <div class="form-group"><select id="admDept"></select></div>
-      <button class="btn-secondary" onclick="adminAddProduct()">+ Publish Product</button>
-      <h4 style="margin:14px 0 6px; font-size:0.9rem;">Recent Store Orders</h4>
-      <div id="adminOrdersList"></div>
-    </div>
-  </div>
-
-  <script>
-    // ==========================================
-    // LIVE PAYSTACK PUBLIC KEY CONFIGURATION
-    // ==========================================
-    const PAYSTACK_PUBLIC_KEY = "pk_live_96685dc1a36bc585d08a7b5fd4a4891d8bce14cb";
-
-    // Currency Rates relative to 1 KES
-    const CURRENCIES = {
-      KES: { symbol: "KES ", rate: 1, paystackCode: "KES" },
-      UGX: { symbol: "UGX ", rate: 28.5, paystackCode: "UGX" },
-      TZS: { symbol: "TZS ", rate: 20.2, paystackCode: "TZS" },
-      USD: { symbol: "$", rate: 0.0077, paystackCode: "USD" }
-    };
-    let currentCurrency = "KES";
-
-    // ==========================================
-    // 10 DEPARTMENTS — STRICTLY 8 DISTINCT PRODUCTS PER DEPARTMENT (NO DUPLICATE IMAGES OR CLONES)
-    // ==========================================
-    const DEPARTMENTS = [
-      {
-        id: "phones",
-        name: "Smartphones & Tablets",
-        items: [
-          { name: "Apple iPhone 15 Pro Max 256GB", price: 148000, discount: 15, desc: "Grade-5 Titanium frame, A17 Pro chip, 48MP 5x telephoto zoom camera, USB-C fast charging, factory unlocked.", img: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=500&q=80" },
-          { name: "Samsung Galaxy S24 Ultra 5G", price: 136000, discount: 18, desc: "6.8-inch QHD+ AMOLED 120Hz display, built-in S Pen stylus, 200MP quad camera, 5000mAh all-day battery.", img: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=500&q=80" },
-          { name: "Apple iPad Air M2 11-Inch Wi-Fi", price: 78500, discount: 16, desc: "Liquid Retina anti-reflective screen, Apple M2 processor, 128GB storage, ideal for design, study, and POS.", img: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500&q=80" },
-          { name: "Redmi Note 13 Pro 8GB/256GB", price: 29500, discount: 22, desc: "200MP OIS main camera, 67W turbo charger included in box, 120Hz FHD+ AMOLED borderless display.", img: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=500&q=80" },
-          { name: "Samsung Galaxy A55 5G Dual SIM", price: 44000, discount: 19, desc: "IP67 water and dust resistant metal frame, 50MP Nightography camera, 2-day 5000mAh battery.", img: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500&q=80" },
-          { name: "Google Pixel 8 Pro 128GB Unlocked", price: 89000, discount: 21, desc: "Google Tensor G3 AI processor, 50MP pro triple camera system, Super Actua 120Hz OLED screen.", img: "https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=500&q=80" },
-          { name: "Apple Watch Series 9 GPS 45mm", price: 46500, discount: 17, desc: "Always-On Retina LTPO OLED display, blood oxygen & ECG sensors, swimproof aluminum case.", img: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=500&q=80" },
-          { name: "MagSafe 15W Fast Wireless Charging Pad", price: 3200, discount: 28, desc: "Magnetic snap-on Qi wireless charger with braided 1.5m USB-C cable and aluminum heat-dissipation shell.", img: "https://images.unsplash.com/photo-1586816879360-004f5b0c51e5?w=500&q=80" }
-        ]
-      },
-      {
-        id: "tvs",
-        name: "TVs & Home Audio",
-        items: [
-          { name: "Hisense 55-Inch 4K UHD Smart VIDAA TV", price: 46500, discount: 24, desc: "Frameless 4K HDR10+ display with Dolby Vision, built-in Netflix, YouTube, and Showmax apps.", img: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=500&q=80" },
-          { name: "JBL Charge 5 Portable Bluetooth Speaker", price: 18500, discount: 20, desc: "40W bold JBL Original Pro Sound, IP67 waterproof, 20-hour playtime with built-in USB powerbank.", img: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500&q=80" },
-          { name: "Sony WH-1000XM5 Noise Cancelling Headphones", price: 34000, discount: 19, desc: "Industry-leading active noise cancellation, 30-hour battery life, crystal-clear hands-free calls.", img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80" },
-          { name: "Cinema Soundbar 2.1ch with Wireless Subwoofer", price: 16800, discount: 26, desc: "240W deep bass home theater soundbar with HDMI ARC, Bluetooth 5.3, and optical digital input.", img: "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=500&q=80" },
-          { name: "LG 43-Inch Full HD WebOS Smart TV", price: 32500, discount: 21, desc: "Quad-core processor, ThinQ AI voice remote, Game Optimizer mode, 2 HDMI & USB media ports.", img: "https://images.unsplash.com/photo-1461151304267-38535e780c79?w=500&q=80" },
-          { name: "Apple AirPods Pro (2nd Gen) USB-C", price: 28500, discount: 16, desc: "2x stronger Active Noise Cancellation, Adaptive Transparency, Personalized Spatial Audio.", img: "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=500&q=80" },
-          { name: "Studio Bookshelf Active Monitor Speakers Pair", price: 14200, discount: 23, desc: "Wood-enclosure 60W RMS acoustic speakers with silk dome tweeters and dual RCA/Bluetooth inputs.", img: "https://images.unsplash.com/photo-1558089687-f282ffcbc126?w=500&q=80" },
-          { name: "Full-Motion Swivel Wall Mount Bracket (32-75\")", price: 3400, discount: 30, desc: "Heavy-duty cold-rolled steel articulating arm supporting up to 50kg with +15°/-15° tilt.", img: "https://images.unsplash.com/photo-1593784991095-a205069470b6?w=500&q=80" }
-        ]
-      },
-      {
-        id: "computing",
-        name: "Laptops & Accessories",
-        items: [
-          { name: "Apple MacBook Air M2 13.6-Inch 256GB", price: 128000, discount: 15, desc: "Ultra-thin aluminum chassis, 8-core CPU, 18-hour battery life, MagSafe 3 fast magnetic charging.", img: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500&q=80" },
-          { name: "HP EliteBook 840 G7 Core i7 16GB/512GB", price: 48500, discount: 25, desc: "10th Gen Intel Core i7, backlit spill-resistant keyboard, fingerprint reader, Windows 11 Pro.", img: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500&q=80" },
-          { name: "Logitech MX Master 3S Wireless Mouse", price: 11200, discount: 18, desc: "8K DPI track-on-glass sensor, quiet tactile clicks, MagSpeed electromagnetic scroll wheel.", img: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=500&q=80" },
-          { name: "Mechanical RGB Gaming Keyboard 75%", price: 6800, discount: 27, desc: "Hot-swappable tactile switches, detachable USB-C braided cable, full anti-ghosting keycaps.", img: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=500&q=80" },
-          { name: "27-Inch IPS 100Hz Frameless Office Monitor", price: 19500, discount: 20, desc: "Full HD 1080p eye-care panel, 1ms response time, VESA wall-mountable with HDMI & VGA.", img: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=500&q=80" },
-          { name: "1TB NVMe Portable High-Speed External SSD", price: 11800, discount: 22, desc: "1050MB/s read speeds, shock-resistant aluminum body, includes USB-C to C and USB-A cables.", img: "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=500&q=80" },
-          { name: "7-in-1 USB-C Multiport Hub with 4K HDMI", price: 3600, discount: 29, desc: "Adds 4K HDMI output, 100W PD pass-through charging, SD/TF card reader, and 3x USB 3.0 ports.", img: "https://images.unsplash.com/photo-1625842268584-8f3296236761?w=500&q=80" },
-          { name: "Ergonomic Aluminum Ventilated Laptop Stand", price: 2400, discount: 31, desc: "Foldable 6-level height-adjustable riser with non-slip silicone pads for 11 to 17-inch laptops.", img: "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=500&q=80" }
-        ]
-      },
-      {
-        id: "appliances",
-        name: "Kitchen & Home Appliances",
-        items: [
-          { name: "15-Bar Espresso & Cappuccino Coffee Maker", price: 14500, discount: 22, desc: "Stainless steel steam milk frother wand, removable 1.5L water tank, heated cup warming plate.", img: "https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e6?w=500&q=80" },
-          { name: "Heavy Duty 1500W Commercial Smoothie Blender", price: 6400, discount: 26, desc: "2.0L unbreakable BPA-free jar, 6 hardened titanium blades for ice crushing and nut butters.", img: "https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=500&q=80" },
-          { name: "Digital Air Fryer 6.5L Touch Screen", price: 8900, discount: 24, desc: "Oil-free rapid hot air circulation, 8 preset cooking modes, dishwasher-safe non-stick basket.", img: "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=500&q=80" },
-          { name: "2-Slice Stainless Steel Pop-Up Toaster", price: 3200, discount: 28, desc: "7 browning control levels, defrost and reheat buttons, slide-out removable crumb tray.", img: "https://images.unsplash.com/photo-1584990347449-fd98bc063110?w=500&q=80" },
-          { name: "4.8L Stand Mixer with Dough Hook & Whisk", price: 13800, discount: 20, desc: "1000W pure copper motor, 6 speeds + pulse, tilt-head planetary mixing action for baking.", img: "https://images.unsplash.com/photo-1594385208974-2e75f8d7bb48?w=500&q=80" },
-          { name: "1.8L Cordless Borosilicate Glass Electric Kettle", price: 2700, discount: 30, desc: "Blue LED boil indicator ring, auto shut-off boil-dry protection, 360-degree swivel base.", img: "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=500&q=80" },
-          { name: "20L Digital Solo Microwave Oven with Grill", price: 10500, discount: 19, desc: "700W cooking power, 5 power levels, express defrost by weight, child safety lock.", img: "https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?w=500&q=80" },
-          { name: "2200W Ceramic Soleplate Steam Iron Box", price: 2500, discount: 27, desc: "Vertical steam burst, anti-drip & self-clean function, 300ml water tank for crisp garments.", img: "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=500&q=80" }
-        ]
-      },
-      {
-        id: "solar",
-        name: "Solar & Power Backup",
-        items: [
-          { name: "450W Monocrystalline Half-Cut Solar Panel", price: 14200, discount: 21, desc: "High-efficiency 21.5% Grade-A solar cells, anodized aluminum frame, 25-year output warranty.", img: "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=500&q=80" },
-          { name: "500Wh Portable LiFePO4 Power Station", price: 34500, discount: 18, desc: "Pure sine wave AC outlet, 100W USB-C PD, powers laptops, routers, TVs, and lights in blackouts.", img: "https://images.unsplash.com/photo-1620714223084-8fcacc6dfd8d?w=500&q=80" },
-          { name: "200W Solar Street & Compound Floodlight", price: 4900, discount: 29, desc: "Dusk-to-dawn radar motion sensor, IP66 weatherproof body, wireless remote and pole bracket.", img: "https://images.unsplash.com/photo-1558449028-b53a39d100fc?w=500&q=80" },
-          { name: "3000W Pure Sine Wave Hybrid Solar Inverter", price: 38000, discount: 17, desc: "Built-in 60A MPPT solar charge controller, LCD battery monitor, zero-transfer-time UPS mode.", img: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=500&q=80" },
-          { name: "30,000mAh 65W Fast Charge Laptop Power Bank", price: 6200, discount: 25, desc: "Digital LED percentage screen, dual USB-C & USB-A ports, charges smartphones up to 7 times.", img: "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=500&q=80" },
-          { name: "200Ah 12V Deep Cycle AGM Solar Gel Battery", price: 29500, discount: 16, desc: "Maintenance-free sealed lead-carbon gel battery designed for 1,200+ deep discharge cycles.", img: "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=500&q=80" },
-          { name: "Automatic Fridge & TV Surge Voltage Guard", price: 1450, discount: 32, desc: "Protects appliances against high/low voltage spikes with 3-minute intelligent delay reconnect.", img: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&q=80" },
-          { name: "Solar Home Lighting Kit with 4 LED Bulbs", price: 4200, discount: 24, desc: "Includes 15W solar panel, lithium battery pack, 4 bright hanging bulbs, and USB phone charger.", img: "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=500&q=80" }
-        ]
-      },
-      {
-        id: "mens",
-        name: "Men's Fashion & Sneakers",
-        items: [
-          { name: "Nike Air Max Street Running Sneakers", price: 4800, discount: 25, desc: "Breathable knit mesh upper, cushioned air sole unit, non-slip rubber outsole for daily wear.", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80" },
-          { name: "Chronograph Stainless Steel Men's Watch", price: 5400, discount: 28, desc: "Scratch-resistant mineral glass, 3ATM water resistance, luminous hands, presentation box included.", img: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=500&q=80" },
-          { name: "Genuine Leather Executive Oxford Dress Shoes", price: 5900, discount: 22, desc: "Hand-stitched full-grain cowhide leather, cushioned insole, formal office & wedding style.", img: "https://images.unsplash.com/photo-1614252369475-531eba835eb1?w=500&q=80" },
-          { name: "Classic Vintage Wash Denim Trucker Jacket", price: 3400, discount: 26, desc: "100% heavy cotton twill denim, brass button closure, dual chest flap pockets.", img: "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=500&q=80" },
-          { name: "Anti-Theft 15.6-Inch Business Laptop Backpack", price: 2900, discount: 30, desc: "Water-repellent Oxford fabric, external USB charging port, padded luggage trolley strap.", img: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&q=80" },
-          { name: "Slim-Fit Stretch Cotton Chino Trousers", price: 2200, discount: 24, desc: "Breathable combed cotton with 2% elastane stretch, tailored modern leg cut.", img: "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=500&q=80" },
-          { name: "3-Pack Heavyweight Pima Cotton Crew T-Shirts", price: 2500, discount: 29, desc: "Pre-shrunk 220gsm soft combed cotton in Black, White, and Navy Blue.", img: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&q=80" },
-          { name: "Reversible Full-Grain Leather Dress Belt", price: 1650, discount: 33, desc: "Twist-buckle design switches effortlessly between formal black and rich espresso brown.", img: "https://images.unsplash.com/photo-1624222247344-550fb60583dc?w=500&q=80" }
-        ]
-      },
-      {
-        id: "womens",
-        name: "Women's Fashion & Bags",
-        items: [
-          { name: "Structured Designer Top-Handle Tote Handbag", price: 3600, discount: 27, desc: "Premium pebbled vegan leather, detachable crossbody strap, gold-tone hardware & zip divider.", img: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=500&q=80" },
-          { name: "Pointed-Toe Stiletto Block Heel Pumps", price: 3200, discount: 24, desc: "3-inch balanced comfort heel, padded memory foam footbed, non-slip rubberized sole.", img: "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=500&q=80" },
-          { name: "Polarized UV400 Oversized Cat-Eye Sunglasses", price: 1850, discount: 31, desc: "Anti-glare gradient lenses, lightweight acetate frame, hard protective case & microfiber cloth.", img: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500&q=80" },
-          { name: "18K Gold-Plated Layered Pendant Necklace", price: 2200, discount: 28, desc: "Tarnish-resistant stainless steel base, adjustable lobster clasp, hypoallergenic finish.", img: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=500&q=80" },
-          { name: "Flowing Chiffon Floral Pleated Midi Dress", price: 2800, discount: 25, desc: "Breathable lined chiffon fabric, elasticated waist belt, flattering A-line evening silhouette.", img: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=500&q=80" },
-          { name: "Chunky Platform White Fashion Sneakers", price: 3400, discount: 23, desc: "Lightweight EVA cushioned sole, wipe-clean synthetic leather upper, street-chic comfort.", img: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=500&q=80" },
-          { name: "Quilted Chain-Strap Evening Crossbody Bag", price: 2600, discount: 29, desc: "Diamond-stitched soft matte finish, magnetic flap closure, fits large phones and cosmetics.", img: "https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?w=500&q=80" },
-          { name: "Double-Breasted Belted Trench Coat", price: 4500, discount: 21, desc: "Wind-resistant gabardine weave with storm flaps, button cuffs, and tailored waist tie.", img: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=500&q=80" }
-        ]
-      },
-      {
-        id: "beauty",
-        name: "Health, Beauty & Fragrance",
-        items: [
-          { name: "Eau de Parfum Woody & Amber Luxury 100ml", price: 4500, discount: 24, desc: "Long-lasting 12-hour projection with notes of bergamot, cedarwood, and warm vanilla.", img: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=500&q=80" },
-          { name: "Vitamin C 20% + Hyaluronic Acid Glow Serum", price: 1950, discount: 29, desc: "Brightens dark spots, boosts collagen elasticity, dermatologist-tested for all skin types.", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500&q=80" },
-          { name: "Ionic Ceramic Tourmaline Hair Dryer 2200W", price: 3400, discount: 25, desc: "3 heat & 2 speed settings, cool shot button, concentrator nozzle for frizz-free styling.", img: "https://images.unsplash.com/photo-1522338140262-f46f5913618a?w=500&q=80" },
-          { name: "Pro Metal Cordless Hair Clipper & Trimmer Kit", price: 3800, discount: 22, desc: "Zero-gap titanium T-blade, LED battery display, 8 guide combs and barber cape included.", img: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=500&q=80" },
-          { name: "12-Piece Pro Makeup Brush Set with Travel Pouch", price: 1750, discount: 32, desc: "Ultra-soft dense synthetic bristles for foundation, contour, blending, and eyeshadow.", img: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=500&q=80" },
-          { name: "Titanium Flat Iron Hair Straightener 450°F", price: 3100, discount: 26, desc: "30-second instant heat-up, floating 1-inch plates, digital LCD temperature control.", img: "https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=500&q=80" },
-          { name: "100% Pure Cold-Pressed Moroccan Argan Oil", price: 1800, discount: 27, desc: "Deeply nourishes dry hair, scalp, and skin without greasy residue; 100ml glass dropper.", img: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=500&q=80" },
-          { name: "Sonic Electric Toothbrush with 4 Brush Heads", price: 2900, discount: 23, desc: "40,000 micro-brushes per minute, 5 cleaning modes, 30-day USB rechargeable battery.", img: "https://images.unsplash.com/photo-1559591937-e68214353610?w=500&q=80" }
-        ]
-      },
-      {
-        id: "baby",
-        name: "Baby, Kids & Toys",
-        items: [
-          { name: "Lightweight Foldable Travel Baby Stroller", price: 11500, discount: 22, desc: "One-hand compact fold, multi-position reclining seat, 5-point safety harness & sun canopy.", img: "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=500&q=80" },
-          { name: "120-Piece Wooden & ABS Educational Building Blocks", price: 2400, discount: 28, desc: "Non-toxic rounded edges, develops STEM spatial creativity for ages 3 and above.", img: "https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=500&q=80" },
-          { name: "Plush Giant Teddy Bear Soft Toy 100cm", price: 2900, discount: 25, desc: "Hypoallergenic PP cotton filling, ultra-soft washable plush fur, ideal birthday gift.", img: "https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=500&q=80" },
-          { name: "16-Inch Kids BMX Bicycle with Training Wheels", price: 9800, discount: 20, desc: "High-carbon steel frame, front & rear caliper brakes, adjustable seat and water bottle.", img: "https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?w=500&q=80" },
-          { name: "5-Piece Organic Cotton Newborn Baby Gift Set", price: 2600, discount: 30, desc: "Includes bodysuit, romper, mittens, beanie cap, and swaddle blanket in breathable cotton.", img: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=500&q=80" },
-          { name: "Waterproof Multi-Pocket Diaper Backpack", price: 3200, discount: 26, desc: "3 insulated milk bottle pockets, built-in stroller straps, wipe-clean changing mat included.", img: "https://images.unsplash.com/photo-1544816155-12df9643f363?w=500&q=80" },
-          { name: "360° Rotating ISOFIX Toddler Car Safety Seat", price: 14800, discount: 19, desc: "Side-impact protection, 4 recline angles, grows with child from newborn up to 36kg.", img: "https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=500&q=80" },
-          { name: "LED Light-Up Foldable Kids Kick Scooter", price: 3900, discount: 24, desc: "3-wheel lean-to-steer stability, adjustable T-bar handlebar, motion-powered wheel lights.", img: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&q=80" }
-        ]
-      },
-      {
-        id: "auto",
-        name: "Automotive & Motorbike",
-        items: [
-          { name: "DOT-Certified Full Face Motorbike Riding Helmet", price: 5600, discount: 23, desc: "Anti-fog dual visor, aerodynamic ABS shell, removable washable inner comfort padding.", img: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=500&q=80" },
-          { name: "1080P Full HD Car Dashcam with Night Vision", price: 4800, discount: 26, desc: "170-degree wide-angle lens, G-sensor collision lock, loop recording & 24hr parking monitor.", img: "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=500&q=80" },
-          { name: "12V Digital Heavy-Duty Car Tyre Air Compressor", price: 3900, discount: 28, desc: "Auto shut-off PSI gauge, built-in LED emergency flashlight, 3m cigarette lighter power cord.", img: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=500&q=80" },
-          { name: "12,000mAh Car Jump Starter & Emergency Pack", price: 6800, discount: 21, desc: "Starts up to 4.0L petrol & 2.5L diesel engines, smart reverse-polarity jumper clamps.", img: "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=500&q=80" },
-          { name: "Cordless High-Suction Handheld Car Vacuum", price: 3100, discount: 29, desc: "9000Pa cyclonic suction, washable HEPA filter, crevice nozzle and upholstery brush.", img: "https://images.unsplash.com/photo-1558317374-067fb5f30001?w=500&q=80" },
-          { name: "9000-Lumen H4/H7 Canbus LED Headlight Bulbs Pair", price: 3500, discount: 27, desc: "6000K pure xenon white beam, aviation aluminum cooling fan, plug-and-play installation.", img: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=500&q=80" },
-          { name: "Magnetic Dashboard & Air-Vent Phone Mount", price: 1250, discount: 34, desc: "6 N52 neodymium magnets hold phones steady on rough murram roads with 360° swivel.", img: "https://images.unsplash.com/photo-1512499617640-c74ae3a79d37?w=500&q=80" },
-          { name: "Touchscreen Armored Motorbike Riding Gloves", price: 1950, discount: 25, desc: "Hard carbon knuckle protection, anti-slip palm grip, touchscreen index fingertips.", img: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=500&q=80" }
-        ]
-      }
-    ];
-
-    const COLORS = ["Midnight Black", "Titanium Silver", "Ocean Blue", "Ruby Red", "Champagne Gold"];
-    const TYPES = ["Standard Edition", "Pro Max Bundle", "2026 Upgraded Model"];
-
-    // Build Catalog: 1-to-1 unique mapping (max 8 distinct items per department, zero duplicates)
-    let ALL_PRODUCTS = [];
-    function initCatalog() {
-      let idCounter = 1;
-      DEPARTMENTS.forEach((dept) => {
-        dept.items.slice(0, 10).forEach((item) => {
-          const oldPriceKES = Math.round((item.price / (1 - item.discount / 100)) / 50) * 50;
-          ALL_PRODUCTS.push({
-            id: idCounter++,
-            deptId: dept.id,
-            deptName: dept.name,
-            title: item.name,
-            desc: item.desc,
-            priceKES: item.price,
-            oldPriceKES,
-            discount: item.discount,
-            img: item.img
-          });
-        });
-      });
-    }
-
-    // State Management
-    let cart = JSON.parse(localStorage.getItem("kilishop_cart") || "[]");
-    let orders = JSON.parse(localStorage.getItem("kilishop_orders") || "[]");
-    let activeDeptFilter = "all";
-
-    let selectedProduct = null;
-    let selectedColor = COLORS[0];
-    let selectedType = TYPES[0];
-
-    function formatMoney(kesAmount) {
-      const c = CURRENCIES[currentCurrency];
-      const converted = kesAmount * c.rate;
-      if (currentCurrency === "USD") return c.symbol + converted.toFixed(2);
-      return c.symbol + Math.round(converted).toLocaleString();
-    }
-
-    function changeCurrency(val) {
-      currentCurrency = val;
-      renderCatalog();
-      renderCart();
-      renderOrders();
-    }
-
-    function renderDeptNav() {
-      const nav = document.getElementById("deptNav");
-      const admSel = document.getElementById("admDept");
-      let html = `<button class="dept-pill ${activeDeptFilter === 'all' ? 'active' : ''}" onclick="filterDept('all')">All 10 Departments</button>`;
-      let optHtml = "";
-      DEPARTMENTS.forEach(d => {
-        html += `<button class="dept-pill ${activeDeptFilter === d.id ? 'active' : ''}" onclick="filterDept('${d.id}')">${d.name}</button>`;
-        optHtml += `<option value="${d.id}">${d.name}</option>`;
-      });
-      nav.innerHTML = html;
-      admSel.innerHTML = optHtml;
-    }
-
-    function filterDept(id) {
-      activeDeptFilter = id;
-      renderDeptNav();
-      renderCatalog();
-    }
-
-    function renderCatalog() {
-      const container = document.getElementById("catalogContainer");
-      const query = document.getElementById("searchInput").value.trim().toLowerCase();
-
-      if (query.length > 0) {
-        const matches = ALL_PRODUCTS.filter(p =>
-          p.title.toLowerCase().includes(query) ||
-          p.desc.toLowerCase().includes(query) ||
-          p.deptName.toLowerCase().includes(query)
-        );
-
-        container.innerHTML = `
-          <div class="dept-section">
-            <div class="dept-header"><h2>Search Results (${matches.length} found)</h2></div>
-            <div class="product-grid">${matches.map(productCardHTML).join("")}</div>
-          </div>`;
-        return;
-      }
-
-      const deptsToShow = activeDeptFilter === "all" ? DEPARTMENTS : DEPARTMENTS.filter(d => d.id === activeDeptFilter);
-      container.innerHTML = deptsToShow.map(dept => {
-        const deptItems = ALL_PRODUCTS.filter(p => p.deptId === dept.id).slice(0, 10);
-        return `
-          <section class="dept-section" id="sec-${dept.id}">
-            <div class="dept-header">
-              <h2>${dept.name}</h2>
-              <span>${deptItems.length} Unique Items</span>
+    <!-- Header / Navigation -->
+    <header class="sticky top-0 z-40 bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+            <a href="#" class="text-2xl font-black text-emerald-700 tracking-tight">Kili<span class="text-amber-500">Shop</span></a>
+            
+            <div class="flex-1 max-w-md mx-6 hidden md:block">
+                <div class="relative">
+                    <input type="text" id="searchInput" oninput="filterProducts()" placeholder="Search thousands of products..." class="w-full bg-gray-100 border border-gray-200 rounded-full py-2 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-gray-400"></i>
+                </div>
             </div>
-            <div class="product-grid">
-              ${deptItems.map(productCardHTML).join("")}
-            </div>
-          </section>
-        `;
-      }).join("");
-    }
 
-    function productCardHTML(p) {
-      const deposit = Math.round(p.priceKES * 0.30);
-      return `
-        <div class="product-card">
-          <span class="discount-tag">-${p.discount}%</span>
-          <img class="product-img" src="${p.img}" alt="${p.title}" loading="lazy" onclick="openVariantModal(${p.id})" />
-          <div class="product-body">
+            <div class="flex items-center space-x-5">
+                <button onclick="openCart()" class="relative text-gray-700 hover:text-emerald-700">
+                    <i class="fa-solid fa-cart-shopping text-xl"></i>
+                    <span id="cartBadge" class="absolute -top-2 -right-2 bg-amber-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Categories Strip -->
+    <nav class="bg-white border-b border-gray-200 overflow-x-auto whitespace-nowrap px-4 py-2 text-sm">
+        <div class="max-w-7xl mx-auto flex space-x-6">
+            <button onclick="filterCategory('All')" class="font-medium text-emerald-700 border-b-2 border-emerald-700 pb-1">All Departments</button>
+            <button onclick="filterCategory('Electronics')" class="text-gray-600 hover:text-emerald-700 pb-1">Electronics</button>
+            <button onclick="filterCategory('Fashion')" class="text-gray-600 hover:text-emerald-700 pb-1">Fashion & Apparel</button>
+            <button onclick="filterCategory('Home & Kitchen')" class="text-gray-600 hover:text-emerald-700 pb-1">Home & Kitchen</button>
+            <button onclick="filterCategory('Phones & Tablets')" class="text-gray-600 hover:text-emerald-700 pb-1">Phones & Tablets</button>
+            <button onclick="filterCategory('Beauty & Health')" class="text-gray-600 hover:text-emerald-700 pb-1">Beauty & Health</button>
+        </div>
+    </nav>
+
+    <!-- Main Content Grid -->
+    <main class="max-w-7xl mx-auto px-4 py-6">
+        <h1 id="categoryTitle" class="text-xl font-bold text-gray-900 mb-6">Trending Products</h1>
+        <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            <!-- Dynamically populated products -->
+        </div>
+    </main>
+
+    <!-- Slide-over Cart & Checkout Drawer -->
+    <div id="cartDrawer" class="fixed inset-0 z-50 overflow-hidden hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-50 transition-opacity" onclick="closeCart()"></div>
+        <div class="absolute inset-y-0 right-0 max-w-full flex pl-10">
+            <div class="w-screen max-w-md bg-white shadow-xl flex flex-col">
+                <div class="p-4 border-b border-gray-200 flex items-center justify-between bg-emerald-700 text-white">
+                    <h2 class="text-lg font-bold">Your Shopping Cart</h2>
+                    <button onclick="closeCart()" class="text-white hover:text-gray-200"><i class="fa-solid fa-xmark text-xl"></i></button>
+                </div>
+                
+                <div id="cartItemsContainer" class="flex-1 overflow-y-auto p-4 space-y-4">
+                    <!-- Cart items loaded here -->
+                </div>
+
+                <div class="border-t border-gray-200 p-4 bg-gray-50 space-y-3">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">Subtotal:</span>
+                        <span id="cartSubtotal" class="font-bold">KES 0</span>
+                    </div>
+                    <div class="flex justify-between text-sm bg-emerald-50 p-2 rounded border border-emerald-200 text-emerald-800">
+                        <div>
+                            <p class="font-bold">30% Upfront Deposit (Pay Now):</p>
+                            <p class="text-xs">Balance 70% paid upon safe delivery</p>
+                        </div>
+                        <span id="depositAmount" class="font-extrabold text-base">KES 0</span>
+                    </div>
+
+                    <div class="space-y-2 pt-2">
+                        <input type="text" id="buyerName" placeholder="Full Name" class="w-full p-2 border rounded text-sm">
+                        <input type="text" id="buyerPhone" placeholder="Mobile Number (e.g., 254712345678)" class="w-full p-2 border rounded text-sm">
+                        <input type="text" id="buyerAddress" placeholder="Delivery Location / Town" class="w-full p-2 border rounded text-sm">
+                    </div>
+
+                    <button onclick="initiatePaystackCheckout()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded shadow transition">
+                        Pay 30% Deposit via Paystack
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard Modal -->
+    <div id="adminModal" class="fixed inset-0 z-50 overflow-y-auto hidden bg-black bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg max-w-2xl w-full p-6 space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h2 class="text-lg font-bold text-gray-900"><i class="fa-solid fa-lock mr-2 text-emerald-700"></i> KiliShop Admin Dashboard</h2>
+                <button onclick="closeAdminModal()" class="text-gray-500 hover:text-gray-700"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
             <div>
-              <div class="product-title">${p.title}</div>
-              <div class="product-desc">${p.desc}</div>
-              <div class="price-box">
-                <span class="price-now">${formatMoney(p.priceKES)}</span>
-                <span class="price-old">${formatMoney(p.oldPriceKES)}</span>
-              </div>
-              <div class="deposit-hint">30% Deposit: ${formatMoney(deposit)}</div>
+                <h3 class="text-sm font-semibold text-gray-600 mb-2">Customer Orders Received:</h3>
+                <div id="adminOrdersList" class="space-y-3 max-h-96 overflow-y-auto">
+                    <!-- Orders populate here -->
+                </div>
             </div>
-            <button class="btn-add" onclick="openVariantModal(${p.id})">Select &amp; Buy</button>
-          </div>
+            <div class="flex justify-end pt-3 border-t">
+                <button onclick="closeAdminModal()" class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded text-sm">Close</button>
+            </div>
         </div>
-      `;
-    }
+    </div>
 
-    function handleSearch() {
-      renderCatalog();
-    }
+    <!-- Application JavaScript -->
+    <script>
+        // Live Paystack Public Key
+        const PAYSTACK_PUBLIC_KEY = 'pk_live_96685dc1a36bc585d08a7b5fd4a4891d8bce14cb';
 
-    // Variant & Description Modal
-    function openVariantModal(id) {
-      selectedProduct = ALL_PRODUCTS.find(p => p.id === id);
-      if (!selectedProduct) return;
-      selectedColor = COLORS[0];
-      selectedType = TYPES[0];
+        // Initial Product Database
+        const products = [
+            { id: 1, name: "Smart Watch Ultra Series 8", category: "Electronics", price: 3500, image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500", colors: ["Black", "Silver"], types: ["Standard", "Sport Band"] },
+            { id: 2, name: "Wireless Bluetooth Earbuds", category: "Electronics", price: 1800, image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500", colors: ["White", "Black"], types: ["Active Noise Cancelling"] },
+            { id: 3, name: "Men's Casual Running Sneakers", category: "Fashion", price: 2800, image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500", colors: ["Red", "Blue", "Black"], types: ["Size 41", "Size 42", "Size 43", "Size 44"] },
+            { id: 4, name: "Non-Stick 7-Piece Cookware Set", category: "Home & Kitchen", price: 6500, image: "https://images.unsplash.com/photo-1584990347426-c585c6489453?w=500", colors: ["Red", "Black"], types: ["Standard Set"] },
+            { id: 5, name: "Android 4G Smartphone 6.5\"", category: "Phones & Tablets", price: 12500, image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500", colors: ["Blue", "Gold", "Black"], types: ["64GB ROM / 4GB RAM"] },
+            { id: 6, name: "Ionic Facial Steamer & Cleanser", category: "Beauty & Health", price: 2400, image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500", colors: ["White"], types: ["Standard"] }
+        ];
 
-      document.getElementById("pmTitle").textContent = selectedProduct.title;
-      document.getElementById("pmImg").src = selectedProduct.img;
-      document.getElementById("pmDesc").textContent = selectedProduct.desc;
-      document.getElementById("pmPrice").textContent = formatMoney(selectedProduct.priceKES);
-      document.getElementById("pmOldPrice").textContent = formatMoney(selectedProduct.oldPriceKES);
-      document.getElementById("pmDeposit").textContent = `Pay 30% Deposit Today (${formatMoney(Math.round(selectedProduct.priceKES * 0.30))}) & 70% on Delivery`;
+        let cart = [];
+        let orders = JSON.parse(localStorage.getItem('kilishop_orders') || '[]');
 
-      renderVariantChips();
-      openModal("productModal");
-    }
-
-    function renderVariantChips() {
-      document.getElementById("pmColors").innerHTML = COLORS.map(c =>
-        `<span class="var-chip ${c === selectedColor ? 'selected' : ''}" onclick="selectColor('${c}')">${c}</span>`
-      ).join("");
-      document.getElementById("pmTypes").innerHTML = TYPES.map(t =>
-        `<span class="var-chip ${t === selectedType ? 'selected' : ''}" onclick="selectType('${t}')">${t}</span>`
-      ).join("");
-    }
-
-    function selectColor(c) { selectedColor = c; renderVariantChips(); }
-    function selectType(t) { selectedType = t; renderVariantChips(); }
-
-    function confirmAddToCart() {
-      if (!selectedProduct) return;
-      const existing = cart.find(item => item.id === selectedProduct.id && item.color === selectedColor && item.type === selectedType);
-      if (existing) {
-        existing.qty += 1;
-      } else {
-        cart.push({
-          ...selectedProduct,
-          color: selectedColor,
-          type: selectedType,
-          qty: 1
-        });
-      }
-      saveCart();
-      closeModal("productModal");
-      openModal("cartModal");
-    }
-
-    function saveCart() {
-      localStorage.setItem("kilishop_cart", JSON.stringify(cart));
-      updateCartBadge();
-      renderCart();
-    }
-
-    function updateCartBadge() {
-      const totalQty = cart.reduce((acc, item) => acc + item.qty, 0);
-      document.getElementById("cartCount").textContent = totalQty;
-    }
-
-    function renderCart() {
-      const list = document.getElementById("cartItemsList");
-      const checkout = document.getElementById("checkoutSection");
-
-      if (cart.length === 0) {
-        list.innerHTML = `<p style="text-align:center; color:var(--muted); padding:20px 0;">Your KiliShop cart is empty.</p>`;
-        checkout.style.display = "none";
-        return;
-      }
-
-      checkout.style.display = "block";
-      let totalKES = 0;
-
-      list.innerHTML = cart.map((item, idx) => {
-        totalKES += item.priceKES * item.qty;
-        return `
-          <div class="cart-item">
-            <img src="${item.img}" alt="${item.title}" />
-            <div class="cart-info">
-              <h4>${item.title}</h4>
-              <p>${item.color} • ${item.type}</p>
-              <b style="color:var(--primary); font-size:0.85rem;">${formatMoney(item.priceKES * item.qty)}</b>
-            </div>
-            <div class="qty-controls">
-              <button onclick="updateQty(${idx}, -1)">-</button>
-              <span>${item.qty}</span>
-              <button onclick="updateQty(${idx}, 1)">+</button>
-            </div>
-          </div>
-        `;
-      }).join("");
-
-      const depositKES = Math.round(totalKES * 0.30);
-      const balanceKES = totalKES - depositKES;
-
-      document.getElementById("sumTotal").textContent = formatMoney(totalKES);
-      document.getElementById("sumDeposit").textContent = formatMoney(depositKES);
-      document.getElementById("sumBalance").textContent = formatMoney(balanceKES);
-    }
-
-    function updateQty(idx, delta) {
-      cart[idx].qty += delta;
-      if (cart[idx].qty <= 0) cart.splice(idx, 1);
-      saveCart();
-    }
-
-    // ==========================================
-    // PAYSTACK LIVE V2 CHECKOUT (30% DEPOSIT)
-    // ==========================================
-    function payWithPaystack() {
-      const name = document.getElementById("custName").value.trim();
-      const email = document.getElementById("custEmail").value.trim();
-      const phone = document.getElementById("custPhone").value.trim();
-      const location = document.getElementById("custLocation").value.trim();
-
-      if (!name || !email || !phone || !location) {
-        alert("Please enter your Name, Email, Phone Number, and Delivery Location.");
-        return;
-      }
-      if (!email.includes("@")) {
-        alert("Please enter a valid email address for your Paystack receipt.");
-        return;
-      }
-
-      const totalKES = cart.reduce((acc, item) => acc + (item.priceKES * item.qty), 0);
-      const depositKES = Math.round(totalKES * 0.30);
-      const balanceKES = totalKES - depositKES;
-
-      const currObj = CURRENCIES[currentCurrency];
-      const convertedDeposit = currentCurrency === "USD"
-        ? Number((depositKES * currObj.rate).toFixed(2))
-        : Math.round(depositKES * currObj.rate);
-      const amountInSubunits = Math.round(convertedDeposit * 100);
-
-      const txRef = "KILI-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
-
-      if (typeof PaystackPop === "undefined") {
-        alert("Paystack checkout script is still loading. Check your connection and try again.");
-        return;
-      }
-
-      const popup = new PaystackPop();
-      popup.newTransaction({
-        key: PAYSTACK_PUBLIC_KEY,
-        email: email,
-        amount: amountInSubunits,
-        currency: currObj.paystackCode,
-        reference: txRef,
-        metadata: {
-          custom_fields: [
-            { display_name: "Customer Name", variable_name: "customer_name", value: name },
-            { display_name: "Mobile Number", variable_name: "mobile_number", value: phone },
-            { display_name: "Delivery Location", variable_name: "delivery_location", value: location },
-            { display_name: "Balance on Delivery (70%)", variable_name: "balance_due", value: formatMoney(balanceKES) }
-          ]
-        },
-        onSuccess: function(transaction) {
-          const newOrder = {
-            id: transaction.reference || txRef,
-            date: new Date().toLocaleString(),
-            customer: name,
-            email: email,
-            phone: phone,
-            location: location,
-            items: [...cart],
-            totalKES: totalKES,
-            depositKES: depositKES,
-            balanceKES: balanceKES,
-            status: "30% Deposit Paid — Dispatching"
-          };
-          orders.unshift(newOrder);
-          localStorage.setItem("kilishop_orders", JSON.stringify(orders));
-
-          cart = [];
-          saveCart();
-          closeModal("cartModal");
-          renderOrders();
-          openModal("accountModal");
-          alert("Payment Confirmed! Ref: " + newOrder.id);
-        },
-        onCancel: function() {},
-        onError: function(error) {
-          alert("Paystack Error: " + (error.message || "Unable to initialize transaction."));
+        function renderProducts(itemsToRender) {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = itemsToRender.map(p => `
+                <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden flex flex-col">
+                    <div class="h-48 overflow-hidden bg-gray-100 relative">
+                        <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover hover:scale-105 transition duration-300">
+                    </div>
+                    <div class="p-3 flex-1 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs text-emerald-600 font-semibold uppercase tracking-wider">${p.category}</span>
+                            <h3 class="text-sm font-bold text-gray-800 line-clamp-1 mt-0.5">${p.name}</h3>
+                            <p class="text-base font-extrabold text-emerald-700 mt-1">KES ${p.price.toLocaleString()}</p>
+                        </div>
+                        <div class="mt-3 pt-2 border-t border-gray-100 flex items-center justify-between">
+                            <span class="text-xs text-gray-500">Deposit: KES ${Math.round(p.price * 0.3).toLocaleString()}</span>
+                            <button onclick="addToCart(${p.id})" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-1.5 rounded transition">
+                                <i class="fa-solid fa-plus mr-1"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
         }
-      });
-    }
 
-    // Customer Orders & Cancellation
-    function renderOrders() {
-      const container = document.getElementById("ordersList");
-      if (orders.length === 0) {
-        container.innerHTML = `<p style="text-align:center; color:var(--muted); padding:20px 0;">No orders placed yet. Shop and pay 30% deposit to track deliveries here.</p>`;
-        return;
-      }
-      container.innerHTML = orders.map((ord, idx) => {
-        const isCancelled = ord.status.includes("Cancelled");
-        return `
-          <div class="order-card">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-              <b style="font-size:0.82rem;">Ref: ${ord.id}</b>
-              <span class="status-pill ${isCancelled ? 'cancelled' : ''}">${ord.status}</span>
-            </div>
-            <p style="font-size:0.75rem; color:var(--muted); margin-bottom:6px;">${ord.date} • ${ord.location}</p>
-            <div style="font-size:0.8rem; margin-bottom:6px;">
-              ${ord.items.map(i => `<div>• ${i.qty}x ${i.title} (${i.color})</div>`).join("")}
-            </div>
-            <div style="font-size:0.8rem; border-top:1px solid var(--border); padding-top:6px; display:flex; justify-content:space-between; align-items:center;">
-              <span>Paid: <b>${formatMoney(ord.depositKES)}</b> | COD: <b>${formatMoney(ord.balanceKES)}</b></span>
-              ${!isCancelled ? `<button class="btn-danger" onclick="cancelOrder(${idx})">Cancel</button>` : ""}
-            </div>
-          </div>
-        `;
-      }).join("");
-    }
+        function filterCategory(cat) {
+            document.getElementById('categoryTitle').innerText = cat === 'All' ? 'Trending Products' : cat;
+            if (cat === 'All') {
+                renderProducts(products);
+            } else {
+                renderProducts(products.filter(p => p.category === cat));
+            }
+        }
 
-    function cancelOrder(idx) {
-      if (!confirm("Are you sure you want to cancel this order?")) return;
-      orders[idx].status = "Cancelled by Customer";
-      localStorage.setItem("kilishop_orders", JSON.stringify(orders));
-      renderOrders();
-    }
+        function filterProducts() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = products.filter(p => p.name.toLowerCase().includes(query) || p.category.toLowerCase().includes(query));
+            renderProducts(filtered);
+        }
 
-    // Admin Dashboard
-    function openAdmin() {
-      document.getElementById("adminTotalProducts").textContent = ALL_PRODUCTS.length.toLocaleString();
-      document.getElementById("adminTotalOrders").textContent = orders.length;
-      const totalRev = orders.filter(o => !o.status.includes("Cancelled")).reduce((s, o) => s + o.depositKES, 0);
-      document.getElementById("adminRevenue").textContent = formatMoney(totalRev);
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existing = cart.find(item => item.id === productId);
+            if (existing) {
+                existing.qty += 1;
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+            updateCartUI();
+            openCart();
+        }
 
-      const admOrders = document.getElementById("adminOrdersList");
-      admOrders.innerHTML = orders.length === 0
-        ? `<p style="font-size:0.8rem; color:var(--muted);">No customer orders yet.</p>`
-        : orders.map(o => `<div class="order-card" style="font-size:0.78rem;"><b>${o.customer}</b> (${o.phone}) — ${o.status}<br/>Deposit: ${formatMoney(o.depositKES)} | Ref: ${o.id}</div>`).join("");
+        function updateCartUI() {
+            const badge = document.getElementById('cartBadge');
+            const container = document.getElementById('cartItemsContainer');
+            const subtotalEl = document.getElementById('cartSubtotal');
+            const depositEl = document.getElementById('depositAmount');
 
-      openModal("adminModal");
-    }
+            const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+            badge.innerText = totalItems;
 
-    function adminAddProduct() {
-      const title = document.getElementById("admTitle").value.trim();
-      const desc = document.getElementById("admDesc").value.trim() || "Brand new sealed item with 1-year East Africa warranty.";
-      const priceKES = Number(document.getElementById("admPrice").value);
-      const customImg = document.getElementById("admImg").value.trim();
-      const deptId = document.getElementById("admDept").value;
+            if (cart.length === 0) {
+                container.innerHTML = `<p class="text-gray-500 text-center py-8 text-sm">Your cart is empty.</p>`;
+                subtotalEl.innerText = 'KES 0';
+                depositEl.innerText = 'KES 0';
+                return;
+            }
 
-      if (!title || !priceKES) {
-        alert("Enter product title and price.");
-        return;
-      }
+            let subtotal = 0;
+            container.innerHTML = cart.map(item => {
+                subtotal += item.price * item.qty;
+                return `
+                    <div class="flex items-center justify-between bg-gray-50 p-2 rounded border">
+                        <div class="flex-1">
+                            <h4 class="text-sm font-bold text-gray-800">${item.name}</h4>
+                            <p class="text-xs text-gray-500">KES ${item.price.toLocaleString()} x ${item.qty}</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="changeQty(${item.id}, -1)" class="w-6 h-6 bg-gray-200 rounded text-xs font-bold">-</button>
+                            <span class="text-sm font-semibold">${item.qty}</span>
+                            <button onclick="changeQty(${item.id}, 1)" class="w-6 h-6 bg-gray-200 rounded text-xs font-bold">+</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
 
-      const dept = DEPARTMENTS.find(d => d.id === deptId);
-      ALL_PRODUCTS.unshift({
-        id: Date.now(),
-        deptId: dept.id,
-        deptName: dept.name,
-        title,
-        desc,
-        priceKES,
-        oldPriceKES: Math.round(priceKES * 1.25),
-        discount: 20,
-        img: customImg || dept.items[0].img
-      });
+            subtotalEl.innerText = `KES ${subtotal.toLocaleString()}`;
+            const deposit = Math.round(subtotal * 0.3);
+            depositEl.innerText = `KES ${deposit.toLocaleString()}`;
+        }
 
-      document.getElementById("admTitle").value = "";
-      document.getElementById("admDesc").value = "";
-      document.getElementById("admPrice").value = "";
-      document.getElementById("admImg").value = "";
-      document.getElementById("adminTotalProducts").textContent = ALL_PRODUCTS.length.toLocaleString();
-      renderCatalog();
-      alert("Product published live to KiliShop!");
-    }
+        function changeQty(id, delta) {
+            const item = cart.find(i => i.id === id);
+            if (item) {
+                item.qty += delta;
+                if (item.qty <= 0) {
+                    cart = cart.filter(i => i.id !== id);
+                }
+            }
+            updateCartUI();
+        }
 
-    // Modal & Navigation Helpers
-    function openModal(id) {
-      if (id === "cartModal") renderCart();
-      if (id === "accountModal") renderOrders();
-      document.getElementById(id).classList.add("open");
-    }
-    function closeModal(id) {
-      document.getElementById(id).classList.remove("open");
-    }
-    function scrollToTop() {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+        function openCart() { document.getElementById('cartDrawer').classList.remove('hidden'); }
+        function closeCart() { document.getElementById('cartDrawer').classList.add('hidden'); }
 
-    // Boot Storefront
-    initCatalog();
-    renderDeptNav();
-    renderCatalog();
-    updateCartBadge();
-  </script>
+        function openAdminModal() {
+            const list = document.getElementById('adminOrdersList');
+            if (orders.length === 0) {
+                list.innerHTML = `<p class="text-sm text-gray-500">No orders recorded yet.</p>`;
+            } else {
+                list.innerHTML = orders.map(o => `
+                    <div class="bg-gray-50 p-3 rounded border text-sm space-y-1">
+                        <div class="flex justify-between font-bold text-gray-800">
+                            <span>Order #${o.reference}</span>
+                            <span class="text-emerald-600">Paid Deposit: KES ${o.depositAmount.toLocaleString()}</span>
+                        </div>
+                        <p class="text-xs text-gray-600"><strong class="text-gray-700">Customer:</strong> ${o.name} (${o.phone})</p>
+                        <p class="text-xs text-gray-600"><strong class="text-gray-700">Location:</strong> ${o.address}</p>
+                        <p class="text-xs text-gray-500">Balance due on delivery (70%): KES ${o.balanceDue.toLocaleString()}</p>
+                    </div>
+                `).join('');
+            }
+            document.getElementById('adminModal').classList.remove('hidden');
+        }
+        function closeAdminModal() { document.getElementById('adminModal').classList.add('hidden'); }
+
+        function initiatePaystackCheckout() {
+            const name = document.getElementById('buyerName').value.trim();
+            const phone = document.getElementById('buyerPhone').value.trim();
+            const address = document.getElementById('buyerAddress').value.trim();
+
+            if (!name || !phone || !address) {
+                alert('Please fill in your name, mobile number, and delivery location.');
+                return;
+            }
+
+            if (cart.length === 0) {
+                alert('Your cart is empty.');
+                return;
+            }
+
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const depositAmount = Math.round(subtotal * 0.3); // 30% upfront
+            const balanceDue = subtotal - depositAmount;
+            const reference = 'KS-' + Math.floor(Math.random() * 900000 + 100000);
+
+            let handler = PaystackPop.setup({
+                key: PAYSTACK_PUBLIC_KEY,
+                email: phone + '@kilishop.user',
+                amount: depositAmount * 100, // Paystack expects amount in minor units (cents / kobo)
+                currency: 'KES',
+                ref: reference,
+                metadata: {
+                    custom_fields: [
+                        { display_name: "Customer Name", variable_name: "customer_name", value: name },
+                        { display_name: "Phone Number", variable_name: "phone_number", value: phone },
+                        { display_name: "Delivery Address", variable_name: "delivery_address", value: address },
+                        { display_name: "Order Type", variable_name: "order_type", value: "30% Deposit (70% Balance on Delivery)" }
+                    ]
+                },
+                callback: function(response) {
+                    alert('Deposit payment successful! Reference: ' + response.reference);
+                    
+                    // Save order in admin list
+                    orders.push({
+                        reference: response.reference,
+                        name: name,
+                        phone: phone,
+                        address: address,
+                        subtotal: subtotal,
+                        depositAmount: depositAmount,
+                        balanceDue: balanceDue,
+                        items: [...cart],
+                        date: new Date().toLocaleString()
+                    });
+                    localStorage.setItem('kilishop_orders', JSON.stringify(orders));
+
+                    // Reset cart
+                    cart = [];
+                    updateCartUI();
+                    closeCart();
+                },
+                onClose: function() {
+                    alert('Transaction was not completed.');
+                }
+            });
+
+            handler.openIframe();
+        }
+
+        // Initial render on load
+        renderProducts(products);
+    </script>
 </body>
 </html>
