@@ -3,96 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KiliShop | East Africa's Online Shopping Mall</title>
-    <!-- Tailwind CSS -->
+    <title>KiliShop | East Africa's Online Store</title>
+    <!-- Tailwind CSS for modern mobile-first styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Paystack Inline JS -->
     <script src="https://js.paystack.co/v1/inline.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-gray-100 text-gray-800 font-sans antialiased pb-20">
+<body class="bg-gray-50 text-gray-800 font-sans antialiased pb-20">
 
-    <!-- Top Alert / Info Bar -->
-    <div class="bg-black text-white text-xs py-1.5 px-4 flex justify-between items-center">
-        <span><i class="fa-solid fa-bolt text-amber-400 mr-1"></i> Daily Subsidies & Flash Sales Across East Africa</span>
-        <button onclick="openAdminModal()" class="text-amber-400 font-semibold underline hover:text-amber-300">Admin Dashboard</button>
+    <!-- Top Bar -->
+    <div class="bg-emerald-700 text-white text-xs py-2 px-4 flex justify-between items-center">
+        <span><i class="fa-solid fa-truck-fast mr-1"></i> Fast Delivery across East Africa | Pay via M-Pesa, Airtel & Card</span>
+        <button onclick="openAdminModal()" class="underline hover:text-emerald-200">Admin Dashboard</button>
     </div>
 
-    <!-- Main Header -->
-    <header class="sticky top-0 z-40 bg-black text-white shadow-md">
+    <!-- Header / Navigation -->
+    <header class="sticky top-0 z-40 bg-white shadow-sm">
         <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-            <a href="#" class="text-2xl font-black tracking-tight text-white">Kili<span class="text-amber-500">Shop</span></a>
+            <a href="#" class="text-2xl font-black text-emerald-700 tracking-tight">Kili<span class="text-amber-500">Shop</span></a>
             
-            <div class="flex-1 max-w-lg mx-4">
+            <div class="flex-1 max-w-md mx-6 hidden md:block">
                 <div class="relative">
-                    <input type="text" id="searchInput" oninput="filterProducts()" placeholder="Search thousands of products..." class="w-full bg-white text-gray-900 rounded-full py-2 pl-4 pr-10 text-sm focus:outline-none">
-                    <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-2.5 text-gray-400"></i>
+                    <input type="text" id="searchInput" oninput="filterProducts()" placeholder="Search thousands of products..." class="w-full bg-gray-100 border border-gray-200 rounded-full py-2 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-gray-400"></i>
                 </div>
             </div>
 
-            <div class="flex items-center space-x-4">
-                <button onclick="openCart()" class="relative text-white hover:text-amber-400 flex items-center">
+            <div class="flex items-center space-x-5">
+                <button onclick="openCart()" class="relative text-gray-700 hover:text-emerald-700">
                     <i class="fa-solid fa-cart-shopping text-xl"></i>
-                    <span id="cartBadge" class="absolute -top-2 -right-2 bg-amber-500 text-black text-xs font-black w-5 h-5 rounded-full flex items-center justify-center">0</span>
+                    <span id="cartBadge" class="absolute -top-2 -right-2 bg-amber-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- Horizontal Categories Navigation -->
-    <nav class="bg-black text-gray-300 border-t border-gray-800 overflow-x-auto whitespace-nowrap px-4 py-2.5 text-xs font-semibold">
+    <!-- Categories Strip -->
+    <nav class="bg-white border-b border-gray-200 overflow-x-auto whitespace-nowrap px-4 py-2 text-sm">
         <div class="max-w-7xl mx-auto flex space-x-6">
-            <button onclick="filterCategory('All')" class="text-amber-400 border-b-2 border-amber-400 pb-1">All Products</button>
-            <button onclick="filterCategory('Phones & Accs')" class="hover:text-amber-400 pb-1">Phones & Accs</button>
-            <button onclick="filterCategory('TV & Audio')" class="hover:text-amber-400 pb-1">TV & Audio</button>
-            <button onclick="filterCategory('Laptops')" class="hover:text-amber-400 pb-1">Laptops & Tablets</button>
-            <button onclick="filterCategory('Men Fashion')" class="hover:text-amber-400 pb-1">Men's Fashion</button>
-            <button onclick="filterCategory('Appliances')" class="hover:text-amber-400 pb-1">Appliances</button>
-            <button onclick="filterCategory('Home Sale')" class="hover:text-amber-400 pb-1">Home & Kitchen</button>
-            <button onclick="filterCategory('Women Fashion')" class="hover:text-amber-400 pb-1">Women's Fashion</button>
-            <button onclick="filterCategory('Beauty')" class="hover:text-amber-400 pb-1">Beauty & Health</button>
+            <button onclick="filterCategory('All')" class="font-medium text-emerald-700 border-b-2 border-emerald-700 pb-1">All Departments</button>
+            <button onclick="filterCategory('Electronics')" class="text-gray-600 hover:text-emerald-700 pb-1">Electronics</button>
+            <button onclick="filterCategory('Fashion')" class="text-gray-600 hover:text-emerald-700 pb-1">Fashion & Apparel</button>
+            <button onclick="filterCategory('Home & Kitchen')" class="text-gray-600 hover:text-emerald-700 pb-1">Home & Kitchen</button>
+            <button onclick="filterCategory('Phones & Tablets')" class="text-gray-600 hover:text-emerald-700 pb-1">Phones & Tablets</button>
+            <button onclick="filterCategory('Beauty & Health')" class="text-gray-600 hover:text-emerald-700 pb-1">Beauty & Health</button>
         </div>
     </nav>
 
-    <!-- App Body Content -->
-    <main class="max-w-7xl mx-auto px-2 sm:px-4 py-4 space-y-4">
-
-        <!-- Unbeatable Deals Banner Grid -->
-        <div class="bg-gradient-to-r from-red-600 via-orange-500 to-amber-500 rounded-xl p-3 shadow-md text-white">
-            <div class="flex justify-between items-center mb-2">
-                <h2 class="font-black text-lg tracking-wide uppercase italic"><i class="fa-solid fa-fire mr-1 text-yellow-300"></i> Unbeatable Deals</h2>
-                <span class="text-xs bg-black bg-opacity-30 px-2 py-0.5 rounded-full font-bold">KSh 1M Subsidies Daily</span>
-            </div>
-            
-            <div class="grid grid-cols-3 gap-2">
-                <div onclick="filterCategory('Phones & Accs')" class="bg-white text-gray-900 rounded-lg p-2 text-center cursor-pointer shadow hover:bg-gray-50">
-                    <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300" class="h-20 mx-auto object-contain mb-1">
-                    <p class="text-xs font-bold text-gray-800 line-clamp-1">Phones & ACCs ></p>
-                    <p class="text-xs font-black text-red-600">KSh 19,899</p>
-                </div>
-                <div onclick="filterCategory('TV & Audio')" class="bg-white text-gray-900 rounded-lg p-2 text-center cursor-pointer shadow hover:bg-gray-50">
-                    <img src="https://images.unsplash.com/photo-1545454675-3531b543be5d?w=300" class="h-20 mx-auto object-contain mb-1">
-                    <p class="text-xs font-bold text-gray-800 line-clamp-1">TV & Audio Sale ></p>
-                    <p class="text-xs font-black text-red-600">KSh 3,959</p>
-                </div>
-                <div onclick="filterCategory('Men Fashion')" class="bg-white text-gray-900 rounded-lg p-2 text-center cursor-pointer shadow hover:bg-gray-50">
-                    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300" class="h-20 mx-auto object-contain mb-1">
-                    <p class="text-xs font-bold text-gray-800 line-clamp-1">Men's Fashion ></p>
-                    <p class="text-xs font-black text-red-600">KSh 1,199</p>
-                </div>
-            </div>
+    <!-- Main Content Grid -->
+    <main class="max-w-7xl mx-auto px-4 py-6">
+        <div class="flex justify-between items-center mb-6">
+            <h1 id="categoryTitle" class="text-xl font-bold text-gray-900">Trending Products</h1>
+            <span class="text-xs text-gray-500 font-semibold" id="productCount"></span>
         </div>
-
-        <!-- Product Grid Header & List -->
-        <div class="bg-white rounded-xl p-3 shadow-sm border border-gray-200">
-            <div class="flex justify-between items-center mb-3">
-                <h2 id="categoryTitle" class="text-base font-black text-gray-900 uppercase italic">🔥 Flash Sale & All Products</h2>
-                <span class="text-xs text-gray-500 font-semibold" id="productCount">Showing all items</span>
-            </div>
-            
-            <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                <!-- Populated via JavaScript -->
-            </div>
+        <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            <!-- Dynamically populated products -->
         </div>
     </main>
 
@@ -101,36 +67,36 @@
         <div class="absolute inset-0 bg-black bg-opacity-50 transition-opacity" onclick="closeCart()"></div>
         <div class="absolute inset-y-0 right-0 max-w-full flex pl-10">
             <div class="w-screen max-w-md bg-white shadow-xl flex flex-col">
-                <div class="p-4 border-b border-gray-200 flex items-center justify-between bg-black text-white">
+                <div class="p-4 border-b border-gray-200 flex items-center justify-between bg-emerald-700 text-white">
                     <h2 class="text-lg font-bold">Your Shopping Cart</h2>
-                    <button onclick="closeCart()" class="text-white hover:text-gray-300"><i class="fa-solid fa-xmark text-xl"></i></button>
+                    <button onclick="closeCart()" class="text-white hover:text-gray-200"><i class="fa-solid fa-xmark text-xl"></i></button>
                 </div>
                 
-                <div id="cartItemsContainer" class="flex-1 overflow-y-auto p-4 space-y-3">
-                    <!-- Cart items populated here -->
+                <div id="cartItemsContainer" class="flex-1 overflow-y-auto p-4 space-y-4">
+                    <!-- Cart items loaded here -->
                 </div>
 
                 <div class="border-t border-gray-200 p-4 bg-gray-50 space-y-3">
                     <div class="flex justify-between text-sm">
                         <span class="text-gray-600">Subtotal:</span>
-                        <span id="cartSubtotal" class="font-bold">KSh 0</span>
+                        <span id="cartSubtotal" class="font-bold">KES 0</span>
                     </div>
-                    <div class="flex justify-between text-sm bg-amber-50 p-2.5 rounded border border-amber-200 text-amber-900">
+                    <div class="flex justify-between text-sm bg-emerald-50 p-2 rounded border border-emerald-200 text-emerald-800">
                         <div>
                             <p class="font-bold">30% Upfront Deposit (Pay Now):</p>
-                            <p class="text-xs">70% balance payable upon safe delivery</p>
+                            <p class="text-xs">Balance 70% paid upon safe delivery</p>
                         </div>
-                        <span id="depositAmount" class="font-black text-base">KSh 0</span>
+                        <span id="depositAmount" class="font-extrabold text-base">KES 0</span>
                     </div>
 
-                    <div class="space-y-2 pt-1">
-                        <input type="text" id="buyerName" placeholder="Full Name" class="w-full p-2.5 border rounded text-sm bg-white">
-                        <input type="email" id="buyerEmail" placeholder="Email Address (required for Paystack)" class="w-full p-2.5 border rounded text-sm bg-white">
-                        <input type="text" id="buyerPhone" placeholder="Mobile Number (e.g., 254712345678)" class="w-full p-2.5 border rounded text-sm bg-white">
-                        <input type="text" id="buyerAddress" placeholder="Delivery Town / Location" class="w-full p-2.5 border rounded text-sm bg-white">
+                    <div class="space-y-2 pt-2">
+                        <input type="text" id="buyerName" placeholder="Full Name" class="w-full p-2 border rounded text-sm bg-white">
+                        <input type="email" id="buyerEmail" placeholder="Email Address (required for Paystack)" class="w-full p-2 border rounded text-sm bg-white">
+                        <input type="text" id="buyerPhone" placeholder="Mobile Number (e.g., 254712345678)" class="w-full p-2 border rounded text-sm bg-white">
+                        <input type="text" id="buyerAddress" placeholder="Delivery Location / Town" class="w-full p-2 border rounded text-sm bg-white">
                     </div>
 
-                    <button onclick="initiatePaystackCheckout()" class="w-full bg-red-600 hover:bg-red-700 text-white font-black py-3 rounded-lg shadow transition uppercase tracking-wider text-sm">
+                    <button onclick="initiatePaystackCheckout()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded shadow transition">
                         Pay 30% Deposit via Paystack
                     </button>
                 </div>
@@ -139,65 +105,43 @@
     </div>
 
     <!-- Admin Dashboard Modal -->
-    <div id="adminModal" class="fixed inset-0 z-50 overflow-y-auto hidden bg-black bg-opacity-60 flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl max-w-2xl w-full p-6 space-y-4 shadow-2xl">
+    <div id="adminModal" class="fixed inset-0 z-50 overflow-y-auto hidden bg-black bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg max-w-2xl w-full p-6 space-y-4">
             <div class="flex justify-between items-center border-b pb-3">
-                <h2 class="text-lg font-bold text-gray-900"><i class="fa-solid fa-lock mr-2 text-red-600"></i> KiliShop Admin Orders</h2>
+                <h2 class="text-lg font-bold text-gray-900"><i class="fa-solid fa-lock mr-2 text-emerald-700"></i> KiliShop Admin Dashboard</h2>
                 <button onclick="closeAdminModal()" class="text-gray-500 hover:text-gray-700"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <div>
-                <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Customer Orders Recorded:</h3>
+                <h3 class="text-sm font-semibold text-gray-600 mb-2">Customer Orders Received:</h3>
                 <div id="adminOrdersList" class="space-y-3 max-h-96 overflow-y-auto">
                     <!-- Orders populate here -->
                 </div>
             </div>
             <div class="flex justify-end pt-3 border-t">
-                <button onclick="closeAdminModal()" class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded text-sm font-semibold">Close</button>
+                <button onclick="closeAdminModal()" class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded text-sm">Close</button>
             </div>
         </div>
     </div>
 
-    <!-- Bottom Navigation Bar (App Shell style) -->
-    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around py-2 z-30 shadow-lg md:hidden">
-        <button onclick="filterCategory('All')" class="flex flex-col items-center text-red-600">
-            <i class="fa-solid fa-house text-lg"></i>
-            <span class="text-[10px] font-bold mt-0.5">Home</span>
-        </button>
-        <button onclick="openCart()" class="flex flex-col items-center text-gray-600 hover:text-red-600">
-            <i class="fa-solid fa-cart-shopping text-lg"></i>
-            <span class="text-[10px] font-bold mt-0.5">Cart</span>
-        </button>
-        <button onclick="openAdminModal()" class="flex flex-col items-center text-gray-600 hover:text-red-600">
-            <i class="fa-solid fa-user text-lg"></i>
-            <span class="text-[10px] font-bold mt-0.5">Account</span>
-        </button>
-    </div>
-
-    <!-- Application Script -->
+    <!-- Application JavaScript -->
     <script>
         // Live Paystack Public Key
         const PAYSTACK_PUBLIC_KEY = 'pk_live_96685dc1a36bc585d08a7b5fd4a4891d8bce14cb';
 
-        // Massive Product Database modeled after Kilimall / Jumia
+        // Verified Product Database with accurate matching descriptions & images
         const products = [
-            { id: 1, name: "Samsung Galaxy Smartphone 5G", category: "Phones & Accs", price: 19899, image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500" },
-            { id: 2, name: "Home Audio Subwoofer System", category: "TV & Audio", price: 3959, image: "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=500" },
-            { id: 3, name: "Men's Premium Black Sneakers", category: "Men Fashion", price: 1199, image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500" },
-            { id: 4, name: "Commercial Electric Blender & Grinder", category: "Appliances", price: 1199, image: "https://images.unsplash.com/photo-1570222094114-d074f7e1e6e0?w=500" },
-            { id: 5, name: "Non-Stick Stainless Cookware Set", category: "Home Sale", price: 5999, image: "https://images.unsplash.com/photo-1584990347426-c585c6489453?w=500" },
-            { id: 6, name: "Women's Designer Leather Biker Jacket", category: "Women Fashion", price: 1614, image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500" },
-            { id: 7, name: "Stainless Steel Electric Kettle 2L", category: "Appliances", price: 468, image: "https://images.unsplash.com/photo-1594897030264-ab7d49efc873?w=500" },
-            { id: 8, name: "Smart Watch Ultra Series 8", category: "Phones & Accs", price: 2899, image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500" },
-            { id: 9, name: "Blue Digital Electric Kettle", category: "Appliances", price: 999, image: "https://images.unsplash.com/photo-1563227812-0ea4c22e6cc8?w=500" },
-            { id: 10, name: "Wireless Bluetooth Bass Earbuds", category: "TV & Audio", price: 1599, image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500" },
-            { id: 11, name: "HP Core i5 14-inch Laptop 8GB RAM 256GB SSD", category: "Laptops", price: 34500, image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500" },
-            { id: 12, name: "Smart Android LED TV 43-inch Frameless", category: "TV & Audio", price: 22999, image: "https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=500" },
-            { id: 13, name: "Men's Formal Business Oxford Shoes", category: "Men Fashion", price: 2499, image: "https://images.unsplash.com/photo-1533867617858-e7d97e0afd8b?w=500" },
-            { id: 14, name: "Women Casual Summer Floral Dress", category: "Women Fashion", price: 1450, image: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=500" },
-            { id: 15, name: "Deep Tissue Muscle Massage Gun", category: "Beauty", price: 2850, image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=500" },
-            { id: 16, name: "Air Fryer Digital 5.5L Family Size", category: "Home Sale", price: 7800, image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=500" },
-            { id: 17, name: "Fast Power Bank 20,000mAh LED Display", category: "Phones & Accs", price: 1850, image: "https://images.unsplash.com/photo-1609592424104-97d4c4d16277?w=500" },
-            { id: 18, name: "Ionic Hair Dryer & Blowout Styler", category: "Beauty", price: 1950, image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500" }
+            { id: 1, name: "Smart Watch Ultra Series 8", category: "Electronics", price: 3500, image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500" },
+            { id: 2, name: "Wireless Bluetooth Earbuds Pro", category: "Electronics", price: 1800, image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500" },
+            { id: 3, name: "Men's Casual Running Sneakers", category: "Fashion", price: 2800, image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500" },
+            { id: 4, name: "Non-Stick 7-Piece Cookware Set", category: "Home & Kitchen", price: 6500, image: "https://images.unsplash.com/photo-1584990347426-c585c6489453?w=500" },
+            { id: 5, name: "Android 4G Smartphone 6.5\"", category: "Phones & Tablets", price: 12500, image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500" },
+            { id: 6, name: "Ionic Facial Steamer & Cleanser", category: "Beauty & Health", price: 2400, image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500" },
+            { id: 7, name: "Smart Android LED TV 43-inch", category: "Electronics", price: 22999, image: "https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=500" },
+            { id: 8, name: "HP Core i5 14-inch Laptop", category: "Phones & Tablets", price: 34500, image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500" },
+            { id: 9, name: "Women's Designer Leather Handbag", category: "Fashion", price: 2100, image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=500" },
+            { id: 10, name: "Stainless Steel Electric Kettle 2L", category: "Home & Kitchen", price: 1450, image: "https://images.unsplash.com/photo-1594897030264-ab7d49efc873?w=500" },
+            { id: 11, name: "Deep Tissue Muscle Massage Gun", category: "Beauty & Health", price: 2850, image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=500" },
+            { id: 12, name: "Bluetooth Home Theater Subwoofer", category: "Electronics", price: 4999, image: "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=500" }
         ];
 
         let cart = [];
@@ -207,25 +151,21 @@
             const grid = document.getElementById('productGrid');
             document.getElementById('productCount').innerText = `Showing ${itemsToRender.length} items`;
             
-            if (itemsToRender.length === 0) {
-                grid.innerHTML = `<p class="col-span-full text-center text-gray-500 py-8 text-sm">No products found in this category.</p>`;
-                return;
-            }
             grid.innerHTML = itemsToRender.map(p => `
-                <div class="bg-white rounded-lg border border-gray-100 overflow-hidden flex flex-col shadow-sm">
-                    <div class="h-40 overflow-hidden bg-gray-50 relative">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden flex flex-col">
+                    <div class="h-48 overflow-hidden bg-gray-100 relative">
                         <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover hover:scale-105 transition duration-300">
                     </div>
-                    <div class="p-2.5 flex-1 flex flex-col justify-between">
+                    <div class="p-3 flex-1 flex flex-col justify-between">
                         <div>
-                            <span class="text-[10px] text-red-600 font-bold uppercase">${p.category}</span>
-                            <h3 class="text-xs font-bold text-gray-800 line-clamp-2 mt-0.5">${p.name}</h3>
-                            <p class="text-sm font-black text-red-600 mt-1">KSh ${p.price.toLocaleString()}</p>
+                            <span class="text-xs text-emerald-600 font-semibold uppercase tracking-wider">${p.category}</span>
+                            <h3 class="text-sm font-bold text-gray-800 line-clamp-1 mt-0.5">${p.name}</h3>
+                            <p class="text-base font-extrabold text-emerald-700 mt-1">KES ${p.price.toLocaleString()}</p>
                         </div>
-                        <div class="mt-2 pt-2 border-t border-gray-100 flex items-center justify-between">
-                            <span class="text-[10px] text-gray-500">Dep: KSh ${Math.round(p.price * 0.3).toLocaleString()}</span>
-                            <button onclick="addToCart(${p.id})" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-2.5 py-1 rounded transition">
-                                <i class="fa-solid fa-cart-plus"></i> Add
+                        <div class="mt-3 pt-2 border-t border-gray-100 flex items-center justify-between">
+                            <span class="text-xs text-gray-500">Deposit: KES ${Math.round(p.price * 0.3).toLocaleString()}</span>
+                            <button onclick="addToCart(${p.id})" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-1.5 rounded transition">
+                                <i class="fa-solid fa-plus mr-1"></i> Add
                             </button>
                         </div>
                     </div>
@@ -234,7 +174,7 @@
         }
 
         function filterCategory(cat) {
-            document.getElementById('categoryTitle').innerText = cat === 'All' ? '🔥 Flash Sale & All Products' : cat;
+            document.getElementById('categoryTitle').innerText = cat === 'All' ? 'Trending Products' : cat;
             if (cat === 'All') {
                 renderProducts(products);
             } else {
@@ -270,9 +210,9 @@
             badge.innerText = totalItems;
 
             if (cart.length === 0) {
-                container.innerHTML = `<p class="text-gray-500 text-center py-8 text-sm">Your shopping cart is empty.</p>`;
-                subtotalEl.innerText = 'KSh 0';
-                depositEl.innerText = 'KSh 0';
+                container.innerHTML = `<p class="text-gray-500 text-center py-8 text-sm">Your cart is empty.</p>`;
+                subtotalEl.innerText = 'KES 0';
+                depositEl.innerText = 'KES 0';
                 return;
             }
 
@@ -280,23 +220,23 @@
             container.innerHTML = cart.map(item => {
                 subtotal += item.price * item.qty;
                 return `
-                    <div class="flex items-center justify-between bg-gray-50 p-2.5 rounded border">
-                        <div class="flex-1 pr-2">
-                            <h4 class="text-xs font-bold text-gray-800 line-clamp-1">${item.name}</h4>
-                            <p class="text-xs text-gray-500">KSh ${item.price.toLocaleString()} x ${item.qty}</p>
+                    <div class="flex items-center justify-between bg-gray-50 p-2 rounded border">
+                        <div class="flex-1">
+                            <h4 class="text-sm font-bold text-gray-800">${item.name}</h4>
+                            <p class="text-xs text-gray-500">KES ${item.price.toLocaleString()} x ${item.qty}</p>
                         </div>
                         <div class="flex items-center space-x-2">
                             <button onclick="changeQty(${item.id}, -1)" class="w-6 h-6 bg-gray-200 rounded text-xs font-bold">-</button>
-                            <span class="text-xs font-bold">${item.qty}</span>
+                            <span class="text-sm font-semibold">${item.qty}</span>
                             <button onclick="changeQty(${item.id}, 1)" class="w-6 h-6 bg-gray-200 rounded text-xs font-bold">+</button>
                         </div>
                     </div>
                 `;
             }).join('');
 
-            subtotalEl.innerText = `KSh ${subtotal.toLocaleString()}`;
+            subtotalEl.innerText = `KES ${subtotal.toLocaleString()}`;
             const deposit = Math.round(subtotal * 0.3);
-            depositEl.innerText = `KSh ${deposit.toLocaleString()}`;
+            depositEl.innerText = `KES ${deposit.toLocaleString()}`;
         }
 
         function changeQty(id, delta) {
@@ -316,17 +256,17 @@
         function openAdminModal() {
             const list = document.getElementById('adminOrdersList');
             if (orders.length === 0) {
-                list.innerHTML = `<p class="text-xs text-gray-500">No customer orders recorded yet.</p>`;
+                list.innerHTML = `<p class="text-sm text-gray-500">No orders recorded yet.</p>`;
             } else {
                 list.innerHTML = orders.map(o => `
-                    <div class="bg-gray-50 p-3 rounded border text-xs space-y-1">
-                        <div class="flex justify-between font-bold text-gray-900">
-                            <span>Ref: ${o.reference}</span>
-                            <span class="text-red-600">Paid Deposit: KSh ${o.depositAmount.toLocaleString()}</span>
+                    <div class="bg-gray-50 p-3 rounded border text-sm space-y-1">
+                        <div class="flex justify-between font-bold text-gray-800">
+                            <span>Order #${o.reference}</span>
+                            <span class="text-emerald-600">Paid Deposit: KES ${o.depositAmount.toLocaleString()}</span>
                         </div>
-                        <p class="text-gray-600"><strong>Customer:</strong> ${o.name} (${o.email} / ${o.phone})</p>
-                        <p class="text-gray-600"><strong>Location:</strong> ${o.address}</p>
-                        <p class="text-gray-500">70% Balance Due on Delivery: KSh ${o.balanceDue.toLocaleString()}</p>
+                        <p class="text-xs text-gray-600"><strong class="text-gray-700">Customer:</strong> ${o.name} (${o.email} / ${o.phone})</p>
+                        <p class="text-xs text-gray-600"><strong class="text-gray-700">Location:</strong> ${o.address}</p>
+                        <p class="text-xs text-gray-500">Balance due on delivery (70%): KES ${o.balanceDue.toLocaleString()}</p>
                     </div>
                 `).join('');
             }
@@ -341,7 +281,7 @@
             const address = document.getElementById('buyerAddress').value.trim();
 
             if (!name || !email || !phone || !address) {
-                alert('Please provide your Name, Email Address, Mobile Number, and Delivery Town.');
+                alert('Please fill in your name, email address, mobile number, and delivery location.');
                 return;
             }
 
@@ -358,7 +298,7 @@
             let handler = PaystackPop.setup({
                 key: PAYSTACK_PUBLIC_KEY,
                 email: email,
-                amount: depositAmount * 100, // Paystack minor units
+                amount: depositAmount * 100, // Paystack expects amount in minor units (cents / kobo)
                 currency: 'KES',
                 ref: reference,
                 metadata: {
@@ -366,12 +306,13 @@
                         { display_name: "Customer Name", variable_name: "customer_name", value: name },
                         { display_name: "Phone Number", variable_name: "phone_number", value: phone },
                         { display_name: "Delivery Address", variable_name: "delivery_address", value: address },
-                        { display_name: "Workflow", variable_name: "workflow", value: "30% Deposit & 70% Balance on Delivery" }
+                        { display_name: "Order Type", variable_name: "order_type", value: "30% Deposit (70% Balance on Delivery)" }
                     ]
                 },
                 callback: function(response) {
-                    alert('Deposit paid successfully! Reference: ' + response.reference);
+                    alert('Deposit payment successful! Reference: ' + response.reference);
                     
+                    // Save order in admin list
                     orders.push({
                         reference: response.reference,
                         name: name,
@@ -386,19 +327,20 @@
                     });
                     localStorage.setItem('kilishop_orders', JSON.stringify(orders));
 
+                    // Reset cart
                     cart = [];
                     updateCartUI();
                     closeCart();
                 },
                 onClose: function() {
-                    alert('Transaction cancelled.');
+                    alert('Transaction was not completed.');
                 }
             });
 
             handler.openIframe();
         }
 
-        // Initial load
+        // Initial render on load
         renderProducts(products);
     </script>
 </body>
