@@ -2,205 +2,793 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kili-Mall East Africa</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>KiliShop East Africa | Online Shopping Mall</title>
+  <!-- Paystack Inline Checkout SDK -->
   <script src="https://js.paystack.co/v1/inline.js"></script>
-</head>
-<body class="bg-gray-100 text-gray-900 font-sans pb-28">
+  <style>
+    :root {
+      --primary: #ff6600;
+      --primary-dark: #e05500;
+      --secondary: #1e293b;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --success: #16a34a;
+      --danger: #dc2626;
+      --warning: #f59e0b;
+    }
 
-  <!-- TOP HEADER -->
-  <header class="bg-black text-white sticky top-0 z-40 p-3 flex items-center justify-between">
-    <h1 class="text-sm font-black tracking-wider text-orange-500">KILI-MALL EAST AFRICA</h1>
-    <select id="currencySelector" onchange="changeCurrency(this.value)" class="bg-gray-900 text-orange-400 text-xs font-bold px-2 py-1 rounded border border-gray-700">
-      <option value="KSh">KES</option>
-      <option value="USD">USD</option>
-      <option value="UGX">UGX</option>
-      <option value="TZS">TZS</option>
-    </select>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding-bottom: 72px; }
+
+    /* Top Header */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: linear-gradient(135deg, var(--primary), #ff8533);
+      color: #fff; padding: 10px 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+    .header-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+    .brand { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.5px; display: flex; align-items: center; gap: 6px; }
+    .brand span { background: #fff; color: var(--primary); padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: 900; }
+    .header-controls { display: flex; align-items: center; gap: 6px; }
+    select.currency-select {
+      background: rgba(255,255,255,0.2); color: #fff; border: 1px solid rgba(255,255,255,0.4);
+      padding: 4px 6px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; outline: none;
+    }
+    select.currency-select option { color: #000; }
+    .icon-btn {
+      background: rgba(255,255,255,0.2); border: none; color: #fff;
+      padding: 6px 10px; border-radius: 6px; font-size: 0.82rem; font-weight: 600; cursor: pointer; position: relative;
+    }
+    .badge {
+      position: absolute; top: -5px; right: -5px; background: #0f172a; color: #fff;
+      font-size: 0.68rem; font-weight: 800; padding: 1px 5px; border-radius: 99px;
+    }
+    .search-bar { display: flex; gap: 6px; }
+    .search-bar input {
+      flex: 1; padding: 8px 12px; border: none; border-radius: 8px; font-size: 0.9rem; outline: none;
+    }
+    .search-bar button {
+      background: var(--secondary); color: #fff; border: none; padding: 0 14px; border-radius: 8px; font-weight: 700; cursor: pointer;
+    }
+
+    /* Promo Banner */
+    .promo-strip {
+      background: #0f172a; color: #f8fafc; text-align: center; font-size: 0.78rem; padding: 6px 10px; font-weight: 600;
+    }
+    .promo-strip b { color: #fbbf24; }
+
+    /* Horizontal Department Pills */
+    .dept-nav {
+      display: flex; overflow-x: auto; gap: 8px; padding: 10px 12px;
+      background: #fff; border-bottom: 1px solid var(--border); scrollbar-width: none;
+    }
+    .dept-nav::-webkit-scrollbar { display: none; }
+    .dept-pill {
+      white-space: nowrap; padding: 6px 12px; border-radius: 99px; font-size: 0.8rem; font-weight: 600;
+      background: var(--bg); color: var(--text); border: 1px solid var(--border); cursor: pointer;
+    }
+    .dept-pill.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    /* Department Sections */
+    .container { max-width: 1200px; margin: 0 auto; padding: 10px; }
+    .dept-section { margin-bottom: 22px; }
+    .dept-header {
+      display: flex; justify-content: space-between; align-items: center;
+      background: #fff; padding: 10px 12px; border-radius: 8px 8px 0 0; border-bottom: 2px solid var(--primary);
+    }
+    .dept-header h2 { font-size: 1rem; font-weight: 800; color: var(--secondary); }
+    .dept-header span { font-size: 0.78rem; color: var(--primary); font-weight: 700; cursor: pointer; }
+
+    .product-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; padding-top: 8px;
+    }
+    @media (min-width: 640px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 960px) { .product-grid { grid-template-columns: repeat(5, 1fr); } }
+
+    .product-card {
+      background: var(--card); border-radius: 8px; overflow: hidden; border: 1px solid var(--border);
+      display: flex; flex-direction: column; justify-content: space-between; position: relative;
+    }
+    .discount-tag {
+      position: absolute; top: 6px; left: 6px; background: var(--danger); color: #fff;
+      font-size: 0.7rem; font-weight: 800; padding: 2px 6px; border-radius: 4px;
+    }
+    .product-img {
+      width: 100%; height: 145px; object-fit: cover; background: #e2e8f0; cursor: pointer;
+    }
+    .product-body { padding: 8px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .product-title {
+      font-size: 0.82rem; font-weight: 600; line-height: 1.25; margin-bottom: 4px;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .price-box { margin: 4px 0; }
+    .price-now { font-size: 0.95rem; font-weight: 800; color: var(--primary); }
+    .price-old { font-size: 0.74rem; color: var(--muted); text-decoration: line-through; margin-left: 4px; }
+    .deposit-hint { font-size: 0.7rem; color: var(--success); font-weight: 700; margin-bottom: 6px; }
+    .card-actions { display: flex; gap: 4px; }
+    .btn-add {
+      flex: 1; background: var(--primary); color: #fff; border: none; padding: 7px;
+      border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer;
+    }
+    .btn-add:active { background: var(--primary-dark); }
+
+    /* Modals */
+    .modal-backdrop {
+      display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.65);
+      z-index: 200; align-items: flex-end; justify-content: center;
+    }
+    .modal-backdrop.open { display: flex; }
+    @media (min-width: 640px) { .modal-backdrop { align-items: center; padding: 16px; } }
+    .modal {
+      background: #fff; width: 100%; max-width: 540px; max-height: 90vh; overflow-y: auto;
+      border-radius: 16px 16px 0 0; padding: 16px; animation: slideUp 0.2s ease;
+    }
+    @media (min-width: 640px) { .modal { border-radius: 12px; } }
+    @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 12px; }
+    .modal-header h3 { font-size: 1.05rem; font-weight: 800; }
+    .close-btn { background: var(--bg); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: 800; cursor: pointer; }
+
+    /* Variant Selectors */
+    .variant-group { margin: 10px 0; }
+    .variant-group label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 6px; color: var(--secondary); }
+    .variant-options { display: flex; flex-wrap: wrap; gap: 6px; }
+    .var-chip {
+      padding: 6px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.8rem; cursor: pointer; background: #fff;
+    }
+    .var-chip.selected { border-color: var(--primary); background: #fff7ed; color: var(--primary); font-weight: 700; }
+
+    /* Forms & Checkout */
+    .form-group { margin-bottom: 10px; }
+    .form-group label { display: block; font-size: 0.78rem; font-weight: 700; margin-bottom: 4px; color: var(--secondary); }
+    .form-group input, .form-group select {
+      width: 100%; padding: 9px 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.88rem;
+    }
+    .summary-box {
+      background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 10px; margin: 10px 0; font-size: 0.85rem;
+    }
+    .summary-row { display: flex; justify-content: space-between; margin-bottom: 5px; }
+    .summary-row.highlight { font-weight: 800; color: var(--primary); font-size: 0.98rem; border-top: 1px dashed var(--border); padding-top: 6px; margin-top: 6px; }
+    .btn-primary {
+      width: 100%; background: var(--primary); color: #fff; border: none; padding: 12px;
+      border-radius: 8px; font-size: 0.95rem; font-weight: 800; cursor: pointer; margin-top: 6px;
+    }
+    .btn-secondary {
+      width: 100%; background: var(--secondary); color: #fff; border: none; padding: 10px;
+      border-radius: 8px; font-size: 0.88rem; font-weight: 700; cursor: pointer; margin-top: 6px;
+    }
+    .btn-danger {
+      background: var(--danger); color: #fff; border: none; padding: 6px 10px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer;
+    }
+
+    /* Cart & Order Items */
+    .cart-item { display: flex; gap: 10px; align-items: center; border-bottom: 1px solid var(--border); padding: 8px 0; }
+    .cart-item img { width: 54px; height: 54px; border-radius: 6px; object-fit: cover; }
+    .cart-info { flex: 1; }
+    .cart-info h4 { font-size: 0.85rem; }
+    .cart-info p { font-size: 0.75rem; color: var(--muted); }
+    .qty-controls { display: flex; align-items: center; gap: 6px; }
+    .qty-controls button { width: 24px; height: 24px; border: 1px solid var(--border); background: #fff; border-radius: 4px; font-weight: 800; }
+
+    .order-card { border: 1px solid var(--border); border-radius: 8px; padding: 10px; margin-bottom: 10px; background: #fff; }
+    .status-pill {
+      display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 0.72rem; font-weight: 800;
+      background: #dcfce7; color: var(--success);
+    }
+    .status-pill.cancelled { background: #fee2e2; color: var(--danger); }
+
+    /* Bottom Fixed Navigation */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid var(--border);
+      display: flex; justify-content: space-around; padding: 8px 0; z-index: 150;
+    }
+    .nav-item {
+      background: none; border: none; display: flex; flex-direction: column; align-items: center;
+      font-size: 0.72rem; font-weight: 700; color: var(--muted); cursor: pointer; gap: 2px;
+    }
+    .nav-item.active { color: var(--primary); }
+    .nav-icon { font-size: 1.15rem; }
+
+    /* Floating WhatsApp Support */
+    .wa-support {
+      position: fixed; right: 14px; bottom: 76px; background: #25d366; color: #fff;
+      padding: 8px 12px; border-radius: 99px; font-size: 0.78rem; font-weight: 800;
+      text-decoration: none; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 140;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="header-top">
+      <div class="brand">KiliShop <span>EA</span></div>
+      <div class="header-controls">
+        <select id="currencySelect" class="currency-select" onchange="changeCurrency(this.value)">
+          <option value="KES">KES (KSh)</option>
+          <option value="UGX">UGX (USh)</option>
+          <option value="TZS">TZS (TSh)</option>
+          <option value="USD">USD ($)</option>
+        </select>
+        <button class="icon-btn" onclick="openModal('cartModal')">
+          Cart <span id="cartCount" class="badge">0</span>
+        </button>
+      </div>
+    </div>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search 3,000+ phones, TVs, fashion, solar..." oninput="handleSearch()" />
+      <button onclick="handleSearch()">Search</button>
+    </div>
   </header>
 
-  <!-- PRODUCT GRID CONTAINER -->
-  <div id="productGrid" class="p-3 grid grid-cols-2 gap-2"></div>
+  <div class="promo-strip">
+    Pay only <b>30% Deposit</b> via M-Pesa / Airtel / Card &amp; <b>70% on Delivery</b> across East Africa!
+  </div>
 
-  <!-- BOTTOM NAVIGATION BAR -->
-  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 flex justify-around items-center py-2 shadow-lg">
-    <button onclick="switchTab('home')" class="flex flex-col items-center text-orange-600">
-      <span class="text-lg">🏠</span>
-      <span class="text-[10px] font-bold">Home</span>
-    </button>
-    <button onclick="openCart()" class="flex flex-col items-center text-gray-500 relative">
-      <span class="text-lg">🛒</span>
-      <span class="text-[10px] font-medium">Cart</span>
-      <span id="cartCount" class="absolute -top-1 right-2 bg-orange-600 text-white text-[9px] font-black px-1.5 rounded-full">0</span>
-    </button>
+  <!-- Horizontal Department Filter -->
+  <div id="deptNav" class="dept-nav"></div>
+
+  <!-- Main Catalog Container -->
+  <main id="catalogContainer" class="container"></main>
+
+  <!-- Floating WhatsApp Customer Support Only -->
+  <a class="wa-support" href="https://wa.me/254700000000?text=Hello%20KiliShop%20Support%2C%20I%20need%20help%20with%20my%20order." target="_blank">
+    Need Help? Support
+  </a>
+
+  <!-- Bottom Fixed Menu -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" onclick="scrollToTop()"><span class="nav-icon">🏠</span>Home</button>
+    <button class="nav-item" onclick="openModal('cartModal')"><span class="nav-icon">🛒</span>Cart</button>
+    <button class="nav-item" onclick="openModal('accountModal')"><span class="nav-icon">📦</span>Orders</button>
+    <button class="nav-item" onclick="openAdmin()"><span class="nav-icon">⚙️</span>Admin</button>
   </nav>
 
-  <!-- CART DRAWER -->
-  <div id="cartDrawer" class="hidden fixed inset-0 z-50 flex justify-end bg-black bg-opacity-50">
-    <div class="w-full max-w-sm bg-white h-full p-4 flex flex-col">
-      <div class="flex justify-between items-center border-b pb-2 mb-3">
-        <h2 class="font-black text-sm">Shopping Cart</h2>
-        <button onclick="closeCart()" class="font-bold text-lg">✕</button>
+  <!-- Product Variant Modal -->
+  <div id="productModal" class="modal-backdrop">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="pmTitle">Product Details</h3>
+        <button class="close-btn" onclick="closeModal('productModal')">✕</button>
       </div>
-      <div id="cartBody" class="flex-1 overflow-y-auto space-y-2 text-xs"></div>
-      <button onclick="paystackCheckout()" class="w-full mt-3 bg-orange-600 text-white font-bold py-3 rounded-xl text-xs shadow">
-        Pay 30% Deposit via Paystack
-      </button>
+      <img id="pmImg" src="" alt="" style="width:100%; height:200px; object-fit:cover; border-radius:8px; margin-bottom:10px;" />
+      <div class="price-box">
+        <span id="pmPrice" class="price-now"></span>
+        <span id="pmOldPrice" class="price-old"></span>
+      </div>
+      <div id="pmDeposit" class="deposit-hint"></div>
+      <div class="variant-group">
+        <label>Select Color:</label>
+        <div id="pmColors" class="variant-options"></div>
+      </div>
+      <div class="variant-group">
+        <label>Select Type / Edition:</label>
+        <div id="pmTypes" class="variant-options"></div>
+      </div>
+      <button class="btn-primary" onclick="confirmAddToCart()">Add to Cart</button>
+    </div>
+  </div>
+
+  <!-- Cart & Paystack Checkout Modal -->
+  <div id="cartModal" class="modal-backdrop">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Your Cart &amp; 30% Deposit Checkout</h3>
+        <button class="close-btn" onclick="closeModal('cartModal')">✕</button>
+      </div>
+      <div id="cartItemsList"></div>
+      <div id="checkoutSection" style="display:none;">
+        <div class="summary-box">
+          <div class="summary-row"><span>Order Total:</span><b id="sumTotal"></b></div>
+          <div class="summary-row"><span>Balance on Delivery (70%):</span><span id="sumBalance"></span></div>
+          <div class="summary-row highlight"><span>Pay Now (30% Deposit):</span><span id="sumDeposit"></span></div>
+        </div>
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="custName" placeholder="e.g. Brian Kamau" />
+        </div>
+        <div class="form-group">
+          <label>Email Address (Required for Paystack Receipt)</label>
+          <input type="email" id="custEmail" placeholder="e.g. brian@example.com" />
+        </div>
+        <div class="form-group">
+          <label>Mobile Number (M-Pesa / Airtel Money)</label>
+          <input type="tel" id="custPhone" placeholder="e.g. 0712345678" />
+        </div>
+        <div class="form-group">
+          <label>Delivery County / City &amp; Pick-up Point</label>
+          <input type="text" id="custLocation" placeholder="e.g. Nairobi CBD / Kampala / Dar es Salaam" />
+        </div>
+        <button class="btn-primary" onclick="payWithPaystack()">
+          Pay 30% Deposit Now (M-Pesa / Airtel / Card)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Customer Account & Order Tracking Modal -->
+  <div id="accountModal" class="modal-backdrop">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>My Account &amp; Orders</h3>
+        <button class="close-btn" onclick="closeModal('accountModal')">✕</button>
+      </div>
+      <div id="ordersList"></div>
+    </div>
+  </div>
+
+  <!-- Admin Dashboard Modal -->
+  <div id="adminModal" class="modal-backdrop">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>KiliShop Admin Dashboard</h3>
+        <button class="close-btn" onclick="closeModal('adminModal')">✕</button>
+      </div>
+      <div class="summary-box">
+        <div class="summary-row"><span>Active Paystack Key:</span><b>pk_live_9668...14cb</b></div>
+        <div class="summary-row"><span>Total Catalog Products:</span><b id="adminTotalProducts">3,000</b></div>
+        <div class="summary-row"><span>Total Customer Orders:</span><b id="adminTotalOrders">0</b></div>
+        <div class="summary-row highlight"><span>30% Deposits Collected:</span><span id="adminRevenue">KES 0</span></div>
+      </div>
+      <h4 style="margin:10px 0 6px; font-size:0.9rem;">Add Custom Product to Top of Store</h4>
+      <div class="form-group"><input type="text" id="admTitle" placeholder="Product Name" /></div>
+      <div class="form-group"><input type="number" id="admPrice" placeholder="Discounted Price in KES" /></div>
+      <div class="form-group">
+        <select id="admDept"></select>
+      </div>
+      <button class="btn-secondary" onclick="adminAddProduct()">+ Publish Product</button>
+      <h4 style="margin:14px 0 6px; font-size:0.9rem;">Recent Store Orders</h4>
+      <div id="adminOrdersList"></div>
     </div>
   </div>
 
   <script>
-    const PAYSTACK_PUBLIC_KEY = 'pk_live_96685dc1a36bc585d08a7b5fd4a4891d8bce14cb';[span_0](start_span)[span_0](end_span)
-    let selectedCurrency = 'KSh';
-    let cart = [];
-    let pickedIds = [];
+    // ==========================================
+    // LIVE PAYSTACK PUBLIC KEY CONFIGURATION
+    // ==========================================
+    const PAYSTACK_PUBLIC_KEY = "pk_live_96685dc1a36bc585d08a7b5fd4a4891d8bce14cb";
 
-    // Catalog incorporating your uploaded image file + high-def backups
-    const catalog = [
-      {
-        id: 1,
-        name: 'Your Uploaded Store Product',
-        price: 1500,
-        originalPrice: 2500,
-        image: 'IMG-20261113-WA0060.jpg',
-        fallbackImage: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&q=80',
-        sizes: ['Standard', 'Large'],
-        colors: ['Default']
-      },
-      {
-        id: 2,
-        name: '2 in 1 Hot Comb Hair Straightener',
-        price: 699,
-        originalPrice: 1200,
-        image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&q=80',
-        fallbackImage: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&q=80',
-        sizes: ['Standard', 'XL Pro'],
-        colors: ['Gold', 'Black']
-      },
-      {
-        id: 3,
-        name: 'Vintage Hair Cutting Machine Clipper',
-        price: 298,
-        originalPrice: 550,
-        image: 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&q=80',
-        fallbackImage: 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&q=80',
-        sizes: ['Pro Standard'],
-        colors: ['Gold Dragon']
-      }
+    // Currency Rates relative to 1 KES
+    const CURRENCIES = {
+      KES: { symbol: "KES ", rate: 1, paystackCode: "KES" },
+      UGX: { symbol: "UGX ", rate: 28.5, paystackCode: "UGX" },
+      TZS: { symbol: "TZS ", rate: 20.2, paystackCode: "TZS" },
+      USD: { symbol: "$", rate: 0.0077, paystackCode: "USD" }
+    };
+    let currentCurrency = "KES";
+
+    // 10 Retail Departments with Real Photography & Variants
+    const DEPARTMENTS = [
+      { id: "phones", name: "Smartphones & Tablets", img: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&q=80", basePrice: 14500, items: ["Samsung Galaxy A15", "Infinix Hot 40 Pro", "Tecno Spark 20", "Redmi Note 13", "iPhone 13 Refurb", "itel S23+"] },
+      { id: "tvs", name: "TVs & Home Audio", img: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&q=80", basePrice: 22000, items: ["Vitron 43\" Smart Android TV", "Hisense 50\" 4K UHD", "TCL 32\" Frameless TV", "Sayona 3.1ch Subwoofer", "Sony Soundbar 300W", "LG 55\" WebOS TV"] },
+      { id: "appliances", name: "Kitchen & Home Appliances", img: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400&q=80", basePrice: 4800, items: ["Ramtons 2-Door Fridge", "Nunix 2L Electric Kettle", "Von 4-Burner Gas Cooker", "Bruhm Microwave 20L", "Heavy Duty Blender", "Steam Iron Box"] },
+      { id: "solar", name: "Solar & Power Backup", img: "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400&q=80", basePrice: 8500, items: ["300W Monocrystalline Panel", "100Ah Deep Cycle Battery", "1500W Hybrid Inverter", "Solar Floodlight 200W", "Portable Power Station", "MPPT Charge Controller"] },
+      { id: "computing", name: "Laptops & Accessories", img: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&q=80", basePrice: 32000, items: ["HP EliteBook 840 G6", "Lenovo ThinkPad T480", "Dell Latitude Core i7", "Epson EcoTank Printer", "Wireless Mouse & Keyboard", "1TB External SSD"] },
+      { id: "mens", name: "Men's Fashion & Sneakers", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80", basePrice: 2400, items: ["Air Max Sport Sneakers", "Slim Fit Khaki Trousers", "Official Oxford Leather Shoes", "Cotton Polo T-Shirt", "Executive Chronograph Watch", "Denim Jacket"] },
+      { id: "womens", name: "Women's Fashion & Bags", img: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=80", basePrice: 2100, items: ["3-Piece Leather Handbag Set", "Floral Maxi Dress", "Block Heel Sandals", "Gold Plated Jewelry Set", "Designer Sunglasses", "Ladies Trench Coat"] },
+      { id: "beauty", name: "Health, Beauty & Wigs", img: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=400&q=80", basePrice: 1800, items: ["Human Hair Lace Wig", "Vitamin C Face Serum", "CeraVe Hydrating Cleanser", "Arabian Oud Perfume", "Cordless Hair Clipper", "Shea Butter Body Lotion"] },
+      { id: "baby", name: "Baby, Kids & Toys", img: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&q=80", basePrice: 3200, items: ["Foldable Baby Stroller", "Electric Kids Ride-On Car", "3-in-1 Diaper Backpack", "Baby Walker with Music", "Soft Cotton Romper Set", "Educational Building Blocks"] },
+      { id: "auto", name: "Automotive & Motorbike", img: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=400&q=80", basePrice: 3900, items: ["Full Face Riding Helmet", "Car Dashcam HD 1080P", "Portable Tyre Inflator", "LED Headlight Bulbs Pair", "Car Vacuum Cleaner", "Heavy Duty Jump Starter"] }
     ];
 
-    function formatPrice(amount) {
-      if (selectedCurrency === 'USD') return '$' + (amount * 0.0077).toFixed(2);
-      return selectedCurrency + ' ' + amount.toLocaleString();
+    const COLORS = ["Midnight Black", "Titanium Silver", "Ocean Blue", "Ruby Red", "Champagne Gold"];
+    const TYPES = ["Standard Edition", "Pro Max Bundle", "2026 Upgraded Model"];
+
+    // Generate 3,000 Unique Catalog Items (300 per department)
+    let ALL_PRODUCTS = [];
+    function initCatalog() {
+      let idCounter = 1;
+      DEPARTMENTS.forEach((dept) => {
+        for (let i = 0; i < 300; i++) {
+          const baseName = dept.items[i % dept.items.length];
+          const discount = 18 + (i % 35);
+          const priceKES = Math.round((dept.basePrice + ((i % 15) * 450)) / 10) * 10;
+          const oldPriceKES = Math.round(priceKES / (1 - discount / 100));
+          ALL_PRODUCTS.push({
+            id: idCounter++,
+            deptId: dept.id,
+            deptName: dept.name,
+            title: `${baseName} — Series ${100 + i}`,
+            priceKES,
+            oldPriceKES,
+            discount,
+            img: dept.img
+          });
+        }
+      });
     }
 
-    function changeCurrency(curr) {
-      selectedCurrency = curr;
-      renderStore();
+    // State Management
+    let cart = JSON.parse(localStorage.getItem("kilishop_cart") || "[]");
+    let orders = JSON.parse(localStorage.getItem("kilishop_orders") || "[]");
+    let activeDeptFilter = "all";
+    let deptVisibleCounts = {};
+    DEPARTMENTS.forEach(d => deptVisibleCounts[d.id] = 6);
+
+    let selectedProduct = null;
+    let selectedColor = COLORS[0];
+    let selectedType = TYPES[0];
+
+    function formatMoney(kesAmount) {
+      const c = CURRENCIES[currentCurrency];
+      const converted = kesAmount * c.rate;
+      if (currentCurrency === "USD") return c.symbol + converted.toFixed(2);
+      return c.symbol + Math.round(converted).toLocaleString();
     }
 
-    function renderStore() {
-      const grid = document.getElementById('productGrid');
-      if (!grid) return;
+    function changeCurrency(val) {
+      currentCurrency = val;
+      renderCatalog();
+      renderCart();
+      renderOrders();
+    }
 
-      grid.innerHTML = catalog.map(p => {
-        const isPicked = pickedIds.includes(p.id);
-        const cardBg = isPicked ? 'bg-white border-gray-200' : 'bg-white border-amber-300 ring-1 ring-amber-200';
-        const btnText = isPicked ? '✓ PICKED (Add Again)' : 'Add to Cart';
-        const btnClass = isPicked ? 'bg-gray-800 text-white' : 'bg-orange-600 text-white';
+    function renderDeptNav() {
+      const nav = document.getElementById("deptNav");
+      const admSel = document.getElementById("admDept");
+      let html = `<button class="dept-pill ${activeDeptFilter === 'all' ? 'active' : ''}" onclick="filterDept('all')">All 10 Departments</button>`;
+      let optHtml = "";
+      DEPARTMENTS.forEach(d => {
+        html += `<button class="dept-pill ${activeDeptFilter === d.id ? 'active' : ''}" onclick="filterDept('${d.id}')">${d.name}</button>`;
+        optHtml += `<option value="${d.id}">${d.name}</option>`;
+      });
+      nav.innerHTML = html;
+      admSel.innerHTML = optHtml;
+    }
 
+    function filterDept(id) {
+      activeDeptFilter = id;
+      renderDeptNav();
+      renderCatalog();
+    }
+
+    function renderCatalog() {
+      const container = document.getElementById("catalogContainer");
+      const query = document.getElementById("searchInput").value.trim().toLowerCase();
+
+      if (query.length > 0) {
+        const matches = ALL_PRODUCTS.filter(p => p.title.toLowerCase().includes(query) || p.deptName.toLowerCase().includes(query)).slice(0, 40);
+        container.innerHTML = `
+          <div class="dept-section">
+            <div class="dept-header"><h2>Search Results (${matches.length} shown)</h2></div>
+            <div class="product-grid">${matches.map(productCardHTML).join("")}</div>
+          </div>`;
+        return;
+      }
+
+      const deptsToShow = activeDeptFilter === "all" ? DEPARTMENTS : DEPARTMENTS.filter(d => d.id === activeDeptFilter);
+      container.innerHTML = deptsToShow.map(dept => {
+        const deptItems = ALL_PRODUCTS.filter(p => p.deptId === dept.id);
+        const visible = deptItems.slice(0, deptVisibleCounts[dept.id]);
         return `
-          <div class="rounded-xl shadow-sm p-2 flex flex-col justify-between border ${cardBg}">
-            <div>
-              <div class="w-full h-36 bg-gray-100 rounded-lg overflow-hidden mb-2">
-                <img src="${p.image}" onerror="this.onerror=null; this.src='${p.fallbackImage}';" class="w-full h-full object-cover" />
-              </div>
-              <p class="text-xs font-black">${formatPrice(p.price)}</p>
-              <h3 class="text-[11px] font-semibold text-gray-800 line-clamp-2 mt-0.5">${p.name}</h3>
+          <section class="dept-section" id="sec-${dept.id}">
+            <div class="dept-header">
+              <h2>${dept.name} (${deptItems.length})</h2>
+              <span onclick="loadMoreDept('${dept.id}')">+ Show More</span>
             </div>
-            <div class="mt-2 space-y-1 pt-2 border-t text-[10px]">
-              <div class="flex items-center gap-1">
-                <span class="font-bold text-gray-500 w-8">Size:</span>
-                <select id="size-${p.id}" class="flex-1 p-0.5 border rounded bg-gray-50">
-                  ${p.sizes.map(s => `<option value="${s}">${s}</option>`).join('')}
-                </select>
+            <div class="product-grid">
+              ${visible.map(productCardHTML).join("")}
+            </div>
+          </section>
+        `;
+      }).join("");
+    }
+
+    function productCardHTML(p) {
+      const deposit = Math.round(p.priceKES * 0.30);
+      return `
+        <div class="product-card">
+          <span class="discount-tag">-${p.discount}%</span>
+          <img class="product-img" src="${p.img}" alt="${p.title}" loading="lazy" onclick="openVariantModal(${p.id})" />
+          <div class="product-body">
+            <div>
+              <div class="product-title">${p.title}</div>
+              <div class="price-box">
+                <span class="price-now">${formatMoney(p.priceKES)}</span>
+                <span class="price-old">${formatMoney(p.oldPriceKES)}</span>
               </div>
-              <div class="flex items-center gap-1">
-                <span class="font-bold text-gray-500 w-8">Qty:</span>
-                <input type="number" id="qty-${p.id}" value="1" min="1" max="10" class="flex-1 p-0.5 border rounded text-center font-bold bg-gray-50" />
-              </div>
-              <button onclick="addToCart(${p.id})" class="w-full mt-1 font-bold py-2 rounded-lg text-xs shadow ${btnClass}">
-                ${btnText}
-              </button>
+              <div class="deposit-hint">30% Deposit: ${formatMoney(deposit)}</div>
+            </div>
+            <div class="card-actions">
+              <button class="btn-add" onclick="openVariantModal(${p.id})">Select &amp; Buy</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function loadMoreDept(deptId) {
+      deptVisibleCounts[deptId] += 10;
+      renderCatalog();
+    }
+
+    function handleSearch() {
+      renderCatalog();
+    }
+
+    // Variant Modal
+    function openVariantModal(id) {
+      selectedProduct = ALL_PRODUCTS.find(p => p.id === id);
+      if (!selectedProduct) return;
+      selectedColor = COLORS[0];
+      selectedType = TYPES[0];
+
+      document.getElementById("pmTitle").textContent = selectedProduct.title;
+      document.getElementById("pmImg").src = selectedProduct.img;
+      document.getElementById("pmPrice").textContent = formatMoney(selectedProduct.priceKES);
+      document.getElementById("pmOldPrice").textContent = formatMoney(selectedProduct.oldPriceKES);
+      document.getElementById("pmDeposit").textContent = `Pay 30% Deposit Today (${formatMoney(Math.round(selectedProduct.priceKES * 0.30))}) & 70% on Delivery`;
+
+      renderVariantChips();
+      openModal("productModal");
+    }
+
+    function renderVariantChips() {
+      document.getElementById("pmColors").innerHTML = COLORS.map(c =>
+        `<span class="var-chip ${c === selectedColor ? 'selected' : ''}" onclick="selectColor('${c}')">${c}</span>`
+      ).join("");
+      document.getElementById("pmTypes").innerHTML = TYPES.map(t =>
+        `<span class="var-chip ${t === selectedType ? 'selected' : ''}" onclick="selectType('${t}')">${t}</span>`
+      ).join("");
+    }
+
+    function selectColor(c) { selectedColor = c; renderVariantChips(); }
+    function selectType(t) { selectedType = t; renderVariantChips(); }
+
+    function confirmAddToCart() {
+      if (!selectedProduct) return;
+      const existing = cart.find(item => item.id === selectedProduct.id && item.color === selectedColor && item.type === selectedType);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({
+          ...selectedProduct,
+          color: selectedColor,
+          type: selectedType,
+          qty: 1
+        });
+      }
+      saveCart();
+      closeModal("productModal");
+      openModal("cartModal");
+    }
+
+    function saveCart() {
+      localStorage.setItem("kilishop_cart", JSON.stringify(cart));
+      updateCartBadge();
+      renderCart();
+    }
+
+    function updateCartBadge() {
+      const totalQty = cart.reduce((acc, item) => acc + item.qty, 0);
+      document.getElementById("cartCount").textContent = totalQty;
+    }
+
+    function renderCart() {
+      const list = document.getElementById("cartItemsList");
+      const checkout = document.getElementById("checkoutSection");
+
+      if (cart.length === 0) {
+        list.innerHTML = `<p style="text-align:center; color:var(--muted); padding:20px 0;">Your KiliShop cart is empty.</p>`;
+        checkout.style.display = "none";
+        return;
+      }
+
+      checkout.style.display = "block";
+      let totalKES = 0;
+
+      list.innerHTML = cart.map((item, idx) => {
+        totalKES += item.priceKES * item.qty;
+        return `
+          <div class="cart-item">
+            <img src="${item.img}" alt="" />
+            <div class="cart-info">
+              <h4>${item.title}</h4>
+              <p>${item.color} • ${item.type}</p>
+              <b style="color:var(--primary); font-size:0.85rem;">${formatMoney(item.priceKES * item.qty)}</b>
+            </div>
+            <div class="qty-controls">
+              <button onclick="updateQty(${idx}, -1)">-</button>
+              <span>${item.qty}</span>
+              <button onclick="updateQty(${idx}, 1)">+</button>
             </div>
           </div>
         `;
-      }).join('');
+      }).join("");
+
+      const depositKES = Math.round(totalKES * 0.30);
+      const balanceKES = totalKES - depositKES;
+
+      document.getElementById("sumTotal").textContent = formatMoney(totalKES);
+      document.getElementById("sumDeposit").textContent = formatMoney(depositKES);
+      document.getElementById("sumBalance").textContent = formatMoney(balanceKES);
     }
 
-    function addToCart(id) {
-      const p = catalog.find(item => item.id === id);
-      const sizeElem = document.getElementById(`size-${id}`);
-      const qtyElem = document.getElementById(`qty-${id}`);
-      
-      const size = sizeElem ? sizeElem.value : p.sizes[0];
-      const qty = qtyElem ? (parseInt(qtyElem.value) || 1) : 1;
-
-      cart.push({ ...p, selectedSize: size, quantity: qty, totalPrice: p.price * qty });
-      if (!pickedIds.includes(id)) pickedIds.push(id);
-
-      document.getElementById('cartCount').innerText = cart.length;
-      renderStore();
-      openCart();
+    function updateQty(idx, delta) {
+      cart[idx].qty += delta;
+      if (cart[idx].qty <= 0) cart.splice(idx, 1);
+      saveCart();
     }
 
-    function openCart() {
-      document.getElementById('cartDrawer').classList.remove('hidden');
-      const body = document.getElementById('cartBody');
-      if (cart.length === 0) {
-        body.innerHTML = `<p class="text-center text-gray-500 mt-10">Cart is empty</p>`;
+    // ==========================================
+    // PAYSTACK LIVE PAYMENT INTEGRATION (30% DEPOSIT)
+    // ==========================================
+    function payWithPaystack() {
+      const name = document.getElementById("custName").value.trim();
+      const email = document.getElementById("custEmail").value.trim();
+      const phone = document.getElementById("custPhone").value.trim();
+      const location = document.getElementById("custLocation").value.trim();
+
+      if (!name || !email || !phone || !location) {
+        alert("Please enter your Name, Email, Phone Number, and Delivery Location.");
         return;
       }
-      body.innerHTML = cart.map((item, idx) => `
-        <div class="flex justify-between items-center bg-gray-50 p-2 rounded border">
-          <div>
-            <p class="font-bold">${item.name} (${item.selectedSize}) x${item.quantity}</p>
-            <p class="text-orange-600 font-black">${formatPrice(item.totalPrice)}</p>
-          </div>
-          <button onclick="cart.splice(${idx},1); openCart(); document.getElementById('cartCount').innerText=cart.length;" class="text-red-600 font-bold">Remove</button>
-        </div>
-      `).join('');
-    }
+      if (!email.includes("@")) {
+        alert("Please enter a valid email address for your Paystack receipt.");
+        return;
+      }
 
-    function closeCart() {
-      document.getElementById('cartDrawer').classList.add('hidden');
-    }
+      const totalKES = cart.reduce((acc, item) => acc + (item.priceKES * item.qty), 0);
+      const depositKES = Math.round(totalKES * 0.30);
+      const balanceKES = totalKES - depositKES;
 
-    function paystackCheckout() {
-      const total = cart.reduce((s, i) => s + i.totalPrice, 0);
-      const deposit = Math.round(total * 0.3);
+      // Convert deposit to active currency subunit (multiply by 100)
+      const currObj = CURRENCIES[currentCurrency];
+      const convertedDeposit = currentCurrency === "USD"
+        ? Number((depositKES * currObj.rate).toFixed(2))
+        : Math.round(depositKES * currObj.rate);
+      const amountInSubunits = Math.round(convertedDeposit * 100);
 
-      const handler = window.PaystackPop.setup({
-        key: PAYSTACK_PUBLIC_KEY,[span_1](start_span)[span_1](end_span)
-        email: 'customer@kili-mall.com',
-        amount: deposit * 100,
-        currency: 'KES',
-        ref: 'KILI-' + Math.floor(Math.random() * 1000000),
-        callback: function(res) {
-          alert('Deposit successful! Ref: ' + res.reference);
+      const txRef = "KILI-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
+
+      if (typeof PaystackPop === "undefined") {
+        alert("Paystack checkout script failed to load. Please check your internet connection and reload.");
+        return;
+      }
+
+      const handler = PaystackPop.setup({
+        key: PAYSTACK_PUBLIC_KEY,
+        email: email,
+        amount: amountInSubunits,
+        currency: currObj.paystackCode,
+        ref: txRef,
+        metadata: {
+          custom_fields: [
+            { display_name: "Customer Name", variable_name: "customer_name", value: name },
+            { display_name: "Mobile Number", variable_name: "mobile_number", value: phone },
+            { display_name: "Delivery Location", variable_name: "delivery_location", value: location },
+            { display_name: "Balance on Delivery (70%)", variable_name: "balance_due", value: formatMoney(balanceKES) }
+          ]
+        },
+        callback: function(response) {
+          // Payment verified on Paystack modal
+          const newOrder = {
+            id: response.reference,
+            date: new Date().toLocaleString(),
+            customer: name,
+            email: email,
+            phone: phone,
+            location: location,
+            items: [...cart],
+            totalKES: totalKES,
+            depositKES: depositKES,
+            balanceKES: balanceKES,
+            status: "30% Deposit Paid — Dispatching"
+          };
+          orders.unshift(newOrder);
+          localStorage.setItem("kilishop_orders", JSON.stringify(orders));
+
           cart = [];
-          pickedIds = [];
-          document.getElementById('cartCount').innerText = '0';
-          closeCart();
-          renderStore();
+          saveCart();
+          closeModal("cartModal");
+          renderOrders();
+          openModal("accountModal");
+          alert("Payment Successful! Ref: " + response.reference + "\nYour 30% deposit is confirmed.");
+        },
+        onClose: function() {
+          // User closed modal before completing payment
         }
       });
+
       handler.openIframe();
     }
 
-    // Initialize store immediately
-    renderStore();
+    // Customer Orders & Cancellation
+    function renderOrders() {
+      const container = document.getElementById("ordersList");
+      if (orders.length === 0) {
+        container.innerHTML = `<p style="text-align:center; color:var(--muted); padding:20px 0;">No orders placed yet. Shop and pay 30% deposit to track deliveries here.</p>`;
+        return;
+      }
+      container.innerHTML = orders.map((ord, idx) => {
+        const isCancelled = ord.status.includes("Cancelled");
+        return `
+          <div class="order-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <b style="font-size:0.82rem;">Ref: ${ord.id}</b>
+              <span class="status-pill ${isCancelled ? 'cancelled' : ''}">${ord.status}</span>
+            </div>
+            <p style="font-size:0.75rem; color:var(--muted); margin-bottom:6px;">${ord.date} • ${ord.location}</p>
+            <div style="font-size:0.8rem; margin-bottom:6px;">
+              ${ord.items.map(i => `<div>• ${i.qty}x ${i.title} (${i.color})</div>`).join("")}
+            </div>
+            <div style="font-size:0.8rem; border-top:1px solid var(--border); padding-top:6px; display:flex; justify-content:space-between; align-items:center;">
+              <span>Paid: <b>${formatMoney(ord.depositKES)}</b> | COD: <b>${formatMoney(ord.balanceKES)}</b></span>
+              ${!isCancelled ? `<button class="btn-danger" onclick="cancelOrder(${idx})">Cancel</button>` : ""}
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function cancelOrder(idx) {
+      if (!confirm("Are you sure you want to cancel this order?")) return;
+      orders[idx].status = "Cancelled by Customer";
+      localStorage.setItem("kilishop_orders", JSON.stringify(orders));
+      renderOrders();
+    }
+
+    // Admin Dashboard
+    function openAdmin() {
+      document.getElementById("adminTotalProducts").textContent = ALL_PRODUCTS.length.toLocaleString();
+      document.getElementById("adminTotalOrders").textContent = orders.length;
+      const totalRev = orders.filter(o => !o.status.includes("Cancelled")).reduce((s, o) => s + o.depositKES, 0);
+      document.getElementById("adminRevenue").textContent = formatMoney(totalRev);
+
+      const admOrders = document.getElementById("adminOrdersList");
+      admOrders.innerHTML = orders.length === 0
+        ? `<p style="font-size:0.8rem; color:var(--muted);">No customer orders yet.</p>`
+        : orders.map(o => `<div class="order-card" style="font-size:0.78rem;"><b>${o.customer}</b> (${o.phone}) — ${o.status}<br/>Deposit: ${formatMoney(o.depositKES)} | Ref: ${o.id}</div>`).join("");
+
+      openModal("adminModal");
+    }
+
+    function adminAddProduct() {
+      const title = document.getElementById("admTitle").value.trim();
+      const priceKES = Number(document.getElementById("admPrice").value);
+      const deptId = document.getElementById("admDept").value;
+      if (!title || !priceKES) { alert("Enter product title and price."); return; }
+
+      const dept = DEPARTMENTS.find(d => d.id === deptId);
+      ALL_PRODUCTS.unshift({
+        id: Date.now(),
+        deptId: dept.id,
+        deptName: dept.name,
+        title,
+        priceKES,
+        oldPriceKES: Math.round(priceKES * 1.25),
+        discount: 20,
+        img: dept.img
+      });
+      document.getElementById("admTitle").value = "";
+      document.getElementById("admPrice").value = "";
+      document.getElementById("adminTotalProducts").textContent = ALL_PRODUCTS.length.toLocaleString();
+      renderCatalog();
+      alert("Product published live to KiliShop!");
+    }
+
+    // Modal & Navigation Helpers
+    function openModal(id) {
+      if (id === "cartModal") renderCart();
+      if (id === "accountModal") renderOrders();
+      document.getElementById(id).classList.add("open");
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.remove("open");
+    }
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    // Boot Storefront
+    initCatalog();
+    renderDeptNav();
+    renderCatalog();
+    updateCartBadge();
   </script>
 </body>
 </html>
