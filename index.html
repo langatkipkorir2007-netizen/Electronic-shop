@@ -3,778 +3,204 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kili-Mall East Africa | Official Store & App</title>
+  <title>Kili-Mall East Africa</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://js.paystack.co/v1/inline.js"></script>
-  <style>
-    html { scroll-behavior: smooth; }
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-  </style>
 </head>
 <body class="bg-gray-100 text-gray-900 font-sans pb-28">
 
-  <!-- TOP BLACK SEARCH & CATEGORY BAR -->
-  <header class="bg-black text-white sticky top-0 z-40 shadow-md">
-    <div class="px-3 py-2.5 flex items-center gap-2">
-      <div class="flex-1 flex items-center bg-gray-800 rounded-full px-3 py-1.5 border border-gray-700">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-        </svg>
-        <input
-          type="text"
-          id="searchInput"
-          oninput="renderActiveTabContent()"
-          placeholder="Search products..."
-          class="w-full bg-transparent text-white text-xs placeholder-gray-400 focus:outline-none"
-        />
-      </div>
-      <select id="currencySelector" onchange="changeCurrency(this.value)" class="bg-gray-900 text-orange-400 text-xs font-bold px-2 py-1.5 rounded border border-gray-700">
-        <option value="KSh">KES</option>
-        <option value="USD">USD</option>
-        <option value="UGX">UGX</option>
-        <option value="TZS">TZS</option>
-        <option value="RWF">RWF</option>
-      </select>
-    </div>
-
-    <!-- HORIZONTAL SCROLLABLE CATEGORY SHORTCUTS BAR -->
-    <nav class="bg-black text-gray-300 text-xs overflow-x-auto no-scrollbar border-t border-gray-800 px-3 py-2">
-      <div id="topCategoryBar" class="flex items-center gap-4 whitespace-nowrap">
-        <button onclick="filterByTopCat('All')" class="font-bold text-orange-400">All</button>
-        <button onclick="filterByTopCat('Appliances')" class="font-medium hover:text-white">Appliances</button>
-        <button onclick="filterByTopCat('Furniture')" class="font-medium hover:text-white">Furniture</button>
-        <button onclick="filterByTopCat('Men Clothes')" class="font-medium hover:text-white">Men Clothes</button>
-        <button onclick="filterByTopCat('TVs')" class="font-medium hover:text-white">TVs</button>
-        <button onclick="filterByTopCat('Men Accessories')" class="font-medium hover:text-white">Men Accessories</button>
-        <button onclick="filterByTopCat('Men Shoes')" class="font-medium hover:text-white">Men Shoes</button>
-        <button onclick="filterByTopCat('Smart Phones')" class="font-medium hover:text-white">Phones</button>
-      </div>
-    </nav>
+  <!-- TOP HEADER -->
+  <header class="bg-black text-white sticky top-0 z-40 p-3 flex items-center justify-between">
+    <h1 class="text-sm font-black tracking-wider text-orange-500">KILI-MALL EAST AFRICA</h1>
+    <select id="currencySelector" onchange="changeCurrency(this.value)" class="bg-gray-900 text-orange-400 text-xs font-bold px-2 py-1 rounded border border-gray-700">
+      <option value="KSh">KES</option>
+      <option value="USD">USD</option>
+      <option value="UGX">UGX</option>
+      <option value="TZS">TZS</option>
+    </select>
   </header>
 
-  <!-- DYNAMIC TAB CONTENT CONTAINER -->
-  <div id="appContainer" class="p-2"></div>
+  <!-- PRODUCT GRID CONTAINER -->
+  <div id="productGrid" class="p-3 grid grid-cols-2 gap-2"></div>
 
-  <!-- BOTTOM APP NAVIGATION BAR -->
+  <!-- BOTTOM NAVIGATION BAR -->
   <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 flex justify-around items-center py-2 shadow-lg">
-    <button onclick="switchTab('home')" id="navHome" class="flex flex-col items-center text-orange-600">
+    <button onclick="switchTab('home')" class="flex flex-col items-center text-orange-600">
       <span class="text-lg">🏠</span>
       <span class="text-[10px] font-bold">Home</span>
     </button>
-    <button onclick="switchTab('category')" id="navCategory" class="flex flex-col items-center text-gray-500 hover:text-orange-600">
-      <span class="text-lg">🗂️</span>
-      <span class="text-[10px] font-medium">Category</span>
-    </button>
-    <button onclick="switchTab('message')" id="navMessage" class="flex flex-col items-center text-gray-500 hover:text-orange-600">
-      <span class="text-lg">💬</span>
-      <span class="text-[10px] font-medium">Message</span>
-    </button>
-    <button onclick="openCartDrawer()" class="flex flex-col items-center text-gray-500 hover:text-orange-600 relative">
+    <button onclick="openCart()" class="flex flex-col items-center text-gray-500 relative">
       <span class="text-lg">🛒</span>
       <span class="text-[10px] font-medium">Cart</span>
-      <span id="bottomNavCartCount" class="absolute -top-1 right-2 bg-orange-600 text-white text-[9px] font-black px-1.5 rounded-full">0</span>
-    </button>
-    <button onclick="switchTab('account')" id="navAccount" class="flex flex-col items-center text-gray-500 hover:text-orange-600">
-      <span class="text-lg">👤</span>
-      <span id="accountNavLabel" class="text-[10px] font-medium">Account</span>
+      <span id="cartCount" class="absolute -top-1 right-2 bg-orange-600 text-white text-[9px] font-black px-1.5 rounded-full">0</span>
     </button>
   </nav>
 
-  <!-- LARGER FLOATING CART BUTTON AT BOTTOM RIGHT -->
-  <div class="fixed bottom-16 right-4 z-40">
-    <button onclick="openCartDrawer()" class="bg-orange-600 hover:bg-orange-700 text-white px-5 py-3 rounded-full shadow-2xl flex items-center gap-2 font-black text-sm border-2 border-white transition transform hover:scale-105">
-      <span>🛒</span>
-      <span>Cart (<span id="floatingCartCount">0</span>)</span>
-    </button>
-  </div>
-
-  <!-- CUSTOMER LOGIN / REGISTER MODAL -->
-  <div id="authModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 p-4">
-    <div class="w-full max-w-sm bg-white rounded-2xl shadow-2xl p-5">
-      <div class="flex justify-between items-center border-b pb-2 mb-3">
-        <h3 id="authTitle" class="text-base font-black text-gray-800">Customer Login</h3>
-        <button onclick="closeAuthModal()" class="text-gray-400 font-bold text-lg">✕</button>
-      </div>
-      <form onsubmit="submitAuth(event)" class="space-y-2.5">
-        <div id="nameFieldBox" class="hidden">
-          <label class="block text-[11px] font-bold text-gray-700 mb-0.5">Full Name</label>
-          <input type="text" id="authName" class="w-full p-2 text-xs border rounded" placeholder="Your name" />
-        </div>
-        <div>
-          <label class="block text-[11px] font-bold text-gray-700 mb-0.5">Email Address</label>
-          <input type="email" id="authEmail" required class="w-full p-2 text-xs border rounded" placeholder="email@domain.com" />
-        </div>
-        <div>
-          <label class="block text-[11px] font-bold text-gray-700 mb-0.5">Phone Number</label>
-          <input type="tel" id="authPhone" required class="w-full p-2 text-xs border rounded" placeholder="+254712345678" />
-        </div>
-        <div>
-          <label class="block text-[11px] font-bold text-gray-700 mb-0.5">Password</label>
-          <input type="password" id="authPass" required class="w-full p-2 text-xs border rounded" placeholder="••••••••" />
-        </div>
-        <button type="submit" id="authSubmitBtn" class="w-full bg-orange-600 text-white font-bold py-2.5 rounded-xl text-xs shadow mt-2">Log In</button>
-        <div class="text-center pt-1">
-          <button type="button" onclick="toggleAuthMode()" class="text-[11px] text-orange-600 font-bold hover:underline">Need an account? Register</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- CART & PAYSTACK CHECKOUT DRAWER -->
+  <!-- CART DRAWER -->
   <div id="cartDrawer" class="hidden fixed inset-0 z-50 flex justify-end bg-black bg-opacity-50">
-    <div class="w-full max-w-md bg-white h-full shadow-2xl flex flex-col p-4 overflow-y-auto">
-      <div class="flex justify-between items-center border-b pb-3 mb-3">
-        <h2 id="drawerTitle" class="text-base font-black text-gray-800">Shopping Cart (0)</h2>
-        <button onclick="closeCartDrawer()" class="text-gray-400 font-bold text-lg">✕</button>
+    <div class="w-full max-w-sm bg-white h-full p-4 flex flex-col">
+      <div class="flex justify-between items-center border-b pb-2 mb-3">
+        <h2 class="font-black text-sm">Shopping Cart</h2>
+        <button onclick="closeCart()" class="font-bold text-lg">✕</button>
       </div>
-      <div id="drawerBody" class="flex-1 flex flex-col"></div>
+      <div id="cartBody" class="flex-1 overflow-y-auto space-y-2 text-xs"></div>
+      <button onclick="paystackCheckout()" class="w-full mt-3 bg-orange-600 text-white font-bold py-3 rounded-xl text-xs shadow">
+        Pay 30% Deposit via Paystack
+      </button>
     </div>
   </div>
 
   <script>
     const PAYSTACK_PUBLIC_KEY = 'pk_live_96685dc1a36bc585d08a7b5fd4a4891d8bce14cb';[span_0](start_span)[span_0](end_span)
-
-    let activeTab = 'home';
     let selectedCurrency = 'KSh';
-    let activeCategoryFilter = 'All';
     let cart = [];
-    let pickedProductIds = [];
-    let isLoggedIn = false;
-    let authMode = 'login';
-    let customer = { name: 'Langat Kipkorir', email: 'langat@example.com', phone: '+254712345678' };
+    let pickedIds = [];
 
-    let notifications = [
-      { id: 1, title: 'Welcome to Kili-Mall!', msg: 'Enjoy 30% deposit checkout via Paystack and 70% balance on delivery across East Africa.', date: '2026-11-17' }
-    ];
-
-    let orders = [
-      { id: 'ORD-8291', ref: 'PSK-44120', total: 27999, deposit: 8400, balance: 19599, status: 'Dispatched', date: '2026-11-16', country: 'Kenya (Nairobi)' }
-    ];
-
-    const currencyRates = {
-      KSh: { symbol: 'KSh ', rate: 1 },
-      USD: { symbol: '$', rate: 0.0077 },
-      UGX: { symbol: 'USh ', rate: 29.5 },
-      TZS: { symbol: 'TSh ', rate: 20.2 },
-      RWF: { symbol: 'FRw ', rate: 10.5 }
-    };
-
+    // Catalog incorporating your uploaded image file + high-def backups
     const catalog = [
       {
         id: 1,
-        name: '2 in 1 Hot Comb Straightener Electric Hair Straightener',
-        category: 'Appliances',
-        price: 699,
-        originalPrice: 1200,
-        discount: 'Choice • Black Fri',
-        image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&q=80',
-        rating: 5.0,
-        reviews: 7207,
-        fulfillment: 'Fulfilled by Kilimal',
-        sizes: ['Standard Size', 'XL Pro'],
-        colors: ['Gold Black', 'Rose Gold'],
-        packs: ['1 Unit', '2 Units Promo']
+        name: 'Your Uploaded Store Product',
+        price: 1500,
+        originalPrice: 2500,
+        image: 'IMG-20261113-WA0060.jpg',
+        fallbackImage: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&q=80',
+        sizes: ['Standard', 'Large'],
+        colors: ['Default']
       },
       {
         id: 2,
-        name: 'Ultrasonic Pest Repeller Reject Electronic Repellent Killer Household',
-        category: 'Appliances',
-        price: 299,
-        originalPrice: 600,
-        discount: 'Oversea Shipment',
-        image: 'https://images.unsplash.com/photo-1584467735811-99881881b29a?w=600&q=80',
-        rating: 4.0,
-        reviews: 9,
-        fulfillment: 'Fulfilled by Kilimal',
-        sizes: ['Single Room', 'House 4-Pack'],
-        colors: ['White'],
-        packs: ['1 Pack']
+        name: '2 in 1 Hot Comb Hair Straightener',
+        price: 699,
+        originalPrice: 1200,
+        image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&q=80',
+        fallbackImage: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&q=80',
+        sizes: ['Standard', 'XL Pro'],
+        colors: ['Gold', 'Black']
       },
       {
         id: 3,
-        name: 'RichRipple Vintage Hair cutting machine Hair Clipper',
-        category: 'Men Accessories',
+        name: 'Vintage Hair Cutting Machine Clipper',
         price: 298,
         originalPrice: 550,
-        discount: 'Black Fri (Clearance)',
         image: 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&q=80',
-        rating: 5.0,
-        reviews: 7040,
-        fulfillment: 'Brand Official • Fulfilled by Kilimal',
-        sizes: ['Standard Pro'],
-        colors: ['Gold Dragon', 'Black'],
-        packs: ['Full Kit']
-      },
-      {
-        id: 4,
-        name: 'Refurbished Lenovo ThinkPad Yoga X260 2-in-1 Convertible X360 laptop',
-        category: 'Computers & Accessories',
-        price: 27999,
-        originalPrice: 42000,
-        discount: 'REFURBISHED',
-        image: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=600&q=80',
-        rating: 4.7,
-        reviews: 184,
-        fulfillment: 'Local Dispatch',
-        sizes: ['8GB/256GB', '16GB/512GB'],
-        colors: ['Black'],
-        packs: ['Charger + Stylus']
-      },
-      {
-        id: 5,
-        name: 'Mosquito Lamp and mosquito swatter in one',
-        category: 'Home & Kitchen',
-        price: 1089,
-        originalPrice: 1800,
-        discount: 'Local Dispatch',
-        image: 'https://images.unsplash.com/photo-1614632537456-c30d719003f5?w=600&q=80',
-        rating: 5.0,
-        reviews: 2832,
-        fulfillment: 'Local Dispatch',
-        sizes: ['Standard'],
-        colors: ['Black/Purple'],
-        packs: ['1 Unit']
+        fallbackImage: 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&q=80',
+        sizes: ['Pro Standard'],
+        colors: ['Gold Dragon']
       }
     ];
 
-    const categoryList = [
-      { name: 'Kili Featured', icon: '⭐' },
-      { name: 'Home & Kitchen', icon: '🏠' },
-      { name: 'Phones & Accessories', icon: '📱' },
-      { name: 'Clothing', icon: '👕' },
-      { name: 'Appliances', icon: '🧺' },
-      { name: 'TV, Audio & Video', icon: '📺' },
-      { name: 'Watches & Jewellery', icon: '💍' },
-      { name: 'Computers & Accessories', icon: '💻' },
-      { name: 'Shoes', icon: '👟' },
-      { name: 'Others', icon: '📦' },
-      { name: 'Automotive', icon: '🔧' },
-      { name: 'Health & Beauty', icon: '💄' },
-      { name: 'Bags', icon: '👜' },
-      { name: 'Kids & Baby Products', icon: '👶' }
-    ];
-
-    function formatPrice(amountKsh) {
-      const cfg = currencyRates[selectedCurrency] || currencyRates.KSh;
-      const converted = amountKsh * cfg.rate;
-      if (selectedCurrency === 'USD') return cfg.symbol + converted.toFixed(2);
-      return cfg.symbol + Math.round(converted).toLocaleString();
+    function formatPrice(amount) {
+      if (selectedCurrency === 'USD') return '$' + (amount * 0.0077).toFixed(2);
+      return selectedCurrency + ' ' + amount.toLocaleString();
     }
 
     function changeCurrency(curr) {
       selectedCurrency = curr;
-      document.getElementById('currencySelector').value = curr;
-      renderActiveTabContent();
+      renderStore();
     }
 
-    function switchTab(tab) {
-      activeTab = tab;
-      ['Home', 'Category', 'Message', 'Account'].forEach(t => {
-        const el = document.getElementById('nav' + t);
-        if (el) el.className = 'flex flex-col items-center text-gray-500 hover:text-orange-600';
-      });
-      const activeEl = document.getElementById('nav' + tab.charAt(0).toUpperCase() + tab.slice(1));
-      if (activeEl) activeEl.className = 'flex flex-col items-center text-orange-600';
+    function renderStore() {
+      const grid = document.getElementById('productGrid');
+      if (!grid) return;
 
-      if (tab === 'message') {
-        alert('Live Customer Support chat via WhatsApp & In-app messaging is active.');
-        return;
-      }
-      renderActiveTabContent();
-    }
+      grid.innerHTML = catalog.map(p => {
+        const isPicked = pickedIds.includes(p.id);
+        const cardBg = isPicked ? 'bg-white border-gray-200' : 'bg-white border-amber-300 ring-1 ring-amber-200';
+        const btnText = isPicked ? '✓ PICKED (Add Again)' : 'Add to Cart';
+        const btnClass = isPicked ? 'bg-gray-800 text-white' : 'bg-orange-600 text-white';
 
-    function renderActiveTabContent() {
-      try {
-        if (activeTab === 'home') renderHomeTab();
-        else if (activeTab === 'category') renderCategoryTab();
-        else if (activeTab === 'account') renderAccountTab();
-      } catch (err) {
-        console.error("Rendering error:", err);
-      }
-    }
-
-    function filterByTopCat(cat) {
-      activeCategoryFilter = cat;
-      renderHomeTab();
-    }
-
-    function renderHomeTab() {
-      const container = document.getElementById('appContainer');
-      if (!container) return;
-
-      const searchInput = document.getElementById('searchInput');
-      const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
-      
-      const items = catalog.filter(p => {
-        const matchesQuery = !query || p.name.toLowerCase().includes(query) || p.category.toLowerCase().includes(query);
-        const matchesCat = activeCategoryFilter === 'All' || p.category === activeCategoryFilter;
-        return matchesQuery && matchesCat;
-      });
-
-      container.innerHTML = `
-        <main class="space-y-3 p-2 md:max-w-4xl md:mx-auto">
-          <div class="grid grid-cols-2 gap-2">
-            ${items.map(product => {
-              const isPicked = pickedProductIds.includes(product.id);
-              const cardBg = isPicked ? 'bg-white border-gray-200' : 'bg-white border-amber-300 ring-1 ring-amber-200';
-              const btnText = isPicked ? '✓ Picked (Add Again)' : 'Add to Cart';
-              const btnClass = isPicked ? 'bg-gray-800 text-white' : 'bg-orange-600 hover:bg-orange-700 text-white';
-
-              let stars = '';
-              for(let i=0; i<Math.floor(product.rating); i++) stars += '★';
-
-              return `
-                <div class="rounded-xl shadow-sm p-2.5 flex flex-col justify-between border relative ${cardBg}">
-                  <div>
-                    <div class="w-full h-40 bg-gray-50 rounded-lg overflow-hidden mb-2 relative">
-                      <img src="${product.image}" class="w-full h-full object-cover" />
-                      <span class="absolute top-1 left-1 bg-black/70 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">${product.discount}</span>
-                    </div>
-                    <p class="text-[10px] font-bold text-gray-900">${formatPrice(product.price)}</p>
-                    <div class="flex items-center gap-1 text-[9px] text-amber-500 my-0.5">
-                      <span>${stars}</span>
-                      <span class="text-gray-500 font-bold">(${product.reviews})</span>
-                    </div>
-                    <h3 class="text-xs font-medium text-gray-800 line-clamp-2 leading-tight mb-1">${product.name}</h3>
-                    <p class="text-[9px] text-gray-500 font-semibold mb-2">${product.fulfillment}</p>
-                  </div>
-
-                  <div class="space-y-1 pt-2 border-t border-gray-100 text-[11px]">
-                    <div class="flex items-center gap-1">
-                      <span class="text-[9px] font-bold text-gray-500 w-9">Size:</span>
-                      <select id="size-${product.id}" class="flex-1 p-0.5 border rounded text-[10px] bg-gray-50">
-                        ${product.sizes.map(s => `<option value="${s}">${s}</option>`).join('')}
-                      </select>
-                    </div>
-
-                    <div class="flex items-center gap-1">
-                      <span class="text-[9px] font-bold text-gray-500 w-9">Color:</span>
-                      <select id="color-${product.id}" class="flex-1 p-0.5 border rounded text-[10px] bg-gray-50">
-                        ${product.colors.map(c => `<option value="${c}">${c}</option>`).join('')}
-                      </select>
-                    </div>
-
-                    <div class="flex items-center gap-1">
-                      <span class="text-[9px] font-bold text-gray-500 w-9">Pack:</span>
-                      <select id="pack-${product.id}" class="flex-1 p-0.5 border rounded text-[10px] bg-gray-50">
-                        ${product.packs.map(p => `<option value="${p}">${p}</option>`).join('')}
-                      </select>
-                    </div>
-
-                    <div class="flex items-center gap-1">
-                      <span class="text-[9px] font-bold text-gray-500 w-9">Qty:</span>
-                      <input type="number" id="qty-${product.id}" value="1" min="1" max="10" class="flex-1 p-0.5 border rounded text-[10px] bg-gray-50 text-center font-bold" />
-                    </div>
-
-                    <div class="flex justify-between items-center text-[9px] text-green-700 font-bold pt-1">
-                      <span>30% Deposit:</span>
-                      <span>${formatPrice(Math.round(product.price * 0.3))}</span>
-                    </div>
-
-                    <button onclick="addToCart(${product.id})" class="w-full mt-1 text-[11px] font-bold py-2 rounded-lg transition shadow-sm ${btnClass}">
-                      ${btnText}
-                    </button>
-                  </div>
-                </div>
-              `;
-            }).join('')}
-          </div>
-        </main>
-      `;
-    }
-
-    function renderCategoryTab() {
-      const container = document.getElementById('appContainer');
-      if (!container) return;
-      container.innerHTML = `
-        <div class="flex bg-white min-h-[85vh]">
-          <div class="w-1/3 bg-gray-50 border-r border-gray-200 overflow-y-auto no-scrollbar">
-            ${categoryList.map((cat, idx) => `
-              <div onclick="filterCategoryGrid('${cat.name}')" class="p-3 text-xs font-bold border-b border-gray-100 flex items-center gap-2 cursor-pointer hover:bg-orange-50 ${idx === 0 ? 'bg-white text-orange-600 border-l-4 border-orange-600' : 'text-gray-700'}">
-                <span>${cat.icon}</span>
-                <span class="line-clamp-1">${cat.name}</span>
+        return `
+          <div class="rounded-xl shadow-sm p-2 flex flex-col justify-between border ${cardBg}">
+            <div>
+              <div class="w-full h-36 bg-gray-100 rounded-lg overflow-hidden mb-2">
+                <img src="${p.image}" onerror="this.onerror=null; this.src='${p.fallbackImage}';" class="w-full h-full object-cover" />
               </div>
-            `).join('')}
-          </div>
-          <div class="w-2/3 p-3 overflow-y-auto">
-            <h3 class="text-xs font-black text-gray-800 mb-3 uppercase tracking-wide">Top Categories</h3>
-            <div class="grid grid-cols-3 gap-3 text-center">
-              ${categoryList.slice(1, 13).map(c => `
-                <div onclick="filterCategoryGrid('${c.name}')" class="bg-gray-50 p-2 rounded-xl border border-gray-100 cursor-pointer hover:shadow">
-                  <div class="text-2xl mb-1">${c.icon}</div>
-                  <p class="text-[10px] font-bold text-gray-800 line-clamp-1">${c.name}</p>
-                </div>
-              `).join('')}
+              <p class="text-xs font-black">${formatPrice(p.price)}</p>
+              <h3 class="text-[11px] font-semibold text-gray-800 line-clamp-2 mt-0.5">${p.name}</h3>
             </div>
-          </div>
-        </div>
-      `;
-    }
-
-    function filterCategoryGrid(catName) {
-      activeCategoryFilter = catName;
-      switchTab('home');
-    }
-
-    function renderAccountTab() {
-      const container = document.getElementById('appContainer');
-      if (!container) return;
-
-      if (!isLoggedIn) {
-        container.innerHTML = `
-          <div class="max-w-md mx-auto p-6 text-center space-y-4">
-            <div class="w-20 h-20 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-3xl mx-auto font-bold">👤</div>
-            <h2 class="text-lg font-black text-gray-800">Customer Account Login Required</h2>
-            <p class="text-xs text-gray-500">Log in or create an account to view your orders, track shipments, and manage payments.</p>
-            <button onclick="openAuthModal('login')" class="w-full bg-orange-600 text-white font-bold py-3 rounded-xl text-xs shadow">
-              Log In / Register Account
-            </button>
+            <div class="mt-2 space-y-1 pt-2 border-t text-[10px]">
+              <div class="flex items-center gap-1">
+                <span class="font-bold text-gray-500 w-8">Size:</span>
+                <select id="size-${p.id}" class="flex-1 p-0.5 border rounded bg-gray-50">
+                  ${p.sizes.map(s => `<option value="${s}">${s}</option>`).join('')}
+                </select>
+              </div>
+              <div class="flex items-center gap-1">
+                <span class="font-bold text-gray-500 w-8">Qty:</span>
+                <input type="number" id="qty-${p.id}" value="1" min="1" max="10" class="flex-1 p-0.5 border rounded text-center font-bold bg-gray-50" />
+              </div>
+              <button onclick="addToCart(${p.id})" class="w-full mt-1 font-bold py-2 rounded-lg text-xs shadow ${btnClass}">
+                ${btnText}
+              </button>
+            </div>
           </div>
         `;
-        return;
-      }
-
-      container.innerHTML = `
-        <div class="max-w-2xl mx-auto p-4 space-y-4">
-          <div class="bg-black text-white p-4 rounded-2xl flex items-center justify-between shadow">
-            <div class="flex items-center gap-3">
-              <div class="w-12 h-12 bg-orange-500 text-white rounded-full flex items-center justify-center text-xl font-bold">
-                ${customer.name.charAt(0)}
-              </div>
-              <div>
-                <h3 class="text-sm font-black">${customer.name}</h3>
-                <p class="text-[10px] text-gray-400">${customer.email} | ${customer.phone}</p>
-              </div>
-            </div>
-            <button onclick="logoutCustomer()" class="bg-gray-800 text-red-400 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-gray-700">Log Out</button>
-          </div>
-
-          <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-200">
-            <h4 class="text-xs font-black text-gray-800 uppercase mb-3">My Orders</h4>
-            <div class="grid grid-cols-5 gap-2 text-center text-xs">
-              <div><span class="text-xl">💳</span><p class="text-[10px] font-bold text-gray-700 mt-1">Unpaid</p></div>
-              <div><span class="text-xl">📦</span><p class="text-[10px] font-bold text-gray-700 mt-1">To Ship</p></div>
-              <div><span class="text-xl">🚚</span><p class="text-[10px] font-bold text-gray-700 mt-1">Shipped</p></div>
-              <div><span class="text-xl">⭐</span><p class="text-[10px] font-bold text-gray-700 mt-1">Review</p></div>
-              <div><span class="text-xl">↩️</span><p class="text-[10px] font-bold text-gray-700 mt-1">Return</p></div>
-            </div>
-          </div>
-
-          <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-200">
-            <h4 class="text-xs font-black text-gray-800 uppercase mb-3">📦 Order Tracking & History</h4>
-            <div class="space-y-3">
-              ${orders.map(o => `
-                <div class="border border-gray-200 rounded-xl p-3 bg-gray-50 text-xs space-y-1.5">
-                  <div class="flex justify-between items-center border-b pb-1.5">
-                    <span class="font-black text-gray-900">${o.id} (${o.date})</span>
-                    <span class="bg-green-100 text-green-800 text-[9px] font-bold px-2 py-0.5 rounded-full">${o.status}</span>
-                  </div>
-                  <p><strong>Destination:</strong> ${o.country}</p>
-                  <p><strong>30% Deposit Paid:</strong> KSh ${o.deposit.toLocaleString()} (Ref: ${o.ref})</p>
-                  <p><strong>70% Balance Due on Delivery:</strong> KSh ${o.balance.toLocaleString()}</p>
-                  ${o.status !== 'Cancelled' ? `<div class="flex justify-end pt-1"><button onclick="cancelOrder('${o.id}')" class="bg-red-50 text-red-600 border border-red-200 px-2.5 py-1 rounded text-[10px] font-bold">Cancel Order</button></div>` : ''}
-                </div>
-              `).join('')}
-            </div>
-          </div>
-        </div>
-      `;
+      }).join('');
     }
 
-    function cancelOrder(id) {
-      orders = orders.map(o => o.id === id ? { ...o, status: 'Cancelled' } : o);
-      renderAccountTab();
-    }
-
-    function addToCart(productId) {
-      const product = catalog.find(p => p.id === productId);
-      const sizeElem = document.getElementById(`size-${productId}`);
-      const colorElem = document.getElementById(`color-${productId}`);
-      const packElem = document.getElementById(`pack-${productId}`);
-      const qtyElem = document.getElementById(`qty-${productId}`);
-
-      const size = sizeElem ? sizeElem.value : product.sizes[0];
-      const color = colorElem ? colorElem.value : product.colors[0];
-      const pack = packElem ? packElem.value : product.packs[0];
+    function addToCart(id) {
+      const p = catalog.find(item => item.id === id);
+      const sizeElem = document.getElementById(`size-${id}`);
+      const qtyElem = document.getElementById(`qty-${id}`);
+      
+      const size = sizeElem ? sizeElem.value : p.sizes[0];
       const qty = qtyElem ? (parseInt(qtyElem.value) || 1) : 1;
 
-      cart.push({
-        id: product.id,
-        name: product.name,
-        image: product.image,
-        size, color, pack, qty,
-        unitPrice: product.price,
-        totalPrice: product.price * qty
-      });
+      cart.push({ ...p, selectedSize: size, quantity: qty, totalPrice: p.price * qty });
+      if (!pickedIds.includes(id)) pickedIds.push(id);
 
-      if (!pickedProductIds.includes(productId)) {
-        pickedProductIds.push(productId);
-      }
-
-      updateCartCounters();
-      renderActiveTabContent();
-      openCartDrawer();
+      document.getElementById('cartCount').innerText = cart.length;
+      renderStore();
+      openCart();
     }
 
-    function updateCartCounters() {
-      const fc = document.getElementById('floatingCartCount');
-      const bc = document.getElementById('bottomNavCartCount');
-      if (fc) fc.innerText = cart.length;
-      if (bc) bc.innerText = cart.length;
-    }
-
-    function removeFromCart(index) {
-      const removed = cart[index];
-      cart.splice(index, 1);
-      if (removed && !cart.some(i => i.id === removed.id)) {
-        pickedProductIds = pickedProductIds.filter(id => id !== removed.id);
-      }
-      updateCartCounters();
-      renderActiveTabContent();
-      openCartDrawer();
-    }
-
-    function openCartDrawer() {
-      const drawer = document.getElementById('cartDrawer');
-      const title = document.getElementById('drawerTitle');
-      const body = document.getElementById('drawerBody');
-      if (drawer) drawer.classList.remove('hidden');
-
-      const totalKsh = cart.reduce((sum, i) => sum + i.totalPrice, 0);
-      const depositKsh = Math.round(totalKsh * 0.3);
-      const balanceKsh = totalKsh - depositKsh;
-
-      if (title) title.innerText = `Shopping Cart (${cart.length})`;
-      if (!body) return;
-
+    function openCart() {
+      document.getElementById('cartDrawer').classList.remove('hidden');
+      const body = document.getElementById('cartBody');
       if (cart.length === 0) {
-        body.innerHTML = `
-          <div class="flex-1 flex flex-col items-center justify-center text-center text-gray-500">
-            <p class="text-sm font-bold">Your cart is empty</p>
-            <p class="text-xs mt-1">Select items with size, color, and pack to start.</p>
-          </div>`;
+        body.innerHTML = `<p class="text-center text-gray-500 mt-10">Cart is empty</p>`;
         return;
       }
-
-      let html = '<div class="flex-1 space-y-2 overflow-y-auto pr-1">';
-      cart.forEach((item, idx) => {
-        html += `
-          <div class="flex items-center justify-between bg-gray-50 p-2 rounded-xl border border-gray-200">
-            <div class="flex items-center gap-2">
-              <img src="${item.image}" class="w-10 h-10 object-cover rounded-lg" />
-              <div>
-                <h4 class="text-[11px] font-bold text-gray-800 line-clamp-1">${item.name}</h4>
-                <p class="text-[9px] text-gray-500">${item.size} | ${item.color} | ${item.pack} (x${item.qty})</p>
-                <p class="text-xs text-orange-600 font-black">${formatPrice(item.totalPrice)}</p>
-              </div>
-            </div>
-            <button onclick="removeFromCart(${idx})" class="text-red-600 text-xs font-bold px-2 py-1">Remove</button>
-          </div>`;
-      });
-      html += '</div>';
-
-      const btnLabel = isLoggedIn ? 'Proceed to Paystack Checkout' : 'Log In / Register to Checkout';
-
-      body.innerHTML = `
-        ${html}
-        <div class="border-t pt-3 mt-3 bg-orange-50 p-3 rounded-xl space-y-1 text-xs">
-          <div class="flex justify-between font-bold text-gray-700">
-            <span>Total Goods Value:</span>
-            <span>${formatPrice(totalKsh)}</span>
+      body.innerHTML = cart.map((item, idx) => `
+        <div class="flex justify-between items-center bg-gray-50 p-2 rounded border">
+          <div>
+            <p class="font-bold">${item.name} (${item.selectedSize}) x${item.quantity}</p>
+            <p class="text-orange-600 font-black">${formatPrice(item.totalPrice)}</p>
           </div>
-          <div class="flex justify-between font-black text-green-700">
-            <span>Pay 30% Deposit Now:</span>
-            <span>${formatPrice(depositKsh)}</span>
-          </div>
-          <div class="flex justify-between font-black text-orange-800 border-t border-orange-200 pt-1">
-            <span>Pay 70% Balance After Delivery:</span>
-            <span>${formatPrice(balanceKsh)}</span>
-          </div>
+          <button onclick="cart.splice(${idx},1); openCart(); document.getElementById('cartCount').innerText=cart.length;" class="text-red-600 font-bold">Remove</button>
         </div>
-        <button onclick="handleCheckoutClick()" class="w-full mt-3 bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 rounded-xl text-xs shadow">
-          ${btnLabel}
-        </button>
-      `;
+      `).join('');
     }
 
-    function closeCartDrawer() {
-      const drawer = document.getElementById('cartDrawer');
-      if (drawer) drawer.classList.add('hidden');
+    function closeCart() {
+      document.getElementById('cartDrawer').classList.add('hidden');
     }
 
-    function handleCheckoutClick() {
-      if (!isLoggedIn) {
-        closeCartDrawer();
-        openAuthModal('login');
-      } else {
-        renderPaystackForm();
-      }
-    }
-
-    function renderPaystackForm() {
-      const title = document.getElementById('drawerTitle');
-      const body = document.getElementById('drawerBody');
-      if (title) title.innerText = 'Paystack 30% Deposit Checkout';
-      if (!body) return;
-
-      const totalKsh = cart.reduce((sum, i) => sum + i.totalPrice, 0);
-      const depositKsh = Math.round(totalKsh * 0.3);
-
-      body.innerHTML = `
-        <form onsubmit="processPaystackPayment(event)" class="flex-1 flex flex-col justify-between space-y-3">
-          <div class="space-y-2 text-xs">
-            <div>
-              <label class="block font-bold text-gray-700 mb-0.5">Destination Country</label>
-              <select id="payCountry" class="w-full p-2 border rounded bg-white">
-                <option value="Kenya">Kenya</option>
-                <option value="Uganda">Uganda</option>
-                <option value="Tanzania">Tanzania</option>
-                <option value="Rwanda">Rwanda</option>
-                <option value="Burundi">Burundi</option>
-                <option value="South Sudan">South Sudan</option>
-              </select>
-            </div>
-            <div>
-              <label class="block font-bold text-gray-700 mb-0.5">City & Delivery Address</label>
-              <input type="text" id="payAddress" required placeholder="Nairobi CBD, Kampala Road..." class="w-full p-2 border rounded" />
-            </div>
-            <div class="bg-blue-50 border border-blue-200 p-2.5 rounded-xl text-[11px] text-blue-900">
-              <p class="font-bold">🔒 Paystack Live Payment Gateway</p>
-              <p class="mt-0.5">Pay 30% deposit (${formatPrice(depositKsh)}) via M-Pesa, Airtel Money, or Cards.</p>
-            </div>
-          </div>
-          <div class="border-t pt-2 flex gap-2">
-            <button type="button" onclick="openCartDrawer()" class="w-1/3 bg-gray-200 text-gray-800 font-bold py-2.5 rounded-xl text-xs">Back</button>
-            <button type="submit" class="w-2/3 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl text-xs shadow">
-              Pay ${formatPrice(depositKsh)} via Paystack
-            </button>
-          </div>
-        </form>
-      `;
-    }
-
-    function processPaystackPayment(e) {
-      e.preventDefault();
-      const countryElem = document.getElementById('payCountry');
-      const addressElem = document.getElementById('payAddress');
-      const country = countryElem ? countryElem.value : 'Kenya';
-      const address = addressElem ? addressElem.value : 'Nairobi';
-
-      const totalKsh = cart.reduce((sum, i) => sum + i.totalPrice, 0);
-      const depositKsh = Math.round(totalKsh * 0.3);
-      const balanceKsh = totalKsh - depositKsh;
-
-      const cfg = currencyRates[selectedCurrency] || currencyRates.KSh;
-      const payCurr = ['KES', 'NGN', 'GHS', 'ZAR', 'USD'].includes(cfg.iso) ? cfg.iso : 'KES';
-      const amountSubunits = Math.round((payCurr === 'KES' ? depositKsh : depositKsh * cfg.rate) * 100);
-      const reference = 'KILI-' + Math.floor(100000000 + Math.random() * 900000000);
+    function paystackCheckout() {
+      const total = cart.reduce((s, i) => s + i.totalPrice, 0);
+      const deposit = Math.round(total * 0.3);
 
       const handler = window.PaystackPop.setup({
-        key: PAYSTACK_PUBLIC_KEY,
-        email: customer.email,
-        amount: amountSubunits,
-        currency: payCurr,
-        ref: reference,
+        key: PAYSTACK_PUBLIC_KEY,[span_1](start_span)[span_1](end_span)
+        email: 'customer@kili-mall.com',
+        amount: deposit * 100,
+        currency: 'KES',
+        ref: 'KILI-' + Math.floor(Math.random() * 1000000),
         callback: function(res) {
-          orders.unshift({
-            id: 'ORD-' + Math.floor(1000 + Math.random() * 9000),
-            ref: res.reference,
-            total: totalKsh,
-            deposit: depositKsh,
-            balance: balanceKsh,
-            status: 'Dispatched',
-            date: new Date().toISOString().split('T')[0],
-            country: `${country} (${address})`
-          });
-
+          alert('Deposit successful! Ref: ' + res.reference);
           cart = [];
-          pickedProductIds = [];
-          updateCartCounters();
-          renderActiveTabContent();
-
-          const title = document.getElementById('drawerTitle');
-          const body = document.getElementById('drawerBody');
-          if (title) title.innerText = 'Deposit Verified!';
-          if (body) {
-            body.innerHTML = `
-              <div class="flex-1 flex flex-col items-center justify-center text-center">
-                <div class="w-14 h-14 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-2xl font-bold mb-3">✓</div>
-                <h3 class="text-base font-black text-gray-800 mb-1">Paystack Deposit Successful!</h3>
-                <p class="text-[11px] font-mono text-gray-500 mb-2">Ref: ${res.reference}</p>
-                <button onclick="closeCartDrawer(); switchTab('account');" class="w-full bg-orange-600 text-white font-bold py-2.5 rounded-xl text-xs shadow">
-                  View Order & Tracking
-                </button>
-              </div>
-            `;
-          }
-        },
-        onClose: function() {}
+          pickedIds = [];
+          document.getElementById('cartCount').innerText = '0';
+          closeCart();
+          renderStore();
+        }
       });
       handler.openIframe();
     }
 
-    function openAuthModal(mode) {
-      authMode = mode;
-      const modal = document.getElementById('authModal');
-      const title = document.getElementById('authTitle');
-      const nameBox = document.getElementById('nameFieldBox');
-      const subBtn = document.getElementById('authSubmitBtn');
-
-      if (modal) modal.classList.remove('hidden');
-      if (title) title.innerText = mode === 'login' ? 'Customer Login' : 'Create Account';
-      if (nameBox) nameBox.classList.toggle('hidden', mode === 'login');
-      if (subBtn) subBtn.innerText = mode === 'login' ? 'Log In' : 'Register Account';
-    }
-
-    function closeAuthModal() {
-      const modal = document.getElementById('authModal');
-      if (modal) modal.classList.add('hidden');
-    }
-
-    function toggleAuthMode() {
-      openAuthModal(authMode === 'login' ? 'register' : 'login');
-    }
-
-    function submitAuth(e) {
-      e.preventDefault();
-      const nameElem = document.getElementById('authName');
-      const emailElem = document.getElementById('authEmail');
-      const phoneElem = document.getElementById('authPhone');
-
-      const name = nameElem ? nameElem.value.trim() : '';
-      const email = emailElem ? emailElem.value.trim() : 'user@example.com';
-      const phone = phoneElem ? phoneElem.value.trim() : '+254700000000';
-
-      if (authMode === 'register' && name) customer.name = name;
-      customer.email = email;
-      customer.phone = phone;
-      isLoggedIn = true;
-
-      closeAuthModal();
-      const navLabel = document.getElementById('accountNavLabel');
-      if (navLabel) navLabel.innerText = 'Profile';
-
-      switchTab('account');
-
-      if (cart.length > 0) {
-        openCartDrawer();
-        renderPaystackForm();
-      }
-    }
-
-    function logoutCustomer() {
-      isLoggedIn = false;
-      const navLabel = document.getElementById('accountNavLabel');
-      if (navLabel) navLabel.innerText = 'Account';
-      switchTab('home');
-    }
-
-    // ENSURE INSTANT RENDERING UPON DOM LOAD
-    window.addEventListener('DOMContentLoaded', () => {
-      switchTab('home');
-      updateCartCounters();
-    });
+    // Initialize store immediately
+    renderStore();
   </script>
 </body>
 </html>
