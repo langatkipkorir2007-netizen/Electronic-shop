@@ -3,76 +3,57 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KiliMall East Africa | E-Commerce & Paystack Checkout</title>
+  <title>Kili-Mall East Africa | Official Store & App</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Official Paystack Inline Payment Gateway SDK -->
   <script src="https://js.paystack.co/v1/inline.js"></script>
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <style>
     html { scroll-behavior: smooth; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
-<body class="bg-gray-100 text-gray-900">
+<body class="bg-gray-100 text-gray-900 font-sans pb-24">
   <div id="root"></div>
 
   <script type="text/babel">
     const { useState, useMemo } = React;
 
-    // =========================================================================
-    // YOUR LIVE PAYSTACK PUBLIC KEY CONFIGURED
-    // =========================================================================
-    const DEFAULT_PAYSTACK_PUBLIC_KEY = 'pk_live_96685dc1a36bc585d08a7b5fd4a4891d8bce14cb';
-
-    // Guaranteed working self-contained SVG product artwork generator
-    const createProductImage = (bgStart, bgEnd, accent, label, badge, shapeType) => {
-      let illustration = '';
-      if (shapeType === 'phone') {
-        illustration = `<rect x="195" y="45" width="110" height="210" rx="18" fill="#1e293b" stroke="#94a3b8" stroke-width="4"/><rect x="203" y="58" width="94" height="180" rx="10" fill="${accent}"/><circle cx="250" cy="52" r="3" fill="#475569"/><circle cx="222" cy="76" r="8" fill="#0f172a"/>`;
-      } else if (shapeType === 'laptop') {
-        illustration = `<rect x="135" y="65" width="230" height="140" rx="10" fill="#1e293b" stroke="#64748b" stroke-width="4"/><rect x="145" y="75" width="210" height="118" rx="4" fill="${accent}"/><path d="M110 205 L390 205 L370 220 L130 220 Z" fill="#94a3b8"/>`;
-      } else if (shapeType === 'tv') {
-        illustration = `<rect x="120" y="60" width="260" height="145" rx="6" fill="#0f172a" stroke="#334155" stroke-width="5"/><rect x="128" y="68" width="244" height="129" fill="${accent}"/><path d="M210 205 L190 230 M290 205 L310 230" stroke="#334155" stroke-width="6" stroke-linecap="round"/>`;
-      } else if (shapeType === 'bag' || shapeType === 'shoe') {
-        illustration = `<rect x="175" y="60" width="150" height="185" rx="12" fill="${accent}" stroke="#ffffff" stroke-width="3"/><rect x="190" y="85" width="120" height="55" rx="6" fill="#ffffff" opacity="0.9"/><text x="250" y="118" font-family="Arial" font-size="16" font-weight="bold" fill="#1e293b" text-anchor="middle">${badge}</text>`;
-      } else {
-        illustration = `<circle cx="250" cy="145" r="82" fill="${accent}" stroke="#ffffff" stroke-width="6"/><circle cx="250" cy="145" r="52" fill="none" stroke="#ffffff" stroke-width="3" stroke-dasharray="10,8"/>`;
-      }
-
-      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="500" height="320" viewBox="0 0 500 320"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${bgStart}"/><stop offset="100%" stop-color="${bgEnd}"/></linearGradient></defs><rect width="500" height="320" fill="url(#g)"/>${illustration}<rect x="40" y="262" width="420" height="38" rx="19" fill="rgba(15,23,42,0.8)"/><text x="250" y="286" font-family="Arial" font-size="15" font-weight="bold" fill="#ffffff" text-anchor="middle">${label}</text></svg>`;
-      return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
-    };
+    const PAYSTACK_PK = 'pk_live_96685dc1a36bc585d08a7b5fd4a4891d8bce14cb';[span_1](start_span)[span_1](end_span)
 
     const KiliMallApp = () => {
-      const [viewMode, setViewMode] = useState('store'); // 'store' | 'admin'
+      const [viewMode, setViewMode] = useState('store'); // 'store' | 'account'
       const [selectedCategory, setSelectedCategory] = useState('All');
       const [searchQuery, setSearchQuery] = useState('');
       const [cart, setCart] = useState([]);
       const [isCartOpen, setIsCartOpen] = useState(false);
+      
+      // Track picked items to remove yellow highlights
+      const [pickedProductIds, setPickedProductIds] = useState([]);
+      
+      // Auth & Account States
+      const [isAuthOpen, setIsAuthOpen] = useState(false);
+      const [isLoggedIn, setIsLoggedIn] = useState(false);
+      const [currentUser, setCurrentUser] = useState({ name: 'John Doe', email: 'john@example.com', phone: '+254712345678' });
+      const [authMode, setAuthMode] = useState('login');
 
-      // Paystack Live Public Key state
-      const [paystackKey, setPaystackKey] = useState(
-        () => localStorage.getItem('kilimall_paystack_pk') || DEFAULT_PAYSTACK_PUBLIC_KEY
-      );
-
-      // Checkout & Payment States
-      const [checkoutStep, setCheckoutStep] = useState('cart'); // 'cart' | 'checkout' | 'success'
+      // Checkout States
+      const [checkoutStep, setCheckoutStep] = useState('cart');
       const [selectedCurrency, setSelectedCurrency] = useState('KSh');
       const [destinationCountry, setDestinationCountry] = useState('Kenya');
-
-      const [customerName, setCustomerName] = useState('');
-      const [customerEmail, setCustomerEmail] = useState('');
-      const [phoneNumber, setPhoneNumber] = useState('');
       const [shippingAddress, setShippingAddress] = useState('');
       const [lastPaymentRef, setLastPaymentRef] = useState('');
 
-      // Centralized Orders State for the Admin Dashboard
+      // Notifications Inbox
+      const [notifications, setNotifications] = useState([
+        { id: 1, title: 'Welcome to Kili-Mall!', msg: 'Enjoy 30% deposit checkout and 70% balance on delivery across East Africa.', date: '2026-11-17', read: false }
+      ]);
+
+      // Customer Orders State
       const [orders, setOrders] = useState([
-        { id: 'ORD-9821', ref: 'PSK-884120', customer: 'David Ochieng', country: 'Kenya', phone: '+254712345678', total: 18500, deposit: 5550, balance: 12950, status: '30% Paid (Paystack)', date: '2026-11-17' },
-        { id: 'ORD-9822', ref: 'PSK-884125', customer: 'Grace Namubiru', country: 'Uganda', phone: '+256772987654', total: 29900, deposit: 8970, balance: 20930, status: 'Dispatched', date: '2026-11-17' }
+        { id: 'ORD-5421', ref: 'PSK-99214', items: [{ name: 'Samsung Galaxy A15', qty: 1, price: 18500 }], total: 18500, deposit: 5550, balance: 12950, status: 'Dispatched', date: '2026-11-16', country: 'Kenya' }
       ]);
 
       const categories = [
@@ -93,41 +74,33 @@
         USD: { symbol: '$', iso: 'USD', rate: 0.0077, label: 'USD (US Dollar)' },
         UGX: { symbol: 'USh ', iso: 'UGX', rate: 29.5, label: 'UGX (Uganda Shilling)' },
         TZS: { symbol: 'TSh ', iso: 'TZS', rate: 20.2, label: 'TZS (Tanzania Shilling)' },
-        RWF: { symbol: 'FRw ', iso: 'RWF', rate: 10.5, label: 'RWF (Rwandan Franc)' },
-        NGN: { symbol: '₦', iso: 'NGN', rate: 12.2, label: 'NGN (Nigerian Naira)' },
-        ZAR: { symbol: 'R ', iso: 'ZAR', rate: 0.14, label: 'ZAR (South African Rand)' }
+        RWF: { symbol: 'FRw ', iso: 'RWF', rate: 10.5, label: 'RWF (Rwandan Franc)' }
       };
 
       const masterCatalog = useMemo(() => [
-        { id: 101, name: 'Jogoo Maize Meal Flour 2kg', category: 'Supermarket & Groceries', price: 130, originalPrice: 190, discount: '32% OFF', image: createProductImage('#fef3c7', '#fde68a', '#d97706', 'MAIZE FLOUR 2KG', '2 KG', 'bag') },
-        { id: 102, name: 'Brookside Fresh Whole Milk 1L', category: 'Supermarket & Groceries', price: 145, originalPrice: 180, discount: '19% OFF', image: createProductImage('#e0f2fe', '#bae6fd', '#0284c7', 'FRESH MILK 1L', '1L', 'bag') },
-        { id: 103, name: 'Kabras Brown Cane Sugar 2kg', category: 'Supermarket & Groceries', price: 250, originalPrice: 320, discount: '22% OFF', image: createProductImage('#ffedd5', '#fed7aa', '#ea580c', 'BROWN SUGAR 2KG', '2KG', 'bag') },
-        { id: 104, name: 'Golden Fry Cooking Oil 3L', category: 'Supermarket & Groceries', price: 850, originalPrice: 1100, discount: '23% OFF', image: createProductImage('#fef9c3', '#fef08a', '#ca8a04', 'COOKING OIL 3L', '3L', 'bag') },
-
-        { id: 201, name: 'Samsung Galaxy A15 6.5" 128GB/4GB', category: 'Phones & Tablets', price: 18500, originalPrice: 24000, discount: '23% OFF', image: createProductImage('#dbeafe', '#bfdbfe', '#2563eb', 'GALAXY A15 128GB', '5G', 'phone') },
-        { id: 202, name: 'Redmi Note 13 Pro 256GB/8GB', category: 'Phones & Tablets', price: 28000, originalPrice: 35000, discount: '20% OFF', image: createProductImage('#f3e8ff', '#e9d5ff', '#7c3aed', 'REDMI NOTE 13 PRO', '256GB', 'phone') },
-        { id: 203, name: 'Infinix Hot 40i 256GB Dual SIM', category: 'Phones & Tablets', price: 14200, originalPrice: 18500, discount: '23% OFF', image: createProductImage('#dcfce7', '#bbf7d0', '#16a34a', 'INFINIX HOT 40i', '256GB', 'phone') },
-        { id: 204, name: 'Apple iPhone 13 128GB Midnight', category: 'Phones & Tablets', price: 79000, originalPrice: 98000, discount: '19% OFF', image: createProductImage('#f1f5f9', '#cbd5e1', '#0f172a', 'IPHONE 13 128GB', 'iOS', 'phone') },
-
-        { id: 301, name: 'HP Pavilion 15 Core i5 16GB/512GB SSD', category: 'Computing & Laptops', price: 69000, originalPrice: 85000, discount: '19% OFF', image: createProductImage('#e0e7ff', '#c7d2fe', '#4f46e5', 'HP PAVILION 15 i5', '16GB', 'laptop') },
-        { id: 302, name: 'Lenovo V15 G4 Ryzen 3 8GB/256GB', category: 'Computing & Laptops', price: 39000, originalPrice: 49000, discount: '20% OFF', image: createProductImage('#fee2e2', '#fecaca', '#dc2626', 'LENOVO V15 RYZEN', '256GB', 'laptop') },
-        { id: 303, name: 'Logitech Wireless Keyboard & Mouse', category: 'Computing & Laptops', price: 2100, originalPrice: 2900, discount: '28% OFF', image: createProductImage('#f1f5f9', '#e2e8f0', '#475569', 'WIRELESS COMBO', '2.4G', 'laptop') },
-
-        { id: 401, name: 'Hisense 43" Smart Frameless LED TV', category: 'Electronics & Audio', price: 29900, originalPrice: 38000, discount: '21% OFF', image: createProductImage('#dbeafe', '#93c5fd', '#1d4ed8', 'HISENSE 43" SMART TV', '4K', 'tv') },
-        { id: 402, name: 'Sony WH-1000XM5 ANC Headphones', category: 'Electronics & Audio', price: 36000, originalPrice: 46000, discount: '22% OFF', image: createProductImage('#f3f4f6', '#d1d5db', '#111827', 'SONY XM5', 'ANC', 'bag') },
-        { id: 403, name: 'JBL Charge 5 Bluetooth Speaker', category: 'Electronics & Audio', price: 15500, originalPrice: 19900, discount: '22% OFF', image: createProductImage('#ffedd5', '#fdba74', '#ea580c', 'JBL CHARGE 5', 'BASS', 'bag') },
-
-        { id: 501, name: 'Ramtons 20L Digital Microwave Oven', category: 'Home & Office Appliances', price: 10900, originalPrice: 14000, discount: '22% OFF', image: createProductImage('#f1f5f9', '#cbd5e1', '#ea580c', 'MICROWAVE 20L', '700W', 'bag') },
-        { id: 502, name: 'Heavy Duty 2L Fruit & Spice Blender', category: 'Home & Office Appliances', price: 5500, originalPrice: 7500, discount: '27% OFF', image: createProductImage('#fef2f2', '#fecaca', '#b91c1c', 'COMMERCIAL BLENDER', '2.0L', 'bag') },
-
-        { id: 601, name: 'Men Breathable Sports Running Sneakers', category: 'Fashion & Apparel', price: 2200, originalPrice: 3500, discount: '37% OFF', image: createProductImage('#fee2e2', '#fca5a5', '#dc2626', 'RUNNING SNEAKERS', 'AIR', 'shoe') },
-        { id: 602, name: 'Unisex Heavyweight Cotton Hoodie', category: 'Fashion & Apparel', price: 1700, originalPrice: 2600, discount: '35% OFF', image: createProductImage('#f3f4f6', '#9ca3af', '#1f2937', 'COTTON HOODIE', 'FLEECE', 'bag') },
-
-        { id: 701, name: 'Hydrating Vitamin C Face Serum 50ml', category: 'Health & Beauty', price: 3500, originalPrice: 4800, discount: '27% OFF', image: createProductImage('#ffedd5', '#fed7aa', '#ea580c', 'VITAMIN C SERUM', '50ML', 'bag') },
-        { id: 801, name: 'Soft Baby Diapers Jumbo Pack (64s)', category: 'Baby Products', price: 2100, originalPrice: 2800, discount: '25% OFF', image: createProductImage('#e0f2fe', '#bae6fd', '#0ea5e9', 'BABY DIAPERS 64S', 'SIZE 3', 'bag') },
-        { id: 901, name: 'PS5 DualSense Wireless Controller', category: 'Gaming & Toys', price: 8200, originalPrice: 11000, discount: '25% OFF', image: createProductImage('#eff6ff', '#bfdbfe', '#1d4ed8', 'PS5 CONTROLLER', 'WIRELESS', 'bag') },
-        { id: 1001, name: 'FIFA Match Training Football Size 5', category: 'Sporting Goods', price: 1700, originalPrice: 2500, discount: '32% OFF', image: createProductImage('#dcfce7', '#86efac', '#16a34a', 'PRO FOOTBALL SIZE 5', 'FIFA', 'bag') }
+        { id: 101, name: 'Jogoo Maize Meal Flour 2kg', category: 'Supermarket & Groceries', price: 130, originalPrice: 190, discount: '32% OFF', image: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&q=80', sizes: ['2kg Pack', '5kg Bale'], colors: ['Standard White'] },
+        { id: 102, name: 'Brookside Fresh Whole Milk 1L', category: 'Supermarket & Groceries', price: 145, originalPrice: 180, discount: '19% OFF', image: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=600&q=80', sizes: ['1 Litre', '500ml'], colors: ['Fresh White'] },
+        { id: 201, name: 'Samsung Galaxy A15 6.5" 128GB/4GB', category: 'Phones & Tablets', price: 18500, originalPrice: 24000, discount: '23% OFF', image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&q=80', sizes: ['128GB/4GB', '256GB/8GB'], colors: ['Blue Black', 'Light Blue', 'Yellow'] },
+        { id: 202, name: 'Redmi Note 13 Pro 256GB/8GB', category: 'Phones & Tablets', price: 28000, originalPrice: 35000, discount: '20% OFF', image: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=600&q=80', sizes: ['256GB/8GB'], colors: ['Midnight Black', 'Forest Green', 'Lavender Purple'] },
+        { id: 301, name: 'HP Pavilion 15 Core i5 16GB/512GB SSD', category: 'Computing & Laptops', price: 69000, originalPrice: 85000, discount: '19% OFF', image: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=600&q=80', sizes: ['16GB RAM / 512GB SSD'], colors: ['Natural Silver', 'Nightfall Black'] },
+        { id: 401, name: 'Hisense 43" Smart Frameless LED TV', category: 'Electronics & Audio', price: 29900, originalPrice: 38000, discount: '21% OFF', image: 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=600&q=80', sizes: ['43 Inch', '50 Inch'], colors: ['Frameless Black'] },
+        { id: 402, name: 'Sony WH-1000XM5 ANC Headphones', category: 'Electronics & Audio', price: 36000, originalPrice: 46000, discount: '22% OFF', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&q=80', sizes: ['Over-Ear Standard'], colors: ['Black', 'Silver', 'Midnight Blue'] },
+        { id: 501, name: 'Ramtons 20L Digital Microwave Oven', category: 'Home & Office Appliances', price: 10900, originalPrice: 14000, discount: '22% OFF', image: 'https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?w=600&q=80', sizes: ['20 Litre'], colors: ['Silver Metallic'] },
+        { id: 601, name: 'Men Breathable Sports Running Sneakers', category: 'Fashion & Apparel', price: 2200, originalPrice: 3500, discount: '37% OFF', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80', sizes: ['EU 40', 'EU 41', 'EU 42', 'EU 43', 'EU 44'], colors: ['Fire Red', 'Jet Black', 'Pure White'] },
+        { id: 701, name: 'Hydrating Vitamin C Face Serum 50ml', category: 'Health & Beauty', price: 3500, originalPrice: 4800, discount: '27% OFF', image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=600&q=80', sizes: ['50ml Bottle'], colors: ['Clear'] },
+        { id: 801, name: 'Soft Baby Diapers Jumbo Pack (64s)', category: 'Baby Products', price: 2100, originalPrice: 2800, discount: '25% OFF', image: 'https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=600&q=80', sizes: ['Size 3 (64s)', 'Size 4 (56s)', 'Size 5 (48s)'], colors: ['White Jumbo'] },
+        { id: 901, name: 'PS5 DualSense Wireless Controller', category: 'Gaming & Toys', price: 8200, originalPrice: 11000, discount: '25% OFF', image: 'https://images.unsplash.com/photo-1606318801954-d46d46d3360a?w=600&q=80', sizes: ['Standard Edition'], colors: ['White', 'Cosmic Red', 'Midnight Black'] },
+        { id: 1001, name: 'FIFA Match Training Football Size 5', category: 'Sporting Goods', price: 1700, originalPrice: 2500, discount: '32% OFF', image: 'https://images.unsplash.com/photo-1614632537456-c30d719003f5?w=600&q=80', sizes: ['Size 5 Official'], colors: ['White/Blue', 'Yellow/Black'] }
       ], []);
+
+      const [selectedOptions, setSelectedOptions] = useState({});
+
+      const handleOptionChange = (productId, optionType, value) => {
+        setSelectedOptions(prev => ({
+          ...prev,
+          [productId]: { ...(prev[productId] || {}), [optionType]: value }
+        }));
+      };
 
       const formatPrice = (amountInKsh) => {
         const config = currencyRates[selectedCurrency] || currencyRates.KSh;
@@ -144,123 +117,98 @@
         });
       }, [masterCatalog, selectedCategory, searchQuery]);
 
-      const addToCart = (product) => setCart((prev) => [...prev, product]);
+      const addToCartWithOptions = (product) => {
+        const opts = selectedOptions[product.id] || {};
+        const chosenSize = opts.size || product.sizes[0];
+        const chosenColor = opts.color || product.colors[0];
+        const chosenQty = opts.qty || 1;
+
+        const cartItem = {
+          ...product,
+          cartId: `${product.id}-${chosenSize}-${chosenColor}`,
+          selectedSize: chosenSize,
+          selectedColor: chosenColor,
+          quantity: Number(chosenQty),
+          price: product.price * Number(chosenQty)
+        };
+
+        setCart(prev => [...prev, cartItem]);
+        
+        // Mark product as picked to remove yellow highlights/borders
+        setPickedProductIds(prev => [...prev, product.id]);
+        
+        setIsCartOpen(true);
+      };
+
       const removeFromCart = (index) => setCart((prev) => prev.filter((_, i) => i !== index));
 
       const cartTotalKsh = cart.reduce((sum, item) => sum + item.price, 0);
       const depositAmountKsh = Math.round(cartTotalKsh * 0.3);
       const balanceOnDeliveryKsh = cartTotalKsh - depositAmountKsh;
 
-      const savePaystackKey = (newKey) => {
-        const trimmed = newKey.trim();
-        setPaystackKey(trimmed);
-        localStorage.setItem('kilimall_paystack_pk', trimmed);
+      const cancelOrder = (orderId) => {
+        setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: 'Cancelled' } : o));
+        setNotifications(prev => [{ id: Date.now(), title: 'Order Cancelled', msg: `Order ${orderId} was successfully cancelled.`, date: new Date().toISOString().split('T')[0], read: false }, ...prev]);
       };
 
-      // Trigger Real Paystack Checkout Popup
       const handlePaystackCheckout = (e) => {
         e.preventDefault();
-
-        if (!paystackKey || paystackKey.length < 30) {
-          alert('Please enter your complete Paystack Live Public Key in the Admin Dashboard first.');
+        if (!isLoggedIn) {
           setIsCartOpen(false);
-          setViewMode('admin');
+          setIsAuthOpen(true);
           return;
         }
 
         const currencyConfig = currencyRates[selectedCurrency] || currencyRates.KSh;
-        const payCurrency = ['KES', 'NGN', 'GHS', 'ZAR', 'USD'].includes(currencyConfig.iso)
-          ? currencyConfig.iso
-          : 'KES';
-
-        const amountInSelectedCurrency =
-          payCurrency === 'KES'
-            ? depositAmountKsh
-            : Number((depositAmountKsh * currencyConfig.rate).toFixed(2));
-
-        const amountInSubunits = Math.round(amountInSelectedCurrency * 100);
+        const payCurrency = ['KES', 'NGN', 'GHS', 'ZAR', 'USD'].includes(currencyConfig.iso) ? currencyConfig.iso : 'KES';
+        const amountInSubunits = Math.round((payCurrency === 'KES' ? depositAmountKsh : depositAmountKsh * currencyConfig.rate) * 100);
         const reference = 'KILI-' + Math.floor(100000000 + Math.random() * 900000000);
 
-        if (typeof window.PaystackPop === 'undefined') {
-          alert('Paystack SDK failed to load. Check your internet connection and refresh.');
-          return;
-        }
-
         const handler = window.PaystackPop.setup({
-          key: paystackKey,
-          email: customerEmail,
+          key: PAYSTACK_PK,[span_2](start_span)[span_2](end_span)
+          email: currentUser.email,
           amount: amountInSubunits,
           currency: payCurrency,
           ref: reference,
-          metadata: {
-            custom_fields: [
-              { display_name: 'Customer Name', variable_name: 'customer_name', value: customerName },
-              { display_name: 'Phone Number', variable_name: 'phone_number', value: phoneNumber },
-              { display_name: 'Country', variable_name: 'destination_country', value: destinationCountry },
-              { display_name: 'Delivery Address', variable_name: 'shipping_address', value: shippingAddress },
-              { display_name: 'Balance Due On Delivery (KES)', variable_name: 'balance_due_kes', value: balanceOnDeliveryKsh }
-            ]
-          },
           callback: function (response) {
             const newOrder = {
               id: `ORD-${Math.floor(1000 + Math.random() * 9000)}`,
               ref: response.reference,
-              customer: customerName,
-              country: destinationCountry,
-              phone: phoneNumber,
+              items: [...cart],
               total: cartTotalKsh,
               deposit: depositAmountKsh,
               balance: balanceOnDeliveryKsh,
-              status: '30% Paid (Paystack)',
-              date: new Date().toISOString().split('T')[0]
+              status: 'Dispatched',
+              date: new Date().toISOString().split('T')[0],
+              country: destinationCountry
             };
-            setOrders((prev) => [newOrder, ...prev]);
+            setOrders(prev => [newOrder, ...prev]);
+            setNotifications(prev => [{ id: Date.now(), title: 'Order Placed!', msg: `Your 30% deposit for order ${newOrder.id} was received via Paystack.`, date: new Date().toISOString().split('T')[0], read: false }, ...prev]);
             setLastPaymentRef(response.reference);
             setCheckoutStep('success');
             setCart([]);
           },
-          onClose: function () {
-            // Modal closed without completing
-          }
+          onClose: function () {}
         });
-
         handler.openIframe();
       };
 
       const categoriesToRender = selectedCategory === 'All' ? categories : [selectedCategory];
 
       return (
-        <div className="bg-gray-100 min-h-screen font-sans text-gray-900">
+        <div className="bg-gray-100 min-h-screen font-sans text-gray-900 pb-24">
+          
           {/* Top Sticky Header */}
           <header className="bg-orange-600 text-white sticky top-0 z-50 shadow-md">
             <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-3">
               <div className="flex items-center justify-between w-full md:w-auto">
-                <h1
-                  className="text-xl md:text-2xl font-black tracking-wider cursor-pointer"
-                  onClick={() => {
-                    setSelectedCategory('All');
-                    setSearchQuery('');
-                    setViewMode('store');
-                  }}
-                >
+                <h1 className="text-xl md:text-2xl font-black tracking-wider cursor-pointer" onClick={() => { setSelectedCategory('All'); setSearchQuery(''); setViewMode('store'); }}>
                   KILI-MALL EAST AFRICA
                 </h1>
 
                 <div className="flex items-center gap-2 md:hidden">
-                  <button
-                    onClick={() => setViewMode(viewMode === 'store' ? 'admin' : 'store')}
-                    className="bg-orange-800 px-2.5 py-1.5 rounded text-xs font-bold"
-                  >
-                    {viewMode === 'store' ? '📊 Admin' : '🛍️ Store'}
-                  </button>
-                  <button
-                    onClick={() => {
-                      setIsCartOpen(true);
-                      setCheckoutStep('cart');
-                    }}
-                    className="bg-orange-700 px-3 py-1.5 rounded-lg font-bold text-xs"
-                  >
-                    🛒 ({cart.length})
+                  <button onClick={() => isLoggedIn ? setViewMode('account') : setIsAuthOpen(true)} className="bg-orange-800 px-2.5 py-1.5 rounded text-xs font-bold">
+                    {isLoggedIn ? '👤 Account' : '🔑 Login'}
                   </button>
                 </div>
               </div>
@@ -291,24 +239,8 @@
                   ))}
                 </select>
 
-                <button
-                  onClick={() => setViewMode(viewMode === 'store' ? 'admin' : 'store')}
-                  className="bg-orange-800 hover:bg-orange-900 transition px-4 py-2 rounded-lg font-bold text-sm shadow-sm"
-                >
-                  {viewMode === 'store' ? '📊 Admin Dashboard' : '🛍️ Return to Store'}
-                </button>
-
-                <button
-                  onClick={() => {
-                    setIsCartOpen(true);
-                    setCheckoutStep('cart');
-                  }}
-                  className="bg-orange-700 hover:bg-orange-800 transition px-4 py-2 rounded-lg font-bold text-sm flex items-center gap-2 shadow-sm"
-                >
-                  <span>🛒 Cart</span>
-                  <span className="bg-white text-orange-600 px-2 py-0.5 rounded-full text-xs font-black">
-                    {cart.length}
-                  </span>
+                <button onClick={() => isLoggedIn ? setViewMode('account') : setIsAuthOpen(true)} className="bg-orange-800 hover:bg-orange-900 transition px-4 py-2 rounded-lg font-bold text-sm shadow-sm flex items-center gap-1.5">
+                  <span>👤</span> {isLoggedIn ? currentUser.name.split(' ')[0] : 'Account / Login'}
                 </button>
               </div>
             </div>
@@ -317,22 +249,11 @@
             {viewMode === 'store' && (
               <nav className="bg-orange-700 text-white text-xs overflow-x-auto no-scrollbar">
                 <div className="max-w-7xl mx-auto px-4 py-2 flex items-center gap-2 whitespace-nowrap">
-                  <button
-                    onClick={() => setSelectedCategory('All')}
-                    className={`px-3 py-1 rounded-full font-bold transition ${
-                      selectedCategory === 'All' ? 'bg-white text-orange-700' : 'hover:bg-orange-600'
-                    }`}
-                  >
+                  <button onClick={() => setSelectedCategory('All')} className={`px-3 py-1 rounded-full font-bold transition ${selectedCategory === 'All' ? 'bg-white text-orange-700' : 'hover:bg-orange-600'}`}>
                     All 10 Departments
                   </button>
                   {categories.map((cat) => (
-                    <button
-                      key={cat}
-                      onClick={() => setSelectedCategory(cat)}
-                      className={`px-3 py-1 rounded-full font-semibold transition ${
-                        selectedCategory === cat ? 'bg-white text-orange-700' : 'hover:bg-orange-600'
-                      }`}
-                    >
+                    <button key={cat} onClick={() => setSelectedCategory(cat)} className={`px-3 py-1 rounded-full font-semibold transition ${selectedCategory === cat ? 'bg-white text-orange-700' : 'hover:bg-orange-600'}`}>
                       {cat}
                     </button>
                   ))}
@@ -342,111 +263,87 @@
           </header>
 
           {/* Banner */}
-          <div className="bg-gray-900 text-white text-center py-2 text-xs font-semibold px-4">
-            🌍 East Africa Delivery (Kenya, Uganda, Tanzania, Rwanda, Burundi, South Sudan) | Pay <span className="text-orange-400 font-bold">30% Deposit via Paystack</span> & <span className="text-green-400 font-bold">70% Balance After Delivery</span>
+          <div className="bg-gray-900 text-white text-center py-2 text-xs font-semibold px-4 flex flex-wrap items-center justify-center gap-3">
+            <span>🌍 East Africa Delivery (Kenya, Uganda, Tanzania, Rwanda, Burundi, South Sudan)</span>
+            <span>•</span>
+            <span className="text-orange-400 font-bold">Pay 30% Deposit Now</span>
+            <span>•</span>
+            <span className="text-green-400 font-bold">70% Balance After Delivery</span>
           </div>
 
-          {/* ADMIN DASHBOARD vs STOREFRONT */}
-          {viewMode === 'admin' ? (
-            <main className="max-w-7xl mx-auto p-4 md:p-6 space-y-6">
-              <div className="bg-white rounded-xl shadow-sm p-6 border border-blue-200">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          {/* APP VIEW SWITCHER */}
+          {viewMode === 'account' ? (
+            <main className="max-w-4xl mx-auto p-4 md:p-6 space-y-6">
+              <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-200">
+                <div className="flex justify-between items-center border-b pb-4 mb-6">
                   <div>
-                    <div className="flex items-center gap-2">
-                      <span className="bg-green-100 text-green-800 text-[10px] font-black px-2 py-0.5 rounded uppercase">
-                        Paystack Live Mode
-                      </span>
-                      <h2 className="text-lg font-black text-gray-800">Paystack Payment Gateway Settings</h2>
-                    </div>
-                    <p className="text-xs text-gray-600 mt-1">
-                      Your Live Public Key is configured and ready. You can modify it anytime below.
-                    </p>
+                    <h2 className="text-xl font-black text-gray-800">Customer Account & Order Dashboard</h2>
+                    <p className="text-xs text-gray-500">Track orders, check past purchases, and read notification alerts.</p>
                   </div>
-                  <div className="flex flex-col sm:flex-row gap-2 w-full md:w-1/2">
-                    <input
-                      type="text"
-                      value={paystackKey}
-                      onChange={(e) => savePaystackKey(e.target.value)}
-                      placeholder="pk_live_..."
-                      className="flex-1 p-2.5 text-xs font-mono border rounded-lg bg-gray-50 focus:outline-none focus:border-blue-600"
-                    />
-                    <button
-                      onClick={() => alert('Paystack Live Public Key saved!')}
-                      className="bg-blue-600 text-white px-4 py-2.5 rounded-lg text-xs font-bold hover:bg-blue-700"
-                    >
-                      Save Key
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-                <div className="flex justify-between items-center mb-6">
-                  <div>
-                    <h2 className="text-xl font-black text-gray-800">Admin Dashboard & Order Management</h2>
-                    <p className="text-xs text-gray-500">Monitor Paystack 30% deposits, balances due on delivery, and East Africa dispatches.</p>
-                  </div>
-                  <button
-                    onClick={() => setViewMode('store')}
-                    className="bg-orange-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-orange-700"
-                  >
-                    Back to Storefront
+                  <button onClick={() => setViewMode('store')} className="bg-orange-600 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-orange-700">
+                    Return to Store
                   </button>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                  <div className="bg-orange-50 border border-orange-200 p-4 rounded-xl">
-                    <p className="text-xs text-orange-800 font-bold uppercase">Total Orders Logged</p>
-                    <p className="text-2xl font-black text-orange-600 mt-1">{orders.length}</p>
+                <div className="bg-orange-50 border border-orange-200 p-4 rounded-xl flex items-center justify-between mb-6">
+                  <div>
+                    <p className="text-xs text-orange-800 font-bold uppercase">Logged in Customer</p>
+                    <p className="text-base font-black text-gray-900">{currentUser.name} ({currentUser.email})</p>
+                    <p className="text-xs text-gray-600">{currentUser.phone}</p>
                   </div>
-                  <div className="bg-green-50 border border-green-200 p-4 rounded-xl">
-                    <p className="text-xs text-green-800 font-bold uppercase">Total Paystack Deposits (30%)</p>
-                    <p className="text-2xl font-black text-green-600 mt-1">
-                      KSh {orders.reduce((sum, o) => sum + o.deposit, 0).toLocaleString()}
-                    </p>
-                  </div>
-                  <div className="bg-blue-50 border border-blue-200 p-4 rounded-xl">
-                    <p className="text-xs text-blue-800 font-bold uppercase">Pending Balance on Delivery (70%)</p>
-                    <p className="text-2xl font-black text-blue-600 mt-1">
-                      KSh {orders.reduce((sum, o) => sum + o.balance, 0).toLocaleString()}
-                    </p>
+                  <button onClick={() => { setIsLoggedIn(false); setViewMode('store'); }} className="bg-white text-red-600 border border-red-200 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-red-50">
+                    Log Out
+                  </button>
+                </div>
+
+                <div className="mb-6">
+                  <h3 className="text-sm font-bold text-gray-800 mb-2 uppercase tracking-wide">🔔 Notifications Inbox</h3>
+                  <div className="space-y-2">
+                    {notifications.map(n => (
+                      <div key={n.id} className="bg-blue-50 border border-blue-100 p-3 rounded-xl text-xs flex justify-between items-center">
+                        <div>
+                          <p className="font-bold text-blue-900">{n.title}</p>
+                          <p className="text-blue-700 mt-0.5">{n.msg}</p>
+                        </div>
+                        <span className="text-[10px] text-blue-500">{n.date}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse text-xs">
-                    <thead>
-                      <tr className="bg-gray-100 text-gray-700 uppercase">
-                        <th className="p-3">Order ID</th>
-                        <th className="p-3">Paystack Ref</th>
-                        <th className="p-3">Customer</th>
-                        <th className="p-3">Country / Phone</th>
-                        <th className="p-3">Total Value</th>
-                        <th className="p-3 text-green-700">30% Paid</th>
-                        <th className="p-3 text-orange-700">70% Balance Due</th>
-                        <th className="p-3">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200">
-                      {orders.map((order) => (
-                        <tr key={order.id} className="hover:bg-gray-50">
-                          <td className="p-3 font-bold text-gray-900">{order.id}</td>
-                          <td className="p-3 font-mono text-gray-600">{order.ref}</td>
-                          <td className="p-3 font-semibold">{order.customer}</td>
-                          <td className="p-3 text-gray-600">{order.country} ({order.phone})</td>
-                          <td className="p-3 font-bold">KSh {order.total.toLocaleString()}</td>
-                          <td className="p-3 font-black text-green-600">KSh {order.deposit.toLocaleString()}</td>
-                          <td className="p-3 font-black text-orange-600">KSh {order.balance.toLocaleString()}</td>
-                          <td className="p-3">
-                            <span className="bg-green-100 text-green-800 px-2 py-1 rounded font-bold text-[10px]">
-                              {order.status}
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                <div>
+                  <h3 className="text-sm font-bold text-gray-800 mb-2 uppercase tracking-wide">📦 My Orders & Tracking</h3>
+                  <div className="space-y-4">
+                    {orders.map(order => (
+                      <div key={order.id} className="border border-gray-200 rounded-xl p-4 bg-white shadow-sm space-y-3">
+                        <div className="flex justify-between items-center border-b pb-2">
+                          <div>
+                            <span className="font-black text-gray-900">{order.id}</span>
+                            <span className="text-xs text-gray-500 ml-2">({order.date})</span>
+                          </div>
+                          <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${order.status === 'Cancelled' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
+                            {order.status}
+                          </span>
+                        </div>
+                        
+                        <div className="text-xs space-y-1 text-gray-600">
+                          <p><strong>Destination:</strong> {order.country}</p>
+                          <p><strong>30% Deposit Paid:</strong> KSh {order.deposit.toLocaleString()} (Ref: {order.ref || 'COD'})</p>
+                          <p><strong>70% Balance on Delivery:</strong> KSh {order.balance.toLocaleString()}</p>
+                        </div>
+
+                        {order.status !== 'Cancelled' && order.status !== 'Delivered' && (
+                          <div className="flex justify-end gap-2 pt-2 border-t">
+                            <button onClick={() => cancelOrder(order.id)} className="bg-red-50 text-red-600 border border-red-200 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-red-100">
+                              Cancel Order
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
+
               </div>
             </main>
           ) : (
@@ -454,13 +351,7 @@
               {filteredProducts.length === 0 ? (
                 <div className="bg-white rounded-xl p-16 text-center shadow-sm">
                   <p className="text-gray-600 font-medium">No discounted products found matching "{searchQuery}".</p>
-                  <button
-                    onClick={() => {
-                      setSelectedCategory('All');
-                      setSearchQuery('');
-                    }}
-                    className="mt-4 bg-orange-600 text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow hover:bg-orange-700 transition"
-                  >
+                  <button onClick={() => { setSelectedCategory('All'); setSearchQuery(''); }} className="mt-4 bg-orange-600 text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow hover:bg-orange-700 transition">
                     Show All Products
                   </button>
                 </div>
@@ -476,43 +367,155 @@
                         <span className="text-xs bg-orange-800 px-2.5 py-1 rounded-full font-bold">{sectionItems.length} Deals</span>
                       </div>
 
-                      <div className="p-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                        {sectionItems.map((product) => (
-                          <div key={product.id} className="bg-white rounded-xl shadow-sm hover:shadow-md transition p-3 flex flex-col justify-between border border-gray-100 relative">
-                            <span className="absolute top-4 left-4 bg-red-600 text-white text-[10px] font-black px-2 py-0.5 rounded shadow z-10">
-                              {product.discount}
-                            </span>
+                      {/* Product Grid with 4 Selection Options */}
+                      <div className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {sectionItems.map((product) => {
+                          const currentOpts = selectedOptions[product.id] || {};
+                          const activeSize = currentOpts.size || product.sizes[0];
+                          const activeColor = currentOpts.color || product.colors[0];
+                          const activeQty = currentOpts.qty || 1;
 
-                            <div>
-                              <div className="w-full h-40 bg-gray-100 rounded-lg overflow-hidden mb-2.5">
-                                <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
-                              </div>
-                              <h3 className="text-sm font-semibold text-gray-800 line-clamp-2">{product.name}</h3>
-                            </div>
+                          const isPicked = pickedProductIds.includes(product.id);
 
-                            <div className="mt-3 pt-2 border-t border-gray-100">
-                              <div className="flex items-baseline gap-2">
-                                <span className="text-base font-black text-gray-900">{formatPrice(product.price)}</span>
-                                <span className="text-xs text-gray-400 line-through">{formatPrice(product.originalPrice)}</span>
+                          return (
+                            <div key={product.id} className={`bg-white rounded-xl shadow-sm hover:shadow-md transition p-3 flex flex-col justify-between border relative ${isPicked ? 'border-gray-200' : 'border-amber-300 bg-amber-50/20'}`}>
+                              
+                              {/* Yellow discount tag disappears or changes when picked, or stays clean */}
+                              <span className={`absolute top-4 left-4 text-white text-[10px] font-black px-2 py-0.5 rounded shadow z-10 ${isPicked ? 'bg-gray-700' : 'bg-red-600'}`}>
+                                {isPicked ? '✓ PICKED' : product.discount}
+                              </span>
+
+                              <div>
+                                <div className="w-full h-44 bg-gray-100 rounded-lg overflow-hidden mb-2.5">
+                                  <img src={product.image} alt={product.name} className="w-full h-full object-cover hover:scale-105 transition duration-300" />
+                                </div>
+                                <h3 className="text-sm font-semibold text-gray-800 line-clamp-2">{product.name}</h3>
                               </div>
-                              <p className="text-[11px] text-green-700 font-bold mt-0.5">
-                                30% Deposit: {formatPrice(Math.round(product.price * 0.3))}
-                              </p>
-                              <button
-                                onClick={() => addToCart(product)}
-                                className="w-full mt-2.5 bg-orange-600 text-white text-xs font-bold py-2.5 rounded-lg hover:bg-orange-700 active:scale-95 transition shadow-sm"
-                              >
-                                Add to Cart
-                              </button>
+
+                              {/* 4 Options for Choosing Goods */}
+                              <div className="mt-3 space-y-2 pt-2 border-t border-gray-100 text-xs">
+                                <div className="flex gap-1 items-center">
+                                  <span className="text-[10px] font-bold text-gray-500 w-10">Size:</span>
+                                  <select value={activeSize} onChange={(e) => handleOptionChange(product.id, 'size', e.target.value)} className="w-full p-1 border rounded text-[11px] bg-gray-50">
+                                    {product.sizes.map(s => <option key={s} value={s}>{s}</option>)}
+                                  </select>
+                                </div>
+
+                                <div className="flex gap-1 items-center">
+                                  <span className="text-[10px] font-bold text-gray-500 w-10">Color:</span>
+                                  <select value={activeColor} onChange={(e) => handleOptionChange(product.id, 'color', e.target.value)} className="w-full p-1 border rounded text-[11px] bg-gray-50">
+                                    {product.colors.map(c => <option key={c} value={c}>{c}</option>)}
+                                  </select>
+                                </div>
+
+                                <div className="flex gap-1 items-center">
+                                  <span className="text-[10px] font-bold text-gray-500 w-10">Qty:</span>
+                                  <input type="number" min="1" max="10" value={activeQty} onChange={(e) => handleOptionChange(product.id, 'qty', e.target.value)} className="w-full p-1 border rounded text-[11px] bg-gray-50 text-center font-bold" />
+                                </div>
+
+                                <div className="flex items-baseline justify-between pt-1">
+                                  <div>
+                                    <p className="text-sm font-black text-gray-900">{formatPrice(product.price * activeQty)}</p>
+                                    <p className="text-[10px] text-gray-400 line-through">{formatPrice(product.originalPrice * activeQty)}</p>
+                                  </div>
+                                  <p className="text-[10px] text-green-700 font-bold">30% Dep: {formatPrice(Math.round(product.price * activeQty * 0.3))}</p>
+                                </div>
+
+                                <button onClick={() => addToCartWithOptions(product)} className={`w-full mt-1 text-xs font-bold py-2 rounded-lg transition shadow-sm ${isPicked ? 'bg-gray-800 text-white hover:bg-black' : 'bg-orange-600 text-white hover:bg-orange-700 active:scale-95'}`}>
+                                  {isPicked ? 'Add Again / Update' : 'Add to Cart'}
+                                </button>
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </section>
                   );
                 })
               )}
             </main>
+          )}
+
+          {/* PLAY STORE / PWA APP INSTALL BANNER */}
+          <div className="max-w-7xl mx-auto px-4 mt-8">
+            <div className="bg-gradient-to-r from-gray-900 to-orange-900 text-white rounded-2xl p-6 shadow-lg flex flex-col md:flex-row items-center justify-between gap-6">
+              <div>
+                <span className="bg-orange-500 text-white text-[10px] font-black px-2 py-0.5 rounded uppercase">Android & Play Store Ready</span>
+                <h3 className="text-xl font-black mt-2">Download Kili-Mall East Africa App</h3>
+                <p className="text-xs text-gray-300 mt-1 max-w-xl">
+                  Track orders instantly, get push notifications for East Africa shipments, and manage payments directly from your phone.
+                </p>
+              </div>
+              <button onClick={() => alert('App package (.apk) download initiated. You can also install this web app directly via your browser menu ("Add to Home Screen").')} className="bg-white text-gray-900 px-6 py-3 rounded-xl font-black text-xs hover:bg-orange-100 transition shadow">
+                📲 Download Android App
+              </button>
+            </div>
+          </div>
+
+          {/* FLOATING CART BUTTON AT BOTTOM RIGHT (Slightly larger than previous) */}
+          <div className="fixed bottom-6 right-6 z-40">
+            <button
+              onClick={() => { setIsCartOpen(true); setCheckoutStep('cart'); }}
+              className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-4 rounded-full shadow-2xl flex items-center gap-3 font-black text-base transition transform hover:scale-105 active:scale-95 border-2 border-white"
+            >
+              <span className="text-xl">🛒</span>
+              <span>View Cart</span>
+              <span className="bg-white text-orange-600 px-3 py-1 rounded-full text-xs font-black shadow-inner">
+                {cart.length}
+              </span>
+            </button>
+          </div>
+
+          {/* LOGIN / REGISTER MODAL */}
+          {isAuthOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 p-4">
+              <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-6">
+                <div className="flex justify-between items-center border-b pb-3 mb-4">
+                  <h3 className="text-lg font-black text-gray-800">{authMode === 'login' ? 'Customer Login' : 'Create Account'}</h3>
+                  <button onClick={() => setIsAuthOpen(false)} className="text-gray-400 hover:text-gray-700 font-bold text-xl">✕</button>
+                </div>
+
+                <form onSubmit={(e) => {
+                  e.preventDefault();
+                  setIsLoggedIn(true);
+                  setIsAuthOpen(false);
+                  setNotifications(prev => [{ id: Date.now(), title: 'Account Active', msg: `Welcome back, ${currentUser.name}!`, date: new Date().toISOString().split('T')[0], read: false }, ...prev]);
+                  if (cart.length > 0) setIsCartOpen(true);
+                }} className="space-y-3">
+                  {authMode === 'register' && (
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 mb-1">Full Name</label>
+                      <input type="text" required value={currentUser.name} onChange={(e) => setCurrentUser({...currentUser, name: e.target.value})} className="w-full p-2.5 text-sm border rounded-lg" />
+                    </div>
+                  )}
+
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 mb-1">Email Address</label>
+                    <input type="email" required value={currentUser.email} onChange={(e) => setCurrentUser({...currentUser, email: e.target.value})} className="w-full p-2.5 text-sm border rounded-lg" />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 mb-1">Phone Number</label>
+                    <input type="tel" required value={currentUser.phone} onChange={(e) => setCurrentUser({...currentUser, phone: e.target.value})} className="w-full p-2.5 text-sm border rounded-lg" />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 mb-1">Password</label>
+                    <input type="password" required placeholder="••••••••" className="w-full p-2.5 text-sm border rounded-lg" />
+                  </div>
+
+                  <button type="submit" className="w-full bg-orange-600 text-white font-bold py-3 rounded-xl hover:bg-orange-700 shadow text-sm mt-4">
+                    {authMode === 'login' ? 'Log In to Account' : 'Register & Create Account'}
+                  </button>
+
+                  <div className="text-center pt-2">
+                    <button type="button" onClick={() => setAuthMode(authMode === 'login' ? 'register' : 'login')} className="text-xs text-orange-600 font-bold hover:underline">
+                      {authMode === 'login' ? "Don't have an account? Register here" : "Already have an account? Log in"}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
           )}
 
           {/* Cart & Paystack Checkout Drawer */}
@@ -525,15 +528,7 @@
                     {checkoutStep === 'checkout' && 'Paystack 30% Deposit Checkout'}
                     {checkoutStep === 'success' && 'Payment Verified!'}
                   </h2>
-                  <button
-                    onClick={() => {
-                      setIsCartOpen(false);
-                      setCheckoutStep('cart');
-                    }}
-                    className="text-gray-400 hover:text-gray-700 text-xl font-bold"
-                  >
-                    ✕
-                  </button>
+                  <button onClick={() => { setIsCartOpen(false); setCheckoutStep('cart'); }} className="text-gray-400 hover:text-gray-700 text-xl font-bold">✕</button>
                 </div>
 
                 {checkoutStep === 'cart' && (
@@ -541,7 +536,7 @@
                     {cart.length === 0 ? (
                       <div className="flex-1 flex flex-col items-center justify-center text-center text-gray-500">
                         <p className="text-base font-bold">Your cart is empty</p>
-                        <p className="text-xs mt-1">Select any discounted item across East Africa to start.</p>
+                        <p className="text-xs mt-1">Select any discounted item with options to start.</p>
                       </div>
                     ) : (
                       <>
@@ -552,12 +547,11 @@
                                 <img src={item.image} alt={item.name} className="w-12 h-12 object-cover rounded-lg" />
                                 <div>
                                   <h4 className="text-xs font-bold text-gray-800 line-clamp-1">{item.name}</h4>
+                                  <p className="text-[10px] text-gray-500">Size: {item.selectedSize} | Color: {item.selectedColor} | Qty: {item.quantity}</p>
                                   <p className="text-xs text-orange-600 font-black mt-0.5">{formatPrice(item.price)}</p>
                                 </div>
                               </div>
-                              <button onClick={() => removeFromCart(index)} className="text-red-600 hover:text-red-800 text-xs font-bold px-2 py-1">
-                                Remove
-                              </button>
+                              <button onClick={() => removeFromCart(index)} className="text-red-600 hover:text-red-800 text-xs font-bold px-2 py-1">Remove</button>
                             </div>
                           ))}
                         </div>
@@ -577,11 +571,15 @@
                           </div>
                         </div>
 
-                        <button
-                          onClick={() => setCheckoutStep('checkout')}
-                          className="w-full mt-4 bg-orange-600 text-white font-bold py-3 rounded-xl hover:bg-orange-700 transition shadow"
-                        >
-                          Proceed to Paystack Checkout
+                        <button onClick={() => {
+                          if (!isLoggedIn) {
+                            setIsCartOpen(false);
+                            setIsAuthOpen(true);
+                          } else {
+                            setCheckoutStep('checkout');
+                          }
+                        }} className="w-full mt-4 bg-orange-600 text-white font-bold py-3 rounded-xl hover:bg-orange-700 transition shadow">
+                          {isLoggedIn ? 'Proceed to Checkout' : 'Log In to Complete Checkout'}
                         </button>
                       </>
                     )}
@@ -592,115 +590,31 @@
                   <form onSubmit={handlePaystackCheckout} className="flex-1 flex flex-col justify-between space-y-3">
                     <div className="space-y-3">
                       <div>
-                        <label className="block text-xs font-bold text-gray-700 mb-1">Full Name</label>
-                        <input
-                          type="text"
-                          required
-                          placeholder="Enter full name"
-                          value={customerName}
-                          onChange={(e) => setCustomerName(e.target.value)}
-                          className="w-full p-2.5 text-sm border rounded-lg focus:outline-none focus:border-orange-600"
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-2">
-                        <div>
-                          <label className="block text-xs font-bold text-gray-700 mb-1">East Africa Country</label>
-                          <select
-                            value={destinationCountry}
-                            onChange={(e) => setDestinationCountry(e.target.value)}
-                            className="w-full p-2.5 text-sm border rounded-lg bg-white"
-                          >
-                            <option value="Kenya">🇰🇪 Kenya</option>
-                            <option value="Uganda">🇺🇬 Uganda</option>
-                            <option value="Tanzania">🇹🇿 Tanzania</option>
-                            <option value="Rwanda">🇷🇼 Rwanda</option>
-                            <option value="Burundi">🇧🇮 Burundi</option>
-                            <option value="South Sudan">🇸🇸 South Sudan</option>
-                          </select>
-                        </div>
-                        <div>
-                          <label className="block text-xs font-bold text-gray-700 mb-1">Currency</label>
-                          <select
-                            value={selectedCurrency}
-                            onChange={(e) => setSelectedCurrency(e.target.value)}
-                            className="w-full p-2.5 text-sm border rounded-lg bg-white"
-                          >
-                            {Object.entries(currencyRates).map(([code, info]) => (
-                              <option key={code} value={code}>{info.label}</option>
-                            ))}
-                          </select>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-2">
-                        <div>
-                          <label className="block text-xs font-bold text-gray-700 mb-1">Phone Number</label>
-                          <input
-                            type="tel"
-                            required
-                            placeholder="+254 / +256 / +255..."
-                            value={phoneNumber}
-                            onChange={(e) => setPhoneNumber(e.target.value)}
-                            className="w-full p-2.5 text-sm border rounded-lg focus:outline-none focus:border-orange-600"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-bold text-gray-700 mb-1">Email Address (Required)</label>
-                          <input
-                            type="email"
-                            required
-                            placeholder="you@email.com"
-                            value={customerEmail}
-                            onChange={(e) => setCustomerEmail(e.target.value)}
-                            className="w-full p-2.5 text-sm border rounded-lg focus:outline-none focus:border-orange-600"
-                          />
-                        </div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Destination Country</label>
+                        <select value={destinationCountry} onChange={(e) => setDestinationCountry(e.target.value)} className="w-full p-2.5 text-sm border rounded-lg bg-white">
+                          <option value="Kenya">🇰🇪 Kenya</option>
+                          <option value="Uganda">🇺🇬 Uganda</option>
+                          <option value="Tanzania">🇹🇿 Tanzania</option>
+                          <option value="Rwanda">🇷🇼 Rwanda</option>
+                          <option value="Burundi">🇧🇮 Burundi</option>
+                          <option value="South Sudan">🇸🇸 South Sudan</option>
+                        </select>
                       </div>
 
                       <div>
-                        <label className="block text-xs font-bold text-gray-700 mb-1">City & Delivery Point</label>
-                        <input
-                          type="text"
-                          required
-                          placeholder="e.g. Nairobi, Kampala, Dar es Salaam..."
-                          value={shippingAddress}
-                          onChange={(e) => setShippingAddress(e.target.value)}
-                          className="w-full p-2.5 text-sm border rounded-lg focus:outline-none focus:border-orange-600"
-                        />
+                        <label className="block text-xs font-bold text-gray-700 mb-1">City & Delivery Address</label>
+                        <input type="text" required placeholder="e.g. Nairobi CBD, Kampala Road..." value={shippingAddress} onChange={(e) => setShippingAddress(e.target.value)} className="w-full p-2.5 text-sm border rounded-lg" />
                       </div>
 
                       <div className="bg-blue-50 border border-blue-200 p-3 rounded-xl text-xs text-blue-900">
                         <p className="font-bold">🔒 Secured by Paystack Live Checkout</p>
-                        <p className="text-[11px] mt-1">
-                          Supports M-Pesa, Airtel Money, Visa, Mastercard, and Bank Transfers across Africa & USD.
-                        </p>
-                      </div>
-
-                      <div className="bg-gray-50 p-3 rounded-lg border text-xs space-y-1">
-                        <div className="flex justify-between font-bold text-green-700">
-                          <span>30% Deposit Due Now:</span>
-                          <span>{formatPrice(depositAmountKsh)}</span>
-                        </div>
-                        <div className="flex justify-between font-bold text-orange-700">
-                          <span>70% Balance After Delivery ({destinationCountry}):</span>
-                          <span>{formatPrice(balanceOnDeliveryKsh)}</span>
-                        </div>
+                        <p className="text-[11px] mt-1">Paying 30% deposit ({formatPrice(depositAmountKsh)}) via M-Pesa, Card or Mobile Money.</p>
                       </div>
                     </div>
 
                     <div className="border-t pt-3 flex gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setCheckoutStep('cart')}
-                        className="w-1/3 bg-gray-200 text-gray-800 font-bold py-3 rounded-xl text-sm"
-                      >
-                        Back
-                      </button>
-                      <button
-                        type="submit"
-                        className="w-2/3 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow text-sm"
-                      >
+                      <button type="button" onClick={() => setCheckoutStep('cart')} className="w-1/3 bg-gray-200 text-gray-800 font-bold py-3 rounded-xl text-sm">Back</button>
+                      <button type="submit" className="w-2/3 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow text-sm">
                         Pay {formatPrice(depositAmountKsh)} via Paystack
                       </button>
                     </div>
@@ -710,28 +624,20 @@
                 {checkoutStep === 'success' && (
                   <div className="flex-1 flex flex-col items-center justify-center text-center">
                     <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-3xl font-bold mb-4">✓</div>
-                    <h3 className="text-xl font-black text-gray-800 mb-1">Paystack Deposit Verified!</h3>
+                    <h3 className="text-xl font-black text-gray-800 mb-1">Deposit Verified Successfully!</h3>
                     <p className="text-xs font-mono text-gray-500 mb-2">Ref: {lastPaymentRef}</p>
                     <p className="text-xs text-gray-600 max-w-xs mb-4">
-                      Thank you, <span className="font-bold">{customerName}</span>. Your order is logged in the Admin Dashboard and scheduled for dispatch to <span className="font-bold text-orange-600">{destinationCountry}</span> ({shippingAddress}).
+                      Thank you, <span className="font-bold">{currentUser.name}</span>. Your order has been logged in your account dashboard and scheduled for delivery to <span className="font-bold text-orange-600">{destinationCountry}</span>.
                     </p>
-                    <div className="bg-orange-50 p-3 rounded-xl border border-orange-200 text-xs text-orange-900 mb-6 w-full">
-                      <span className="font-bold">Balance Due After Delivery:</span> {formatPrice(balanceOnDeliveryKsh)}
-                    </div>
-                    <button
-                      onClick={() => {
-                        setIsCartOpen(false);
-                        setCheckoutStep('cart');
-                      }}
-                      className="w-full bg-orange-600 text-white font-bold py-3 rounded-xl text-sm"
-                    >
-                      Continue Shopping
+                    <button onClick={() => { setIsCartOpen(false); setCheckoutStep('cart'); setViewMode('account'); }} className="w-full bg-orange-600 text-white font-bold py-3 rounded-xl text-sm shadow">
+                      View Order & Tracking
                     </button>
                   </div>
                 )}
               </div>
             </div>
           )}
+
         </div>
       );
     };
