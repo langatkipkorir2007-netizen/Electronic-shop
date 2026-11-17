@@ -54,7 +54,7 @@
   </header>
 
   <!-- DYNAMIC TAB CONTENT CONTAINER -->
-  <div id="appContainer"></div>
+  <div id="appContainer" class="p-2"></div>
 
   <!-- BOTTOM APP NAVIGATION BAR -->
   <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 flex justify-around items-center py-2 shadow-lg">
@@ -301,6 +301,8 @@
 
     function renderHomeTab() {
       const container = document.getElementById('appContainer');
+      if (!container) return;
+
       const searchInput = document.getElementById('searchInput');
       const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
       
@@ -384,6 +386,7 @@
 
     function renderCategoryTab() {
       const container = document.getElementById('appContainer');
+      if (!container) return;
       container.innerHTML = `
         <div class="flex bg-white min-h-[85vh]">
           <div class="w-1/3 bg-gray-50 border-r border-gray-200 overflow-y-auto no-scrollbar">
@@ -416,6 +419,7 @@
 
     function renderAccountTab() {
       const container = document.getElementById('appContainer');
+      if (!container) return;
 
       if (!isLoggedIn) {
         container.innerHTML = `
@@ -766,9 +770,11 @@
       switchTab('home');
     }
 
-    // INITIALIZE APP ON LOAD
-    switchTab('home');
-    updateCartCounters();
+    // ENSURE INSTANT RENDERING UPON DOM LOAD
+    window.addEventListener('DOMContentLoaded', () => {
+      switchTab('home');
+      updateCartCounters();
+    });
   </script>
 </body>
 </html>
