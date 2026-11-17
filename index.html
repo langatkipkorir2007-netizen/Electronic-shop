@@ -14,7 +14,7 @@
 </head>
 <body class="bg-gray-100 text-gray-900 font-sans pb-28">
 
-  <!-- TOP BLACK APP SEARCH BAR -->
+  <!-- TOP BLACK SEARCH & CATEGORY BAR -->
   <header class="bg-black text-white sticky top-0 z-40 shadow-md">
     <div class="px-3 py-2.5 flex items-center gap-2">
       <div class="flex-1 flex items-center bg-gray-800 rounded-full px-3 py-1.5 border border-gray-700">
@@ -25,7 +25,7 @@
           type="text"
           id="searchInput"
           oninput="renderActiveTabContent()"
-          placeholder="Search Smart TV, Phones, Hair Clipper..."
+          placeholder="Smart TV, Hair Comb, Clipper..."
           class="w-full bg-transparent text-white text-xs placeholder-gray-400 focus:outline-none"
         />
       </div>
@@ -37,12 +37,26 @@
         <option value="RWF">RWF</option>
       </select>
     </div>
+
+    <!-- HORIZONTAL SCROLLABLE CATEGORY SHORTCUTS BAR -->
+    <nav class="bg-black text-gray-300 text-xs overflow-x-auto no-scrollbar border-t border-gray-800 px-3 py-2">
+      <div id="topCategoryBar" class="flex items-center gap-4 whitespace-nowrap">
+        <button onclick="filterByTopCat('All')" class="font-bold text-orange-400">All</button>
+        <button onclick="filterByTopCat('Appliances')" class="font-medium hover:text-white">Appliances</button>
+        <button onclick="filterByTopCat('Furniture')" class="font-medium hover:text-white">Furniture</button>
+        <button onclick="filterByTopCat('Men Clothes')" class="font-medium hover:text-white">Men Clothes</button>
+        <button onclick="filterByTopCat('TVs')" class="font-medium hover:text-white">TVs</button>
+        <button onclick="filterByTopCat('Men Accessories')" class="font-medium hover:text-white">Men Accessories</button>
+        <button onclick="filterByTopCat('Men Shoes')" class="font-medium hover:text-white">Men Shoes</button>
+        <button onclick="filterByTopCat('Smart Phones')" class="font-medium hover:text-white">Phones</button>
+      </div>
+    </nav>
   </header>
 
   <!-- DYNAMIC TAB CONTENT CONTAINER -->
   <div id="appContainer"></div>
 
-  <!-- BOTTOM APP NAVIGATION BAR (Home, Category, Message, Cart, Account) -->
+  <!-- BOTTOM APP NAVIGATION BAR -->
   <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 flex justify-around items-center py-2 shadow-lg">
     <button onclick="switchTab('home')" id="navHome" class="flex flex-col items-center text-orange-600">
       <span class="text-lg">🏠</span>
@@ -121,8 +135,9 @@
   <script>
     const PAYSTACK_PUBLIC_KEY = 'pk_live_96685dc1a36bc585d08a7b5fd4a4891d8bce14cb';[span_0](start_span)[span_0](end_span)
 
-    let activeTab = 'home'; // 'home' | 'category' | 'message' | 'account'
+    let activeTab = 'home';
     let selectedCurrency = 'KSh';
+    let activeCategoryFilter = 'All';
     let cart = [];
     let pickedProductIds = [];
     let isLoggedIn = false;
@@ -145,7 +160,6 @@
       RWF: { symbol: 'FRw ', rate: 10.5 }
     };
 
-    // Catalog items matching your screenshots
     const catalog = [
       {
         id: 1,
@@ -153,95 +167,74 @@
         category: 'Appliances',
         price: 699,
         originalPrice: 1200,
-        discount: '42% OFF',
+        discount: 'Choice • Black Fri',
         image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&q=80',
-        sizes: ['Standard Size', 'Professional XL'],
-        colors: ['Gold Black', 'Rose Gold', 'Ruby Red'],
-        packs: ['1 Unit Box', '2 Units Promo']
+        rating: 5.0,
+        reviews: 7207,
+        fulfillment: 'Fulfilled by Kilimal',
+        sizes: ['Standard Size', 'XL Pro'],
+        colors: ['Gold Black', 'Rose Gold'],
+        packs: ['1 Unit', '2 Units Promo']
       },
       {
         id: 2,
-        name: 'Ultrasonic Pest Repeller Reject Electronic Repellent Killer',
+        name: 'Ultrasonic Pest Repeller Reject Electronic Repellent Killer Household',
         category: 'Appliances',
         price: 299,
         originalPrice: 600,
-        discount: '50% OFF',
+        discount: 'Oversea Shipment',
         image: 'https://images.unsplash.com/photo-1584467735811-99881881b29a?w=600&q=80',
-        sizes: ['Single Room', 'Whole House 4-Pack'],
-        colors: ['Pearl White', 'Midnight Black'],
-        packs: ['1 Pack', 'Value 4-Pack']
+        rating: 4.0,
+        reviews: 9,
+        fulfillment: 'Fulfilled by Kilimal',
+        sizes: ['Single Room', 'House 4-Pack'],
+        colors: ['White'],
+        packs: ['1 Pack']
       },
       {
         id: 3,
         name: 'RichRipple Vintage Hair cutting machine Hair Clipper',
-        category: 'Health & Beauty',
+        category: 'Men Accessories',
         price: 298,
         originalPrice: 550,
-        discount: '46% OFF',
+        discount: 'Black Fri (Clearance)',
         image: 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&q=80',
-        sizes: ['Standard Pro', 'Heavy Duty Pro'],
-        colors: ['Bronze Engraved', 'Gold Dragon', 'Jet Black'],
-        packs: ['Full Grooming Kit', 'Standard Box']
+        rating: 5.0,
+        reviews: 7040,
+        fulfillment: 'Brand Official • Fulfilled by Kilimal',
+        sizes: ['Standard Pro'],
+        colors: ['Gold Dragon', 'Black'],
+        packs: ['Full Kit']
       },
       {
         id: 4,
-        name: 'Refurbished Lenovo ThinkPad Yoga X260 2-in-1 Laptop',
+        name: 'Refurbished Lenovo ThinkPad Yoga X260 2-in-1 Convertible X360 laptop',
         category: 'Computers & Accessories',
         price: 27999,
         originalPrice: 42000,
-        discount: '33% OFF',
+        discount: 'REFURBISHED',
         image: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=600&q=80',
-        sizes: ['8GB RAM / 256GB SSD', '16GB RAM / 512GB SSD'],
-        colors: ['ThinkPad Matte Black'],
-        packs: ['Laptop + Charger', 'Laptop + Stylus Pen']
+        rating: 4.7,
+        reviews: 184,
+        fulfillment: 'Local Dispatch',
+        sizes: ['8GB/256GB', '16GB/512GB'],
+        colors: ['Black'],
+        packs: ['Charger + Stylus']
       },
       {
         id: 5,
-        name: 'Samsung Galaxy A15 6.5" 128GB/4GB Smartphone',
-        category: 'Smart Phones',
-        price: 18500,
-        originalPrice: 24000,
-        discount: '23% OFF',
-        image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&q=80',
-        sizes: ['128GB / 4GB RAM', '256GB / 8GB RAM'],
-        colors: ['Blue Black', 'Light Blue', 'Yellow'],
-        packs: ['Standard Box', 'With Free Earbuds']
-      },
-      {
-        id: 6,
-        name: 'Bluetooth Subwoofer Home Audio Sound System',
-        category: 'TV, Audio & Video',
-        price: 3959,
-        originalPrice: 5500,
-        discount: '28% OFF',
-        image: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?w=600&q=80',
-        sizes: ['Standard 3.1ch', 'Heavy Bass 5.1ch'],
-        colors: ['Piano Black'],
-        packs: ['Standard Set', 'With Mic Included']
-      },
-      {
-        id: 7,
-        name: 'Men Casual Fashion Leather Sneakers',
-        category: 'Shoes',
-        price: 1199,
-        originalPrice: 2200,
-        discount: '45% OFF',
-        image: 'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=600&q=80',
-        sizes: ['EU 40', 'EU 41', 'EU 42', 'EU 43', 'EU 44'],
-        colors: ['Pure Black', 'Snow White', 'Navy Blue'],
-        packs: ['1 Pair', '2 Pairs Bundle']
-      },
-      {
-        id: 8,
-        name: 'Electric Kitchen Blender & Grinder 1.5L',
-        category: 'Kitchen Supplies',
-        price: 1199,
-        originalPrice: 2000,
-        discount: '40% OFF',
-        image: 'https://images.unsplash.com/photo-1570222094114-d074f7eeb4e5?w=600&q=80',
-        sizes: ['1.5L Standard', '2.0L Heavy Duty'],
-        colors: ['Silver Metallic', 'Pure White'],
-        packs: ['Blender + Mill', 'Blender + Extra Jar']
+        name: 'Mosquito Lamp and mosquito swatter in one',
+        category: 'Home & Kitchen',
+        price: 1089,
+        originalPrice: 1800,
+        discount: 'Local Dispatch',
+        image: 'https://images.unsplash.com/photo-1614632537456-c30d719003f5?w=600&q=80',
+        rating: 5.0,
+        reviews: 2832,
+        fulfillment: 'Local Dispatch',
+        sizes: ['Standard'],
+        colors: ['Black/Purple'],
+        packs: ['1 Unit']
       }
     ];
 
@@ -277,13 +270,10 @@
 
     function switchTab(tab) {
       activeTab = tab;
-      
-      // Update Bottom Nav UI
       ['Home', 'Category', 'Message', 'Account'].forEach(t => {
         const el = document.getElementById('nav' + t);
         if (el) el.className = 'flex flex-col items-center text-gray-500 hover:text-orange-600';
       });
-
       const activeEl = document.getElementById('nav' + tab.charAt(0).toUpperCase() + tab.slice(1));
       if (activeEl) activeEl.className = 'flex flex-col items-center text-orange-600';
 
@@ -291,89 +281,93 @@
         alert('Live Customer Support chat via WhatsApp & In-app messaging is active.');
         return;
       }
-
       renderActiveTabContent();
     }
 
     function renderActiveTabContent() {
-      if (activeTab === 'home') renderHomeTab();
-      else if (activeTab === 'category') renderCategoryTab();
-      else if (activeTab === 'account') renderAccountTab();
+      try {
+        if (activeTab === 'home') renderHomeTab();
+        else if (activeTab === 'category') renderCategoryTab();
+        else if (activeTab === 'account') renderAccountTab();
+      } catch (err) {
+        console.error("Rendering error:", err);
+      }
     }
 
-    // =========================================================================
-    // 1. HOME TAB VIEW (Matching Screenshot 2 & 5)
-    // =========================================================================
+    function filterByTopCat(cat) {
+      activeCategoryFilter = cat;
+      renderHomeTab();
+    }
+
     function renderHomeTab() {
       const container = document.getElementById('appContainer');
-      const query = document.getElementById('searchInput').value.toLowerCase();
-      const items = catalog.filter(p => p.name.toLowerCase().includes(query));
+      const searchInput = document.getElementById('searchInput');
+      const query = searchInput ? searchInput.value.toLowerCase() : '';
+      
+      const items = catalog.filter(p => {
+        const matchesQuery = p.name.toLowerCase().includes(query) || p.category.toLowerCase().includes(query);
+        const matchesCat = activeCategoryFilter === 'All' || p.category === activeCategoryFilter;
+        return matchesQuery && matchesCat;
+      });
 
       container.innerHTML = `
         <main class="space-y-3 p-2 md:max-w-4xl md:mx-auto">
-          <!-- BLACK FRIDAY BANNER -->
-          <div class="bg-gradient-to-r from-gray-900 via-orange-900 to-black rounded-xl p-4 text-white shadow relative overflow-hidden">
-            <span class="bg-red-600 text-white text-[9px] font-black px-1.5 py-0.5 rounded uppercase">Black Friday</span>
-            <h2 class="text-base font-black mt-1">New Arrivals: Glow Max Routine Kit</h2>
-            <p class="text-xs text-orange-400 font-bold mt-0.5">Price: KSh 3,409</p>
-          </div>
-
-          <!-- PRODUCTS GRID WITH 4 OPTIONS & YELLOW DISAPPEAR ON PICK -->
           <div class="grid grid-cols-2 gap-2">
             ${items.map(product => {
               const isPicked = pickedProductIds.includes(product.id);
               const cardBg = isPicked ? 'bg-white border-gray-200' : 'bg-white border-amber-300 ring-1 ring-amber-200';
-              const badge = isPicked 
-                ? `<span class="absolute top-2 left-2 bg-gray-800 text-white text-[9px] font-black px-1.5 py-0.5 rounded">✓ PICKED</span>`
-                : `<span class="absolute top-2 left-2 bg-red-600 text-white text-[9px] font-black px-1.5 py-0.5 rounded">HOT DEAL</span>`;
-
               const btnText = isPicked ? '✓ Picked (Add Again)' : 'Add to Cart';
               const btnClass = isPicked ? 'bg-gray-800 text-white' : 'bg-orange-600 hover:bg-orange-700 text-white';
 
+              let stars = '';
+              for(let i=0; i<Math.floor(product.rating); i++) stars += '★';
+
               return `
                 <div class="rounded-xl shadow-sm p-2.5 flex flex-col justify-between border relative ${cardBg}">
-                  ${badge}
                   <div>
-                    <div class="w-full h-36 bg-gray-50 rounded-lg overflow-hidden mb-2">
+                    <div class="w-full h-40 bg-gray-50 rounded-lg overflow-hidden mb-2 relative">
                       <img src="${product.image}" class="w-full h-full object-cover" />
+                      <span class="absolute top-1 left-1 bg-black/70 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">${product.discount}</span>
                     </div>
-                    <h3 class="text-xs font-semibold text-gray-800 line-clamp-2">${product.name}</h3>
+                    <p class="text-[10px] font-bold text-gray-900">${formatPrice(product.price)}</p>
+                    <div class="flex items-center gap-1 text-[9px] text-amber-500 my-0.5">
+                      <span>${stars}</span>
+                      <span class="text-gray-500 font-bold">(${product.reviews})</span>
+                    </div>
+                    <h3 class="text-xs font-medium text-gray-800 line-clamp-2 leading-tight mb-1">${product.name}</h3>
+                    <p class="text-[9px] text-gray-500 font-semibold mb-2">${product.fulfillment}</p>
                   </div>
 
-                  <!-- 4 SELECTION OPTIONS -->
-                  <div class="mt-2 space-y-1 pt-2 border-t border-gray-100 text-[11px]">
+                  <div class="space-y-1 pt-2 border-t border-gray-100 text-[11px]">
                     <div class="flex items-center gap-1">
-                      <span class="text-[9px] font-bold text-gray-500 w-10">Size:</span>
+                      <span class="text-[9px] font-bold text-gray-500 w-9">Size:</span>
                       <select id="size-${product.id}" class="flex-1 p-0.5 border rounded text-[10px] bg-gray-50">
                         ${product.sizes.map(s => `<option value="${s}">${s}</option>`).join('')}
                       </select>
                     </div>
 
                     <div class="flex items-center gap-1">
-                      <span class="text-[9px] font-bold text-gray-500 w-10">Color:</span>
+                      <span class="text-[9px] font-bold text-gray-500 w-9">Color:</span>
                       <select id="color-${product.id}" class="flex-1 p-0.5 border rounded text-[10px] bg-gray-50">
                         ${product.colors.map(c => `<option value="${c}">${c}</option>`).join('')}
                       </select>
                     </div>
 
                     <div class="flex items-center gap-1">
-                      <span class="text-[9px] font-bold text-gray-500 w-10">Pack:</span>
+                      <span class="text-[9px] font-bold text-gray-500 w-9">Pack:</span>
                       <select id="pack-${product.id}" class="flex-1 p-0.5 border rounded text-[10px] bg-gray-50">
                         ${product.packs.map(p => `<option value="${p}">${p}</option>`).join('')}
                       </select>
                     </div>
 
                     <div class="flex items-center gap-1">
-                      <span class="text-[9px] font-bold text-gray-500 w-10">Qty:</span>
+                      <span class="text-[9px] font-bold text-gray-500 w-9">Qty:</span>
                       <input type="number" id="qty-${product.id}" value="1" min="1" max="10" class="flex-1 p-0.5 border rounded text-[10px] bg-gray-50 text-center font-bold" />
                     </div>
 
-                    <div class="flex items-baseline justify-between pt-1">
-                      <div>
-                        <p class="text-xs font-black text-gray-900">${formatPrice(product.price)}</p>
-                        <p class="text-[9px] text-gray-400 line-through">${formatPrice(product.originalPrice)}</p>
-                      </div>
-                      <p class="text-[9px] text-green-700 font-bold">30% Dep: ${formatPrice(Math.round(product.price * 0.3))}</p>
+                    <div class="flex justify-between items-center text-[9px] text-green-700 font-bold pt-1">
+                      <span>30% Deposit:</span>
+                      <span>${formatPrice(Math.round(product.price * 0.3))}</span>
                     </div>
 
                     <button onclick="addToCart(${product.id})" class="w-full mt-1 text-[11px] font-bold py-2 rounded-lg transition shadow-sm ${btnClass}">
@@ -388,14 +382,10 @@
       `;
     }
 
-    // =========================================================================
-    // 2. CATEGORY TAB VIEW (Matching Screenshot 3 Sidebar Grid)
-    // =========================================================================
     function renderCategoryTab() {
       const container = document.getElementById('appContainer');
       container.innerHTML = `
         <div class="flex bg-white min-h-[85vh]">
-          <!-- LEFT SIDEBAR CATEGORIES -->
           <div class="w-1/3 bg-gray-50 border-r border-gray-200 overflow-y-auto no-scrollbar">
             ${categoryList.map((cat, idx) => `
               <div onclick="filterCategoryGrid('${cat.name}')" class="p-3 text-xs font-bold border-b border-gray-100 flex items-center gap-2 cursor-pointer hover:bg-orange-50 ${idx === 0 ? 'bg-white text-orange-600 border-l-4 border-orange-600' : 'text-gray-700'}">
@@ -404,12 +394,10 @@
               </div>
             `).join('')}
           </div>
-
-          <!-- RIGHT MAIN CATEGORY GRID -->
           <div class="w-2/3 p-3 overflow-y-auto">
             <h3 class="text-xs font-black text-gray-800 mb-3 uppercase tracking-wide">Top Categories</h3>
             <div class="grid grid-cols-3 gap-3 text-center">
-              ${categoryList.slice(1, 10).map(c => `
+              ${categoryList.slice(1, 13).map(c => `
                 <div onclick="filterCategoryGrid('${c.name}')" class="bg-gray-50 p-2 rounded-xl border border-gray-100 cursor-pointer hover:shadow">
                   <div class="text-2xl mb-1">${c.icon}</div>
                   <p class="text-[10px] font-bold text-gray-800 line-clamp-1">${c.name}</p>
@@ -422,13 +410,10 @@
     }
 
     function filterCategoryGrid(catName) {
-      document.getElementById('searchInput').value = catName === 'Home & Kitchen' ? '' : catName;
+      activeCategoryFilter = catName;
       switchTab('home');
     }
 
-    // =========================================================================
-    // 3. ACCOUNT TAB VIEW (Matching Screenshot 4 Profile & Order Status Tabs)
-    // =========================================================================
     function renderAccountTab() {
       const container = document.getElementById('appContainer');
 
@@ -448,7 +433,6 @@
 
       container.innerHTML = `
         <div class="max-w-2xl mx-auto p-4 space-y-4">
-          <!-- PROFILE HEADER -->
           <div class="bg-black text-white p-4 rounded-2xl flex items-center justify-between shadow">
             <div class="flex items-center gap-3">
               <div class="w-12 h-12 bg-orange-500 text-white rounded-full flex items-center justify-center text-xl font-bold">
@@ -462,53 +446,17 @@
             <button onclick="logoutCustomer()" class="bg-gray-800 text-red-400 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-gray-700">Log Out</button>
           </div>
 
-          <!-- MY ORDERS STATUS BAR (Unpaid, To be Shipped, Shipped, Review, Return) -->
           <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-200">
-            <div class="flex justify-between items-center border-b pb-3 mb-3">
-              <h4 class="text-xs font-black text-gray-800 uppercase">My Orders</h4>
-              <span class="text-xs text-orange-600 font-bold cursor-pointer">View All ></span>
-            </div>
+            <h4 class="text-xs font-black text-gray-800 uppercase mb-3">My Orders</h4>
             <div class="grid grid-cols-5 gap-2 text-center text-xs">
-              <div onclick="filterOrdersByStatus('Unpaid')" class="cursor-pointer">
-                <span class="text-xl">💳</span>
-                <p class="text-[10px] font-bold text-gray-700 mt-1">Unpaid</p>
-              </div>
-              <div onclick="filterOrdersByStatus('To be Shipped')" class="cursor-pointer">
-                <span class="text-xl">📦</span>
-                <p class="text-[10px] font-bold text-gray-700 mt-1">To be Shipped</p>
-              </div>
-              <div onclick="filterOrdersByStatus('Shipped')" class="cursor-pointer">
-                <span class="text-xl">🚚</span>
-                <p class="text-[10px] font-bold text-gray-700 mt-1">Shipped</p>
-              </div>
-              <div onclick="filterOrdersByStatus('Reviewed')" class="cursor-pointer">
-                <span class="text-xl">⭐</span>
-                <p class="text-[10px] font-bold text-gray-700 mt-1">Review</p>
-              </div>
-              <div onclick="filterOrdersByStatus('Return')" class="cursor-pointer">
-                <span class="text-xl">↩️</span>
-                <p class="text-[10px] font-bold text-gray-700 mt-1">Return</p>
-              </div>
+              <div><span class="text-xl">💳</span><p class="text-[10px] font-bold text-gray-700 mt-1">Unpaid</p></div>
+              <div><span class="text-xl">📦</span><p class="text-[10px] font-bold text-gray-700 mt-1">To Ship</p></div>
+              <div><span class="text-xl">🚚</span><p class="text-[10px] font-bold text-gray-700 mt-1">Shipped</p></div>
+              <div><span class="text-xl">⭐</span><p class="text-[10px] font-bold text-gray-700 mt-1">Review</p></div>
+              <div><span class="text-xl">↩️</span><p class="text-[10px] font-bold text-gray-700 mt-1">Return</p></div>
             </div>
           </div>
 
-          <!-- NOTIFICATIONS INBOX -->
-          <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-200">
-            <h4 class="text-xs font-black text-gray-800 uppercase mb-2">🔔 Notifications & Messages</h4>
-            <div class="space-y-2">
-              ${notifications.map(n => `
-                <div class="bg-blue-50 border border-blue-100 p-2.5 rounded-xl text-[11px] flex justify-between items-center">
-                  <div>
-                    <p class="font-bold text-blue-900">${n.title}</p>
-                    <p class="text-blue-700">${n.msg}</p>
-                  </div>
-                  <span class="text-[9px] text-blue-500">${n.date}</span>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-
-          <!-- ACTIVE ORDERS & TRACKING -->
           <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-200">
             <h4 class="text-xs font-black text-gray-800 uppercase mb-3">📦 Order Tracking & History</h4>
             <div class="space-y-3">
@@ -530,30 +478,22 @@
       `;
     }
 
-    function filterOrdersByStatus(status) {
-      alert(`Filtering orders by status: ${status}`);
-    }
-
     function cancelOrder(id) {
       orders = orders.map(o => o.id === id ? { ...o, status: 'Cancelled' } : o);
-      notifications.unshift({
-        id: Date.now(),
-        title: 'Order Cancelled',
-        msg: `Order ${id} was successfully cancelled.`,
-        date: new Date().toISOString().split('T')[0]
-      });
       renderAccountTab();
     }
 
-    // =========================================================================
-    // CART & PAYSTACK CHECKOUT
-    // =========================================================================
     function addToCart(productId) {
       const product = catalog.find(p => p.id === productId);
-      const size = document.getElementById(`size-${productId}`).value;
-      const color = document.getElementById(`color-${productId}`).value;
-      const pack = document.getElementById(`pack-${productId}`).value;
-      const qty = parseInt(document.getElementById(`qty-${productId}`).value) || 1;
+      const sizeElem = document.getElementById(`size-${productId}`);
+      const colorElem = document.getElementById(`color-${productId}`);
+      const packElem = document.getElementById(`pack-${productId}`);
+      const qtyElem = document.getElementById(`qty-${productId}`);
+
+      const size = sizeElem ? sizeElem.value : product.sizes[0];
+      const color = colorElem ? colorElem.value : product.colors[0];
+      const pack = packElem ? packElem.value : product.packs[0];
+      const qty = qtyElem ? (parseInt(qtyElem.value) || 1) : 1;
 
       cart.push({
         id: product.id,
@@ -569,13 +509,15 @@
       }
 
       updateCartCounters();
-      renderHomeTab();
+      renderActiveTabContent();
       openCartDrawer();
     }
 
     function updateCartCounters() {
-      document.getElementById('floatingCartCount').innerText = cart.length;
-      document.getElementById('bottomNavCartCount').innerText = cart.length;
+      const fc = document.getElementById('floatingCartCount');
+      const bc = document.getElementById('bottomNavCartCount');
+      if (fc) fc.innerText = cart.length;
+      if (bc) bc.innerText = cart.length;
     }
 
     function removeFromCart(index) {
@@ -585,7 +527,7 @@
         pickedProductIds = pickedProductIds.filter(id => id !== removed.id);
       }
       updateCartCounters();
-      renderHomeTab();
+      renderActiveTabContent();
       openCartDrawer();
     }
 
@@ -593,13 +535,15 @@
       const drawer = document.getElementById('cartDrawer');
       const title = document.getElementById('drawerTitle');
       const body = document.getElementById('drawerBody');
-      drawer.classList.remove('hidden');
+      if (drawer) drawer.classList.remove('hidden');
 
       const totalKsh = cart.reduce((sum, i) => sum + i.totalPrice, 0);
       const depositKsh = Math.round(totalKsh * 0.3);
       const balanceKsh = totalKsh - depositKsh;
 
-      title.innerText = `Shopping Cart (${cart.length})`;
+      if (title) title.innerText = `Shopping Cart (${cart.length})`;
+      if (!body) return;
+
       if (cart.length === 0) {
         body.innerHTML = `
           <div class="flex-1 flex flex-col items-center justify-center text-center text-gray-500">
@@ -651,7 +595,8 @@
     }
 
     function closeCartDrawer() {
-      document.getElementById('cartDrawer').classList.add('hidden');
+      const drawer = document.getElementById('cartDrawer');
+      if (drawer) drawer.classList.add('hidden');
     }
 
     function handleCheckoutClick() {
@@ -666,7 +611,8 @@
     function renderPaystackForm() {
       const title = document.getElementById('drawerTitle');
       const body = document.getElementById('drawerBody');
-      title.innerText = 'Paystack 30% Deposit Checkout';
+      if (title) title.innerText = 'Paystack 30% Deposit Checkout';
+      if (!body) return;
 
       const totalKsh = cart.reduce((sum, i) => sum + i.totalPrice, 0);
       const depositKsh = Math.round(totalKsh * 0.3);
@@ -706,8 +652,10 @@
 
     function processPaystackPayment(e) {
       e.preventDefault();
-      const country = document.getElementById('payCountry').value;
-      const address = document.getElementById('payAddress').value;
+      const countryElem = document.getElementById('payCountry');
+      const addressElem = document.getElementById('payAddress');
+      const country = countryElem ? countryElem.value : 'Kenya';
+      const address = addressElem ? addressElem.value : 'Nairobi';
 
       const totalKsh = cart.reduce((sum, i) => sum + i.totalPrice, 0);
       const depositKsh = Math.round(totalKsh * 0.3);
@@ -719,7 +667,7 @@
       const reference = 'KILI-' + Math.floor(100000000 + Math.random() * 900000000);
 
       const handler = window.PaystackPop.setup({
-        key: PAYSTACK_PUBLIC_KEY,
+        key: PAYSTACK_PUBLIC_KEY,[span_1](start_span)[span_1](end_span)
         email: customer.email,
         amount: amountSubunits,
         currency: payCurr,
@@ -736,49 +684,48 @@
             country: `${country} (${address})`
           });
 
-          notifications.unshift({
-            id: Date.now(),
-            title: 'Order Confirmed & Dispatched!',
-            msg: `Deposit received (Ref: ${res.reference}). Your order is on the way to ${country}.`,
-            date: new Date().toISOString().split('T')[0]
-          });
-
           cart = [];
           pickedProductIds = [];
           updateCartCounters();
           renderActiveTabContent();
 
-          document.getElementById('drawerTitle').innerText = 'Deposit Verified!';
-          document.getElementById('drawerBody').innerHTML = `
-            <div class="flex-1 flex flex-col items-center justify-center text-center">
-              <div class="w-14 h-14 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-2xl font-bold mb-3">✓</div>
-              <h3 class="text-base font-black text-gray-800 mb-1">Paystack Deposit Successful!</h3>
-              <p class="text-[11px] font-mono text-gray-500 mb-2">Ref: ${res.reference}</p>
-              <p class="text-xs text-gray-600 mb-4">Your order has been logged in your account dashboard for tracking.</p>
-              <button onclick="closeCartDrawer(); switchTab('account');" class="w-full bg-orange-600 text-white font-bold py-2.5 rounded-xl text-xs shadow">
-                View Order & Tracking
-              </button>
-            </div>
-          `;
+          const title = document.getElementById('drawerTitle');
+          const body = document.getElementById('drawerBody');
+          if (title) title.innerText = 'Deposit Verified!';
+          if (body) {
+            body.innerHTML = `
+              <div class="flex-1 flex flex-col items-center justify-center text-center">
+                <div class="w-14 h-14 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-2xl font-bold mb-3">✓</div>
+                <h3 class="text-base font-black text-gray-800 mb-1">Paystack Deposit Successful!</h3>
+                <p class="text-[11px] font-mono text-gray-500 mb-2">Ref: ${res.reference}</p>
+                <button onclick="closeCartDrawer(); switchTab('account');" class="w-full bg-orange-600 text-white font-bold py-2.5 rounded-xl text-xs shadow">
+                  View Order & Tracking
+                </button>
+              </div>
+            `;
+          }
         },
         onClose: function() {}
       });
       handler.openIframe();
     }
 
-    // =========================================================================
-    // AUTH MODAL HANDLERS
-    // =========================================================================
     function openAuthModal(mode) {
       authMode = mode;
-      document.getElementById('authModal').classList.remove('hidden');
-      document.getElementById('authTitle').innerText = mode === 'login' ? 'Customer Login' : 'Create Account';
-      document.getElementById('nameFieldBox').classList.toggle('hidden', mode === 'login');
-      document.getElementById('authSubmitBtn').innerText = mode === 'login' ? 'Log In' : 'Register Account';
+      const modal = document.getElementById('authModal');
+      const title = document.getElementById('authTitle');
+      const nameBox = document.getElementById('nameFieldBox');
+      const subBtn = document.getElementById('authSubmitBtn');
+
+      if (modal) modal.classList.remove('hidden');
+      if (title) title.innerText = mode === 'login' ? 'Customer Login' : 'Create Account';
+      if (nameBox) nameBox.classList.toggle('hidden', mode === 'login');
+      if (subBtn) subBtn.innerText = mode === 'login' ? 'Log In' : 'Register Account';
     }
 
     function closeAuthModal() {
-      document.getElementById('authModal').classList.add('hidden');
+      const modal = document.getElementById('authModal');
+      if (modal) modal.classList.add('hidden');
     }
 
     function toggleAuthMode() {
@@ -787,9 +734,13 @@
 
     function submitAuth(e) {
       e.preventDefault();
-      const name = document.getElementById('authName').value.trim();
-      const email = document.getElementById('authEmail').value.trim();
-      const phone = document.getElementById('authPhone').value.trim();
+      const nameElem = document.getElementById('authName');
+      const emailElem = document.getElementById('authEmail');
+      const phoneElem = document.getElementById('authPhone');
+
+      const name = nameElem ? nameElem.value.trim() : '';
+      const email = emailElem ? emailElem.value.trim() : 'user@example.com';
+      const phone = phoneElem ? phoneElem.value.trim() : '+254700000000';
 
       if (authMode === 'register' && name) customer.name = name;
       customer.email = email;
@@ -797,26 +748,21 @@
       isLoggedIn = true;
 
       closeAuthModal();
-      document.getElementById('accountNavLabel').innerText = 'Profile';
+      const navLabel = document.getElementById('accountNavLabel');
+      if (navLabel) navLabel.innerText = 'Profile';
 
-      notifications.unshift({
-        id: Date.now(),
-        title: 'Account Active',
-        msg: `Welcome, ${customer.name}! You can now track and manage your orders.`,
-        date: new Date().toISOString().split('T')[0]
-      });
+      switchTab('account');
 
       if (cart.length > 0) {
         openCartDrawer();
         renderPaystackForm();
-      } else {
-        switchTab('account');
       }
     }
 
     function logoutCustomer() {
       isLoggedIn = false;
-      document.getElementById('accountNavLabel').innerText = 'Account';
+      const navLabel = document.getElementById('accountNavLabel');
+      if (navLabel) navLabel.innerText = 'Account';
       switchTab('home');
     }
 
