@@ -1,688 +1,467 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kili-Mall East Africa | Official Store & App</title>
-  <!-- Load Tailwind CSS for styling -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Load Paystack Inline Checkout SDK -->
   <script src="https://js.paystack.co/v1/inline.js"></script>
-  <!-- Load Google Font: Inter -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Inter', sans-serif; }
     html { scroll-behavior: smooth; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
-<body class="bg-gray-100 text-gray-900 pb-28 antialiased">
+<body class="bg-gray-100 text-gray-900 font-sans pb-32">
 
-  <!-- ===================================================================== -->
-  <!-- TOP STICKY HEADER                                                     -->
-  <!-- ===================================================================== -->
-  <header class="bg-orange-600 text-white sticky top-0 z-40 shadow-md">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-3">
-      
-      <!-- Brand Title & Mobile Controls -->
-      <div class="flex items-center justify-between w-full md:w-auto">
-        <h1 onclick="switchView('store'); filterCategory('All');" class="text-xl md:text-2xl font-black tracking-wider cursor-pointer select-none">
-          KILI-MALL EAST AFRICA
-        </h1>
-        <div class="flex items-center gap-2 md:hidden">
-          <select id="mobileCurrencySelect" onchange="changeCurrency(this.value)" class="bg-orange-700 text-white text-xs font-bold px-2.5 py-2 rounded-lg border border-orange-500 focus:outline-none">
-            <option value="KSh">KES</option>
-            <option value="USD">USD</option>
-            <option value="UGX">UGX</option>
-            <option value="TZS">TZS</option>
-            <option value="RWF">RWF</option>
-          </select>
-          <button id="mobileAuthBtn" onclick="handleAuthButtonClick()" class="bg-orange-800 hover:bg-orange-900 px-3 py-2 rounded-lg text-xs font-bold transition">
-            Login
-          </button>
-        </div>
-      </div>
-
-      <!-- Product Search Bar -->
-      <div id="searchBarContainer" class="w-full md:w-1/2 flex items-center bg-white rounded-xl overflow-hidden shadow-sm">
+  <!-- EXACT APP BLACK TOP SEARCH & NAVIGATION BAR -->
+  <header class="bg-black text-white sticky top-0 z-40 shadow-md">
+    <div class="px-3 py-2.5 flex items-center gap-2">
+      <div class="flex-1 flex items-center bg-gray-800 rounded-full px-3 py-1.5 border border-gray-700">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
         <input
           type="text"
           id="searchInput"
-          oninput="renderCatalog()"
-          placeholder="Search phones, electronics, groceries across East Africa..."
-          class="w-full px-4 py-2.5 text-gray-800 text-sm focus:outline-none"
+          oninput="renderStoreContent()"
+          placeholder="Smart TV, Phones, Hair Clipper..."
+          class="w-full bg-transparent text-white text-xs placeholder-gray-400 focus:outline-none"
         />
-        <button onclick="renderCatalog()" class="bg-orange-500 px-5 py-2.5 text-white font-bold text-sm hover:bg-orange-700 transition">
-          Search
-        </button>
       </div>
-
-      <!-- Desktop Currency & Account Actions -->
-      <div class="hidden md:flex items-center gap-3">
-        <select id="desktopCurrencySelect" onchange="changeCurrency(this.value)" class="bg-orange-700 text-white text-xs font-bold px-3 py-2.5 rounded-xl border border-orange-500 focus:outline-none cursor-pointer">
-          <option value="KSh">KES (Kenya Shilling)</option>
-          <option value="USD">USD (US Dollar)</option>
-          <option value="UGX">UGX (Uganda Shilling)</option>
-          <option value="TZS">TZS (Tanzania Shilling)</option>
-          <option value="RWF">RWF (Rwandan Franc)</option>
-        </select>
-
-        <button id="desktopAuthBtn" onclick="handleAuthButtonClick()" class="bg-orange-800 hover:bg-orange-900 transition px-4 py-2.5 rounded-xl font-bold text-sm shadow-sm">
-          Account / Login
-        </button>
-      </div>
+      <select id="currencySelector" onchange="changeCurrency(this.value)" class="bg-gray-900 text-orange-400 text-xs font-bold px-2 py-1.5 rounded border border-gray-700">
+        <option value="KSh">KES</option>
+        <option value="USD">USD</option>
+        <option value="UGX">UGX</option>
+        <option value="TZS">TZS</option>
+        <option value="RWF">RWF</option>
+      </select>
     </div>
 
-    <!-- Horizontal Scrollable 10-Department Navigation Bar -->
-    <nav id="categoryNav" class="bg-orange-700 text-white text-xs overflow-x-auto no-scrollbar border-t border-orange-500/40">
-      <div id="categoryButtons" class="max-w-7xl mx-auto px-4 py-2 flex items-center gap-2 whitespace-nowrap"></div>
+    <!-- HORIZONTAL SCROLLABLE CATEGORY TABS -->
+    <nav class="bg-black text-gray-300 text-xs overflow-x-auto no-scrollbar border-t border-gray-800">
+      <div id="categoryTabs" class="px-3 py-2 flex items-center gap-4 whitespace-nowrap"></div>
     </nav>
   </header>
 
-  <!-- ===================================================================== -->
-  <!-- EAST AFRICA DELIVERY & DEPOSIT BANNER                                 -->
-  <!-- ===================================================================== -->
-  <div class="bg-gray-900 text-white text-center py-2.5 text-xs font-semibold px-4 flex flex-wrap items-center justify-center gap-2">
-    <span>East Africa Delivery (Kenya, Uganda, Tanzania, Rwanda, Burundi, South Sudan)</span>
-    <span class="hidden sm:inline text-gray-500">•</span>
-    <span class="text-orange-400 font-bold">Pay 30% Deposit via Paystack</span>
-    <span class="hidden sm:inline text-gray-500">•</span>
-    <span class="text-green-400 font-bold">70% Balance After Delivery</span>
-  </div>
+  <!-- STORE VIEW CONTAINER -->
+  <main id="mainStoreView" class="space-y-3 p-2 md:max-w-4xl md:mx-auto"></main>
 
-  <!-- ===================================================================== -->
-  <!-- INLINE NOTIFICATION TOAST BANNER (Replaces alert())                   -->
-  <!-- ===================================================================== -->
-  <div id="toastBanner" class="hidden fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-gray-900 text-white px-5 py-3 rounded-xl shadow-2xl border border-gray-700 text-xs font-bold flex items-center gap-3 max-w-md w-11/12">
-    <span id="toastMessage" class="flex-1"></span>
-    <button onclick="hideToast()" class="text-gray-400 hover:text-white font-black text-sm px-1">✕</button>
-  </div>
+  <!-- CUSTOMER ACCOUNT & TRACKING VIEW -->
+  <main id="mainAccountView" class="hidden max-w-2xl mx-auto p-4 space-y-4">
+    <div class="bg-white rounded-2xl shadow-sm p-5 border border-gray-200">
+      <div class="flex justify-between items-center border-b pb-3 mb-4">
+        <h2 class="text-base font-black text-gray-800">Customer Account & Tracking</h2>
+        <button onclick="switchTab('home')" class="bg-orange-600 text-white px-3 py-1 rounded text-xs font-bold">Back to Home</button>
+      </div>
 
-  <!-- ===================================================================== -->
-  <!-- MAIN STOREFRONT CATALOG VIEW                                          -->
-  <!-- ===================================================================== -->
-  <main id="storeView" class="max-w-7xl mx-auto p-4 space-y-8"></main>
-
-  <!-- ===================================================================== -->
-  <!-- CUSTOMER ACCOUNT & ORDER TRACKING DASHBOARD VIEW                      -->
-  <!-- ===================================================================== -->
-  <main id="accountView" class="hidden max-w-4xl mx-auto p-4 md:p-6 space-y-6">
-    <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-200">
-      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 border-b pb-4 mb-6">
+      <div class="bg-orange-50 border border-orange-200 p-3 rounded-xl flex items-center justify-between mb-4">
         <div>
-          <h2 class="text-xl font-black text-gray-800">Customer Account & Order Dashboard</h2>
-          <p class="text-xs text-gray-500">Track active orders, cancel pending orders, view past history, and read notifications.</p>
+          <p id="accNameEmail" class="text-xs font-black text-gray-900">John Doe (john@example.com)</p>
+          <p id="accPhone" class="text-[11px] text-gray-600">+254712345678</p>
         </div>
-        <button onclick="switchView('store')" class="bg-orange-600 text-white px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-orange-700 transition self-start sm:self-auto">
-          Return to Store
-        </button>
+        <button onclick="logoutCustomer()" class="bg-white text-red-600 border border-red-200 px-2.5 py-1 rounded text-[11px] font-bold">Log Out</button>
       </div>
 
-      <!-- Active Profile Card -->
-      <div class="bg-orange-50 border border-orange-200 p-4 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
-        <div>
-          <p class="text-[11px] text-orange-800 font-bold uppercase tracking-wider">Active Customer Profile</p>
-          <p id="profileDisplay" class="text-base font-black text-gray-900 mt-0.5"></p>
-          <p id="phoneDisplay" class="text-xs text-gray-600 mt-0.5"></p>
-        </div>
-        <button onclick="logoutUser()" class="bg-white text-red-600 border border-red-200 px-4 py-2 rounded-xl text-xs font-bold hover:bg-red-50 transition self-start sm:self-auto">
-          Log Out
-        </button>
+      <div class="mb-4">
+        <h3 class="text-xs font-bold text-gray-700 mb-2 uppercase">🔔 Notifications Inbox</h3>
+        <div id="accNotifications" class="space-y-2"></div>
       </div>
 
-      <!-- Notifications & Messages Inbox -->
-      <div class="mb-6">
-        <h3 class="text-sm font-bold text-gray-800 mb-3 uppercase tracking-wide">Notifications & Messages</h3>
-        <div id="notificationsList" class="space-y-2.5"></div>
-      </div>
-
-      <!-- Orders & Delivery Tracking -->
       <div>
-        <h3 class="text-sm font-bold text-gray-800 mb-3 uppercase tracking-wide">My Orders & Delivery Tracking</h3>
-        <div id="ordersList" class="space-y-4"></div>
+        <h3 class="text-xs font-bold text-gray-700 mb-2 uppercase">📦 My Orders & Tracking</h3>
+        <div id="accOrders" class="space-y-3"></div>
       </div>
     </div>
   </main>
 
-  <!-- ===================================================================== -->
-  <!-- ANDROID / PLAY STORE READY PWA APP BANNER                             -->
-  <!-- ===================================================================== -->
-  <div class="max-w-7xl mx-auto px-4 mt-8">
-    <div class="bg-gradient-to-r from-gray-900 to-orange-900 text-white rounded-2xl p-6 shadow-lg flex flex-col md:flex-row items-center justify-between gap-6">
-      <div>
-        <span class="bg-orange-500 text-white text-[10px] font-black px-2.5 py-1 rounded-md uppercase tracking-wider">Android & Play Store Ready</span>
-        <h3 class="text-xl font-black mt-2">Install Kili-Mall East Africa App</h3>
-        <p class="text-xs text-gray-300 mt-1 max-w-xl leading-relaxed">
-          Track orders in real time, receive instant delivery notifications across East Africa, and manage your 30% deposit orders directly from your Android home screen.
-        </p>
-      </div>
-      <button onclick="openInstallGuideModal()" class="bg-white text-gray-900 px-6 py-3.5 rounded-xl font-black text-xs hover:bg-orange-100 transition shadow whitespace-nowrap">
-        Download / Install Android App
-      </button>
-    </div>
-  </div>
+  <!-- EXACT BOTTOM APP NAVIGATION BAR (Home, Category, Message, Cart, Account) -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 flex justify-around items-center py-2 shadow-lg">
+    <button onclick="switchTab('home')" class="flex flex-col items-center text-orange-600">
+      <span class="text-lg">🏠</span>
+      <span class="text-[10px] font-bold">Home</span>
+    </button>
+    <button onclick="switchTab('category')" class="flex flex-col items-center text-gray-500 hover:text-orange-600">
+      <span class="text-lg">🗂️</span>
+      <span class="text-[10px] font-medium">Category</span>
+    </button>
+    <button onclick="switchTab('message')" class="flex flex-col items-center text-gray-500 hover:text-orange-600">
+      <span class="text-lg">💬</span>
+      <span class="text-[10px] font-medium">Message</span>
+    </button>
+    <button onclick="openCartDrawer()" class="flex flex-col items-center text-gray-500 hover:text-orange-600 relative">
+      <span class="text-lg">🛒</span>
+      <span class="text-[10px] font-medium">Cart</span>
+      <span id="bottomNavCartCount" class="absolute -top-1 right-2 bg-orange-600 text-white text-[9px] font-black px-1.5 rounded-full">0</span>
+    </button>
+    <button onclick="handleAccountClick()" class="flex flex-col items-center text-gray-500 hover:text-orange-600">
+      <span class="text-lg">👤</span>
+      <span id="bottomNavAccountLabel" class="text-[10px] font-medium">Account</span>
+    </button>
+  </nav>
 
-  <!-- ===================================================================== -->
-  <!-- LARGE FLOATING SHOPPING CART BUTTON (BOTTOM RIGHT)                    -->
-  <!-- ===================================================================== -->
-  <div class="fixed bottom-6 right-6 z-40">
-    <button
-      onclick="openCartDrawer('cart')"
-      class="bg-orange-600 hover:bg-orange-700 text-white px-7 py-4 rounded-full shadow-2xl flex items-center gap-3 font-black text-base transition transform hover:scale-105 active:scale-95 border-2 border-white"
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-      </svg>
-      <span>View Cart</span>
-      <span id="floatingCartCount" class="bg-white text-orange-600 px-3 py-0.5 rounded-full text-sm font-black shadow-inner">
-        0
-      </span>
+  <!-- LARGER FLOATING CART BUTTON AT BOTTOM RIGHT -->
+  <div class="fixed bottom-16 right-4 z-40">
+    <button onclick="openCartDrawer()" class="bg-orange-600 hover:bg-orange-700 text-white px-5 py-3 rounded-full shadow-2xl flex items-center gap-2 font-black text-sm border-2 border-white transition transform hover:scale-105">
+      <span>🛒</span>
+      <span>Cart (<span id="floatingCartCount">0</span>)</span>
     </button>
   </div>
 
-  <!-- ===================================================================== -->
-  <!-- CUSTOMER LOGIN & CREATE ACCOUNT MODAL                                 -->
-  <!-- ===================================================================== -->
-  <div id="authModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-    <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl p-6">
-      <div class="flex justify-between items-center border-b pb-3 mb-4">
-        <h3 id="authModalTitle" class="text-lg font-black text-gray-800">Customer Login</h3>
-        <button onclick="closeAuthModal()" class="text-gray-400 hover:text-gray-700 font-bold text-xl p-1">✕</button>
+  <!-- CUSTOMER LOGIN / REGISTER MODAL -->
+  <div id="authModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 p-4">
+    <div class="w-full max-w-sm bg-white rounded-2xl shadow-2xl p-5">
+      <div class="flex justify-between items-center border-b pb-2 mb-3">
+        <h3 id="authTitle" class="text-base font-black text-gray-800">Customer Login</h3>
+        <button onclick="closeAuthModal()" class="text-gray-400 font-bold text-lg">✕</button>
       </div>
-
-      <form onsubmit="submitAuthForm(event)" class="space-y-3">
-        <div id="registerNameField" class="hidden">
-          <label class="block text-xs font-bold text-gray-700 mb-1">Full Name</label>
-          <input type="text" id="authNameInput" placeholder="Enter your full name" class="w-full p-2.5 text-sm border rounded-xl focus:outline-none focus:border-orange-500" />
+      <form onsubmit="submitAuth(event)" class="space-y-2.5">
+        <div id="nameFieldBox" class="hidden">
+          <label class="block text-[11px] font-bold text-gray-700 mb-0.5">Full Name</label>
+          <input type="text" id="authName" class="w-full p-2 text-xs border rounded" placeholder="Your name" />
         </div>
-
         <div>
-          <label class="block text-xs font-bold text-gray-700 mb-1">Email Address</label>
-          <input type="email" id="authEmailInput" required placeholder="customer@email.com" class="w-full p-2.5 text-sm border rounded-xl focus:outline-none focus:border-orange-500" />
+          <label class="block text-[11px] font-bold text-gray-700 mb-0.5">Email Address</label>
+          <input type="email" id="authEmail" required class="w-full p-2 text-xs border rounded" placeholder="email@domain.com" />
         </div>
-
         <div>
-          <label class="block text-xs font-bold text-gray-700 mb-1">Phone Number (M-Pesa / Airtel / Mobile)</label>
-          <input type="tel" id="authPhoneInput" required placeholder="+254712345678" class="w-full p-2.5 text-sm border rounded-xl focus:outline-none focus:border-orange-500" />
+          <label class="block text-[11px] font-bold text-gray-700 mb-0.5">Phone Number</label>
+          <input type="tel" id="authPhone" required class="w-full p-2 text-xs border rounded" placeholder="+254712345678" />
         </div>
-
         <div>
-          <label class="block text-xs font-bold text-gray-700 mb-1">Password</label>
-          <input type="password" id="authPasswordInput" required placeholder="••••••••" class="w-full p-2.5 text-sm border rounded-xl focus:outline-none focus:border-orange-500" />
+          <label class="block text-[11px] font-bold text-gray-700 mb-0.5">Password</label>
+          <input type="password" id="authPass" required class="w-full p-2 text-xs border rounded" placeholder="••••••••" />
         </div>
-
-        <button type="submit" id="authSubmitBtn" class="w-full bg-orange-600 text-white font-bold py-3 rounded-xl hover:bg-orange-700 shadow text-sm mt-4 transition">
-          Log In to Account
-        </button>
-
-        <div class="text-center pt-2">
-          <button type="button" id="toggleAuthModeBtn" onclick="toggleAuthMode()" class="text-xs text-orange-600 font-bold hover:underline">
-            Don't have an account? Create Account here
-          </button>
+        <button type="submit" id="authSubmitBtn" class="w-full bg-orange-600 text-white font-bold py-2.5 rounded-xl text-xs shadow mt-2">Log In</button>
+        <div class="text-center pt-1">
+          <button type="button" onclick="toggleAuthMode()" class="text-[11px] text-orange-600 font-bold hover:underline">Need an account? Register</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- ===================================================================== -->
-  <!-- ANDROID APP INSTALL INSTRUCTIONS MODAL (Replaces alert())             -->
-  <!-- ===================================================================== -->
-  <div id="installModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-    <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl p-6 space-y-4">
-      <div class="flex justify-between items-center border-b pb-3">
-        <h3 class="text-lg font-black text-gray-800">Install Kili-Mall Android App</h3>
-        <button onclick="closeInstallGuideModal()" class="text-gray-400 hover:text-gray-700 font-bold text-xl p-1">✕</button>
+  <!-- CART & PAYSTACK CHECKOUT DRAWER -->
+  <div id="cartDrawer" class="hidden fixed inset-0 z-50 flex justify-end bg-black bg-opacity-50">
+    <div class="w-full max-w-md bg-white h-full shadow-2xl flex flex-col p-4 overflow-y-auto">
+      <div class="flex justify-between items-center border-b pb-3 mb-3">
+        <h2 id="drawerTitle" class="text-base font-black text-gray-800">Shopping Cart (0)</h2>
+        <button onclick="closeCartDrawer()" class="text-gray-400 font-bold text-lg">✕</button>
       </div>
-      <div class="space-y-3 text-xs text-gray-700 leading-relaxed">
-        <p class="font-semibold text-gray-900">Install directly onto your phone home screen like a Play Store app:</p>
-        <div class="bg-orange-50 border border-orange-200 p-3.5 rounded-xl space-y-2">
-          <p><strong>Step 1:</strong> Tap the <strong>3 dots (⋮)</strong> in the top-right corner of your Chrome browser.</p>
-          <p><strong>Step 2:</strong> Select <strong>"Add to Home screen"</strong> or <strong>"Install App"</strong>.</p>
-          <p><strong>Step 3:</strong> Confirm by tapping <strong>Install</strong>. The Kili-Mall icon will appear immediately on your phone screen.</p>
-        </div>
-      </div>
-      <button onclick="closeInstallGuideModal()" class="w-full bg-orange-600 text-white font-bold py-3 rounded-xl hover:bg-orange-700 text-sm">
-        Got It
-      </button>
-    </div>
-  </div>
-
-  <!-- ===================================================================== -->
-  <!-- SLIDE-OVER SHOPPING CART & PAYSTACK CHECKOUT DRAWER                   -->
-  <!-- ===================================================================== -->
-  <div id="cartDrawer" class="hidden fixed inset-0 z-50 flex justify-end bg-black/50">
-    <div class="w-full max-w-md bg-white h-full shadow-2xl flex flex-col p-5 overflow-y-auto">
-      <div class="flex justify-between items-center border-b pb-3 mb-4">
-        <h2 id="drawerTitle" class="text-lg font-black text-gray-800">Shopping Cart (0)</h2>
-        <button onclick="closeCartDrawer()" class="text-gray-400 hover:text-gray-700 text-xl font-bold p-1">✕</button>
-      </div>
-
       <div id="drawerBody" class="flex-1 flex flex-col"></div>
     </div>
   </div>
 
   <script>
-    // =========================================================================
-    // PAYSTACK LIVE PUBLIC KEY
-    // =========================================================================
-    const PAYSTACK_PUBLIC_KEY = 'pk_live_96685dc1a36bc585d08a7b5fd4a4891d8bce14cb';
+    const PAYSTACK_PUBLIC_KEY = 'pk_live_96685dc1a36bc585d08a7b5fd4a4891d8bce14cb';[span_1](start_span)[span_1](end_span)
 
-    // =========================================================================
-    // APPLICATION STATE
-    // =========================================================================
-    let selectedCategory = 'All';
     let selectedCurrency = 'KSh';
+    let currentTab = 'home';
     let cart = [];
     let pickedProductIds = [];
     let isLoggedIn = false;
-    let authMode = 'login'; // 'login' | 'register'
-    let toastTimeout = null;
-
-    let currentUser = {
-      name: 'David Ochieng',
-      email: 'david@example.com',
-      phone: '+254712345678'
-    };
+    let authMode = 'login';
+    let customer = { name: 'David Ochieng', email: 'david@example.com', phone: '+254712345678' };
 
     let notifications = [
-      {
-        id: 1,
-        title: 'Welcome to Kili-Mall East Africa!',
-        msg: 'Pay only 30% deposit via Paystack (M-Pesa / Airtel Money / Cards) and 70% balance after delivery.',
-        date: '2026-11-17'
-      }
+      { id: 1, title: 'Welcome to Kili-Mall!', msg: 'Enjoy 30% deposit checkout via Paystack and 70% balance on delivery across East Africa.', date: '2026-11-17' }
     ];
 
     let orders = [
-      {
-        id: 'ORD-5421',
-        ref: 'PSK-99214',
-        total: 18500,
-        deposit: 5550,
-        balance: 12950,
-        status: 'Dispatched',
-        date: '2026-11-16',
-        country: 'Kenya (Nairobi CBD)'
-      }
+      { id: 'ORD-8291', ref: 'PSK-44120', total: 27999, deposit: 8400, balance: 19599, status: 'Dispatched', date: '2026-11-16', country: 'Kenya (Nairobi)' }
     ];
 
-    const categories = [
-      'Supermarket & Groceries',
-      'Phones & Tablets',
-      'Computing & Laptops',
-      'Electronics & Audio',
-      'Home & Office Appliances',
-      'Fashion & Apparel',
-      'Health & Beauty',
-      'Baby Products',
-      'Gaming & Toys',
-      'Sporting Goods'
-    ];
+    const categories = ['Hot', 'Home', 'Smart Wearables', 'Appliances', 'Furniture', 'Men Clothes', 'TVs', 'Men Accessories', 'Men Shoes'];
 
     const currencyRates = {
-      KSh: { symbol: 'KSh ', iso: 'KES', rate: 1 },
-      USD: { symbol: '$', iso: 'USD', rate: 0.0077 },
-      UGX: { symbol: 'USh ', iso: 'UGX', rate: 29.5 },
-      TZS: { symbol: 'TSh ', iso: 'TZS', rate: 20.2 },
-      RWF: { symbol: 'FRw ', iso: 'RWF', rate: 10.5 }
+      KSh: { symbol: 'KSh ', rate: 1 },
+      USD: { symbol: '$', rate: 0.0077 },
+      UGX: { symbol: 'USh ', rate: 29.5 },
+      TZS: { symbol: 'TSh ', rate: 20.2 },
+      RWF: { symbol: 'FRw ', rate: 10.5 }
     };
 
-    // =========================================================================
-    // MASTER PRODUCT CATALOG (REAL HD UNSPLASH PHOTOGRAPHY + 4 OPTIONS)
-    // =========================================================================
-    const masterCatalog = [
+    // EXACT ITEMS FROM YOUR SCREENSHOTS (HD Photos + 4 Options)
+    const catalog = [
       {
-        id: 101,
-        name: 'Jogoo Maize Meal Flour 2kg',
-        category: 'Supermarket & Groceries',
-        price: 130,
-        originalPrice: 190,
-        discount: '32% OFF',
-        image: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&q=80',
-        sizes: ['2kg Pack', '5kg Bale', '10kg Sack'],
-        colors: ['Fortified White'],
-        variants: ['Standard Delivery', 'Express Same-Day']
+        id: 1,
+        name: '2 in 1 Hot Comb Straightener Electric Hair Straightener',
+        price: 699,
+        originalPrice: 1200,
+        discount: '42% OFF',
+        image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&q=80',
+        sizes: ['Standard Size', 'Professional XL'],
+        colors: ['Gold Black', 'Rose Gold', 'Ruby Red'],
+        packs: ['1 Unit Box', '2 Units Promo'],
+        rating: 4.8,
+        reviews: 7207,
+        fulfillment: 'Fulfilled By Kilimal'
       },
       {
-        id: 102,
-        name: 'Brookside Fresh Whole Milk 1L',
-        category: 'Supermarket & Groceries',
-        price: 145,
-        originalPrice: 180,
-        discount: '19% OFF',
-        image: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=600&q=80',
-        sizes: ['1 Litre', '500ml Pack', '12x1L Carton'],
-        colors: ['Whole Cream'],
-        variants: ['Standard Delivery', 'Express Same-Day']
+        id: 2,
+        name: 'Ultrasonic Pest Repeller Reject Electronic Repellent Killer',
+        price: 299,
+        originalPrice: 600,
+        discount: '50% OFF',
+        image: 'https://images.unsplash.com/photo-1584467735811-99881881b29a?w=600&q=80',
+        sizes: ['Single Room', 'Whole House 4-Pack'],
+        colors: ['Pearl White', 'Midnight Black'],
+        packs: ['1 Pack', 'Value 4-Pack'],
+        rating: 4.2,
+        reviews: 9,
+        fulfillment: 'Fulfilled By Kilimal'
       },
       {
-        id: 201,
-        name: 'Samsung Galaxy A15 6.5" 128GB/4GB',
-        category: 'Phones & Tablets',
+        id: 3,
+        name: 'RichRipple Vintage Hair cutting machine Hair Clipper',
+        price: 298,
+        originalPrice: 550,
+        discount: '46% OFF',
+        image: 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&q=80',
+        sizes: ['Standard Pro', 'Heavy Duty Pro'],
+        colors: ['Bronze Engraved', 'Gold Dragon', 'Jet Black'],
+        packs: ['Full Grooming Kit', 'Standard Box'],
+        rating: 4.9,
+        reviews: 7040,
+        fulfillment: 'Brand Official • Fulfilled By Kilimal'
+      },
+      {
+        id: 4,
+        name: 'Refurbished Lenovo ThinkPad Yoga X260 2-in-1 Convertible Laptop',
+        price: 27999,
+        originalPrice: 42000,
+        discount: '33% OFF',
+        image: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=600&q=80',
+        sizes: ['8GB RAM / 256GB SSD', '16GB RAM / 512GB SSD'],
+        colors: ['ThinkPad Matte Black'],
+        packs: ['Laptop + Charger', 'Laptop + Stylus Pen & Mouse'],
+        rating: 4.7,
+        reviews: 184,
+        fulfillment: 'Local Dispatch • Refurbished A+'
+      },
+      {
+        id: 5,
+        name: 'Samsung Galaxy A15 6.5" 128GB/4GB Smartphone',
         price: 18500,
         originalPrice: 24000,
         discount: '23% OFF',
         image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&q=80',
         sizes: ['128GB / 4GB RAM', '256GB / 8GB RAM'],
-        colors: ['Blue Black', 'Light Blue', 'Personality Yellow'],
-        variants: ['Official 2-Yr Warranty', 'Phone + Fast Charger']
+        colors: ['Blue Black', 'Light Blue', 'Yellow'],
+        packs: ['Standard Box', 'With Free Earbuds'],
+        rating: 4.9,
+        reviews: 3120,
+        fulfillment: 'Fulfilled By Kilimal'
       },
       {
-        id: 202,
-        name: 'Redmi Note 13 Pro 256GB/8GB',
-        category: 'Phones & Tablets',
-        price: 28000,
-        originalPrice: 35000,
-        discount: '20% OFF',
-        image: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=600&q=80',
-        sizes: ['256GB / 8GB RAM', '512GB / 12GB RAM'],
-        colors: ['Midnight Black', 'Forest Green', 'Lavender Purple'],
-        variants: ['Global Version', 'With Free Earbuds']
+        id: 6,
+        name: 'Bluetooth Subwoofer Home Audio Sound System',
+        price: 3959,
+        originalPrice: 5500,
+        discount: '28% OFF',
+        image: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?w=600&q=80',
+        sizes: ['Standard 3.1ch', 'Heavy Bass 5.1ch'],
+        colors: ['Piano Black'],
+        packs: ['Standard Set', 'With Mic Included'],
+        rating: 4.8,
+        reviews: 1420,
+        fulfillment: 'Fulfilled By Kilimal'
       },
       {
-        id: 301,
-        name: 'HP Pavilion 15 Core i5 16GB/512GB SSD',
-        category: 'Computing & Laptops',
-        price: 69000,
-        originalPrice: 85000,
-        discount: '19% OFF',
-        image: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=600&q=80',
-        sizes: ['16GB RAM / 512GB SSD', '32GB RAM / 1TB SSD'],
-        colors: ['Natural Silver', 'Nightfall Black'],
-        variants: ['Windows 11 Pro', 'With Laptop Bag & Mouse']
-      },
-      {
-        id: 401,
-        name: 'Hisense 43" Smart Frameless LED TV',
-        category: 'Electronics & Audio',
-        price: 29900,
-        originalPrice: 38000,
-        discount: '21% OFF',
-        image: 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=600&q=80',
-        sizes: ['43 Inch Full HD', '50 Inch 4K UHD', '55 Inch 4K UHD'],
-        colors: ['Frameless Black'],
-        variants: ['Table Stand Only', 'With Free Wall Bracket']
-      },
-      {
-        id: 402,
-        name: 'Sony WH-1000XM5 ANC Headphones',
-        category: 'Electronics & Audio',
-        price: 36000,
-        originalPrice: 46000,
-        discount: '22% OFF',
-        image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&q=80',
-        sizes: ['Standard Over-Ear'],
-        colors: ['Matte Black', 'Platinum Silver', 'Midnight Blue'],
-        variants: ['Standard Box', 'With Carry Case']
-      },
-      {
-        id: 501,
-        name: 'Ramtons 20L Digital Microwave Oven',
-        category: 'Home & Office Appliances',
-        price: 10900,
-        originalPrice: 14000,
-        discount: '22% OFF',
-        image: 'https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?w=600&q=80',
-        sizes: ['20 Litre', '25 Litre Grill'],
-        colors: ['Silver Metallic', 'Mirror Black'],
-        variants: ['1-Year Warranty', '2-Year Extended']
-      },
-      {
-        id: 601,
-        name: 'Men Breathable Sports Running Sneakers',
-        category: 'Fashion & Apparel',
-        price: 2200,
-        originalPrice: 3500,
-        discount: '37% OFF',
-        image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80',
+        id: 7,
+        name: 'Men Casual Fashion Leather Sneakers',
+        price: 1199,
+        originalPrice: 2200,
+        discount: '45% OFF',
+        image: 'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=600&q=80',
         sizes: ['EU 40', 'EU 41', 'EU 42', 'EU 43', 'EU 44'],
-        colors: ['Crimson Red', 'Jet Black', 'Pure White'],
-        variants: ['Boxed Pair', 'With 3 Pairs Socks']
+        colors: ['Pure Black', 'Snow White', 'Navy Blue'],
+        packs: ['1 Pair', '2 Pairs Bundle'],
+        rating: 4.6,
+        reviews: 950,
+        fulfillment: 'Fulfilled By Kilimal'
       },
       {
-        id: 701,
-        name: 'Hydrating Vitamin C Face Serum 50ml',
-        category: 'Health & Beauty',
-        price: 3500,
-        originalPrice: 4800,
-        discount: '27% OFF',
-        image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=600&q=80',
-        sizes: ['50ml Dropper', '100ml Value'],
-        colors: ['Pure Vitamin C'],
-        variants: ['Single Bottle', '2-Pack Bundle']
-      },
-      {
-        id: 801,
-        name: 'Soft Baby Diapers Jumbo Pack (64s)',
-        category: 'Baby Products',
-        price: 2100,
-        originalPrice: 2800,
-        discount: '25% OFF',
-        image: 'https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=600&q=80',
-        sizes: ['Size 3 (64s)', 'Size 4 (56s)', 'Size 5 (48s)'],
-        colors: ['Hypoallergenic White'],
-        variants: ['1 Jumbo Pack', '2 Packs + Free Wipes']
-      },
-      {
-        id: 901,
-        name: 'PS5 DualSense Wireless Controller',
-        category: 'Gaming & Toys',
-        price: 8200,
-        originalPrice: 11000,
-        discount: '25% OFF',
-        image: 'https://images.unsplash.com/photo-1606318801954-d46d46d3360a?w=600&q=80',
-        sizes: ['Standard Edition'],
-        colors: ['Galactic White', 'Cosmic Red', 'Midnight Black'],
-        variants: ['Controller Only', 'With USB-C Charging Cable']
-      },
-      {
-        id: 1001,
-        name: 'FIFA Match Training Football Size 5',
-        category: 'Sporting Goods',
-        price: 1700,
-        originalPrice: 2500,
-        discount: '32% OFF',
-        image: 'https://images.unsplash.com/photo-1614632537456-c30d719003f5?w=600&q=80',
-        sizes: ['Size 5 Official', 'Size 4 Youth'],
-        colors: ['White/Blue', 'Hi-Vis Yellow'],
-        variants: ['Ball Only', 'Ball + Air Pump & Needle']
+        id: 8,
+        name: 'Electric Kitchen Blender & Grinder 1.5L',
+        price: 1199,
+        originalPrice: 2000,
+        discount: '40% OFF',
+        image: 'https://images.unsplash.com/photo-1570222094114-d074f7eeb4e5?w=600&q=80',
+        sizes: ['1.5L Standard', '2.0L Heavy Duty'],
+        colors: ['Silver Metallic', 'Pure White'],
+        packs: ['Blender + Mill', 'Blender + Extra Jar'],
+        rating: 4.7,
+        reviews: 2310,
+        fulfillment: 'Fulfilled By Kilimal'
       }
     ];
 
-    // =========================================================================
-    // TOAST NOTIFICATION HELPERS (No alert() anywhere)
-    // =========================================================================
-    function showToast(msg) {
-      const banner = document.getElementById('toastBanner');
-      const text = document.getElementById('toastMessage');
-      text.innerText = msg;
-      banner.classList.remove('hidden');
-      if (toastTimeout) clearTimeout(toastTimeout);
-      toastTimeout = setTimeout(() => {
-        banner.classList.add('hidden');
-      }, 4000);
+    function formatPrice(amountKsh) {
+      const cfg = currencyRates[selectedCurrency] || currencyRates.KSh;
+      const converted = amountKsh * cfg.rate;
+      if (selectedCurrency === 'USD') return cfg.symbol + converted.toFixed(2);
+      return cfg.symbol + Math.round(converted).toLocaleString();
     }
 
-    function hideToast() {
-      document.getElementById('toastBanner').classList.add('hidden');
+    function changeCurrency(curr) {
+      selectedCurrency = curr;
+      document.getElementById('currencySelector').value = curr;
+      renderStoreContent();
     }
 
-    // =========================================================================
-    // CURRENCY & CATEGORY FILTER HELPERS
-    // =========================================================================
-    function formatPrice(amountInKsh) {
-      const config = currencyRates[selectedCurrency] || currencyRates.KSh;
-      const converted = amountInKsh * config.rate;
-      if (selectedCurrency === 'USD') {
-        return config.symbol + converted.toFixed(2);
+    function switchTab(tab) {
+      currentTab = tab;
+      if (tab === 'account') {
+        document.getElementById('mainStoreView').classList.add('hidden');
+        document.getElementById('mainAccountView').classList.remove('hidden');
+        renderAccountView();
+      } else if (tab === 'home' || tab === 'category') {
+        document.getElementById('mainAccountView').classList.add('hidden');
+        document.getElementById('mainStoreView').classList.remove('hidden');
+        renderStoreContent();
+      } else if (tab === 'message') {
+        alert('Customer support live chat via WhatsApp / In-app messaging is active.');
       }
-      return config.symbol + Math.round(converted).toLocaleString();
     }
 
-    function changeCurrency(newCurrency) {
-      selectedCurrency = newCurrency;
-      document.getElementById('mobileCurrencySelect').value = newCurrency;
-      document.getElementById('desktopCurrencySelect').value = newCurrency;
-      renderCatalog();
+    function renderCategoryTabs() {
+      const nav = document.getElementById('categoryTabs');
+      nav.innerHTML = categories.map(cat => `
+        <button onclick="filterCat('${cat}')" class="font-bold text-xs pb-1 transition ${cat === 'Hot' ? 'text-orange-500 border-b-2 border-orange-500' : 'text-gray-300 hover:text-white'}">
+          ${cat}
+        </button>
+      `).join('');
     }
 
-    function filterCategory(cat) {
-      selectedCategory = cat;
-      renderCategoryNav();
-      renderCatalog();
-    }
-
-    function renderCategoryNav() {
-      const container = document.getElementById('categoryButtons');
-      let html = `<button onclick="filterCategory('All')" class="px-3.5 py-1.5 rounded-full font-bold transition ${selectedCategory === 'All' ? 'bg-white text-orange-700 shadow-sm' : 'hover:bg-orange-600'}">All 10 Departments</button>`;
-      categories.forEach(cat => {
-        const activeClass = selectedCategory === cat ? 'bg-white text-orange-700 shadow-sm' : 'hover:bg-orange-600';
-        html += `<button onclick="filterCategory('${cat}')" class="px-3.5 py-1.5 rounded-full font-semibold transition ${activeClass}">${cat}</button>`;
-      });
-      container.innerHTML = html;
+    function filterCat(cat) {
+      alert(`Filtering category: ${cat}`);
     }
 
     // =========================================================================
-    // RENDER STOREFRONT CATALOG WITH 4 OPTIONS & VISUAL PICKED FEEDBACK
+    // RENDER EXACT SCREENSHOT STORE LAYOUT
     // =========================================================================
-    function renderCatalog() {
-      const storeView = document.getElementById('storeView');
+    function renderStoreContent() {
+      renderCategoryTabs();
+      const container = document.getElementById('mainStoreView');
       const query = document.getElementById('searchInput').value.toLowerCase();
 
-      const filtered = masterCatalog.filter(p => {
-        const matchCat = selectedCategory === 'All' || p.category === selectedCategory;
-        const matchSearch = p.name.toLowerCase().includes(query) || p.category.toLowerCase().includes(query);
-        return matchCat && matchSearch;
-      });
+      const items = catalog.filter(p => p.name.toLowerCase().includes(query));
 
-      if (filtered.length === 0) {
-        storeView.innerHTML = `
-          <div class="bg-white rounded-2xl p-16 text-center shadow-sm border border-gray-200">
-            <p class="text-gray-600 font-semibold">No discounted products found matching "${query}".</p>
-            <button onclick="document.getElementById('searchInput').value=''; filterCategory('All');" class="mt-4 bg-orange-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow hover:bg-orange-700 transition">
-              Show All Products
-            </button>
-          </div>`;
-        return;
-      }
-
-      const catsToRender = selectedCategory === 'All' ? categories : [selectedCategory];
-      let html = '';
-
-      catsToRender.forEach(catName => {
-        const items = filtered.filter(p => p.category === catName);
-        if (items.length === 0) return;
-
-        html += `
-          <section class="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-200">
-            <div class="bg-orange-600 text-white px-4 py-3 flex items-center justify-between">
-              <h2 class="text-base md:text-lg font-extrabold tracking-wide uppercase">${catName}</h2>
-              <span class="text-xs bg-orange-800 px-3 py-1 rounded-full font-bold">${items.length} Deals</span>
+      container.innerHTML = `
+        <!-- EXACT SCREENSHOT TOP BANNER -->
+        <div class="bg-gradient-to-r from-orange-600 via-yellow-500 to-yellow-300 rounded-xl p-3 text-white shadow">
+          <div class="flex justify-between items-center">
+            <div>
+              <span class="bg-black text-white text-[9px] font-black px-1.5 py-0.5 rounded uppercase">Unbeatable Deals</span>
+              <h2 class="text-sm font-black mt-1">KSh 1 M Subsidies Daily</h2>
             </div>
-            <div class="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        `;
+            <span class="text-xs bg-black/30 px-2 py-1 rounded-lg font-bold">⚡ Flash Sale</span>
+          </div>
+        </div>
 
-        items.forEach(product => {
-          const isPicked = pickedProductIds.includes(product.id);
+        <!-- 6-GRID PROMOTIONAL BANNER CARDS AS IN SCREENSHOT 2 -->
+        <div class="grid grid-cols-3 gap-2 bg-white p-2 rounded-xl border border-gray-200">
+          <div onclick="filterCat('Phones')" class="bg-orange-50 border border-orange-200 p-2 rounded-lg text-center cursor-pointer">
+            <img src="${catalog[4].image}" class="h-14 mx-auto object-contain mb-1" />
+            <p class="text-[10px] font-black text-gray-800">Phones & ACCs ></p>
+            <p class="text-[11px] font-black text-orange-600">KSh 18,899</p>
+          </div>
+          <div onclick="filterCat('TVs')" class="bg-orange-50 border border-orange-200 p-2 rounded-lg text-center cursor-pointer">
+            <img src="${catalog[5].image}" class="h-14 mx-auto object-contain mb-1" />
+            <p class="text-[10px] font-black text-gray-800">TV & Audio ></p>
+            <p class="text-[11px] font-black text-orange-600">KSh 3,959</p>
+          </div>
+          <div onclick="filterCat('Shoes')" class="bg-orange-50 border border-orange-200 p-2 rounded-lg text-center cursor-pointer">
+            <img src="${catalog[6].image}" class="h-14 mx-auto object-contain mb-1" />
+            <p class="text-[10px] font-black text-gray-800">Men's Fashion ></p>
+            <p class="text-[11px] font-black text-orange-600">KSh 1,199</p>
+          </div>
+        </div>
 
-          // Unpicked cards have yellow highlight; clicking Add to Cart removes the yellow highlight
-          const cardBorderClass = isPicked
-            ? 'border-gray-200 bg-white'
-            : 'border-amber-400 bg-amber-50/40 ring-1 ring-amber-300';
+        <!-- MAIN PRODUCTS GRID WITH 4 OPTIONS & YELLOW DISAPPEAR ON PICK -->
+        <div class="grid grid-cols-2 gap-2">
+          ${items.map(product => {
+            const isPicked = pickedProductIds.includes(product.id);
+            const cardBg = isPicked ? 'bg-white border-gray-200' : 'bg-white border-amber-300 ring-1 ring-amber-200';
+            const discountBadge = isPicked 
+              ? `<span class="absolute top-2 left-2 bg-gray-800 text-white text-[9px] font-black px-1.5 py-0.5 rounded">✓ PICKED</span>`
+              : `<span class="absolute top-2 left-2 bg-red-600 text-white text-[9px] font-black px-1.5 py-0.5 rounded">${product.discount}</span>`;
 
-          const badgeHtml = isPicked
-            ? `<span class="absolute top-4 left-4 bg-gray-800 text-white text-[10px] font-black px-2.5 py-1 rounded-md shadow z-10">✓ PICKED</span>`
-            : `<span class="absolute top-4 left-4 bg-yellow-400 text-gray-900 text-[10px] font-black px-2.5 py-1 rounded-md shadow z-10">${product.discount}</span>`;
+            const btnText = isPicked ? '✓ Picked (Add Again)' : 'Add to Cart';
+            const btnClass = isPicked ? 'bg-gray-800 hover:bg-black text-white' : 'bg-orange-600 hover:bg-orange-700 text-white';
 
-          const btnHtml = isPicked
-            ? `<button onclick="addProductToCart(${product.id})" class="w-full mt-2 bg-gray-800 hover:bg-black text-white text-xs font-bold py-2.5 rounded-xl transition shadow-sm">✓ Picked (Add Another)</button>`
-            : `<button onclick="addProductToCart(${product.id})" class="w-full mt-2 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold py-2.5 rounded-xl active:scale-95 transition shadow-sm">Add to Cart</button>`;
-
-          html += `
-            <div class="rounded-2xl shadow-sm hover:shadow-md transition p-3.5 flex flex-col justify-between border relative ${cardBorderClass}">
-              ${badgeHtml}
-              <div>
-                <div class="w-full h-44 bg-gray-100 rounded-xl overflow-hidden mb-3">
-                  <img
-                    src="${product.image}"
-                    alt="${product.name}"
-                    onerror="this.onerror=null;this.src='https://placehold.co/600x400/ea580c/ffffff?text=${encodeURIComponent(product.name)}';"
-                    class="w-full h-full object-cover hover:scale-105 transition duration-300"
-                  />
-                </div>
-                <h3 class="text-sm font-bold text-gray-800 line-clamp-2">${product.name}</h3>
-              </div>
-
-              <!-- 4 DISTINCT SELECTION OPTIONS FOR CHOOSING GOODS -->
-              <div class="mt-3 space-y-1.5 pt-2.5 border-t border-gray-100 text-xs">
-                <div class="flex items-center gap-1.5">
-                  <span class="text-[10px] font-bold text-gray-500 w-12">1. Size:</span>
-                  <select id="size-${product.id}" class="flex-1 p-1.5 border rounded-lg text-[11px] bg-white focus:outline-none focus:border-orange-500">
-                    ${product.sizes.map(s => `<option value="${s}">${s}</option>`).join('')}
-                  </select>
-                </div>
-
-                <div class="flex items-center gap-1.5">
-                  <span class="text-[10px] font-bold text-gray-500 w-12">2. Color:</span>
-                  <select id="color-${product.id}" class="flex-1 p-1.5 border rounded-lg text-[11px] bg-white focus:outline-none focus:border-orange-500">
-                    ${product.colors.map(c => `<option value="${c}">${c}</option>`).join('')}
-                  </select>
-                </div>
-
-                <div class="flex items-center gap-1.5">
-                  <span class="text-[10px] font-bold text-gray-500 w-12">3. Pack:</span>
-                  <select id="variant-${product.id}" class="flex-1 p-1.5 border rounded-lg text-[11px] bg-white focus:outline-none focus:border-orange-500">
-                    ${product.variants.map(v => `<option value="${v}">${v}</option>`).join('')}
-                  </select>
-                </div>
-
-                <div class="flex items-center gap-1.5">
-                  <span class="text-[10px] font-bold text-gray-500 w-12">4. Qty:</span>
-                  <input type="number" id="qty-${product.id}" value="1" min="1" max="20" class="flex-1 p-1 border rounded-lg text-[11px] bg-white font-bold text-center focus:outline-none focus:border-orange-500" />
-                </div>
-
-                <div class="flex items-baseline justify-between pt-2">
-                  <div>
-                    <p class="text-sm font-black text-gray-900">${formatPrice(product.price)}</p>
-                    <p class="text-[10px] text-gray-400 line-through">${formatPrice(product.originalPrice)}</p>
+            return `
+              <div class="rounded-xl shadow-sm p-2.5 flex flex-col justify-between border relative ${cardBg}">
+                ${discountBadge}
+                <div>
+                  <div class="w-full h-36 bg-gray-50 rounded-lg overflow-hidden mb-2">
+                    <img src="${product.image}" class="w-full h-full object-cover" />
                   </div>
-                  <p class="text-[10px] text-green-700 font-bold">30% Dep: ${formatPrice(Math.round(product.price * 0.3))}</p>
+                  <h3 class="text-xs font-semibold text-gray-800 line-clamp-2">${product.name}</h3>
                 </div>
 
-                ${btnHtml}
+                <!-- 4 SELECTION OPTIONS -->
+                <div class="mt-2 space-y-1 pt-2 border-t border-gray-100 text-[11px]">
+                  <div class="flex items-center gap-1">
+                    <span class="text-[9px] font-bold text-gray-500 w-10">Size:</span>
+                    <select id="size-${product.id}" class="flex-1 p-0.5 border rounded text-[10px] bg-gray-50">
+                      ${product.sizes.map(s => `<option value="${s}">${s}</option>`).join('')}
+                    </select>
+                  </div>
+
+                  <div class="flex items-center gap-1">
+                    <span class="text-[9px] font-bold text-gray-500 w-10">Color:</span>
+                    <select id="color-${product.id}" class="flex-1 p-0.5 border rounded text-[10px] bg-gray-50">
+                      ${product.colors.map(c => `<option value="${c}">${c}</option>`).join('')}
+                    </select>
+                  </div>
+
+                  <div class="flex items-center gap-1">
+                    <span class="text-[9px] font-bold text-gray-500 w-10">Pack:</span>
+                    <select id="pack-${product.id}" class="flex-1 p-0.5 border rounded text-[10px] bg-gray-50">
+                      ${product.packs.map(p => `<option value="${p}">${p}</option>`).join('')}
+                    </select>
+                  </div>
+
+                  <div class="flex items-center gap-1">
+                    <span class="text-[9px] font-bold text-gray-500 w-10">Qty:</span>
+                    <input type="number" id="qty-${product.id}" value="1" min="1" max="10" class="flex-1 p-0.5 border rounded text-[10px] bg-gray-50 text-center font-bold" />
+                  </div>
+
+                  <div class="flex items-baseline justify-between pt-1">
+                    <div>
+                      <p class="text-xs font-black text-gray-900">${formatPrice(product.price)}</p>
+                      <p class="text-[9px] text-gray-400 line-through">${formatPrice(product.originalPrice)}</p>
+                    </div>
+                    <p class="text-[9px] text-green-700 font-bold">30% Dep: ${formatPrice(Math.round(product.price * 0.3))}</p>
+                  </div>
+
+                  <button onclick="addToCart(${product.id})" class="w-full mt-1 text-[11px] font-bold py-2 rounded-lg transition shadow-sm ${btnClass}">
+                    ${btnText}
+                  </button>
+                </div>
               </div>
-            </div>
-          `;
-        });
-
-        html += `</div></section>`;
-      });
-
-      storeView.innerHTML = html;
+            `;
+          }).join('')}
+        </div>
+      `;
     }
 
     // =========================================================================
-    // CART MANAGEMENT & YELLOW HIGHLIGHT REMOVAL
+    // CART & PICKED HIGHLIGHT HANDLER
     // =========================================================================
-    function addProductToCart(productId) {
-      const product = masterCatalog.find(p => p.id === productId);
-      if (!product) return;
-
+    function addToCart(productId) {
+      const product = catalog.find(p => p.id === productId);
       const size = document.getElementById(`size-${productId}`).value;
       const color = document.getElementById(`color-${productId}`).value;
-      const variant = document.getElementById(`variant-${productId}`).value;
-      const qty = Math.max(1, parseInt(document.getElementById(`qty-${productId}`).value) || 1);
+      const pack = document.getElementById(`pack-${productId}`).value;
+      const qty = parseInt(document.getElementById(`qty-${productId}`).value) || 1;
 
       cart.push({
         id: product.id,
         name: product.name,
         image: product.image,
-        size: size,
-        color: color,
-        variant: variant,
-        qty: qty,
+        size, color, pack, qty,
         unitPrice: product.price,
         totalPrice: product.price * qty
       });
@@ -691,238 +470,224 @@
         pickedProductIds.push(productId);
       }
 
-      updateCartBadge();
-      renderCatalog();
-      showToast(`Added ${qty}x ${product.name} to your cart!`);
+      updateCartCounters();
+      renderStoreContent();
+      openCartDrawer();
     }
 
-    function removeCartItem(index) {
+    function updateCartCounters() {
+      document.getElementById('floatingCartCount').innerText = cart.length;
+      document.getElementById('bottomNavCartCount').innerText = cart.length;
+    }
+
+    function removeFromCart(index) {
       const removed = cart[index];
       cart.splice(index, 1);
-
-      if (removed && !cart.some(item => item.id === removed.id)) {
+      if (removed && !cart.some(i => i.id === removed.id)) {
         pickedProductIds = pickedProductIds.filter(id => id !== removed.id);
       }
-
-      updateCartBadge();
-      renderCatalog();
-      openCartDrawer('cart');
-    }
-
-    function updateCartBadge() {
-      document.getElementById('floatingCartCount').innerText = cart.length;
+      updateCartCounters();
+      renderStoreContent();
+      openCartDrawer();
     }
 
     // =========================================================================
-    // SLIDE-OVER CART DRAWER & PAYSTACK CHECKOUT
+    // CART DRAWER & PAYSTACK CHECKOUT
     // =========================================================================
-    function openCartDrawer(step) {
+    function openCartDrawer() {
       const drawer = document.getElementById('cartDrawer');
       const title = document.getElementById('drawerTitle');
       const body = document.getElementById('drawerBody');
       drawer.classList.remove('hidden');
 
-      const totalKsh = cart.reduce((sum, item) => sum + item.totalPrice, 0);
+      const totalKsh = cart.reduce((sum, i) => sum + i.totalPrice, 0);
       const depositKsh = Math.round(totalKsh * 0.3);
       const balanceKsh = totalKsh - depositKsh;
 
-      if (step === 'cart') {
-        title.innerText = `Shopping Cart (${cart.length})`;
-        if (cart.length === 0) {
-          body.innerHTML = `
-            <div class="flex-1 flex flex-col items-center justify-center text-center text-gray-500 p-4">
-              <p class="text-base font-bold text-gray-700">Your cart is empty</p>
-              <p class="text-xs mt-1">Select your Size, Color, Pack, and Quantity on any product to add it.</p>
-            </div>`;
-          return;
-        }
-
-        let itemsHtml = '<div class="flex-1 space-y-3 overflow-y-auto pr-1">';
-        cart.forEach((item, idx) => {
-          itemsHtml += `
-            <div class="flex items-center justify-between bg-gray-50 p-3 rounded-xl border border-gray-200">
-              <div class="flex items-center gap-3">
-                <img src="${item.image}" alt="${item.name}" class="w-12 h-12 object-cover rounded-lg" />
-                <div>
-                  <h4 class="text-xs font-bold text-gray-800 line-clamp-1">${item.name}</h4>
-                  <p class="text-[10px] text-gray-500">${item.size} | ${item.color} | ${item.variant} (x${item.qty})</p>
-                  <p class="text-xs text-orange-600 font-black mt-0.5">${formatPrice(item.totalPrice)}</p>
-                </div>
-              </div>
-              <button onclick="removeCartItem(${idx})" class="text-red-600 hover:text-red-800 text-xs font-bold px-2 py-1">Remove</button>
-            </div>`;
-        });
-        itemsHtml += '</div>';
-
-        const checkoutBtnLabel = isLoggedIn ? 'Proceed to Paystack Checkout' : 'Log In / Create Account to Checkout';
-
+      title.innerText = `Shopping Cart (${cart.length})`;
+      if (cart.length === 0) {
         body.innerHTML = `
-          ${itemsHtml}
-          <div class="border-t pt-3 mt-4 bg-orange-50 p-3.5 rounded-xl space-y-1.5 border border-orange-100">
-            <div class="flex justify-between text-xs text-gray-700 font-bold">
-              <span>Total Goods Value:</span>
-              <span>${formatPrice(totalKsh)}</span>
-            </div>
-            <div class="flex justify-between text-xs text-green-700 font-black">
-              <span>Pay 30% Deposit Now:</span>
-              <span>${formatPrice(depositKsh)}</span>
-            </div>
-            <div class="flex justify-between text-xs text-orange-800 font-black border-t border-orange-200 pt-1.5">
-              <span>Pay 70% Balance After Delivery:</span>
-              <span>${formatPrice(balanceKsh)}</span>
-            </div>
-          </div>
-          <button onclick="proceedToCheckoutStep()" class="w-full mt-4 bg-orange-600 text-white font-bold py-3.5 rounded-xl hover:bg-orange-700 transition shadow">
-            ${checkoutBtnLabel}
-          </button>
-        `;
-      } else if (step === 'checkout') {
-        title.innerText = 'Paystack 30% Deposit Checkout';
-        body.innerHTML = `
-          <form onsubmit="processPaystackPayment(event)" class="flex-1 flex flex-col justify-between space-y-3">
-            <div class="space-y-3">
-              <div>
-                <label class="block text-xs font-bold text-gray-700 mb-1">East Africa Destination Country</label>
-                <select id="checkoutCountry" class="w-full p-2.5 text-sm border rounded-xl bg-white focus:outline-none focus:border-orange-500">
-                  <option value="Kenya">Kenya</option>
-                  <option value="Uganda">Uganda</option>
-                  <option value="Tanzania">Tanzania</option>
-                  <option value="Rwanda">Rwanda</option>
-                  <option value="Burundi">Burundi</option>
-                  <option value="South Sudan">South Sudan</option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-xs font-bold text-gray-700 mb-1">City & Delivery Point</label>
-                <input type="text" id="checkoutAddress" required placeholder="e.g. Nairobi CBD, Kampala, Dar es Salaam..." class="w-full p-2.5 text-sm border rounded-xl focus:outline-none focus:border-orange-500" />
-              </div>
-              <div class="bg-blue-50 border border-blue-200 p-3.5 rounded-xl text-xs text-blue-900">
-                <p class="font-bold">Secured by Paystack Live Checkout</p>
-                <p class="text-[11px] mt-1">Paying 30% deposit (${formatPrice(depositKsh)}) via M-Pesa, Airtel Money, Card or Bank.</p>
-              </div>
-              <div class="bg-gray-50 p-3.5 rounded-xl border text-xs space-y-1.5">
-                <div class="flex justify-between font-bold text-green-700">
-                  <span>30% Deposit Due Now:</span>
-                  <span>${formatPrice(depositKsh)}</span>
-                </div>
-                <div class="flex justify-between font-bold text-orange-700">
-                  <span>70% Balance After Delivery:</span>
-                  <span>${formatPrice(balanceKsh)}</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="border-t pt-3 flex gap-2">
-              <button type="button" onclick="openCartDrawer('cart')" class="w-1/3 bg-gray-200 text-gray-800 font-bold py-3 rounded-xl text-sm hover:bg-gray-300 transition">Back</button>
-              <button type="submit" class="w-2/3 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow text-sm transition">
-                Pay ${formatPrice(depositKsh)} Now
-              </button>
-            </div>
-          </form>
-        `;
+          <div class="flex-1 flex flex-col items-center justify-center text-center text-gray-500">
+            <p class="text-sm font-bold">Your cart is empty</p>
+            <p class="text-xs mt-1">Select items with size, color, and pack to start.</p>
+          </div>`;
+        return;
       }
+
+      let html = '<div class="flex-1 space-y-2 overflow-y-auto pr-1">';
+      cart.forEach((item, idx) => {
+        html += `
+          <div class="flex items-center justify-between bg-gray-50 p-2 rounded-xl border border-gray-200">
+            <div class="flex items-center gap-2">
+              <img src="${item.image}" class="w-10 h-10 object-cover rounded-lg" />
+              <div>
+                <h4 class="text-[11px] font-bold text-gray-800 line-clamp-1">${item.name}</h4>
+                <p class="text-[9px] text-gray-500">${item.size} | ${item.color} | ${item.pack} (x${item.qty})</p>
+                <p class="text-xs text-orange-600 font-black">${formatPrice(item.totalPrice)}</p>
+              </div>
+            </div>
+            <button onclick="removeFromCart(${idx})" class="text-red-600 text-xs font-bold px-2 py-1">Remove</button>
+          </div>`;
+      });
+      html += '</div>';
+
+      const btnLabel = isLoggedIn ? 'Proceed to Paystack Checkout' : 'Log In / Register to Checkout';
+
+      body.innerHTML = `
+        ${html}
+        <div class="border-t pt-3 mt-3 bg-orange-50 p-3 rounded-xl space-y-1 text-xs">
+          <div class="flex justify-between font-bold text-gray-700">
+            <span>Total Goods Value:</span>
+            <span>${formatPrice(totalKsh)}</span>
+          </div>
+          <div class="flex justify-between font-black text-green-700">
+            <span>Pay 30% Deposit Now:</span>
+            <span>${formatPrice(depositKsh)}</span>
+          </div>
+          <div class="flex justify-between font-black text-orange-800 border-t border-orange-200 pt-1">
+            <span>Pay 70% Balance After Delivery:</span>
+            <span>${formatPrice(balanceKsh)}</span>
+          </div>
+        </div>
+        <button onclick="handleCheckoutClick()" class="w-full mt-3 bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 rounded-xl text-xs shadow">
+          ${btnLabel}
+        </button>
+      `;
     }
 
     function closeCartDrawer() {
       document.getElementById('cartDrawer').classList.add('hidden');
     }
 
-    function proceedToCheckoutStep() {
+    function handleCheckoutClick() {
       if (!isLoggedIn) {
         closeCartDrawer();
         openAuthModal('login');
       } else {
-        openCartDrawer('checkout');
+        renderPaystackForm();
       }
+    }
+
+    function renderPaystackForm() {
+      const title = document.getElementById('drawerTitle');
+      const body = document.getElementById('drawerBody');
+      title.innerText = 'Paystack 30% Deposit Checkout';
+
+      const totalKsh = cart.reduce((sum, i) => sum + i.totalPrice, 0);
+      const depositKsh = Math.round(totalKsh * 0.3);
+
+      body.innerHTML = `
+        <form onsubmit="processPaystackPayment(event)" class="flex-1 flex flex-col justify-between space-y-3">
+          <div class="space-y-2 text-xs">
+            <div>
+              <label class="block font-bold text-gray-700 mb-0.5">Destination Country</label>
+              <select id="payCountry" class="w-full p-2 border rounded bg-white">
+                <option value="Kenya">Kenya</option>
+                <option value="Uganda">Uganda</option>
+                <option value="Tanzania">Tanzania</option>
+                <option value="Rwanda">Rwanda</option>
+                <option value="Burundi">Burundi</option>
+                <option value="South Sudan">South Sudan</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-bold text-gray-700 mb-0.5">City & Delivery Address</label>
+              <input type="text" id="payAddress" required placeholder="Nairobi CBD, Kampala Road..." class="w-full p-2 border rounded" />
+            </div>
+            <div class="bg-blue-50 border border-blue-200 p-2.5 rounded-xl text-[11px] text-blue-900">
+              <p class="font-bold">🔒 Paystack Live Payment Gateway</p>
+              <p class="mt-0.5">Pay 30% deposit (${formatPrice(depositKsh)}) via M-Pesa, Airtel Money, or Cards.</p>
+            </div>
+          </div>
+          <div class="border-t pt-2 flex gap-2">
+            <button type="button" onclick="openCartDrawer()" class="w-1/3 bg-gray-200 text-gray-800 font-bold py-2.5 rounded-xl text-xs">Back</button>
+            <button type="submit" class="w-2/3 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl text-xs shadow">
+              Pay ${formatPrice(depositKsh)} via Paystack
+            </button>
+          </div>
+        </form>
+      `;
     }
 
     function processPaystackPayment(e) {
       e.preventDefault();
-      const country = document.getElementById('checkoutCountry').value;
-      const address = document.getElementById('checkoutAddress').value;
+      const country = document.getElementById('payCountry').value;
+      const address = document.getElementById('payAddress').value;
 
-      const totalKsh = cart.reduce((sum, item) => sum + item.totalPrice, 0);
+      const totalKsh = cart.reduce((sum, i) => sum + i.totalPrice, 0);
       const depositKsh = Math.round(totalKsh * 0.3);
       const balanceKsh = totalKsh - depositKsh;
 
-      const currencyConfig = currencyRates[selectedCurrency] || currencyRates.KSh;
-      const payCurrency = ['KES', 'NGN', 'GHS', 'ZAR', 'USD'].includes(currencyConfig.iso) ? currencyConfig.iso : 'KES';
-      const amountInSelected = payCurrency === 'KES' ? depositKsh : Number((depositKsh * currencyConfig.rate).toFixed(2));
-      const amountInSubunits = Math.round(amountInSelected * 100);
+      const cfg = currencyRates[selectedCurrency] || currencyRates.KSh;
+      const payCurr = ['KES', 'NGN', 'GHS', 'ZAR', 'USD'].includes(cfg.iso) ? cfg.iso : 'KES';
+      const amountSubunits = Math.round((payCurr === 'KES' ? depositKsh : depositKsh * cfg.rate) * 100);
       const reference = 'KILI-' + Math.floor(100000000 + Math.random() * 900000000);
-
-      if (typeof window.PaystackPop === 'undefined') {
-        showToast('Paystack window could not load. Please check your internet connection.');
-        return;
-      }
 
       const handler = window.PaystackPop.setup({
         key: PAYSTACK_PUBLIC_KEY,
-        email: currentUser.email,
-        amount: amountInSubunits,
-        currency: payCurrency,
+        email: customer.email,
+        amount: amountSubunits,
+        currency: payCurr,
         ref: reference,
-        callback: function(response) {
-          const newOrder = {
+        callback: function(res) {
+          orders.unshift({
             id: 'ORD-' + Math.floor(1000 + Math.random() * 9000),
-            ref: response.reference,
+            ref: res.reference,
             total: totalKsh,
             deposit: depositKsh,
             balance: balanceKsh,
             status: 'Dispatched',
             date: new Date().toISOString().split('T')[0],
-            country: country + ' (' + address + ')'
-          };
+            country: `${country} (${address})`
+          });
 
-          orders.unshift(newOrder);
           notifications.unshift({
             id: Date.now(),
             title: 'Order Confirmed & Dispatched!',
-            msg: `Deposit received (Ref: ${response.reference}). Order ${newOrder.id} is on the way to ${country}.`,
+            msg: `Deposit received (Ref: ${res.reference}). Your order is on the way to ${country}.`,
             date: new Date().toISOString().split('T')[0]
           });
 
           cart = [];
           pickedProductIds = [];
-          updateCartBadge();
-          renderCatalog();
+          updateCartCounters();
+          renderStoreContent();
 
           document.getElementById('drawerTitle').innerText = 'Deposit Verified!';
           document.getElementById('drawerBody').innerHTML = `
-            <div class="flex-1 flex flex-col items-center justify-center text-center p-4">
-              <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-3xl font-bold mb-4">✓</div>
-              <h3 class="text-xl font-black text-gray-800 mb-1">Paystack Deposit Verified!</h3>
-              <p class="text-xs font-mono text-gray-500 mb-2">Ref: ${response.reference}</p>
-              <p class="text-xs text-gray-600 max-w-xs mb-6 leading-relaxed">
-                Thank you, <strong>${currentUser.name}</strong>. Your order is now visible in your Account Dashboard for live tracking.
-              </p>
-              <button onclick="closeCartDrawer(); switchView('account');" class="w-full bg-orange-600 text-white font-bold py-3.5 rounded-xl text-sm shadow hover:bg-orange-700 transition">
-                Open Order Tracking & Notifications
+            <div class="flex-1 flex flex-col items-center justify-center text-center">
+              <div class="w-14 h-14 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-2xl font-bold mb-3">✓</div>
+              <h3 class="text-base font-black text-gray-800 mb-1">Paystack Deposit Successful!</h3>
+              <p class="text-[11px] font-mono text-gray-500 mb-2">Ref: ${res.reference}</p>
+              <p class="text-xs text-gray-600 mb-4">Your order has been logged in your account dashboard for tracking.</p>
+              <button onclick="closeCartDrawer(); switchTab('account');" class="w-full bg-orange-600 text-white font-bold py-2.5 rounded-xl text-xs shadow">
+                View Order & Tracking
               </button>
             </div>
           `;
         },
         onClose: function() {}
       });
-
       handler.openIframe();
     }
 
     // =========================================================================
-    // CUSTOMER ACCOUNT, LOGIN, TRACKING, CANCEL & NOTIFICATIONS
+    // CUSTOMER ACCOUNT & TRACKING DASHBOARD
     // =========================================================================
-    function handleAuthButtonClick() {
-      if (isLoggedIn) {
-        switchView('account');
-      } else {
+    function handleAccountClick() {
+      if (!isLoggedIn) {
         openAuthModal('login');
+      } else {
+        switchTab('account');
       }
     }
 
     function openAuthModal(mode) {
       authMode = mode;
       document.getElementById('authModal').classList.remove('hidden');
-      updateAuthModalUI();
+      document.getElementById('authTitle').innerText = mode === 'login' ? 'Customer Login' : 'Create Account';
+      document.getElementById('nameFieldBox').classList.toggle('hidden', mode === 'login');
+      document.getElementById('authSubmitBtn').innerText = mode === 'login' ? 'Log In' : 'Register Account';
     }
 
     function closeAuthModal() {
@@ -930,162 +695,99 @@
     }
 
     function toggleAuthMode() {
-      authMode = authMode === 'login' ? 'register' : 'login';
-      updateAuthModalUI();
+      openAuthModal(authMode === 'login' ? 'register' : 'login');
     }
 
-    function updateAuthModalUI() {
-      const isReg = authMode === 'register';
-      document.getElementById('authModalTitle').innerText = isReg ? 'Create Customer Account' : 'Customer Login';
-      document.getElementById('registerNameField').classList.toggle('hidden', !isReg);
-      document.getElementById('authSubmitBtn').innerText = isReg ? 'Create Account & Continue' : 'Log In to Account';
-      document.getElementById('toggleAuthModeBtn').innerText = isReg
-        ? 'Already have an account? Log in here'
-        : "Don't have an account? Create Account here";
-    }
-
-    function submitAuthForm(e) {
+    function submitAuth(e) {
       e.preventDefault();
-      const nameInput = document.getElementById('authNameInput').value.trim();
-      const emailInput = document.getElementById('authEmailInput').value.trim();
-      const phoneInput = document.getElementById('authPhoneInput').value.trim();
+      const name = document.getElementById('authName').value.trim();
+      const email = document.getElementById('authEmail').value.trim();
+      const phone = document.getElementById('authPhone').value.trim();
 
-      if (authMode === 'register' && nameInput) {
-        currentUser.name = nameInput;
-      } else if (!nameInput) {
-        currentUser.name = emailInput.split('@')[0];
-      }
-      currentUser.email = emailInput;
-      currentUser.phone = phoneInput;
-
+      if (authMode === 'register' && name) customer.name = name;
+      customer.email = email;
+      customer.phone = phone;
       isLoggedIn = true;
-      closeAuthModal();
 
-      document.getElementById('mobileAuthBtn').innerText = 'Account';
-      document.getElementById('desktopAuthBtn').innerText = 'Account (' + currentUser.name + ')';
+      closeAuthModal();
+      document.getElementById('bottomNavAccountLabel').innerText = 'Profile';
 
       notifications.unshift({
         id: Date.now(),
-        title: authMode === 'register' ? 'Account Created!' : 'Welcome Back!',
-        msg: `Hello ${currentUser.name}, you can now track orders, cancel orders, and view past purchases.`,
+        title: 'Account Active',
+        msg: `Welcome, ${customer.name}! You can now track and manage your orders.`,
         date: new Date().toISOString().split('T')[0]
       });
 
-      showToast(`Signed in as ${currentUser.name}`);
-
       if (cart.length > 0) {
-        openCartDrawer('checkout');
+        openCartDrawer();
+        renderPaystackForm();
       } else {
-        switchView('account');
+        switchTab('account');
       }
     }
 
-    function logoutUser() {
+    function logoutCustomer() {
       isLoggedIn = false;
-      document.getElementById('mobileAuthBtn').innerText = 'Login';
-      document.getElementById('desktopAuthBtn').innerText = 'Account / Login';
-      switchView('store');
-      showToast('You have been logged out.');
+      document.getElementById('bottomNavAccountLabel').innerText = 'Account';
+      switchTab('home');
     }
 
-    function switchView(view) {
-      const storeView = document.getElementById('storeView');
-      const accountView = document.getElementById('accountView');
-      const searchBar = document.getElementById('searchBarContainer');
-      const catNav = document.getElementById('categoryNav');
+    function renderAccountView() {
+      document.getElementById('accNameEmail').innerText = `${customer.name} (${customer.email})`;
+      document.getElementById('accPhone').innerText = `Phone: ${customer.phone}`;
 
-      if (view === 'account') {
-        storeView.classList.add('hidden');
-        searchBar.classList.add('hidden');
-        catNav.classList.add('hidden');
-        accountView.classList.remove('hidden');
-        renderAccountDashboard();
-      } else {
-        accountView.classList.add('hidden');
-        storeView.classList.remove('hidden');
-        searchBar.classList.remove('hidden');
-        catNav.classList.remove('hidden');
-      }
-    }
-
-    function renderAccountDashboard() {
-      document.getElementById('profileDisplay').innerText = `${currentUser.name} (${currentUser.email})`;
-      document.getElementById('phoneDisplay').innerText = `Phone: ${currentUser.phone}`;
-
-      const notifContainer = document.getElementById('notificationsList');
-      notifContainer.innerHTML = notifications.map(n => `
-        <div class="bg-blue-50 border border-blue-100 p-3.5 rounded-xl text-xs flex justify-between items-center">
+      const notifBox = document.getElementById('accNotifications');
+      notifBox.innerHTML = notifications.map(n => `
+        <div class="bg-blue-50 border border-blue-100 p-2.5 rounded-xl text-[11px] flex justify-between items-center">
           <div>
             <p class="font-bold text-blue-900">${n.title}</p>
-            <p class="text-blue-700 mt-0.5">${n.msg}</p>
+            <p class="text-blue-700">${n.msg}</p>
           </div>
-          <span class="text-[10px] text-blue-500 whitespace-nowrap ml-2 font-semibold">${n.date}</span>
+          <span class="text-[9px] text-blue-500 whitespace-nowrap ml-2">${n.date}</span>
         </div>
       `).join('');
 
-      const ordersContainer = document.getElementById('ordersList');
-      ordersContainer.innerHTML = orders.map(order => {
-        const isCancelled = order.status === 'Cancelled';
-        const statusBadge = isCancelled
-          ? `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-800">Cancelled</span>`
-          : `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-green-100 text-green-800">${order.status}</span>`;
+      const ordBox = document.getElementById('accOrders');
+      ordBox.innerHTML = orders.map(o => {
+        const isCancelled = o.status === 'Cancelled';
+        const statusBadge = isCancelled 
+          ? `<span class="bg-red-100 text-red-800 text-[9px] font-bold px-2 py-0.5 rounded-full">Cancelled</span>`
+          : `<span class="bg-green-100 text-green-800 text-[9px] font-bold px-2 py-0.5 rounded-full">${o.status}</span>`;
 
-        const cancelBtn = (!isCancelled && order.status !== 'Delivered')
-          ? `<div class="flex justify-end pt-2 border-t">
-              <button onclick="cancelCustomerOrder('${order.id}')" class="bg-red-50 text-red-600 border border-red-200 px-3.5 py-1.5 rounded-xl text-xs font-bold hover:bg-red-100 transition">
-                Cancel Order
-              </button>
-            </div>`
+        const cancelBtn = (!isCancelled && o.status !== 'Delivered')
+          ? `<div class="flex justify-end pt-2 border-t"><button onclick="cancelOrder('${o.id}')" class="bg-red-50 text-red-600 border border-red-200 px-2.5 py-1 rounded text-[11px] font-bold">Cancel Order</button></div>`
           : '';
 
         return `
-          <div class="border border-gray-200 rounded-xl p-4 bg-white shadow-sm space-y-2.5">
-            <div class="flex justify-between items-center border-b pb-2">
-              <div>
-                <span class="font-black text-gray-900">${order.id}</span>
-                <span class="text-xs text-gray-500 ml-2">(${order.date})</span>
-              </div>
+          <div class="border border-gray-200 rounded-xl p-3 bg-white shadow-sm space-y-1.5 text-xs">
+            <div class="flex justify-between items-center border-b pb-1.5">
+              <span class="font-black text-gray-900">${o.id} (${o.date})</span>
               ${statusBadge}
             </div>
-            <div class="text-xs space-y-1 text-gray-600">
-              <p><strong>Destination:</strong> ${order.country}</p>
-              <p><strong>30% Deposit Paid:</strong> KSh ${order.deposit.toLocaleString()} (Ref: ${order.ref})</p>
-              <p><strong>70% Balance Due on Delivery:</strong> KSh ${order.balance.toLocaleString()}</p>
-            </div>
+            <p><strong>Destination:</strong> ${o.country}</p>
+            <p><strong>30% Deposit Paid:</strong> KSh ${o.deposit.toLocaleString()} (Ref: ${o.ref})</p>
+            <p><strong>70% Balance Due on Delivery:</strong> KSh ${o.balance.toLocaleString()}</p>
             ${cancelBtn}
           </div>
         `;
       }).join('');
     }
 
-    function cancelCustomerOrder(orderId) {
-      orders = orders.map(o => o.id === orderId ? { ...o, status: 'Cancelled' } : o);
+    function cancelOrder(id) {
+      orders = orders.map(o => o.id === id ? { ...o, status: 'Cancelled' } : o);
       notifications.unshift({
         id: Date.now(),
         title: 'Order Cancelled',
-        msg: `Order ${orderId} has been cancelled upon your request.`,
+        msg: `Order ${id} was cancelled successfully.`,
         date: new Date().toISOString().split('T')[0]
       });
-      renderAccountDashboard();
-      showToast(`Order ${orderId} has been cancelled.`);
+      renderAccountView();
     }
 
-    function openInstallGuideModal() {
-      document.getElementById('installModal').classList.remove('hidden');
-    }
-
-    function closeInstallGuideModal() {
-      document.getElementById('installModal').classList.add('hidden');
-    }
-
-    // =========================================================================
-    // INITIALIZE STOREFRONT IMMEDIATELY ON LOAD
-    // =========================================================================
-    window.addEventListener('DOMContentLoaded', () => {
-      renderCategoryNav();
-      renderCatalog();
-    });
+    // INITIALIZE APP ON LOAD
+    renderStoreContent();
+    updateCartCounters();
   </script>
 </body>
 </html>
-```
