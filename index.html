@@ -25,7 +25,7 @@
           type="text"
           id="searchInput"
           oninput="renderActiveTabContent()"
-          placeholder="Smart TV, Hair Comb, Clipper..."
+          placeholder="Search products..."
           class="w-full bg-transparent text-white text-xs placeholder-gray-400 focus:outline-none"
         />
       </div>
@@ -302,10 +302,10 @@
     function renderHomeTab() {
       const container = document.getElementById('appContainer');
       const searchInput = document.getElementById('searchInput');
-      const query = searchInput ? searchInput.value.toLowerCase() : '';
+      const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
       
       const items = catalog.filter(p => {
-        const matchesQuery = p.name.toLowerCase().includes(query) || p.category.toLowerCase().includes(query);
+        const matchesQuery = !query || p.name.toLowerCase().includes(query) || p.category.toLowerCase().includes(query);
         const matchesCat = activeCategoryFilter === 'All' || p.category === activeCategoryFilter;
         return matchesQuery && matchesCat;
       });
@@ -667,7 +667,7 @@
       const reference = 'KILI-' + Math.floor(100000000 + Math.random() * 900000000);
 
       const handler = window.PaystackPop.setup({
-        key: PAYSTACK_PUBLIC_KEY,[span_1](start_span)[span_1](end_span)
+        key: PAYSTACK_PUBLIC_KEY,
         email: customer.email,
         amount: amountSubunits,
         currency: payCurr,
