@@ -3,908 +3,585 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KILISHOP - East Africa Mega Store</title>
+    <title>KiliShop East Africa | Online Megastore & Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://js.paystack.co/v2/inline.js"></script>
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800 font-sans pb-24">
+<body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
 
-    <!-- Top Navigation Bar -->
-    <header class="bg-white shadow-sm sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
-            <a href="#" onclick="showStore()" class="text-2xl font-extrabold text-orange-600 tracking-tight flex items-center gap-1">
-                KILISHOP
-            </a>
+    <!-- Top Announcement Bar -->
+    <div class="bg-amber-500 text-slate-950 text-xs font-semibold py-1.5 px-4 text-center">
+        ⚡ East Africa Express Delivery across Kenya, Tanzania, Uganda, Rwanda, Burundi, Zambia & Zimbabwe | Direct Mobile Money & Paystack Enabled
+    </div>
+
+    <!-- Header / Navigation -->
+    <header class="sticky top-0 z-45 bg-slate-900 text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <span class="text-2xl font-black tracking-wider text-amber-400 cursor-pointer" onclick="switchView('store')">
+                    <i class="fa-solid fa-bag-shopping mr-2"></i>KILISHOP
+                </span>
+                <select id="countrySelector" onchange="changeCountry(this.value)" class="bg-slate-800 text-white text-xs font-semibold px-2.5 py-1.5 rounded-lg border border-slate-700 focus:outline-none focus:border-amber-400">
+                    <option value="KE">🇰🇪 Kenya (KES)</option>
+                    <option value="TZ">🇹🇿 Tanzania (TZS)</option>
+                    <option value="UG">🇺🇬 Uganda (UGX)</option>
+                    <option value="RW">🇷🇼 Rwanda (RWF)</option>
+                    <option value="BI">🇧🇮 Burundi (BIF)</option>
+                    <option value="ZM">🇿🇲 Zambia (ZMW)</option>
+                    <option value="ZW">🇿🇼 Zimbabwe (USD)</option>
+                </select>
+            </div>
             
-            <div class="flex-1 max-w-lg hidden sm:block">
-                <input type="text" id="desktopSearch" onkeyup="filterProducts()" placeholder="Search 680+ items (cheapest to expensive)..." 
-                    class="w-full px-4 py-2 bg-gray-100 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-orange-500">
-            </div>
-
-            <div class="flex items-center gap-2">
-                <div class="bg-orange-50 border border-orange-200 text-orange-800 text-xs font-bold rounded-full px-3 py-2 flex items-center gap-1.5">
-                    <span>📱 M-Pesa STK Push</span>
+            <div class="flex-1 max-w-xl mx-4 hidden md:block">
+                <div class="relative">
+                    <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="Search millions of products, brands and categories..." class="w-full pl-10 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-full text-sm text-white placeholder-slate-400 focus:bg-slate-900 focus:border-amber-400 focus:outline-none transition">
+                    <i class="fa-solid fa-search absolute left-3.5 top-3 text-slate-400"></i>
                 </div>
-
-                <button onclick="openCartModal()" class="relative bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 shadow-sm transition">
-                    <span>🛒 Cart</span>
-                    <span id="cartCount" class="bg-white text-orange-600 text-xs font-bold px-2 py-0.5 rounded-full">0</span>
-                </button>
             </div>
-        </div>
 
-        <!-- Mobile Search Bar -->
-        <div class="px-4 pb-3 sm:hidden">
-            <input type="text" id="mobileSearch" onkeyup="filterProducts()" placeholder="Search 680+ items..." 
-                class="w-full px-4 py-2 bg-gray-100 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-orange-500">
-        </div>
-
-        <!-- Category Filter Pills -->
-        <div class="border-t border-gray-100 bg-white">
-            <div id="categoryBar" class="max-w-7xl mx-auto px-4 py-2.5 flex gap-2 overflow-x-auto no-scrollbar text-xs font-semibold">
-                <button onclick="selectCategory('All')" class="cat-btn active bg-orange-600 text-white px-3.5 py-1.5 rounded-full whitespace-nowrap">All Items (Sorted)</button>
-                <button onclick="selectCategory('Phones & Tablets')" class="cat-btn bg-gray-100 text-gray-700 hover:bg-gray-200 px-3.5 py-1.5 rounded-full whitespace-nowrap">Phones & Tablets</button>
-                <button onclick="selectCategory('Computers & IT')" class="cat-btn bg-gray-100 text-gray-700 hover:bg-gray-200 px-3.5 py-1.5 rounded-full whitespace-nowrap">Computers & IT</button>
-                <button onclick="selectCategory('TV, Audio & Gaming')" class="cat-btn bg-gray-100 text-gray-700 hover:bg-gray-200 px-3.5 py-1.5 rounded-full whitespace-nowrap">TV, Audio & Gaming</button>
-                <button onclick="selectCategory('Home Appliances')" class="cat-btn bg-gray-100 text-gray-700 hover:bg-gray-200 px-3.5 py-1.5 rounded-full whitespace-nowrap">Home Appliances</button>
-                <button onclick="selectCategory('Solar, Power & Tools')" class="cat-btn bg-gray-100 text-gray-700 hover:bg-gray-200 px-3.5 py-1.5 rounded-full whitespace-nowrap">Solar, Power & Tools</button>
-                <button onclick="selectCategory('Cameras & Security')" class="cat-btn bg-gray-100 text-gray-700 hover:bg-gray-200 px-3.5 py-1.5 rounded-full whitespace-nowrap">Cameras & Security</button>
-                <button onclick="selectCategory('Music & Studio')" class="cat-btn bg-gray-100 text-gray-700 hover:bg-gray-200 px-3.5 py-1.5 rounded-full whitespace-nowrap">Music & Studio</button>
-                <button onclick="selectCategory('Office & POS')" class="cat-btn bg-gray-100 text-gray-700 hover:bg-gray-200 px-3.5 py-1.5 rounded-full whitespace-nowrap">Office & POS</button>
-                <button onclick="selectCategory('Medical & Health')" class="cat-btn bg-gray-100 text-gray-700 hover:bg-gray-200 px-3.5 py-1.5 rounded-full whitespace-nowrap">Medical & Health</button>
-                <button onclick="selectCategory('Laboratory Equipment')" class="cat-btn bg-gray-100 text-gray-700 hover:bg-gray-200 px-3.5 py-1.5 rounded-full whitespace-nowrap">Laboratory Equipment</button>
-                <button onclick="selectCategory('Women\'s Fashion')" class="cat-btn bg-gray-100 text-gray-700 hover:bg-gray-200 px-3.5 py-1.5 rounded-full whitespace-nowrap">Women's Fashion</button>
-                <button onclick="selectCategory('Motorcycle Parts')" class="cat-btn bg-gray-100 text-gray-700 hover:bg-gray-200 px-3.5 py-1.5 rounded-full whitespace-nowrap">Motorcycle Parts</button>
-                <button onclick="selectCategory('Bicycle Gear')" class="cat-btn bg-gray-100 text-gray-700 hover:bg-gray-200 px-3.5 py-1.5 rounded-full whitespace-nowrap">Bicycle Gear</button>
-                <button onclick="selectCategory('Pool & Outdoor')" class="cat-btn bg-gray-100 text-gray-700 hover:bg-gray-200 px-3.5 py-1.5 rounded-full whitespace-nowrap">Pool & Outdoor</button>
+            <div class="flex items-center space-x-3">
+                <button onclick="switchView('admin')" class="bg-slate-800 hover:bg-slate-700 text-amber-400 px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 border border-slate-700">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span class="hidden sm:inline">Admin Dashboard</span>
+                </button>
+                <button onclick="toggleCart()" class="relative p-2 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl transition font-bold flex items-center px-3 space-x-2">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span id="cartBadge" class="bg-slate-950 text-amber-400 text-xs px-2 py-0.5 rounded-full font-bold hidden">0</span>
+                </button>
             </div>
         </div>
     </header>
 
-    <!-- Promo Banner -->
-    <section class="max-w-7xl mx-auto px-4 mt-4">
-        <div class="bg-gradient-to-r from-orange-600 to-amber-500 rounded-2xl p-5 sm:p-6 text-white shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div>
-                <span class="bg-white/20 text-white text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">Live Storefront Active</span>
-                <h2 class="text-xl sm:text-2xl font-extrabold mt-2">680+ Verified Products Arranged from Cheapest</h2>
-                <p class="text-orange-100 text-xs sm:text-sm mt-1">Clean product categories with accurately matched imagery. Pay 30% upfront via live M-Pesa STK push!</p>
+    <!-- Main Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        
+        <!-- STORE VIEW -->
+        <div id="storeView" class="space-y-6">
+            <!-- Categories Slider -->
+            <div class="flex space-x-2 overflow-x-auto hide-scrollbar pb-2" id="categoryContainer">
+                <button onclick="filterCategory('All')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold bg-amber-500 text-slate-950 whitespace-nowrap transition shadow-sm">All Departments</button>
+                <button onclick="filterCategory('Phones & Tablets')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200 whitespace-nowrap hover:bg-slate-50 transition">Phones & Tablets</button>
+                <button onclick="filterCategory('Electronics')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200 whitespace-nowrap hover:bg-slate-50 transition">Electronics & TVs</button>
+                <button onclick="filterCategory('Fashion')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200 whitespace-nowrap hover:bg-slate-50 transition">Fashion & Shoes</button>
+                <button onclick="filterCategory('Home & Living')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200 whitespace-nowrap hover:bg-slate-50 transition">Home & Living</button>
+                <button onclick="filterCategory('Supermarket')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200 whitespace-nowrap hover:bg-slate-50 transition">Supermarket & Groceries</button>
+                <button onclick="filterCategory('Computing')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200 whitespace-nowrap hover:bg-slate-50 transition">Computing & Gaming</button>
+                <button onclick="filterCategory('Health & Beauty')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200 whitespace-nowrap hover:bg-slate-50 transition">Health & Beauty</button>
+                <button onclick="filterCategory('Baby Products')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200 whitespace-nowrap hover:bg-slate-50 transition">Baby Products</button>
+                <button onclick="filterCategory('Sports & Fitness')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200 whitespace-nowrap hover:bg-slate-50 transition">Sports & Fitness</button>
             </div>
-            <div class="bg-white text-orange-600 font-bold text-xs px-4 py-3 rounded-xl shadow-sm whitespace-nowrap">
-                ⚡ Live M-Pesa Enabled
+
+            <!-- Product Grid -->
+            <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                <!-- Dynamically populated products -->
             </div>
         </div>
-    </section>
 
-    <!-- Product Grid -->
-    <main class="max-w-7xl mx-auto px-4 mt-6">
-        <div class="flex justify-between items-center mb-4">
-            <h3 id="sectionTitle" class="text-lg font-bold text-gray-900">All Products (Cheapest to Expensive)</h3>
-            <span id="itemCountLabel" class="text-xs text-gray-500 font-medium">Showing items</span>
+        <!-- ADMIN DASHBOARD VIEW -->
+        <div id="adminView" class="space-y-6 hidden">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between bg-white p-6 rounded-2xl shadow-sm border border-slate-200 gap-4">
+                <div>
+                    <h1 class="text-2xl font-black text-slate-900">Admin Control Center & Dispatch</h1>
+                    <p class="text-xs text-slate-500 mt-1">Live overview of incoming orders, mobile money logs, and automated WhatsApp/SMS customer dispatch tools.</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button onclick="clearOrders()" class="bg-rose-50 text-rose-600 px-4 py-2 rounded-xl text-xs font-bold hover:bg-rose-100 transition border border-rose-200">Clear Order History</button>
+                    <button onclick="switchView('store')" class="bg-slate-900 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-slate-800 transition">Back to Storefront</button>
+                </div>
+            </div>
+
+            <!-- Stats Overview Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Orders Received</p>
+                    <h3 id="statTotalOrders" class="text-3xl font-black text-slate-900 mt-2">0</h3>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Sales Revenue (KES)</p>
+                    <h3 id="statTotalRevenue" class="text-3xl font-black text-emerald-600 mt-2">KES 0</h3>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Active Gateways</p>
+                    <h3 class="text-3xl font-black text-indigo-600 mt-2">M-Pesa / Airtel / Paystack</h3>
+                </div>
+            </div>
+
+            <!-- Orders Table -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-6 border-b border-slate-200 flex items-center justify-between">
+                    <h3 class="font-bold text-slate-900">Customer Orders & Automated WhatsApp Dispatch</h3>
+                    <span class="text-xs bg-slate-100 text-slate-600 px-3 py-1 rounded-full font-semibold">Live Sync Active</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-400 text-xs uppercase font-semibold border-b border-slate-200">
+                                <th class="p-4">Order ID</th>
+                                <th class="p-4">Customer Phone</th>
+                                <th class="p-4">Country & Channel</th>
+                                <th class="p-4">Items Ordered</th>
+                                <th class="p-4">Total Amount</th>
+                                <th class="p-4">Automated Dispatch Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminOrdersTable" class="divide-y divide-slate-100 text-sm">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
-        <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
-            <!-- Products Injected by JavaScript -->
-        </div>
-
-        <div id="loadMoreWrapper" class="mt-8 text-center hidden">
-            <button onclick="loadMoreProducts()" class="bg-white border border-orange-600 text-orange-600 hover:bg-orange-50 font-bold py-3 px-8 rounded-full text-sm shadow-sm transition">
-                Load More Products
-            </button>
-        </div>
     </main>
 
-    <!-- Cart & 30% Deposit Checkout Modal -->
-    <div id="cartModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
-        <div class="bg-white w-full max-w-lg rounded-t-2xl sm:rounded-2xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden">
-            
-            <!-- Modal Header -->
-            <div class="px-5 py-4 border-b flex justify-between items-center bg-gray-50">
-                <h3 class="text-lg font-bold text-gray-900">Cart & M-Pesa 30% Deposit</h3>
-                <button onclick="closeCartModal()" class="text-gray-500 hover:text-gray-800 text-2xl leading-none">&times;</button>
-            </div>
-
-            <!-- Modal Body (Scrollable) -->
-            <div class="p-5 overflow-y-auto space-y-5 flex-1">
+    <!-- Cart Drawer Modal -->
+    <div id="cartDrawer" class="fixed inset-0 z-50 overflow-hidden hidden">
+        <div class="absolute inset-0 bg-slate-950/60 backdrop-blur-sm transition-opacity" onclick="toggleCart()"></div>
+        <div class="absolute inset-y-0 right-0 max-w-full flex pl-10">
+            <div class="w-screen max-w-md bg-white shadow-2xl flex flex-col">
+                <div class="p-6 border-b border-slate-200 flex items-center justify-between bg-slate-900 text-white">
+                    <h2 class="text-lg font-bold flex items-center space-x-2"><i class="fa-solid fa-cart-shopping text-amber-400"></i><span>Your Shopping Cart</span></h2>
+                    <button onclick="toggleCart()" class="text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+                </div>
                 
-                <!-- Cart Items List -->
-                <div id="cartItemsContainer" class="space-y-3"></div>
-
-                <!-- Totals Breakdown -->
-                <div id="cartSummaryBox" class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-2 text-sm hidden">
-                    <div class="flex justify-between text-gray-600">
-                        <span>Total Order Value:</span>
-                        <span id="modalTotalAmount" class="font-semibold text-gray-900">KES 0</span>
-                    </div>
-                    <div class="flex justify-between text-orange-600 font-bold text-base pt-2 border-t border-gray-200">
-                        <span>M-Pesa Deposit Due Now (30%):</span>
-                        <span id="modalDepositAmount">KES 0</span>
-                    </div>
-                    <div class="flex justify-between text-gray-500 text-xs">
-                        <span>Balance on Delivery (70%):</span>
-                        <span id="modalBalanceAmount">KES 0</span>
-                    </div>
-                    <div class="mt-2 p-2.5 bg-orange-50 border border-orange-100 text-orange-800 text-xs rounded-lg">
-                        📱 An M-Pesa payment prompt will be sent directly to your phone when you click pay.
-                    </div>
+                <div id="cartItemsList" class="flex-1 overflow-y-auto p-6 space-y-4 divide-y divide-slate-100">
+                    <!-- Cart items populated here -->
                 </div>
 
-                <!-- Customer Delivery Details Form -->
-                <form id="checkoutForm" class="space-y-3 hidden">
-                    <h4 class="font-bold text-sm text-gray-900 pt-2 border-t">M-Pesa & Delivery Information</h4>
-                    
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-600 mb-1">Full Name</label>
-                        <input type="text" id="custName" required placeholder="e.g. Langat Kipkorir" value="Langat Kipkorir"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:outline-none">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-600 mb-1">Email Address (for receipt)</label>
-                        <input type="email" id="custEmail" required placeholder="you@example.com" value="langatkipkorir2007@gmail.com"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:outline-none">
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-600 mb-1">M-Pesa Phone Number</label>
-                            <input type="tel" id="custPhone" required 
-                                   inputmode="numeric" 
-                                   pattern="[0-9+]*" 
-                                   placeholder="0712345678 or +2547..." 
-                                   value="+254712555279"
-                                   oninput="formatPhoneNumber(this)"
-                                   onkeypress="return restrictToNumbers(event)"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:outline-none">
-                            <p class="text-[9px] text-gray-400 mt-0.5">Format: 07... or +254...</p>
+                <div class="p-6 border-t border-slate-200 bg-slate-50 space-y-4">
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs text-slate-500">
+                            <span>Selected Country Currency</span>
+                            <span id="cartCurrencyLabel" class="font-bold text-slate-700">KES</span>
                         </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-600 mb-1">Delivery Town / Estate</label>
-                            <input type="text" id="custLocation" required placeholder="e.g. Nairobi CBD" value="Nairobi"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:outline-none">
+                        <div class="flex justify-between text-lg font-black text-slate-900">
+                            <span>Grand Total</span>
+                            <span id="cartSubtotal" class="text-amber-600">KES 0</span>
                         </div>
                     </div>
 
-                    <div id="checkoutError" class="hidden p-3 bg-red-50 text-red-700 text-xs rounded-lg border border-red-200"></div>
+                    <div class="space-y-2 pt-2 border-t border-slate-200">
+                        <label class="block text-xs font-bold text-slate-700 uppercase">Customer Phone / Mobile Money Number</label>
+                        <input type="text" id="customerPhone" placeholder="e.g. +254712345678 / +255... / +256..." class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-amber-500">
+                    </div>
 
-                    <button type="submit" id="payNowBtn" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition text-sm">
-                        PROMPT M-PESA STK PUSH (30% DEPOSIT)
+                    <button onclick="checkoutWithPaystack()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 py-3.5 px-4 rounded-xl font-black text-sm shadow-lg shadow-amber-500/20 transition flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-lock"></i>
+                        <span>Pay via M-Pesa / Mobile Money / Card</span>
                     </button>
-                </form>
+                </div>
             </div>
         </div>
     </div>
-
-    <!-- Order Success Modal -->
-    <div id="successModal" class="fixed inset-0 bg-black/70 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white max-w-md w-full rounded-2xl p-6 text-center space-y-4 shadow-2xl">
-            <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto text-3xl font-bold">
-                ✓
-            </div>
-            <h3 class="text-xl font-extrabold text-gray-900">M-Pesa Payment Confirmed!</h3>
-            <p class="text-sm text-gray-600">Your 30% deposit has been successfully paid via M-Pesa. Our dispatch team will contact you shortly.</p>
-            <div class="bg-gray-50 p-3 rounded-xl text-xs text-left space-y-1 border">
-                <p><span class="font-semibold">M-Pesa Ref:</span> <span id="successRef" class="font-mono text-orange-600"></span></p>
-                <p><span class="font-semibold">Deposit Paid:</span> <span id="successPaid"></span></p>
-                <p><span class="font-semibold">Balance on Delivery:</span> <span id="successBalance"></span></p>
-            </div>
-            <button onclick="closeSuccessModal()" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 rounded-xl text-sm">
-                Continue Shopping
-            </button>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="bg-slate-900 text-slate-400 text-xs py-8 px-4 mt-12 text-center space-y-2">
-        <p class="font-bold text-white text-sm tracking-wide">KILISHOP</p>
-        <p>Mobile Money First E-Commerce across East Africa.</p>
-        <p class="text-slate-500 pt-2">&copy; 2026 Kilishop. All rights reserved.</p>
-    </footer>
 
     <script>
-        // LIVE PAYSTACK PUBLIC KEY CONFIGURED (Lowercase pk_live_)
-        const PAYSTACK_PUBLIC_KEY = 'pk_live_96685dc1a36bc585d08a7b5fd4a4891d8bce14cb';
+        const PAYSTACK_PUBLIC_KEY = "Pk_live_96685dc1a36bc585d08a7b5fd4a4891d8bce14cb";
 
-        // Existing 55 Products
-        const existingProducts = [
-            { name: "Motorcycle Clutch Cables", category: "Motorcycle Parts", priceKES: 850, oldPriceKES: 1200, variant: "Heavy Duty Universal", image: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=500&q=80" },
-            { name: "Motorcycle Throttle Cables", category: "Motorcycle Parts", priceKES: 900, oldPriceKES: 1300, variant: "Smooth Twist Response", image: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=500&q=80" },
-            { name: "Motorcycle Spark Plugs", category: "Motorcycle Parts", priceKES: 450, oldPriceKES: 650, variant: "High Performance Iridium", image: "https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&w=500&q=80" },
-            { name: "Motorcycle Air Filters", category: "Motorcycle Parts", priceKES: 1100, oldPriceKES: 1500, variant: "Washable Foam Element", image: "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=500&q=80" },
-            { name: "Motorcycle Fuel Filters", category: "Motorcycle Parts", priceKES: 350, oldPriceKES: 500, variant: "In-line Clear Glass", image: "https://images.unsplash.com/photo-1558981285-6f0c94658bb6?auto=format&fit=crop&w=500&q=80" },
-            { name: "Motorcycle Shock Absorbers", category: "Motorcycle Parts", priceKES: 4500, oldPriceKES: 5800, variant: "Adjustable Rear Gas Shocks", image: "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=500&q=80" },
-            { name: "Bicycle Brake Pads", category: "Bicycle Gear", priceKES: 600, oldPriceKES: 850, variant: "All-Weather Compound", image: "https://images.unsplash.com/photo-1485965120184-e220f721d03e?auto=format&fit=crop&w=500&q=80" },
-            { name: "Bicycle Chains", category: "Bicycle Gear", priceKES: 1200, oldPriceKES: 1600, variant: "Anti-Rust 6/7/8 Speed", image: "https://images.unsplash.com/photo-1576435728678-68d0fbf94e91?auto=format&fit=crop&w=500&q=80" },
-            { name: "Bicycle Gears", category: "Bicycle Gear", priceKES: 2500, oldPriceKES: 3200, variant: "Derailleur Cassette Sprocket", image: "https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?auto=format&fit=crop&w=500&q=80" },
-            { name: "Bicycle Pedals", category: "Bicycle Gear", priceKES: 950, oldPriceKES: 1300, variant: "Anti-Slip Nylon Platform", image: "https://images.unsplash.com/photo-1507035895480-2b3156c31fc8?auto=format&fit=crop&w=500&q=80" },
-            { name: "Bicycle Saddlebags", category: "Bicycle Gear", priceKES: 1800, oldPriceKES: 2400, variant: "Waterproof Under-Seat Bag", image: "https://images.unsplash.com/photo-1511994298241-608e28f14fde?auto=format&fit=crop&w=500&q=80" },
-            { name: "Bicycle Repair Stands", category: "Bicycle Gear", priceKES: 6500, oldPriceKES: 8500, variant: "Foldable Portable Maintenance Clamp", image: "https://images.unsplash.com/photo-1485965120184-e220f721d03e?auto=format&fit=crop&w=500&q=80" },
-            { name: "Bicycle Mudguards", category: "Bicycle Gear", priceKES: 1100, oldPriceKES: 1500, variant: "Front & Rear Splash Guard", image: "https://images.unsplash.com/photo-1576435728678-68d0fbf94e91?auto=format&fit=crop&w=500&q=80" },
-            { name: "Bicycle Reflectors", category: "Bicycle Gear", priceKES: 400, oldPriceKES: 600, variant: "Front & Rear Safety Set", image: "https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?auto=format&fit=crop&w=500&q=80" },
-            { name: "Bicycle Locks", category: "Bicycle Gear", priceKES: 1400, oldPriceKES: 1900, variant: "Heavy Duty Steel Cable Lock", image: "https://images.unsplash.com/photo-1507035895480-2b3156c31fc8?auto=format&fit=crop&w=500&q=80" },
-            { name: "Bicycle Speedometers", category: "Bicycle Gear", priceKES: 1600, oldPriceKES: 2200, variant: "Wireless LCD Odometer", image: "https://images.unsplash.com/photo-1511994298241-608e28f14fde?auto=format&fit=crop&w=500&q=80" },
-            { name: "Swimming Pool Filters", category: "Pool & Outdoor", priceKES: 8500, oldPriceKES: 11000, variant: "Cartridge Replacement Filter", image: "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=500&q=80" },
-            { name: "Swimming Pool Pumps", category: "Pool & Outdoor", priceKES: 24000, oldPriceKES: 29000, variant: "1HP Circulation Water Pump", image: "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=500&q=80" },
-            { name: "Swimming Pool Ladders", category: "Pool & Outdoor", priceKES: 15000, oldPriceKES: 18500, variant: "Stainless Steel 3-Step Deck Ladder", image: "https://images.unsplash.com/photo-1562778553-eef19b58864d?auto=format&fit=crop&w=500&q=80" },
-            { name: "Swimming Pool Cleaning Kits", category: "Pool & Outdoor", priceKES: 6500, oldPriceKES: 8200, variant: "Vacuum Head, Skimmer & Pole", image: "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=500&q=80" },
-            { name: "Swimming Pool Chlorine Dispensers", category: "Pool & Outdoor", priceKES: 950, oldPriceKES: 1300, variant: "Floating Chemical Tablet Feeder", image: "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=500&q=80" },
-            { name: "Poolside Loungers", category: "Pool & Outdoor", priceKES: 12500, oldPriceKES: 15900, variant: "Adjustable Weatherproof Sunbed", image: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=500&q=80" },
-            { name: "Outdoor Hammocks", category: "Pool & Outdoor", priceKES: 4200, oldPriceKES: 5500, variant: "Cotton Canvas with Stand", image: "https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=500&q=80" },
-            { name: "Outdoor Fire Pits", category: "Pool & Outdoor", priceKES: 11000, oldPriceKES: 14000, variant: "Wood Burning Steel Bowl", image: "https://images.unsplash.com/photo-1508873696983-2df5c920ac1c?auto=format&fit=crop&w=500&q=80" },
-            { name: "Outdoor Storage Boxes", category: "Pool & Outdoor", priceKES: 9500, oldPriceKES: 12000, variant: "Weather-Resistant Deck Box 300L", image: "https://images.unsplash.com/photo-1595515106967-1ce2e1762a1b?auto=format&fit=crop&w=500&q=80" },
-            { name: "Outdoor Barbecue Grills", category: "Pool & Outdoor", priceKES: 16500, oldPriceKES: 21000, variant: "Charcoal BBQ Grill with Smokestack", image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=500&q=80" },
-            { name: "Women's Elegant Strappy Summer Sandals", category: "Women's Fashion", priceKES: 2500, oldPriceKES: 3500, variant: "Beige • Size 38", image: "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=500&q=80" },
-            { name: "Women's Luxury Leather Slip-on Slippers", category: "Women's Fashion", priceKES: 1900, oldPriceKES: 2600, variant: "Rose Gold • Size 37", image: "https://images.unsplash.com/photo-1575537302964-96cd47c06b1b?auto=format&fit=crop&w=500&q=80" },
-            { name: "Women's Classic Leather Tote Handbag", category: "Women's Fashion", priceKES: 4500, oldPriceKES: 6000, variant: "Executive Black", image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=500&q=80" },
-            { name: "Women's Chic Leather Backpack", category: "Women's Fashion", priceKES: 4800, oldPriceKES: 6500, variant: "Pebbled Grey", image: "https://images.unsplash.com/photo-1577733965654-caa120fb3274?auto=format&fit=crop&w=500&q=80" },
-            { name: "Women's RFID Blocking Leather Wallet", category: "Women's Fashion", priceKES: 1800, oldPriceKES: 2500, variant: "Dusty Pink", image: "https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&w=500&q=80" },
-            { name: "Women's Evening Party Clutch Purse", category: "Women's Fashion", priceKES: 2900, oldPriceKES: 3800, variant: "Metallic Silver", image: "https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?auto=format&fit=crop&w=500&q=80" },
-            { name: "Women's Oversized UV400 Sunglasses", category: "Women's Fashion", priceKES: 1900, oldPriceKES: 2700, variant: "Gradient Black", image: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=500&q=80" },
-            { name: "Women's Luxury Minimalist Wrist Watch", category: "Women's Fashion", priceKES: 3500, oldPriceKES: 4800, variant: "Rose Gold Mesh", image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=500&q=80" },
-            { name: "Women's Sterling Silver Pendant Necklace", category: "Women's Fashion", priceKES: 2400, oldPriceKES: 3300, variant: "Heart Crystal", image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=500&q=80" },
-            { name: "Women's Silk Satin Neck Scarf", category: "Women's Fashion", priceKES: 900, oldPriceKES: 1400, variant: "Bohemian Blue", image: "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?auto=format&fit=crop&w=500&q=80" },
-            { name: "Women's Genuine Leather Waist Belt", category: "Women's Fashion", priceKES: 1700, oldPriceKES: 2400, variant: "Gold Buckle Black", image: "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&w=500&q=80" },
-            { name: "Women's Wide-Brim Straw Sun Hat", category: "Women's Fashion", priceKES: 2100, oldPriceKES: 2900, variant: "Natural Beige", image: "https://images.unsplash.com/photo-1521369909029-2afed882baee?auto=format&fit=crop&w=500&q=80" },
-            { name: "Women's Casual Cotton Baseball Cap", category: "Women's Fashion", priceKES: 1100, oldPriceKES: 1500, variant: "Lavender Purple", image: "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&w=500&q=80" },
-            { name: "Women's Pearl Hair Accessories Clip Set", category: "Women's Fashion", priceKES: 800, oldPriceKES: 1200, variant: "Gold & White Pearls", image: "https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?auto=format&fit=crop&w=500&q=80" },
-            { name: "Women's Tropical Print One-Piece Swimsuit", category: "Women's Fashion", priceKES: 3300, oldPriceKES: 4500, variant: "Green Palm • Size M", image: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=500&q=80" },
-            { name: "Women's Two-Piece Athletic Sportswear Set", category: "Women's Fashion", priceKES: 4100, oldPriceKES: 5500, variant: "Teal Green • Size M", image: "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=500&q=80" },
-            { name: "Women's High-Waisted Maternity Maxi Dress", category: "Women's Fashion", priceKES: 3600, oldPriceKES: 4800, variant: "Dusty Rose • Size L", image: "https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=500&q=80" },
-            { name: "Women's Body Sculpting Shapewear Bodysuit", category: "Women's Fashion", priceKES: 3100, oldPriceKES: 4200, variant: "Nude • Size S/M", image: "https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=500&q=80" },
-            { name: "Women's Floral Summer Beach Jumpsuit", category: "Women's Fashion", priceKES: 3200, oldPriceKES: 4300, variant: "Tropical Yellow • Size M", image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=500&q=80" },
-            { name: "Women's Casual Denim Romper", category: "Women's Fashion", priceKES: 2900, oldPriceKES: 3900, variant: "Light Wash • Size S", image: "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=500&q=80" },
-            { name: "Women's Cozy Knitted Cardigan Sweater", category: "Women's Fashion", priceKES: 3500, oldPriceKES: 4700, variant: "Oatmeal • Size Free", image: "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&w=500&q=80" },
-            { name: "Women's Professional Tailored Blazer", category: "Women's Fashion", priceKES: 4900, oldPriceKES: 6500, variant: "Charcoal Grey • Size 12", image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=500&q=80" },
-            { name: "Women's Waterproof Hooded Raincoat", category: "Women's Fashion", priceKES: 3800, oldPriceKES: 5000, variant: "Olive Green • Size M", image: "https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=500&q=80" },
-            { name: "Women's Thermal Winter Touchscreen Gloves", category: "Women's Fashion", priceKES: 1100, oldPriceKES: 1600, variant: "Black • Size M", image: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=500&q=80" }
-        ];
+        let currentCountry = 'KE';
+        const currencies = {
+            KE: { code: 'KES', rate: 1, symbol: 'KES ' },
+            TZ: { code: 'TZS', rate: 18.5, symbol: 'TZS ' },
+            UG: { code: 'UGX', rate: 29.5, symbol: 'UGX ' },
+            RW: { code: 'RWF', rate: 9.8, symbol: 'RWF ' },
+            BI: { code: 'BIF', rate: 22.0, symbol: 'BIF ' },
+            ZM: { code: 'ZMW', rate: 0.18, symbol: 'ZMW ' },
+            ZW: { code: 'USD', rate: 0.0077, symbol: '$' }
+        };
 
-        // Complete New Items List Provided by User
-        const newItemNames = [
-            "Samsung Galaxy Smartphone", "Tecno Smartphone", "Infinix Smartphone", "Xiaomi Redmi Smartphone", "iPhone",
-            "Oppo Smartphone", "Vivo Smartphone", "Nokia Smartphone", "Itel Smartphone", "Realme Smartphone",
-            "Samsung Galaxy Tablet", "Lenovo Tablet", "Huawei Tablet", "Apple iPad", "Android Tablet",
-            "HP Laptop", "Dell Laptop", "Lenovo Laptop", "Acer Laptop", "Asus Laptop",
-            "MacBook Air", "MacBook Pro", "HP Desktop Computer", "Dell Desktop Computer", "Lenovo Desktop Computer",
-            "Computer Monitor", "Gaming Monitor", "Computer Keyboard", "Wireless Mouse", "Gaming Mouse",
-            "External Hard Drive", "Internal SSD", "USB Flash Drive", "Memory Card", "Computer Webcam",
-            "Laptop Charger", "Laptop Battery", "Laptop Cooling Pad", "Laptop Backpack", "Computer Speakers",
-            "Smart Television", "LED Television", "OLED Television", "QLED Television", "Android Smart TV",
-            "Google Smart TV", "Digital Television", "Television Wall Mount", "TV Remote Control", "TV Decoder",
-            "Satellite Dish", "Projector", "Projector Screen", "Home Theatre System", "Soundbar",
-            "Bluetooth Speaker", "Portable Speaker", "Subwoofer", "Wireless Headphones", "Wired Headphones",
-            "Bluetooth Earbuds", "Gaming Headset", "Wireless Microphone", "Studio Microphone", "Amplifier",
-            "DJ Mixer", "Portable Radio", "Digital Radio", "MP3 Player", "Electric Refrigerator",
-            "Double Door Refrigerator", "Single Door Refrigerator", "Side By Side Refrigerator", "Mini Refrigerator", "Chest Freezer",
-            "Upright Freezer", "Washing Machine", "Front Load Washing Machine", "Top Load Washing Machine", "Tumble Dryer",
-            "Dishwasher", "Microwave Oven", "Electric Oven", "Gas Cooker", "Electric Cooker",
-            "Induction Cooker", "Tabletop Gas Cooker", "Rice Cooker", "Pressure Cooker", "Air Fryer",
-            "Electric Kettle", "Coffee Maker", "Espresso Machine", "Blender", "Hand Blender",
-            "Food Processor", "Juice Extractor", "Sandwich Maker", "Toaster", "Electric Grill",
-            "Deep Fryer", "Water Dispenser", "Water Purifier", "Electric Water Heater", "Electric Iron",
-            "Steam Iron", "Garment Steamer", "Vacuum Cleaner", "Robot Vacuum Cleaner", "Carpet Cleaner",
-            "Electric Fan", "Ceiling Fan", "Standing Fan", "Wall Fan", "Air Conditioner",
-            "Portable Air Conditioner", "Air Cooler", "Dehumidifier", "Air Purifier", "Electric Heater",
-            "Gas Heater", "Solar Water Heater", "Hair Dryer", "Hair Straightener", "Hair Curler",
-            "Electric Shaver", "Electric Toothbrush", "Water Flosser", "Electric Massager", "Smart Watch",
-            "Fitness Tracker", "Digital Camera", "DSLR Camera", "Mirrorless Camera", "Action Camera",
-            "Security Camera", "CCTV Camera", "IP Camera", "Video Doorbell", "WiFi Router",
-            "4G Router", "5G Router", "Network Switch", "WiFi Extender", "Power Bank",
-            "Solar Power Bank", "Phone Charger", "Wireless Charger", "USB Cable", "Type C Cable",
-            "Lightning Cable", "HDMI Cable", "Ethernet Cable", "Phone Screen Protector", "Phone Cover",
-            "Phone Holder", "Car Phone Mount", "Selfie Stick", "Tripod Stand", "Ring Light",
-            "LED Strip Lights", "Rechargeable Torch", "Solar Flood Light", "Extension Cable", "Surge Protector",
-            "UPS Backup", "Solar Inverter", "Solar Panel", "Solar Battery", "Portable Generator",
-            "Diesel Generator", "Electric Generator", "Rechargeable Bulb", "LED Bulb", "Smart Bulb",
-            "Electric Switch", "Electrical Socket", "Circuit Breaker", "Voltage Stabilizer", "Multimeter",
-            "Soldering Iron", "Electric Drill", "Angle Grinder", "Power Saw", "Electric Screwdriver",
-            "Pressure Washer", "Water Pump", "Submersible Pump", "Sewing Machine", "Digital Weighing Scale",
-            "Kitchen Weighing Scale", "Digital Thermometer", "Wall Clock", "Digital Alarm Clock", "Smart Home Hub",
-            "Smart Door Lock", "Smart Plug", "Smart Security Alarm", "Fire Alarm", "Smoke Detector",
-            "Carbon Monoxide Detector", "Electric Mosquito Killer", "Rechargeable Emergency Light", "Portable Power Station", "Electric Blanket",
-            "Electric Mattress Warmer", "Electric Foot Warmer", "Waterproof Bluetooth Speaker", "Gaming Console", "PlayStation Controller",
-            "Xbox Controller", "Nintendo Switch", "Gaming Chair", "Gaming Desk", "Gaming Keyboard",
-            "Gaming Mouse Pad", "VR Headset", "Racing Wheel Controller", "Game Capture Card", "Portable DVD Player",
-            "DVD Player", "Blu-ray Player", "Digital Voice Recorder", "Wireless Presentation Remote", "Barcode Scanner",
-            "Receipt Printer", "Thermal Printer", "Laser Printer", "Inkjet Printer", "Photocopier Machine",
-            "Document Scanner", "Laminating Machine", "Paper Shredder", "Cash Counting Machine", "Point Of Sale Terminal",
-            "Electronic Cash Register", "Biometric Attendance Machine", "Fingerprint Scanner", "Access Control System", "Video Conference Camera",
-            "Conference Speakerphone", "Portable Projector", "Interactive Whiteboard", "Digital Signage Display", "Electronic Dictionary",
-            "Scientific Calculator", "Financial Calculator", "Graphing Calculator", "Electronic Keyboard Piano", "Digital Piano",
-            "Electric Guitar", "Bass Guitar", "Acoustic Guitar", "Guitar Amplifier", "Drum Machine",
-            "Electronic Drum Kit", "DJ Controller", "Studio Monitor Speaker", "Audio Interface", "Wireless Audio Transmitter",
-            "Bluetooth Transmitter", "Bluetooth Receiver", "Headphone Amplifier", "Microphone Stand", "Pop Filter",
-            "Studio Headphones", "Portable PA System", "Megaphone", "Public Address Amplifier", "Karaoke Machine",
-            "Karaoke Microphone", "Voice Changer", "Digital Mixer", "Audio Equalizer", "Digital Satellite Receiver",
-            "TV Streaming Stick", "Android TV Box", "Google Chromecast", "Streaming Media Player", "Smart Projector",
-            "Mini Projector", "Outdoor Projector", "Projector Ceiling Mount", "Projection Screen", "TV Stand",
-            "TV Cabinet", "Universal Remote Control", "Smart Remote Control", "HDMI Splitter", "HDMI Switch",
-            "DisplayPort Cable", "VGA Cable", "USB Hub", "USB Type C Hub", "Docking Station",
-            "Laptop Stand", "Monitor Stand", "Monitor Arm", "Desktop Computer Case", "Computer Power Supply",
-            "Computer Motherboard", "Computer Processor", "Computer RAM", "Graphics Card", "CPU Cooler",
-            "Computer Fan", "Thermal Paste", "Computer Sound Card", "Network Adapter", "Wireless Network Card",
-            "Bluetooth Adapter", "Laptop Privacy Screen", "Laptop Keyboard Cover", "Laptop Sleeve", "Laptop Security Lock",
-            "Laptop Dock", "Portable SSD", "NAS Storage Device", "MicroSD Card", "SD Memory Card",
-            "Card Reader", "USB OTG Adapter", "USB Extension Cable", "USB Printer Cable", "Computer Cleaning Kit",
-            "Compressed Air Duster", "Screen Cleaning Spray", "Keyboard Cleaning Brush", "Computer Repair Toolkit", "Anti Static Wrist Strap",
-            "Cable Management Box", "Cable Organizer", "Desk Power Strip", "Rechargeable AA Batteries", "Rechargeable AAA Batteries",
-            "Battery Charger", "Lithium Battery", "Coin Cell Battery", "Camera Battery", "Camera Charger",
-            "Camera Lens", "Camera Tripod", "Camera Flash", "Camera Bag", "Camera Stabilizer",
-            "Gimbal Stabilizer", "Drone Camera", "Drone Battery", "Drone Propeller", "Drone Controller",
-            "Action Camera Mount", "Action Camera Waterproof Case", "Dash Camera", "Car Rear View Camera", "Car Parking Sensor",
-            "Car GPS Tracker", "GPS Navigation Device", "Handheld GPS Device", "Digital Binoculars", "Night Vision Camera",
-            "Thermal Camera", "Door Security Camera", "Wireless CCTV Kit", "CCTV DVR Recorder", "CCTV NVR Recorder",
-            "CCTV Camera Lens", "CCTV Power Supply", "CCTV Monitor", "Security Camera Mount", "Motion Sensor",
-            "Outdoor Motion Light", "Smart Door Sensor", "Window Security Sensor", "Wireless Door Chime", "Video Intercom",
-            "Home Security System", "Wireless Alarm System", "Electric Fence Energizer", "Electric Fence Wire", "Solar Security Light",
-            "Rechargeable Searchlight", "Emergency Radio", "Portable Solar Generator", "Solar Charge Controller", "Solar Inverter Battery",
-            "Deep Cycle Battery", "Lithium Solar Battery", "Battery Inverter", "Hybrid Solar Inverter", "Off Grid Solar Inverter",
-            "Grid Tie Solar Inverter", "Solar Panel Mounting Kit", "Solar Connector", "Solar Extension Cable", "Solar Street Light",
-            "Solar Garden Light", "Solar Wall Light", "Solar Lantern", "Solar Water Pump", "Solar CCTV Camera",
-            "Portable Solar Panel", "Foldable Solar Panel", "Electric Fence Charger", "Power Inverter", "Car Power Inverter",
-            "Voltage Converter", "Automatic Voltage Regulator", "Digital Voltage Meter", "Clamp Meter", "Electrical Testing Kit",
-            "Cable Tester", "Network Cable Crimper", "Network Cable Stripper", "Fiber Optic Tester", "Fiber Optic Cable",
-            "Fiber Optic Router", "PoE Network Switch", "Wireless Access Point", "Mesh WiFi System", "Outdoor WiFi Antenna",
-            "4G LTE Antenna", "Satellite Internet Router", "Modem Router", "Mobile Hotspot Device", "Portable WiFi Router",
-            "Network Rack Cabinet", "Server Rack", "Server Computer", "Server Hard Drive", "Server Memory",
-            "Server Power Supply", "KVM Switch", "Rack Mount UPS", "Data Backup Drive", "External DVD Drive",
-            "External Blu-ray Drive", "Optical Disc Drive", "CD Storage Case", "DVD Storage Case", "USB Microphone",
-            "Podcast Microphone", "Wireless Lavalier Microphone", "Shotgun Microphone", "Condenser Microphone", "Dynamic Microphone",
-            "Microphone Cable", "Audio Mixer", "Digital Audio Recorder", "Podcast Recording Kit", "Streaming Webcam",
-            "Streaming Light Kit", "Green Screen", "Teleprompter", "Camera Monitor", "Camera Cage",
-            "Camera Shoulder Rig", "Camera Slider", "Camera Dolly", "Video Switcher", "Video Capture Device",
-            "HDMI Capture Card", "Live Streaming Encoder", "Broadcast Monitor", "Studio Lighting Kit", "LED Video Light",
-            "Softbox Lighting Kit", "Photography Reflector", "Photography Backdrop", "Photography Umbrella", "Ring Light Tripod",
-            "Mobile Phone Gimbal", "Smartphone Camera Lens", "Phone Camera Light", "Phone Microphone", "Phone Cooling Fan",
-            "Phone Gaming Trigger", "Phone Controller", "Phone Power Bank Case", "Magnetic Phone Charger", "Wireless Earphone Case",
-            "Earbud Replacement Tips", "Headphone Ear Pads", "Headphone Cable", "Headphone Stand", "Bluetooth Earphone Adapter",
-            "Wireless Headphone Transmitter", "Portable DAC", "USB DAC", "Portable Audio Player", "HiFi Music Player",
-            "Portable Cassette Player", "Portable CD Player", "Digital Piano Keyboard", "Keyboard Piano Stand", "Piano Bench",
-            "Piano Sustain Pedal", "Guitar Tuner", "Guitar Pedal", "Guitar Strap", "Guitar Strings",
-            "Guitar Capo", "Guitar Pick Set", "Guitar Stand", "Drum Sticks", "Drum Practice Pad",
-            "Electronic Drum Trigger", "Music Sheet Stand", "Music Recording Software", "Digital Metronome", "Electronic Tuner",
-            "Audio Patch Cable", "Speaker Cable", "Speaker Wall Mount", "Speaker Stand", "Subwoofer Cable",
-            "Power Amplifier", "Stereo Receiver", "AV Receiver", "Home Audio Receiver", "Outdoor Speaker",
-            "Ceiling Speaker", "Wall Mounted Speaker", "Portable PA Speaker", "Wireless PA System", "Megaphone Speaker",
-            "Wireless Conference Microphone", "Conference Room Speaker", "Video Conference System", "Meeting Room Display", "Digital Podium",
-            "Classroom Projector", "Document Camera", "Digital Microscope", "Interactive Display", "Digital Learning Tablet",
-            "Student Laptop", "Educational Robot Kit", "STEM Electronics Kit", "Arduino Starter Kit", "Raspberry Pi Kit",
-            "Microcontroller Board", "Breadboard Electronics Kit", "Soldering Station", "Hot Air Rework Station", "Digital Oscilloscope",
-            "Bench Power Supply", "Electronic Component Kit", "Resistor Assortment Kit", "Capacitor Assortment Kit", "LED Component Kit",
-            "Transistor Assortment Kit", "Diode Assortment Kit", "Sensor Module Kit", "Robotics Kit", "Programmable Robot",
-            "3D Printer", "3D Printer Filament", "3D Printer Resin", "3D Printer Nozzle", "3D Printer Build Plate",
-            "3D Scanner", "Laser Engraving Machine", "CNC Router", "Vinyl Cutting Machine", "Heat Press Machine",
-            "Digital Label Printer", "Barcode Label Printer", "POS Receipt Paper", "Thermal Label Roll", "Printer Ink Cartridge",
-            "Printer Toner Cartridge", "Printer Drum Unit", "Printer Maintenance Kit", "Printer Paper", "Photo Paper",
-            "A4 Copy Paper", "Laminating Pouches", "Binding Machine", "Binding Covers", "Paper Cutter",
-            "Guillotine Paper Trimmer", "Office Shredder", "Document Scanner Feeder", "Portable Document Scanner", "Flatbed Scanner",
-            "Large Format Printer", "Plotter Printer", "3D Printer Enclosure", "Digital Duplicator", "Office Projector",
-            "Laser Pointer", "Presentation Clicker", "Digital Whiteboard Pen", "Interactive Display Pen", "Wireless Display Adapter",
-            "USB Conference Camera", "Video Conference Bar", "Conference Room Microphone", "Digital Meeting Recorder", "Electronic Voting System",
-            "Queue Management Display", "Customer Display Screen", "POS Barcode Scanner", "POS Cash Drawer", "POS Touchscreen Monitor",
-            "POS Computer", "POS Thermal Printer", "POS Handheld Terminal", "Inventory Barcode Reader", "RFID Reader",
-            "RFID Tag", "RFID Access Card", "Smart Card Reader", "Biometric Door Access", "Fingerprint Time Clock",
-            "Facial Recognition Terminal", "Electronic Safe", "Digital Security Safe", "Key Cabinet", "Cash Register Drawer",
-            "Money Detector", "Counterfeit Note Detector", "Banknote Counting Machine", "Coin Counting Machine", "Currency Sorting Machine",
-            "Document Authentication Machine", "Electronic Queue Ticket Dispenser", "Digital Price Checker", "Electronic Shelf Label", "Retail Weighing Scale",
-            "Commercial Platform Scale", "Digital Postal Scale", "Parcel Weighing Scale", "Industrial Weighing Scale", "Baby Weighing Scale",
-            "Bathroom Digital Scale", "Body Composition Scale", "Kitchen Weighing Scale", "Luggage Weighing Scale", "Hanging Weighing Scale",
-            "Crane Weighing Scale", "Laboratory Balance", "Precision Weighing Balance", "Moisture Meter", "Digital pH Meter",
-            "Water Quality Tester", "Soil Testing Meter", "Digital Light Meter", "Sound Level Meter", "Anemometer",
-            "Digital Hygrometer", "Weather Station", "Digital Barometer", "Infrared Thermometer", "Digital Meat Thermometer",
-            "Medical Thermometer", "Blood Pressure Monitor", "Digital Pulse Oximeter", "Blood Glucose Meter", "Digital Body Scale",
-            "Nebulizer Machine", "Digital Stethoscope", "Portable ECG Monitor", "Medical Examination Lamp", "Medical Refrigerator",
-            "Hospital Bed", "Electric Hospital Bed", "Patient Monitor", "Fetal Doppler", "Ultrasound Machine",
-            "Portable Ultrasound Scanner", "Oxygen Concentrator", "Oxygen Cylinder", "Oxygen Flow Meter", "Suction Machine",
-            "Autoclave Sterilizer", "Dental Chair", "Dental X Ray Machine", "Dental Curing Light", "Dental Scaler",
-            "Dental Compressor", "Electric Wheelchair", "Manual Wheelchair", "Mobility Scooter", "Walking Frame",
-            "Digital Hearing Aid", "Hearing Aid Batteries", "CPAP Machine", "Portable Ventilator", "Surgical Examination Light",
-            "Medical Instrument Sterilizer", "Laboratory Centrifuge", "Laboratory Microscope", "Digital Laboratory Microscope", "Laboratory Incubator",
-            "Laboratory Water Bath", "Laboratory Hot Plate", "Laboratory Magnetic Stirrer", "Laboratory Fume Hood", "Laboratory Refrigerator",
-            "Laboratory Freezer", "Laboratory Spectrophotometer", "Laboratory Autoclave", "Laboratory Pipette", "Digital Pipette",
-            "Laboratory pH Meter", "Laboratory Conductivity Meter", "Laboratory Turbidity Meter", "Laboratory Refractometer", "Laboratory Analytical Balance",
-            "Laboratory Test Tube Rack", "Laboratory Glassware Set", "Laboratory Safety Cabinet", "Laboratory Water Purifier", "Laboratory Distillation Unit",
-            "Laboratory Drying Oven", "Laboratory Vacuum Pump", "Laboratory Shaker", "Laboratory Vortex Mixer", "Laboratory Blood Mixer",
-            "Laboratory Hematology Analyzer", "Laboratory Chemistry Analyzer", "Laboratory Urine Analyzer", "Laboratory Electrolyte Analyzer", "Laboratory Coagulation Analyzer",
-            "Laboratory PCR Machine", "Laboratory DNA Electrophoresis Unit", "Laboratory Gel Documentation System", "Laboratory Thermal Cycler", "Laboratory Microplate Reader",
-            "Laboratory Colony Counter", "Laboratory Bunsen Burner", "Laboratory Digital Timer", "Laboratory Thermometer", "Laboratory Hygrometer",
-            "Laboratory Water Bath Circulator", "Laboratory Vacuum Oven", "Laboratory Freeze Dryer", "Laboratory Muffle Furnace", "Laboratory Furnace",
-            "Laboratory Desiccator", "Laboratory Water Distiller", "Laboratory Ice Maker", "Laboratory Centrifuge Tubes", "Laboratory Microscope Slides",
-            "Laboratory Cover Slips", "Laboratory Pipette Tips", "Laboratory Sample Bottles", "Laboratory Reagent Bottles", "Laboratory Measuring Cylinder",
-            "Laboratory Beaker Set", "Laboratory Flask Set", "Laboratory Burette", "Laboratory Funnel Set", "Laboratory Test Tube Set",
-            "Laboratory Petri Dish Set", "Laboratory Glass Stirring Rod", "Laboratory Spatula Set", "Laboratory Forceps", "Laboratory Crucible Set",
-            "Laboratory Filter Paper", "Laboratory Filter Funnel", "Laboratory Safety Goggles", "Laboratory Lab Coat", "Laboratory Nitrile Gloves",
-            "Laboratory Face Shield", "Laboratory Biohazard Bin", "Laboratory Sharps Container", "Laboratory Spill Kit", "Laboratory Eyewash Station",
-            "Laboratory Safety Shower", "Laboratory Chemical Storage Cabinet", "Laboratory Gas Cylinder Trolley", "Laboratory Bench", "Laboratory Stool",
-            "Laboratory Storage Cabinet", "Laboratory Fume Extractor", "Laboratory Air Purifier", "Laboratory Exhaust Fan", "Laboratory Emergency Alarm",
-            "Laboratory Fire Extinguisher", "Laboratory First Aid Kit", "Laboratory Safety Signage", "Laboratory Power Supply", "Laboratory Voltage Regulator",
-            "Laboratory UPS", "Laboratory Generator", "Laboratory Solar Backup System", "Laboratory Data Logger", "Laboratory Temperature Logger",
-            "Laboratory Humidity Logger", "Laboratory Pressure Gauge", "Laboratory Flow Meter", "Laboratory Gas Detector", "Laboratory Radiation Detector",
-            "Laboratory Geiger Counter", "Laboratory Dosimeter", "Laboratory UV Lamp", "Laboratory UV Sterilizer", "Laboratory Water Testing Kit",
-            "Laboratory Soil Testing Kit", "Laboratory Food Testing Kit", "Laboratory Milk Analyzer", "Laboratory Grain Moisture Tester", "Laboratory Oil Testing Kit",
-            "Laboratory Water Hardness Tester", "Laboratory Chlorine Tester", "Laboratory Salinity Meter", "Laboratory Dissolved Oxygen Meter", "Laboratory ORP Meter",
-            "Laboratory TDS Meter", "Laboratory EC Meter", "Laboratory Colorimeter", "Laboratory Flame Photometer", "Laboratory Atomic Absorption Spectrometer",
-            "Laboratory Gas Chromatograph", "Laboratory Liquid Chromatograph", "Laboratory Mass Spectrometer", "Laboratory X Ray Fluorescence Analyzer", "Laboratory X Ray Diffractometer",
-            "Laboratory Thermal Analyzer"
-        ];
-
-        // Rigorous classification and correctly mapped image URLs per category
-        function classifyAndPriceItem(name, index) {
-            const lower = name.toLowerCase();
-            let category = "Computers & IT";
-            let priceKES = 3500;
-            let image = "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=500&q=80";
-            let variant = "Brand New • Genuine Quality";
-
-            if (lower.includes("laboratory") || lower.includes("pipette") || lower.includes("microscope") || lower.includes("centrifuge") || lower.includes("spectrometer") || lower.includes("chromatograph") || lower.includes("autoclave") || lower.includes("beaker") || lower.includes("flask") || lower.includes("petri") || lower.includes("burette") || lower.includes("test tube")) {
-                category = "Laboratory Equipment";
-                image = "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=500&q=80";
-                if (lower.includes("tubes") || lower.includes("slides") || lower.includes("slips") || lower.includes("tips") || lower.includes("paper") || lower.includes("gloves") || lower.includes("goggles") || lower.includes("rod") || lower.includes("spatula") || lower.includes("forceps") || lower.includes("timer")) {
-                    priceKES = 650 + (index % 7) * 150;
-                    variant = "Lab Grade Pack";
-                } else if (lower.includes("beaker") || lower.includes("flask") || lower.includes("cylinder") || lower.includes("rack") || lower.includes("coat") || lower.includes("bottles") || lower.includes("funnel") || lower.includes("petri") || lower.includes("thermometer") || lower.includes("burner")) {
-                    priceKES = 1800 + (index % 9) * 350;
-                    variant = "Borosilicate / Lab Standard";
-                } else if (lower.includes("meter") || lower.includes("tester") || lower.includes("pipette") || lower.includes("kit") || lower.includes("scale") || lower.includes("balance") || lower.includes("stirrer") || lower.includes("shaker") || lower.includes("mixer")) {
-                    priceKES = 14500 + (index % 11) * 2500;
-                    variant = "High-Precision Digital";
-                } else if (lower.includes("analyzer") || lower.includes("spectrometer") || lower.includes("chromatograph") || lower.includes("pcr") || lower.includes("furnace") || lower.includes("fume hood") || lower.includes("freeze dryer")) {
-                    priceKES = 185000 + (index % 8) * 35000;
-                    variant = "Clinical / Research Grade";
-                } else {
-                    priceKES = 45000 + (index % 10) * 6500;
-                    variant = "Professional Lab Unit";
-                }
-            } else if (lower.includes("medical") || lower.includes("hospital") || lower.includes("dental") || lower.includes("ultrasound") || lower.includes("oxygen") || lower.includes("wheelchair") || lower.includes("blood") || lower.includes("pulse") || lower.includes("nebulizer") || lower.includes("stethoscope") || lower.includes("ecg") || lower.includes("cpap") || lower.includes("ventilator") || lower.includes("hearing aid") || lower.includes("fetal") || lower.includes("suction") || lower.includes("patient") || lower.includes("walking frame") || lower.includes("mobility scooter") || lower.includes("surgical")) {
-                category = "Medical & Health";
-                image = "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=500&q=80";
-                if (lower.includes("batteries") || lower.includes("thermometer") || lower.includes("oximeter")) {
-                    priceKES = 1200 + (index % 5) * 350;
-                    variant = "Clinical Accuracy";
-                } else if (lower.includes("blood pressure") || lower.includes("glucose") || lower.includes("nebulizer") || lower.includes("stethoscope") || lower.includes("walking frame") || lower.includes("hearing aid") || lower.includes("doppler")) {
-                    priceKES = 4800 + (index % 8) * 950;
-                    variant = "Hospital & Home Care";
-                } else if (lower.includes("wheelchair") || lower.includes("concentrator") || lower.includes("cylinder") || lower.includes("bed") || lower.includes("cpap") || lower.includes("suction") || lower.includes("lamp")) {
-                    priceKES = 28000 + (index % 7) * 6500;
-                    variant = "Medical Grade Certified";
-                } else {
-                    priceKES = 145000 + (index % 6) * 28000;
-                    variant = "Hospital & Clinic Equipment";
-                }
-            } else if (lower.includes("smartphone") || lower.includes("iphone") || lower.includes("ipad") || lower.includes("tablet") || lower.includes("phone") || lower.includes("selfie") || lower.includes("earbud") || lower.includes("earphone") || lower.includes("smart watch") || lower.includes("fitness tracker")) {
-                category = "Phones & Tablets";
-                image = "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=500&q=80";
-                if (lower.includes("protector") || lower.includes("cover") || lower.includes("cable") || lower.includes("holder") || lower.includes("mount") || lower.includes("tips") || lower.includes("trigger") || lower.includes("case")) {
-                    priceKES = 350 + (index % 6) * 150;
-                    variant = "Universal Fit • Durable";
-                } else if (lower.includes("charger") || lower.includes("power bank") || lower.includes("selfie") || lower.includes("earbuds") || lower.includes("fitness tracker") || lower.includes("cooling fan") || lower.includes("controller") || lower.includes("lens")) {
-                    priceKES = 1800 + (index % 8) * 450;
-                    variant = "Fast Charge / Smart Accessory";
-                } else if (lower.includes("smart watch") || lower.includes("gimbal")) {
-                    priceKES = 6500 + (index % 6) * 1500;
-                    variant = "AMOLED / Multi-Axis";
-                } else if (lower.includes("tablet") || lower.includes("ipad")) {
-                    priceKES = 24000 + (index % 7) * 5500;
-                    variant = "HD Display • Wi-Fi + LTE";
-                } else if (lower.includes("iphone")) {
-                    priceKES = 98000;
-                    variant = "Factory Unlocked • 256GB";
-                } else {
-                    priceKES = 14500 + (index % 9) * 3200;
-                    variant = "Dual SIM • 4G/5G Android";
-                }
-            } else if (lower.includes("solar") || lower.includes("inverter") || lower.includes("generator") || lower.includes("battery") || lower.includes("batteries") || lower.includes("voltage") || lower.includes("stabilizer") || lower.includes("multimeter") || lower.includes("soldering") || lower.includes("drill") || lower.includes("grinder") || lower.includes("saw") || lower.includes("screwdriver") || lower.includes("washer") || lower.includes("pump") || lower.includes("fence") || lower.includes("circuit") || lower.includes("socket") || lower.includes("switch") || lower.includes("bulb") || lower.includes("torch") || lower.includes("extension") || lower.includes("surge") || lower.includes("ups") || lower.includes("clamp meter") || lower.includes("oscilloscope") || lower.includes("arduino") || lower.includes("raspberry") || lower.includes("resistor") || lower.includes("capacitor") || lower.includes("transistor") || lower.includes("diode") || lower.includes("breadboard") || lower.includes("robot")) {
-                category = "Solar, Power & Tools";
-                image = "https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=500&q=80";
-                if (lower.includes("bulb") || lower.includes("switch") || lower.includes("socket") || lower.includes("connector") || lower.includes("coin cell") || lower.includes("aa ") || lower.includes("aaa ") || lower.includes("resistor") || lower.includes("capacitor") || lower.includes("diode") || lower.includes("transistor")) {
-                    priceKES = 300 + (index % 6) * 120;
-                    variant = "Heavy Duty Electrical";
-                } else if (lower.includes("torch") || lower.includes("extension") || lower.includes("surge") || lower.includes("lantern") || lower.includes("garden light") || lower.includes("wall light") || lower.includes("soldering") || lower.includes("multimeter") || lower.includes("tester") || lower.includes("crimper") || lower.includes("stripper") || lower.includes("breadboard")) {
-                    priceKES = 1350 + (index % 8) * 350;
-                    variant = "Industrial Grade";
-                } else if (lower.includes("drill") || lower.includes("grinder") || lower.includes("saw") || lower.includes("stabilizer") || lower.includes("charge controller") || lower.includes("flood light") || lower.includes("street light") || lower.includes("ups") || lower.includes("arduino") || lower.includes("raspberry") || lower.includes("kit")) {
-                    priceKES = 5800 + (index % 9) * 1200;
-                    variant = "High Output • Warranty Included";
-                } else if (lower.includes("generator") || lower.includes("hybrid solar") || lower.includes("off grid") || lower.includes("grid tie") || lower.includes("lithium solar")) {
-                    priceKES = 58000 + (index % 7) * 12000;
-                    variant = "Heavy Duty Commercial Power";
-                } else {
-                    priceKES = 18500 + (index % 8) * 3800;
-                    variant = "Deep Cycle / High Efficiency";
-                }
-            } else if (lower.includes("guitar") || lower.includes("piano") || lower.includes("drum") || lower.includes("dj") || lower.includes("microphone") || lower.includes("karaoke") || lower.includes("pa system") || lower.includes("pa speaker") || lower.includes("megaphone") || lower.includes("amplifier") || lower.includes("mixer") || lower.includes("equalizer") || lower.includes("tuner") || lower.includes("metronome") || lower.includes("capo") || lower.includes("pick") || lower.includes("dac") || lower.includes("podcast") || lower.includes("studio") || lower.includes("pop filter") || lower.includes("sustain pedal") || lower.includes("sheet stand")) {
-                category = "Music & Studio";
-                image = "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=500&q=80";
-                if (lower.includes("pick") || lower.includes("strings") || lower.includes("capo") || lower.includes("strap") || lower.includes("pop filter") || lower.includes("drum sticks") || lower.includes("tuner") || lower.includes("metronome") || lower.includes("cable")) {
-                    priceKES = 550 + (index % 6) * 220;
-                    variant = "Pro Musician Accessory";
-                } else if (lower.includes("microphone") || lower.includes("stand") || lower.includes("megaphone") || lower.includes("pedal") || lower.includes("dac") || lower.includes("voice changer")) {
-                    priceKES = 3800 + (index % 8) * 950;
-                    variant = "Crystal Clear Acoustics";
-                } else if (lower.includes("guitar") || lower.includes("mixer") || lower.includes("amplifier") || lower.includes("audio interface") || lower.includes("karaoke") || lower.includes("studio monitor")) {
-                    priceKES = 16500 + (index % 8) * 3200;
-                    variant = "Studio & Stage Performance";
-                } else {
-                    priceKES = 38000 + (index % 6) * 7500;
-                    variant = "Professional Pro-Audio Rig";
-                }
-            } else if (lower.includes("camera") || lower.includes("cctv") || lower.includes("dvr") || lower.includes("nvr") || lower.includes("drone") || lower.includes("gimbal") || lower.includes("tripod") || lower.includes("ring light") || lower.includes("softbox") || lower.includes("green screen") || lower.includes("teleprompter") || lower.includes("security") || lower.includes("alarm") || lower.includes("doorbell") || lower.includes("intercom") || lower.includes("binoculars") || lower.includes("night vision") || lower.includes("motion sensor") || lower.includes("gps") || lower.includes("dash cam") || lower.includes("parking sensor") || lower.includes("backdrop") || lower.includes("reflector") || lower.includes("umbrella")) {
-                category = "Cameras & Security";
-                image = "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=500&q=80";
-                if (lower.includes("mount") || lower.includes("propeller") || lower.includes("sensor") || lower.includes("chime") || lower.includes("reflector") || lower.includes("umbrella") || lower.includes("waterproof case")) {
-                    priceKES = 850 + (index % 6) * 280;
-                    variant = "Universal Mount / Sensor";
-                } else if (lower.includes("tripod") || lower.includes("ring light") || lower.includes("bag") || lower.includes("flash") || lower.includes("green screen") || lower.includes("backdrop") || lower.includes("dash cam") || lower.includes("gps") || lower.includes("doorbell")) {
-                    priceKES = 3400 + (index % 8) * 850;
-                    variant = "HD Optics / Smart Alert";
-                } else if (lower.includes("cctv") || lower.includes("security") || lower.includes("camera") || lower.includes("gimbal") || lower.includes("intercom") || lower.includes("dvr") || lower.includes("nvr") || lower.includes("softbox")) {
-                    priceKES = 12500 + (index % 9) * 2800;
-                    variant = "1080P/4K Night Vision";
-                } else {
-                    priceKES = 54000 + (index % 6) * 14000;
-                    variant = "4K Pro Mirrorless / Drone";
-                }
-            } else if (lower.includes("refrigerator") || lower.includes("freezer") || lower.includes("washing machine") || lower.includes("dryer") || lower.includes("dishwasher") || lower.includes("microwave") || lower.includes("oven") || lower.includes("cooker") || lower.includes("air fryer") || lower.includes("kettle") || lower.includes("coffee") || lower.includes("espresso") || lower.includes("blender") || lower.includes("food processor") || lower.includes("juice") || lower.includes("sandwich") || lower.includes("toaster") || lower.includes("grill") || lower.includes("deep fryer") || lower.includes("dispenser") || lower.includes("purifier") || lower.includes("water heater") || lower.includes("iron") || lower.includes("steamer") || lower.includes("vacuum") || lower.includes("cleaner") || lower.includes("fan") || lower.includes("air conditioner") || lower.includes("air cooler") || lower.includes("dehumidifier") || lower.includes("heater") || lower.includes("hair ") || lower.includes("shaver") || lower.includes("toothbrush") || lower.includes("flosser") || lower.includes("massager") || lower.includes("sewing") || lower.includes("blanket") || lower.includes("warmer") || lower.includes("mosquito")) {
-                category = "Home Appliances";
-                image = "https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?auto=format&fit=crop&w=500&q=80";
-                if (lower.includes("kettle") || lower.includes("iron") || lower.includes("toaster") || lower.includes("sandwich") || lower.includes("hand blender") || lower.includes("hair ") || lower.includes("shaver") || lower.includes("toothbrush") || lower.includes("flosser") || lower.includes("mosquito") || lower.includes("warmer") || lower.includes("blanket")) {
-                    priceKES = 2100 + (index % 7) * 450;
-                    variant = "Energy Saving • 1 Yr Warranty";
-                } else if (lower.includes("blender") || lower.includes("rice cooker") || lower.includes("pressure cooker") || lower.includes("air fryer") || lower.includes("microwave") || lower.includes("fan") || lower.includes("steamer") || lower.includes("massager") || lower.includes("tabletop") || lower.includes("coffee") || lower.includes("juice")) {
-                    priceKES = 6800 + (index % 8) * 1200;
-                    variant = "Modern Kitchen & Home";
-                } else if (lower.includes("dispenser") || lower.includes("vacuum") || lower.includes("sewing") || lower.includes("air cooler") || lower.includes("purifier") || lower.includes("dehumidifier") || lower.includes("espresso") || lower.includes("food processor") || lower.includes("cooker")) {
-                    priceKES = 16500 + (index % 7) * 2800;
-                    variant = "Heavy Duty Home Appliance";
-                } else {
-                    priceKES = 38000 + (index % 8) * 6500;
-                    variant = "Low Power Consumption • Digital";
-                }
-            } else if (lower.includes("television") || lower.includes("smart tv") || lower.includes("tv ") || lower.includes("projector") || lower.includes("home theatre") || lower.includes("soundbar") || lower.includes("speaker") || lower.includes("subwoofer") || lower.includes("headphones") || lower.includes("headset") || lower.includes("radio") || lower.includes("mp3") || lower.includes("gaming console") || lower.includes("playstation") || lower.includes("xbox") || lower.includes("nintendo") || lower.includes("vr headset") || lower.includes("racing wheel") || lower.includes("dvd") || lower.includes("blu-ray") || lower.includes("chromecast") || lower.includes("streaming") || lower.includes("satellite") || lower.includes("decoder") || lower.includes("remote") || lower.includes("cassette") || lower.includes("cd player")) {
-                category = "TV, Audio & Gaming";
-                image = "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=500&q=80";
-                if (lower.includes("remote") || lower.includes("wall mount") || lower.includes("ear pads") || lower.includes("wired headphones") || lower.includes("mp3") || lower.includes("radio") || lower.includes("decoder") || lower.includes("cassette")) {
-                    priceKES = 950 + (index % 7) * 350;
-                    variant = "Universal / Clear Sound";
-                } else if (lower.includes("bluetooth speaker") || lower.includes("portable speaker") || lower.includes("wireless headphones") || lower.includes("headset") || lower.includes("controller") || lower.includes("chromecast") || lower.includes("tv box") || lower.includes("streaming") || lower.includes("satellite dish") || lower.includes("dvd") || lower.includes("cd player")) {
-                    priceKES = 4500 + (index % 8) * 1100;
-                    variant = "Deep Bass / HD Streaming";
-                } else if (lower.includes("soundbar") || lower.includes("subwoofer") || lower.includes("home theatre") || lower.includes("projector") || lower.includes("blu-ray") || lower.includes("racing wheel") || lower.includes("vr headset")) {
-                    priceKES = 16500 + (index % 7) * 3200;
-                    variant = "Cinema Surround Experience";
-                } else {
-                    priceKES = 36000 + (index % 9) * 8500;
-                    variant = "4K Ultra HD • Smart OS";
-                }
-            } else if (lower.includes("printer") || lower.includes("scanner") || lower.includes("photocopier") || lower.includes("laminat") || lower.includes("shredder") || lower.includes("cash") || lower.includes("pos") || lower.includes("barcode") || lower.includes("biometric") || lower.includes("fingerprint") || lower.includes("access control") || lower.includes("rfid") || lower.includes("safe") || lower.includes("detector") || lower.includes("banknote") || lower.includes("coin") || lower.includes("currency") || lower.includes("queue") || lower.includes("calculator") || lower.includes("binding") || lower.includes("paper") || lower.includes("ink") || lower.includes("toner") || lower.includes("drum unit") || lower.includes("duplicator") || lower.includes("plotter") || lower.includes("3d ") || lower.includes("engraving") || lower.includes("cnc") || lower.includes("vinyl") || lower.includes("heat press") || lower.includes("whiteboard") || lower.includes("podium") || lower.includes("voting") || lower.includes("scale") || lower.includes("balance") || lower.includes("conference") || lower.includes("label")) {
-                category = "Office & POS";
-                image = "https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=500&q=80";
-                if (lower.includes("paper") || lower.includes("pouches") || lower.includes("covers") || lower.includes("tag") || lower.includes("card") || lower.includes("roll") || lower.includes("filament") || lower.includes("nozzle") || lower.includes("pointer") || lower.includes("clicker") || lower.includes("pen") || lower.includes("calculator")) {
-                    priceKES = 750 + (index % 7) * 280;
-                    variant = "Office & Retail Supply";
-                } else if (lower.includes("barcode") || lower.includes("ink") || lower.includes("toner") || lower.includes("scale") || lower.includes("laminat") || lower.includes("shredder") || lower.includes("detector") || lower.includes("cutter") || lower.includes("trimmer") || lower.includes("cash drawer") || lower.includes("binding")) {
-                    priceKES = 4500 + (index % 8) * 1100;
-                    variant = "Commercial Grade";
-                } else if (lower.includes("printer") || lower.includes("scanner") || lower.includes("pos") || lower.includes("biometric") || lower.includes("safe") || lower.includes("counting") || lower.includes("conference")) {
-                    priceKES = 18500 + (index % 8) * 3500;
-                    variant = "Business Automation";
-                } else {
-                    priceKES = 65000 + (index % 7) * 14000;
-                    variant = "Heavy Duty Enterprise Machine";
-                }
-            } else {
-                category = "Computers & IT";
-                image = "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=500&q=80";
-                if (lower.includes("cable") || lower.includes("adapter") || lower.includes("card reader") || lower.includes("cleaning") || lower.includes("duster") || lower.includes("spray") || lower.includes("brush") || lower.includes("wrist strap") || lower.includes("organizer") || lower.includes("paste") || lower.includes("mouse pad") || lower.includes("keyboard cover") || lower.includes("sleeve") || lower.includes("flash drive") || lower.includes("memory card") || lower.includes("microsd") || lower.includes("sd memory")) {
-                    priceKES = 600 + (index % 7) * 220;
-                    variant = "High-Speed / Durable";
-                } else if (lower.includes("mouse") || lower.includes("keyboard") || lower.includes("hub") || lower.includes("webcam") || lower.includes("stand") || lower.includes("cooling pad") || lower.includes("backpack") || lower.includes("router") || lower.includes("extender") || lower.includes("fan") || lower.includes("cooler") || lower.includes("lock") || lower.includes("privacy") || lower.includes("power strip") || lower.includes("dvd drive")) {
-                    priceKES = 2400 + (index % 9) * 550;
-                    variant = "Plug & Play • Warranty";
-                } else if (lower.includes("ssd") || lower.includes("hard drive") || lower.includes("ram") || lower.includes("power supply") || lower.includes("case") || lower.includes("docking") || lower.includes("switch") || lower.includes("access point") || lower.includes("mesh") || lower.includes("5g router") || lower.includes("gaming chair") || lower.includes("gaming desk")) {
-                    priceKES = 9500 + (index % 8) * 2200;
-                    variant = "High Performance Upgrade";
-                } else if (lower.includes("macbook") || lower.includes("server") || lower.includes("graphics card") || lower.includes("nas")) {
-                    priceKES = 95000 + (index % 6) * 18000;
-                    variant = "Pro Workstation Spec";
-                } else if (lower.includes("laptop") || lower.includes("desktop") || lower.includes("monitor")) {
-                    priceKES = 34000 + (index % 9) * 5500;
-                    variant = "Core i5/i7 • SSD • Full HD";
-                } else {
-                    priceKES = 4500 + (index % 6) * 850;
-                    variant = "Enterprise IT Gear";
-                }
+        const products = [
+            {
+                id: 1,
+                name: "Smart Android TV 43 inch Full HD",
+                category: "Electronics",
+                basePrice: 28500,
+                image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=600&q=80",
+                variants: [
+                    { name: "Standard Black (43\")", price: 28500 },
+                    { name: "Frameless Metallic (43\")", price: 31000 },
+                    { name: "Smart 4K UHD Edition (43\")", price: 35500 }
+                ]
+            },
+            {
+                id: 2,
+                name: "Wireless Bluetooth Earbuds Pro",
+                category: "Phones & Tablets",
+                basePrice: 2200,
+                image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=600&q=80",
+                variants: [
+                    { name: "Midnight Black", price: 2200 },
+                    { name: "Pure Glossy White", price: 2350 },
+                    { name: "Rose Gold Edition", price: 2500 }
+                ]
+            },
+            {
+                id: 3,
+                name: "Men's Casual Athletic Running Sneakers",
+                category: "Fashion",
+                basePrice: 3500,
+                image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80",
+                variants: [
+                    { name: "Size 41 (Red/Black)", price: 3500 },
+                    { name: "Size 42 (Red/Black)", price: 3500 },
+                    { name: "Size 43 (Red/Black)", price: 3700 }
+                ]
+            },
+            {
+                id: 4,
+                name: "Heavy Duty Kitchen Blender & Grinder",
+                category: "Home & Living",
+                basePrice: 4800,
+                image: "https://images.unsplash.com/photo-1570222094114-d074f7e1e6e8?auto=format&fit=crop&w=600&q=80",
+                variants: [
+                    { name: "2.0L Glass Jar (1500W)", price: 4800 },
+                    { name: "2.5L Unbreakable Jar (2000W)", price: 5600 },
+                    { name: "Professional Chef Edition", price: 6900 }
+                ]
+            },
+            {
+                id: 5,
+                name: "Organic Premium Arabica Coffee Beans 1kg",
+                category: "Supermarket",
+                basePrice: 1500,
+                image: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?auto=format&fit=crop&w=600&q=80",
+                variants: [
+                    { name: "Medium Roast (1kg)", price: 1500 },
+                    { name: "Dark French Roast (1kg)", price: 1650 },
+                    { name: "Decaf Blend (1kg)", price: 1800 }
+                ]
+            },
+            {
+                id: 6,
+                name: "Solar Powered Outdoor Motion Security Lamp",
+                category: "Home & Living",
+                basePrice: 1850,
+                image: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=600&q=80",
+                variants: [
+                    { name: "Single Head 100LED", price: 1850 },
+                    { name: "Dual Head 200LED Pro", price: 2400 },
+                    { name: "Ultra Bright Floodlight", price: 3200 }
+                ]
+            },
+            {
+                id: 7,
+                name: "4G LTE Smartphone 6.5\" Display",
+                category: "Phones & Tablets",
+                basePrice: 12500,
+                image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80",
+                variants: [
+                    { name: "32GB ROM + 2GB RAM", price: 12500 },
+                    { name: "64GB ROM + 4GB RAM", price: 14800 },
+                    { name: "128GB ROM + 6GB RAM", price: 17900 }
+                ]
+            },
+            {
+                id: 8,
+                name: "Non-Stick Cookware 7-Piece Set",
+                category: "Home & Living",
+                basePrice: 6500,
+                image: "https://images.unsplash.com/photo-1584990347426-c585c64303ab?auto=format&fit=crop&w=600&q=80",
+                variants: [
+                    { name: "Standard Black Granite", price: 6500 },
+                    { name: "Royal Copper Edition", price: 7500 },
+                    { name: "Ceramic Red Marble", price: 8200 }
+                ]
             }
-
-            const oldPriceKES = Math.round(priceKES * 1.24);
-            return { name, category, priceKES, oldPriceKES, variant, image };
-        }
-
-        const generatedNewProducts = newItemNames.map((name, idx) => classifyAndPriceItem(name, idx));
-
-        // Combine existing 55 products + all 630+ newly added products, assign IDs, and sort strictly cheapest to most expensive
-        const allCombined = [...existingProducts, ...generatedNewProducts]
-            .map((item, idx) => ({ ...item, id: idx + 1 }))
-            .sort((a, b) => a.priceKES - b.priceKES);
+        ];
 
         let cart = [];
+        let orders = JSON.parse(localStorage.getItem('kilishop_orders') || '[]');
         let activeCategory = 'All';
-        let visibleLimit = 60;
 
-        function formatLocalPrice(kesAmount) {
-            return `KES ${Math.round(kesAmount).toLocaleString()}`;
-        }
-
-        // Phone number formatting & validation helpers
-        function formatPhoneNumber(input) {
-            let value = input.value.trim();
-            value = value.replace(/[^\d+]/g, '');
-            if (value.startsWith('0')) {
-                value = '+254' + value.substring(1);
-            } else if ((value.startsWith('7') || value.startsWith('1')) && value.length === 9) {
-                value = '+254' + value;
+        function switchView(view) {
+            if(view === 'store') {
+                document.getElementById('storeView').classList.remove('hidden');
+                document.getElementById('adminView').classList.add('hidden');
+                renderProducts();
+            } else {
+                document.getElementById('storeView').classList.add('hidden');
+                document.getElementById('adminView').classList.remove('hidden');
+                renderAdminDashboard();
             }
-            input.value = value;
         }
 
-        function restrictToNumbers(event) {
-            const charCode = event.which ? event.which : event.keyCode;
-            const charStr = String.fromCharCode(charCode);
-            if (/^[0-9+]$/.test(charStr)) {
-                return true;
-            }
-            event.preventDefault();
-            return false;
+        function changeCountry(countryCode) {
+            currentCountry = countryCode;
+            renderProducts(activeCategory, document.getElementById('searchInput').value);
+            updateCartUI();
         }
 
-        function getFilteredProducts() {
-            const searchDesktop = document.getElementById('desktopSearch').value.toLowerCase();
-            const searchMobile = document.getElementById('mobileSearch').value.toLowerCase();
-            const query = searchDesktop || searchMobile;
+        function formatPrice(baseKES) {
+            const curr = currencies[currentCountry];
+            const converted = Math.round(baseKES * curr.rate);
+            return curr.symbol + converted.toLocaleString();
+        }
 
-            return allCombined.filter(p => {
-                const matchesCat = activeCategory === 'All' || p.category === activeCategory;
-                const matchesSearch = p.name.toLowerCase().includes(query) || p.category.toLowerCase().includes(query) || p.variant.toLowerCase().includes(query);
+        function renderProducts(filter = 'All', search = '') {
+            const grid = document.getElementById('productGrid');
+            const filtered = products.filter(p => {
+                const matchesCat = filter === 'All' || p.category === filter;
+                const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase());
                 return matchesCat && matchesSearch;
             });
-        }
 
-        // Render Product Grid
-        function renderProducts() {
-            const grid = document.getElementById('productGrid');
-            const filtered = getFilteredProducts();
-            const toDisplay = filtered.slice(0, visibleLimit);
-
-            document.getElementById('itemCountLabel').textContent = `Showing ${toDisplay.length} of ${filtered.length} items (Sorted Low-High)`;
-
-            const loadMoreWrapper = document.getElementById('loadMoreWrapper');
-            if (filtered.length > visibleLimit) {
-                loadMoreWrapper.classList.remove('hidden');
-            } else {
-                loadMoreWrapper.classList.add('hidden');
-            }
-
-            if (toDisplay.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-16 text-gray-500 text-sm">No products matched your search.</div>`;
+            if(filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-16 text-center text-slate-400 font-medium">No products match your search.</div>`;
                 return;
             }
 
-            grid.innerHTML = toDisplay.map(product => {
-                const discount = Math.round(((product.oldPriceKES - product.priceKES) / product.oldPriceKES) * 100);
-                const depositKES = Math.round(product.priceKES * 0.30);
+            grid.innerHTML = filtered.map(p => {
+                const variantOptions = p.variants.map((v, idx) => 
+                    `<option value="${idx}">${v.name} (${formatPrice(v.price)})</option>`
+                ).join('');
+
+                const defaultVariantPrice = formatPrice(p.variants[0].price);
 
                 return `
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col justify-between hover:shadow-md transition">
-                    <div>
-                        <div class="relative h-36 sm:h-44 bg-gray-100 overflow-hidden">
-                            <img src="${product.image}" alt="${product.name}" loading="lazy" class="w-full h-full object-cover">
-                            <span class="absolute top-2 left-2 bg-orange-600 text-white text-[10px] font-bold px-2 py-0.5 rounded">-${discount}%</span>
+                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col group">
+                        <div class="h-48 bg-slate-100 overflow-hidden relative">
+                            <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                            <span class="absolute top-2 left-2 bg-slate-900/80 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-lg">${p.category}</span>
                         </div>
-                        <div class="p-2.5 sm:p-3">
-                            <span class="text-[9px] uppercase tracking-wider text-gray-400 font-semibold">${product.category}</span>
-                            <h4 class="text-xs font-bold text-gray-900 line-clamp-2 mt-0.5 leading-snug">${product.name}</h4>
-                            <p class="text-[10px] text-gray-500 mt-0.5">${product.variant}</p>
-                            
-                            <div class="mt-2">
-                                <div class="text-xs sm:text-sm font-extrabold text-gray-900">${formatLocalPrice(product.priceKES)}</div>
-                                <div class="text-[10px] text-gray-400 line-through">${formatLocalPrice(product.oldPriceKES)}</div>
+                        <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-sm line-clamp-1">${p.name}</h3>
+                                <p id="price-display-${p.id}" class="text-amber-600 font-black text-base mt-1">${defaultVariantPrice}</p>
                             </div>
 
-                            <div class="mt-1.5 inline-block bg-orange-50 text-orange-700 text-[10px] font-semibold px-2 py-0.5 rounded">
-                                M-Pesa 30% Dep: ${formatLocalPrice(depositKES)}
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Select Choice / Variant</label>
+                                <select id="variant-select-${p.id}" onchange="updateVariantPrice(${p.id})" class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 font-medium text-slate-700 focus:outline-none focus:border-amber-500">
+                                    ${variantOptions}
+                                </select>
                             </div>
+
+                            <button id="add-btn-${p.id}" onclick="addToCart(${p.id})" class="w-full bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-white py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center space-x-2 shadow-sm">
+                                <i class="fa-solid fa-cart-plus"></i>
+                                <span>Add to Cart</span>
+                            </button>
                         </div>
                     </div>
-
-                    <div class="p-2.5 pt-0">
-                        <button onclick="addToCart(${product.id})" class="w-full bg-orange-600 hover:bg-orange-700 active:scale-95 text-white font-bold py-2 rounded-lg text-xs transition shadow-sm">
-                            + Add to Cart
-                        </button>
-                    </div>
-                </div>
                 `;
             }).join('');
         }
 
-        function loadMoreProducts() {
-            visibleLimit += 60;
-            renderProducts();
+        function updateVariantPrice(productId) {
+            const product = products.find(p => p.id === productId);
+            const selectEl = document.getElementById(`variant-select-${productId}`);
+            const variantIndex = parseInt(selectEl.value);
+            const variant = product.variants[variantIndex];
+            document.getElementById(`price-display-${productId}`).textContent = formatPrice(variant.price);
         }
 
-        function selectCategory(category) {
-            activeCategory = category;
-            visibleLimit = 60;
-            document.getElementById('sectionTitle').textContent = category === 'All' ? 'All Products (Cheapest to Expensive)' : `${category} (Cheapest to Expensive)`;
-            
+        function filterCategory(cat) {
+            activeCategory = cat;
             document.querySelectorAll('.cat-btn').forEach(btn => {
-                if (btn.textContent.includes(category) || (category === 'All' && btn.textContent.includes('All Items'))) {
-                    btn.classList.remove('bg-gray-100', 'text-gray-700');
-                    btn.classList.add('bg-orange-600', 'text-white');
+                if(btn.textContent.includes(cat) || (cat === 'All' && btn.textContent.includes('All'))) {
+                    btn.className = "cat-btn px-4 py-2 rounded-full text-xs font-bold bg-amber-500 text-slate-950 whitespace-nowrap transition shadow-sm";
                 } else {
-                    btn.classList.remove('bg-orange-600', 'text-white');
-                    btn.classList.add('bg-gray-100', 'text-gray-700');
+                    btn.className = "cat-btn px-4 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200 whitespace-nowrap hover:bg-slate-50 transition";
                 }
             });
-
-            renderProducts();
+            renderProducts(activeCategory, document.getElementById('searchInput').value);
         }
 
-        function filterProducts() {
-            visibleLimit = 60;
-            renderProducts();
+        function handleSearch(val) {
+            renderProducts(activeCategory, val);
+        }
+
+        function toggleCart() {
+            document.getElementById('cartDrawer').classList.toggle('hidden');
         }
 
         function addToCart(productId) {
-            const existing = cart.find(item => item.id === productId);
-            if (existing) {
-                existing.qty += 1;
-            } else {
-                const prod = allCombined.find(p => p.id === productId);
-                cart.push({ ...prod, qty: 1 });
-            }
-            updateCartUI();
-        }
+            const product = products.find(p => p.id === productId);
+            const selectEl = document.getElementById(`variant-select-${productId}`);
+            const variantIndex = selectEl ? parseInt(selectEl.value) : 0;
+            const variant = product.variants[variantIndex];
 
-        function updateQty(productId, delta) {
-            const index = cart.findIndex(item => item.id === productId);
-            if (index > -1) {
-                cart[index].qty += delta;
-                if (cart[index].qty <= 0) {
-                    cart.splice(index, 1);
-                }
+            const cartItemId = `${productId}-${variantIndex}`;
+            const existing = cart.find(item => item.cartItemId === cartItemId);
+
+            if(existing) {
+                existing.qty++;
+            } else {
+                cart.push({
+                    cartItemId,
+                    productId: product.id,
+                    name: product.name,
+                    variantName: variant.name,
+                    priceKES: variant.price,
+                    image: product.image,
+                    qty: 1
+                });
             }
+
+            // Visual button color feedback flash
+            const btn = document.getElementById(`add-btn-${productId}`);
+            const originalHTML = btn.innerHTML;
+            btn.className = "w-full bg-emerald-600 text-white py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center space-x-2 shadow-sm scale-95";
+            btn.innerHTML = `<i class="fa-solid fa-check"></i><span>Added to Cart!</span>`;
+            
+            setTimeout(() => {
+                btn.className = "w-full bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-white py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center space-x-2 shadow-sm";
+                btn.innerHTML = originalHTML;
+            }, 600);
+
             updateCartUI();
         }
 
         function updateCartUI() {
-            const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
-            document.getElementById('cartCount').textContent = totalItems;
+            const badge = document.getElementById('cartBadge');
+            const list = document.getElementById('cartItemsList');
+            const subtotalEl = document.getElementById('cartSubtotal');
+            document.getElementById('cartCurrencyLabel').textContent = currencies[currentCountry].code;
 
-            const container = document.getElementById('cartItemsContainer');
-            const summaryBox = document.getElementById('cartSummaryBox');
-            const checkoutForm = document.getElementById('checkoutForm');
-            const payBtn = document.getElementById('payNowBtn');
+            const totalCount = cart.reduce((sum, i) => sum + i.qty, 0);
+            const subtotalKES = cart.reduce((sum, i) => sum + (i.priceKES * i.qty), 0);
 
-            if (cart.length === 0) {
-                container.innerHTML = `<div class="text-center py-8 text-gray-500 text-sm">Your cart is empty.</div>`;
-                summaryBox.classList.add('hidden');
-                checkoutForm.classList.add('hidden');
+            if(totalCount > 0) {
+                badge.textContent = totalCount;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+
+            subtotalEl.textContent = formatPrice(subtotalKES);
+
+            if(cart.length === 0) {
+                list.innerHTML = `<p class="text-center text-slate-400 py-12 text-sm">Your cart is currently empty.</p>`;
                 return;
             }
 
-            summaryBox.classList.remove('hidden');
-            checkoutForm.classList.remove('hidden');
-
-            container.innerHTML = cart.map(item => `
-                <div class="flex items-center justify-between gap-3 border-b pb-3">
-                    <img src="${item.image}" class="w-12 h-12 rounded-lg object-cover bg-gray-100">
-                    <div class="flex-1 min-w-0">
-                        <h5 class="text-xs font-bold text-gray-900 truncate">${item.name}</h5>
-                        <p class="text-xs text-orange-600 font-semibold mt-0.5">${formatLocalPrice(item.priceKES * item.qty)}</p>
+            list.innerHTML = cart.map(item => `
+                <div class="flex items-center justify-between py-3">
+                    <div class="flex items-center space-x-3">
+                        <img src="${item.image}" class="w-14 h-14 object-cover rounded-xl bg-slate-100 border border-slate-200">
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-xs line-clamp-1">${item.name}</h4>
+                            <p class="text-[10px] text-amber-600 font-semibold">${item.variantName}</p>
+                            <p class="text-xs font-bold text-slate-700 mt-0.5">${formatPrice(item.priceKES)} x ${item.qty}</p>
+                        </div>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <button onclick="updateQty(${item.id}, -1)" class="w-7 h-7 bg-gray-100 hover:bg-gray-200 rounded-lg font-bold text-sm">-</button>
-                        <span class="text-xs font-bold w-4 text-center">${item.qty}</span>
-                        <button onclick="updateQty(${item.id}, 1)" class="w-7 h-7 bg-gray-100 hover:bg-gray-200 rounded-lg font-bold text-sm">+</button>
-                    </div>
+                    <button onclick="removeFromCart('${item.cartItemId}')" class="text-slate-400 hover:text-rose-600 p-2 transition"><i class="fa-solid fa-trash text-sm"></i></button>
                 </div>
             `).join('');
-
-            const totalKES = cart.reduce((sum, item) => sum + (item.priceKES * item.qty), 0);
-            const depositKES = Math.round(totalKES * 0.30);
-            const balanceKES = totalKES - depositKES;
-
-            document.getElementById('modalTotalAmount').textContent = formatLocalPrice(totalKES);
-            document.getElementById('modalDepositAmount').textContent = formatLocalPrice(depositKES);
-            document.getElementById('modalBalanceAmount').textContent = formatLocalPrice(balanceKES);
-            payBtn.textContent = `PROMPT M-PESA STK PUSH (${formatLocalPrice(depositKES)})`;
         }
 
-        function openCartModal() {
+        function removeFromCart(cartItemId) {
+            cart = cart.filter(i => i.cartItemId !== cartItemId);
             updateCartUI();
-            document.getElementById('cartModal').classList.remove('hidden');
         }
 
-        function closeCartModal() {
-            document.getElementById('cartModal').classList.add('hidden');
-        }
-
-        function closeSuccessModal() {
-            document.getElementById('successModal').classList.add('hidden');
-        }
-
-        function showStore() {
-            closeCartModal();
-            selectCategory('All');
-        }
-
-        // Paystack M-Pesa STK Push Checkout Handler
-        document.getElementById('checkoutForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const errorDiv = document.getElementById('checkoutError');
-            errorDiv.classList.add('hidden');
-
-            const name = document.getElementById('custName').value.trim();
-            const email = document.getElementById('custEmail').value.trim();
-            const phone = document.getElementById('custPhone').value.trim();
-            const location = document.getElementById('custLocation').value.trim();
-
-            // Validate Kenyan M-Pesa format
-            const mpesaRegex = /^\+254[17]\d{8}$/;
-            if (!mpesaRegex.test(phone)) {
-                errorDiv.textContent = "Please enter a valid M-Pesa phone number starting with 07, 01, or +254.";
-                errorDiv.classList.remove('hidden');
+        function checkoutWithPaystack() {
+            if(cart.length === 0) {
+                alert('Your cart is empty.');
+                return;
+            }
+            const phone = document.getElementById('customerPhone').value.trim();
+            if(!phone) {
+                alert('Please enter your mobile phone / mobile money number for East Africa direct billing.');
+                document.getElementById('customerPhone').focus();
                 return;
             }
 
-            const totalKES = cart.reduce((sum, item) => sum + (item.priceKES * item.qty), 0);
-            const depositKES = Math.round(totalKES * 0.30);
-            const balanceKES = totalKES - depositKES;
-            const amountInCents = depositKES * 100;
-            const itemsSummary = cart.map(i => `${i.name} (x${i.qty})`).join(', ');
+            const subtotalKES = cart.reduce((sum, i) => sum + (i.priceKES * i.qty), 0);
+            const curr = currencies[currentCountry];
+            const localAmount = Math.round(subtotalKES * curr.rate);
 
-            try {
-                const paystack = new PaystackPop();
-                paystack.newTransaction({
-                    key: PAYSTACK_PUBLIC_KEY,
-                    email: email,
-                    amount: amountInCents,
-                    currency: 'KES',
-                    channels: ['mobile_money'],
-                    reference: 'KILI_MPESA_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
-                    metadata: {
-                        custom_fields: [
-                            { display_name: "Customer Name", variable_name: "customer_name", value: name },
-                            { display_name: "M-Pesa Phone", variable_name: "phone_number", value: phone },
-                            { display_name: "Delivery Location", variable_name: "delivery_location", value: location },
-                            { display_name: "Items Ordered", variable_name: "items_ordered", value: itemsSummary }
-                        ]
-                    },
-                    onSuccess: (transaction) => {
-                        closeCartModal();
-                        document.getElementById('successRef').textContent = transaction.reference;
-                        document.getElementById('successPaid').textContent = formatLocalPrice(depositKES);
-                        document.getElementById('successBalance').textContent = formatLocalPrice(balanceKES);
-                        document.getElementById('successModal').classList.remove('hidden');
-                        cart = [];
-                        updateCartUI();
-                    },
-                    onCancel: () => {
-                        errorDiv.textContent = "M-Pesa payment prompt was cancelled. Your cart items are saved.";
-                        errorDiv.classList.remove('hidden');
-                    }
-                });
-            } catch (err) {
-                console.error("Paystack error:", err);
-                errorDiv.textContent = "Unable to launch M-Pesa gateway. Please check your network connection.";
-                errorDiv.classList.remove('hidden');
+            let handler = PaystackPop.setup({
+                key: PAYSTACK_PUBLIC_KEY,
+                email: phone.replace(/[^a-zA-Z0-9]/g, '') + '@kilishop.africa',
+                amount: localAmount * 100,
+                currency: curr.code,
+                metadata: {
+                    phone: phone,
+                    country: currentCountry,
+                    gateway: "M-Pesa / Mobile Money / Paystack"
+                },
+                callback: function(response) {
+                    const newOrder = {
+                        id: 'KS-' + Math.floor(100000 + Math.random() * 900000),
+                        phone: phone,
+                        country: currentCountry,
+                        channel: curr.code === 'KES' ? 'M-Pesa Direct' : 'Mobile Money / Paystack',
+                        items: [...cart],
+                        totalFormatted: formatPrice(subtotalKES),
+                        totalKES: subtotalKES,
+                        reference: response.reference,
+                        date: new Date().toLocaleString()
+                    };
+
+                    orders.unshift(newOrder);
+                    localStorage.setItem('kilishop_orders', JSON.stringify(orders));
+
+                    alert('Payment successful! Order reference: ' + response.reference);
+                    cart = [];
+                    updateCartUI();
+                    toggleCart();
+                    switchView('admin');
+                },
+                onClose: function() {
+                    alert('Transaction was cancelled or not completed.');
+                }
+            });
+            handler.openIframe();
+        }
+
+        function renderAdminDashboard() {
+            const table = document.getElementById('adminOrdersTable');
+            document.getElementById('statTotalOrders').textContent = orders.length;
+            
+            const totalRevKES = orders.reduce((sum, o) => sum + o.totalKES, 0);
+            document.getElementById('statTotalRevenue').textContent = formatPrice(totalRevKES);
+
+            if(orders.length === 0) {
+                table.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-400">No orders recorded yet. Make a test purchase to view live logs here.</td></tr>`;
+                return;
             }
-        });
 
+            table.innerHTML = orders.map(o => {
+                const itemsSummary = o.items.map(i => `${i.qty}x ${i.name} (${i.variantName})`).join(', ');
+                const whatsappMsg = encodeURIComponent(`Hello! Thank you for shopping with KiliShop (Order ID: ${o.id}). Your payment of ${o.totalFormatted} has been confirmed. Items: ${itemsSummary}. We are processing your express dispatch now!`);
+                const smsMsg = `KiliShop: Order ${o.id} confirmed! Total: ${o.totalFormatted}. Out for express delivery across East Africa. Ref: ${o.reference}`;
+
+                return `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="p-4 font-bold text-slate-900">${o.id}</td>
+                        <td class="p-4 font-semibold text-slate-800">${o.phone}</td>
+                        <td class="p-4">
+                            <span class="inline-block bg-slate-100 text-slate-700 text-xs font-semibold px-2.5 py-1 rounded-lg">${o.country} - ${o.channel}</span>
+                        </td>
+                        <td class="p-4"><p class="text-xs text-slate-600">${itemsSummary}</p></td>
+                        <td class="p-4 font-black text-amber-600">${o.totalFormatted}</td>
+                        <td class="p-4 space-y-1.5">
+                            <a href="https://wa.me/${o.phone.replace(/[^0-9]/g, '')}?text=${whatsappMsg}" target="_blank" class="inline-flex items-center space-x-1.5 bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition shadow-sm">
+                                <i class="fa-brands fa-whatsapp"></i>
+                                <span>Send WhatsApp</span>
+                            </a>
+                            <button onclick="alert('SMS Dispatch Template Copied to Clipboard:\\n\\n${smsMsg}')" class="inline-flex items-center space-x-1.5 bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition shadow-sm">
+                                <i class="fa-solid fa-comment-sms"></i>
+                                <span>Copy SMS Template</span>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function clearOrders() {
+            if(confirm('Are you sure you want to clear all order history?')) {
+                orders = [];
+                localStorage.removeItem('kilishop_orders');
+                renderAdminDashboard();
+            }
+        }
+
+        // Initial setup
         renderProducts();
     </script>
 </body>
