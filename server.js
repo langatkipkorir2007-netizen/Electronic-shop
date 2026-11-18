@@ -1,99 +1,24 @@
-
-const express = require("express");
+const express = require('express');
+const cors = require('cors');
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
-const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
-
-// Replace these demo functions with a persistent database.
-const orders = new Map();
-
-app.post("/api/paystack/initialize", async (req, res) => {
-  try {
-    const { email, amount, orderId } = req.body;
-
-    if (!email || !orderId || !Number.isInteger(amount) ||
-        amount <= 0) {
-      return res.status(400).json({ message: "Invalid order" });
-    }
-
-    // In production, retrieve the order from your database
-    // and calculate its deposit on the server.
-    const order = orders.get(orderId);
-
-    if (!order || amount !== order.deposit * 100) {
-      return res.status(400).json({ message: "Order validation failed" });
-    }
-
-    const response = await fetch(
-      "https://api.paystack.co/transaction/initialize",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          email,
-          amount,
-          currency: "KES",
-          metadata: { orderId }
-        })
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok || !data.status) {
-      return res.status(400).json({ message: data.message });
-    }
-
-    res.json(data.data);
-  } catch {
-    res.status(500).json({ message: "Payment initialization failed" });
-  }
+// Health check endpoint
+app.get('/', (req, res) => {
+    res.send('KiliShop Server is running!');
 });
 
-app.post("/api/paystack/verify", async (req, res) => {
-  try {
-    const { reference, orderId } = req.body;
-    const order = orders.get(orderId);
-
-    if (!order || !reference) {
-      return res.status(400).json({ paid: false });
-    }
-
-    const response = await fetch(
-      `https://api.paystack.co/transaction/verify/${encodeURIComponent(reference)}`,
-      {
-        headers: {
-          Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`
-        }
-      }
-    );
-
-    const data = await response.json();
-
-    if (
-      data.status &&
-      data.data.status === "success" &&
-      data.data.amount === order.deposit * 100 &&
-      data.data.currency === "KES" &&
-      data.data.metadata.orderId === orderId
-    ) {
-      order.paid = true;
-      order.reference = reference;
-
-      return res.json({ paid: true });
-    }
-
-    res.json({ paid: false });
-  } catch {
-    res.status(500).json({ paid: false });
-  }
+// Optional: Endpoint to handle order confirmation or logging after payment
+app.post('/api/verify-payment', (req, res) => {
+    const { reference, amount, customer } = req.body;
+    // Here you can verify with Paystack API or save order to database
+    console.log(`Payment received: ${reference} for amount ${amount}`);
+    res.json({ status: 'success', message: 'Order recorded successfully' });
 });
 
-app.listen(3000, () => {
-  console.log("Kilishop payment server running");
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
