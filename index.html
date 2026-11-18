@@ -84,7 +84,7 @@
 
     <!-- Script to Handle Paystack Trigger -->
     <script>
-        const PAYSTACK_PUBLIC_KEY = 'pk_test_your_actual_public_key_here'; // Replace with your live/test Paystack Public Key
+        const PAYSTACK_PUBLIC_KEY = 'pk_live_96685dc1a36bc585d08a7b5fd4a4891d8bce14cb';
 
         document.getElementById('paymentForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -98,8 +98,6 @@
             const phone = document.getElementById('phone').value.trim();
             const location = document.getElementById('location').value.trim();
 
-            // 30% deposit calculation in KES (converted to sub-units/cents if required, or entered directly depending on currency configuration)
-            // Paystack expects amount in the lowest currency denomination (e.g., KES cents -> amount * 100)
             const depositAmountKES = 3150; 
             const amountInCents = depositAmountKES * 100;
 
@@ -120,11 +118,10 @@
                     },
                     callback: function(response) {
                         alert('Payment complete! Reference: ' + response.reference);
-                        // Redirect to success page or update UI order state here
                         window.location.reload();
                     },
                     onClose: function() {
-                        alert('Transaction was closed, window not closed.');
+                        alert('Transaction was closed.');
                     }
                 });
                 handler.openIframe();
