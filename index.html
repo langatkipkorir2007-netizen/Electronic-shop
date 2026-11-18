@@ -21,14 +21,22 @@
             </a>
             
             <div class="flex-1 max-w-lg hidden sm:block">
-                <input type="text" id="desktopSearch" onkeyup="filterProducts()" placeholder="Search 100+ electronics, phones, appliances, fashion..." 
+                <input type="text" id="desktopSearch" onkeyup="filterProducts()" placeholder="Search 100+ electronics, phones, appliances..." 
                     class="w-full px-4 py-2 bg-gray-100 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-orange-500">
             </div>
 
-            <button onclick="openCartModal()" class="relative bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 shadow-sm transition">
-                <span>🛒 Cart</span>
-                <span id="cartCount" class="bg-white text-orange-600 text-xs font-bold px-2 py-0.5 rounded-full">0</span>
-            </button>
+            <div class="flex items-center gap-2">
+                <!-- Region Selector -->
+                <select id="regionSelect" onchange="changeRegion()" class="bg-gray-100 border border-gray-200 text-xs font-semibold rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500">
+                    <option value="KE">🇰🇪 Kenya (KES)</option>
+                    <option value="TZ">🇹🇿 Tanzania (TZS)</option>
+                </select>
+
+                <button onclick="openCartModal()" class="relative bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 shadow-sm transition">
+                    <span>🛒 Cart</span>
+                    <span id="cartCount" class="bg-white text-orange-600 text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+                </button>
+            </div>
         </div>
 
         <!-- Mobile Search Bar -->
@@ -58,7 +66,7 @@
             <div>
                 <span class="bg-white/20 text-white text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">Pay Only 30% Deposit</span>
                 <h2 class="text-xl sm:text-2xl font-extrabold mt-2">Over 100 Quality Items on Discount</h2>
-                <p class="text-orange-100 text-xs sm:text-sm mt-1">Order any product across East Africa with a 30% M-Pesa or Card deposit. Pay the 70% balance upon delivery!</p>
+                <p class="text-orange-100 text-xs sm:text-sm mt-1">Order across East Africa with a 30% deposit via M-Pesa, Card, or regional mobile money. Pay 70% balance upon delivery!</p>
             </div>
             <div class="bg-white text-orange-600 font-bold text-xs px-4 py-3 rounded-xl shadow-sm whitespace-nowrap">
                 ⚡ Fast Countrywide Delivery
@@ -111,7 +119,7 @@
                         <span id="modalBalanceAmount">KES 0</span>
                     </div>
                     <div class="mt-2 p-2.5 bg-orange-50 border border-orange-100 text-orange-800 text-xs rounded-lg">
-                        A 30% deposit confirms your order dispatch. Pay the 70% balance upon inspecting your items on delivery.
+                        A 30% deposit confirms your order dispatch. Pay the 70% balance upon delivery inspection.
                     </div>
                 </div>
 
@@ -133,19 +141,20 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-xs font-semibold text-gray-600 mb-1">Phone Number (M-Pesa/Airtel)</label>
-                            <input type="tel" id="custPhone" required placeholder="+254712345678" value="+254712555279"
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Phone Number</label>
+                            <input type="tel" id="custPhone" required placeholder="+254... or +255..." value="+254712555279"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:outline-none">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-gray-600 mb-1">Delivery Town / Estate</label>
-                            <input type="text" id="custLocation" required placeholder="e.g. Nairobi CBD" value="Nairobi"
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Delivery Town / Country</label>
+                            <input type="text" id="custLocation" required placeholder="e.g. Nairobi / Dar es Salaam" value="Nairobi"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:outline-none">
                         </div>
                     </div>
 
                     <div id="checkoutError" class="hidden p-3 bg-red-50 text-red-700 text-xs rounded-lg border border-red-200"></div>
 
+                    <!-- Dynamic Button depending on Region -->
                     <button type="submit" id="payNowBtn" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition text-sm">
                         PAY 30% DEPOSIT NOW
                     </button>
@@ -161,7 +170,7 @@
                 ✓
             </div>
             <h3 class="text-xl font-extrabold text-gray-900">Order Confirmed Successfully!</h3>
-            <p class="text-sm text-gray-600">Your 30% deposit has been processed via Paystack. Our dispatch team will call you shortly to arrange delivery.</p>
+            <p id="successMessageText" class="text-sm text-gray-600">Your 30% deposit has been processed. Our dispatch team will call you shortly.</p>
             <div class="bg-gray-50 p-3 rounded-xl text-xs text-left space-y-1 border">
                 <p><span class="font-semibold">Payment Ref:</span> <span id="successRef" class="font-mono text-orange-600"></span></p>
                 <p><span class="font-semibold">Deposit Paid:</span> <span id="successPaid"></span></p>
@@ -176,139 +185,155 @@
     <!-- Footer -->
     <footer class="bg-slate-900 text-slate-400 text-xs py-8 px-4 mt-12 text-center space-y-2">
         <p class="font-bold text-white text-sm tracking-wide">KILISHOP</p>
-        <p>Your trusted online destination across East Africa.</p>
+        <p>Your trusted online destination across East Africa (Kenya & Tanzania).</p>
         <p class="text-slate-500 pt-2">&copy; 2026 Kilishop. All rights reserved.</p>
     </footer>
 
     <script>
         const PAYSTACK_PUBLIC_KEY = 'pk_live_96685dc1a36bc585d08a7b5fd4a4891d8bce14cb';
+        let currentRegion = 'KE'; // 'KE' for Kenya, 'TZ' for Tanzania
 
         // 100 Comprehensive Curated Products Catalog
         const products = [
             // Phones & Tablets (1-20)
-            { id: 1, name: "Samsung Galaxy A55 5G (8GB/256GB)", category: "Phones", price: 44500, oldPrice: 52000, variant: "Awesome Navy", image: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?auto=format&fit=crop&w=500&q=80" },
-            { id: 2, name: "iPhone 15 Pro Max 256GB Unlocked", category: "Phones", price: 145000, oldPrice: 165000, variant: "Natural Titanium", image: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=500&q=80" },
-            { id: 3, name: "Redmi Note 13 Pro+ 5G (12GB/512GB)", category: "Phones", price: 39000, oldPrice: 46000, variant: "Midnight Black", image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=500&q=80" },
-            { id: 4, name: "Samsung Galaxy S24 Ultra 512GB", category: "Phones", price: 138000, oldPrice: 155000, variant: "Titanium Gray", image: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=500&q=80" },
-            { id: 5, name: "OPPO Reno 11 5G (8GB/256GB)", category: "Phones", price: 38500, oldPrice: 44000, variant: "Wave Green", image: "https://images.unsplash.com/photo-1565849904461-04a58ad377e0?auto=format&fit=crop&w=500&q=80" },
-            { id: 6, name: "Tecno Camon 30 Premier 5G", category: "Phones", price: 42000, oldPrice: 49000, variant: "Icelandic Silver", image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=500&q=80" },
-            { id: 7, name: "Infinix Zero 30 5G (12GB/256GB)", category: "Phones", price: 34500, oldPrice: 39900, variant: "Rome Green", image: "https://images.unsplash.com/photo-1575695342320-d2d2d2f9b73f?auto=format&fit=crop&w=500&q=80" },
-            { id: 8, name: "Xiaomi Poco X6 Pro 5G", category: "Phones", price: 37000, oldPrice: 43000, variant: "Yellow Vegan Leather", image: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=500&q=80" },
-            { id: 9, name: "Realme 12+ 5G (8GB/256GB)", category: "Phones", price: 33000, oldPrice: 38000, variant: "Pioneer Green", image: "https://images.unsplash.com/photo-1580910051074-3eb694886505?auto=format&fit=crop&w=500&q=80" },
-            { id: 10, name: "Samsung Galaxy A15 4G (6GB/128GB)", category: "Phones", price: 19500, oldPrice: 23000, variant: "Light Blue", image: "https://images.unsplash.com/photo-1546054454-aa26fc2b73d9?auto=format&fit=crop&w=500&q=80" },
-            { id: 11, name: "Huawei Nova 12 SE (8GB/256GB)", category: "Phones", price: 36000, oldPrice: 41000, variant: "Starry Black", image: "https://images.unsplash.com/photo-1533228876829-65c94e7b5025?auto=format&fit=crop&w=500&q=80" },
-            { id: 12, name: "iPhone 13 128GB Midnight", category: "Phones", price: 79000, oldPrice: 89000, variant: "Midnight", image: "https://images.unsplash.com/photo-1591337676887-a217a6970a8a?auto=format&fit=crop&w=500&q=80" },
-            { id: 13, name: "Tecno Spark 20 Pro (8GB/256GB)", category: "Phones", price: 18500, oldPrice: 21500, variant: "Moonlit Black", image: "https://images.unsplash.com/photo-1567581935884-3349723552ca?auto=format&fit=crop&w=500&q=80" },
-            { id: 14, name: "Infinix Hot 40i (8GB/256GB)", category: "Phones", price: 15500, oldPrice: 18000, variant: "Starlit Black", image: "https://images.unsplash.com/photo-1526406915894-7bcd65f60845?auto=format&fit=crop&w=500&q=80" },
-            { id: 15, name: "Samsung Galaxy Tab A9+ 11\" LTE", category: "Phones", price: 31000, oldPrice: 36500, variant: "Graphite", image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=500&q=80" },
-            { id: 16, name: "Apple iPad 10.9\" (10th Gen) Wi-Fi", category: "Phones", price: 62000, oldPrice: 71000, variant: "Silver", image: "https://images.unsplash.com/photo-1561154464-82e9adf32764?auto=format&fit=crop&w=500&q=80" },
-            { id: 17, name: "Xiaomi Pad 6 (8GB/256GB)", category: "Phones", price: 47000, oldPrice: 54000, variant: "Mist Blue", image: "https://images.unsplash.com/photo-1585790050230-5dd28404ccb9?auto=format&fit=crop&w=500&q=80" },
-            { id: 18, name: "Nokia G42 5G (6GB/128GB)", category: "Phones", price: 21000, oldPrice: 25000, variant: "So Purple", image: "https://images.unsplash.com/photo-1523206489230-c012c64b2b48?auto=format&fit=crop&w=500&q=80" },
-            { id: 19, name: "OPPO A38 (4GB/128GB)", category: "Phones", price: 16200, oldPrice: 19000, variant: "Glowing Gold", image: "https://images.unsplash.com/photo-1573148197772-520e7f34a743?auto=format&fit=crop&w=500&q=80" },
-            { id: 20, name: "Vivo V30 5G (12GB/512GB)", category: "Phones", price: 54000, oldPrice: 62000, variant: "Bloom White", image: "https://images.unsplash.com/photo-1563227812-0ea4c22e6cc8?auto=format&fit=crop&w=500&q=80" },
+            { id: 1, name: "Samsung Galaxy A55 5G (8GB/256GB)", category: "Phones", priceKE: 44500, priceTZ: 950000, oldPriceKE: 52000, variant: "Awesome Navy", image: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?auto=format&fit=crop&w=500&q=80" },
+            { id: 2, name: "iPhone 15 Pro Max 256GB Unlocked", category: "Phones", priceKE: 145000, priceTZ: 3100000, oldPriceKE: 165000, variant: "Natural Titanium", image: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=500&q=80" },
+            { id: 3, name: "Redmi Note 13 Pro+ 5G (12GB/512GB)", category: "Phones", priceKE: 39000, priceTZ: 840000, oldPriceKE: 46000, variant: "Midnight Black", image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=500&q=80" },
+            { id: 4, name: "Samsung Galaxy S24 Ultra 512GB", category: "Phones", priceKE: 138000, priceTZ: 2980000, oldPriceKE: 155000, variant: "Titanium Gray", image: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=500&q=80" },
+            { id: 5, name: "OPPO Reno 11 5G (8GB/256GB)", category: "Phones", priceKE: 38500, priceTZ: 825000, oldPriceKE: 44000, variant: "Wave Green", image: "https://images.unsplash.com/photo-1565849904461-04a58ad377e0?auto=format&fit=crop&w=500&q=80" },
+            { id: 6, name: "Tecno Camon 30 Premier 5G", category: "Phones", priceKE: 42000, priceTZ: 900000, oldPriceKE: 49000, variant: "Icelandic Silver", image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=500&q=80" },
+            { id: 7, name: "Infinix Zero 30 5G (12GB/256GB)", category: "Phones", priceKE: 34500, priceTZ: 740000, oldPriceKE: 39900, variant: "Rome Green", image: "https://images.unsplash.com/photo-1575695342320-d2d2d2f9b73f?auto=format&fit=crop&w=500&q=80" },
+            { id: 8, name: "Xiaomi Poco X6 Pro 5G", category: "Phones", priceKE: 37000, priceTZ: 795000, oldPriceKE: 43000, variant: "Yellow Leather", image: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=500&q=80" },
+            { id: 9, name: "Realme 12+ 5G (8GB/256GB)", category: "Phones", priceKE: 33000, priceTZ: 710000, oldPriceKE: 38000, variant: "Pioneer Green", image: "https://images.unsplash.com/photo-1580910051074-3eb694886505?auto=format&fit=crop&w=500&q=80" },
+            { id: 10, name: "Samsung Galaxy A15 4G (6GB/128GB)", category: "Phones", priceKE: 19500, priceTZ: 420000, oldPriceKE: 23000, variant: "Light Blue", image: "https://images.unsplash.com/photo-1546054454-aa26fc2b73d9?auto=format&fit=crop&w=500&q=80" },
+            { id: 11, name: "Huawei Nova 12 SE (8GB/256GB)", category: "Phones", priceKE: 36000, priceTZ: 775000, oldPriceKE: 41000, variant: "Starry Black", image: "https://images.unsplash.com/photo-1533228876829-65c94e7b5025?auto=format&fit=crop&w=500&q=80" },
+            { id: 12, name: "iPhone 13 128GB Midnight", category: "Phones", priceKE: 79000, priceTZ: 1700000, oldPriceKE: 89000, variant: "Midnight", image: "https://images.unsplash.com/photo-1591337676887-a217a6970a8a?auto=format&fit=crop&w=500&q=80" },
+            { id: 13, name: "Tecno Spark 20 Pro (8GB/256GB)", category: "Phones", priceKE: 18500, priceTZ: 399000, oldPriceKE: 21500, variant: "Moonlit Black", image: "https://images.unsplash.com/photo-1567581935884-3349723552ca?auto=format&fit=crop&w=500&q=80" },
+            { id: 14, name: "Infinix Hot 40i (8GB/256GB)", category: "Phones", priceKE: 15500, priceTZ: 335000, oldPriceKE: 18000, variant: "Starlit Black", image: "https://images.unsplash.com/photo-1526406915894-7bcd65f60845?auto=format&fit=crop&w=500&q=80" },
+            { id: 15, name: "Samsung Galaxy Tab A9+ 11\" LTE", category: "Phones", priceKE: 31000, priceTZ: 665000, oldPriceKE: 36500, variant: "Graphite", image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=500&q=80" },
+            { id: 16, name: "Apple iPad 10.9\" (10th Gen) Wi-Fi", category: "Phones", priceKE: 62000, priceTZ: 1330000, oldPriceKE: 71000, variant: "Silver", image: "https://images.unsplash.com/photo-1561154464-82e9adf32764?auto=format&fit=crop&w=500&q=80" },
+            { id: 17, name: "Xiaomi Pad 6 (8GB/256GB)", category: "Phones", priceKE: 47000, priceTZ: 1010000, oldPriceKE: 54000, variant: "Mist Blue", image: "https://images.unsplash.com/photo-1585790050230-5dd28404ccb9?auto=format&fit=crop&w=500&q=80" },
+            { id: 18, name: "Nokia G42 5G (6GB/128GB)", category: "Phones", priceKE: 21000, priceTZ: 450000, oldPriceKE: 25000, variant: "So Purple", image: "https://images.unsplash.com/photo-1523206489230-c012c64b2b48?auto=format&fit=crop&w=500&q=80" },
+            { id: 19, name: "OPPO A38 (4GB/128GB)", category: "Phones", priceKE: 16200, priceTZ: 350000, oldPriceKE: 19000, variant: "Glowing Gold", image: "https://images.unsplash.com/photo-1573148197772-520e7f34a743?auto=format&fit=crop&w=500&q=80" },
+            { id: 20, name: "Vivo V30 5G (12GB/512GB)", category: "Phones", priceKE: 54000, priceTZ: 1160000, oldPriceKE: 62000, variant: "Bloom White", image: "https://images.unsplash.com/photo-1563227812-0ea4c22e6cc8?auto=format&fit=crop&w=500&q=80" },
 
             // Audio & Speakers (21-40)
-            { id: 21, name: "JBL Charge 5 Portable Bluetooth Speaker", category: "Audio", price: 10500, oldPrice: 14000, variant: "Black Waterproof", image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=500&q=80" },
-            { id: 22, name: "Sony WH-1000XM5 Noise Cancelling Headphones", category: "Audio", price: 32000, oldPrice: 39500, variant: "Matte Black", image: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?auto=format&fit=crop&w=500&q=80" },
-            { id: 23, name: "Nunix 3.1CH Home Theater Subwoofer System", category: "Audio", price: 7800, oldPrice: 10500, variant: "Bluetooth / USB", image: "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=500&q=80" },
-            { id: 24, name: "JBL Flip 6 Waterproof Portable Speaker", category: "Audio", price: 13500, oldPrice: 16500, variant: "Squad Camo", image: "https://images.unsplash.com/photo-1589256469067-ea9812289dc9?auto=format&fit=crop&w=500&q=80" },
-            { id: 25, name: "Apple AirPods Pro (2nd Gen) MagSafe", category: "Audio", price: 29500, oldPrice: 35000, variant: "White", image: "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?auto=format&fit=crop&w=500&q=80" },
-            { id: 26, name: "Samsung Galaxy Buds2 Pro", category: "Audio", price: 18500, oldPrice: 23000, variant: "Bora Purple", image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=500&q=80" },
-            { id: 27, name: "Sony SRS-XB100 Ultra-Portable Speaker", category: "Audio", price: 6500, oldPrice: 8500, variant: "Light Gray", image: "https://images.unsplash.com/photo-1543512214-318c7553f230?auto=format&fit=crop&w=500&q=80" },
-            { id: 28, name: "Marshall Emberton II Bluetooth Speaker", category: "Audio", price: 22000, oldPrice: 27000, variant: "Cream & Brass", image: "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=500&q=80" },
-            { id: 29, name: "Anker Soundcore Life Q30 Headphones", category: "Audio", price: 9500, oldPrice: 12500, variant: "Midnight Blue", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80" },
-            { id: 30, name: "JBL PartyBox Encore Essential", category: "Audio", price: 36000, oldPrice: 42000, variant: "Dynamic Light Show", image: "https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=500&q=80" },
-            { id: 31, name: "Bruhm 5.1CH Bluetooth Multimedia Speaker", category: "Audio", price: 14500, oldPrice: 18000, variant: "Black Gloss", image: "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=500&q=80" },
-            { id: 32, name: "JBL Tune 520BT Wireless Headphones", category: "Audio", price: 6800, oldPrice: 8900, variant: "White", image: "https://images.unsplash.com/photo-1484704849700-f032a568e944?auto=format&fit=crop&w=500&q=80" },
-            { id: 33, name: "Sony HT-S400 Soundbar with Subwoofer", category: "Audio", price: 31000, oldPrice: 38000, variant: "330W Dolby Audio", image: "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=500&q=80" },
-            { id: 34, name: "Oraimo FreePods 4 True Wireless Earbuds", category: "Audio", price: 3500, oldPrice: 4800, variant: "Black", image: "https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?auto=format&fit=crop&w=500&q=80" },
-            { id: 35, name: "Harman Kardon Onyx Studio 8", category: "Audio", price: 34000, oldPrice: 41000, variant: "Champagne", image: "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=500&q=80" },
-            { id: 36, name: "Bose QuietComfort Ultra Earbuds", category: "Audio", price: 38000, oldPrice: 45000, variant: "Smoke White", image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=500&q=80" },
-            { id: 37, name: "LG SN4 2.1ch 300W Sound Bar", category: "Audio", price: 24500, oldPrice: 29000, variant: "High Res Audio", image: "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=500&q=80" },
-            { id: 38, name: "Soundcore Motion+ Waterproof Speaker", category: "Audio", price: 12000, oldPrice: 15000, variant: "Hi-Res Audio", image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=500&q=80" },
-            { id: 39, name: "JBL Boombox 3 Portable Bluetooth Speaker", category: "Audio", price: 58000, oldPrice: 68000, variant: "Black Massive Sound", image: "https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=500&q=80" },
-            { id: 40, name: "Skullcandy Crusher Wireless Headphones", category: "Audio", price: 16500, oldPrice: 21000, variant: "Deep Bass", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80" },
+            { id: 21, name: "JBL Charge 5 Portable Bluetooth Speaker", category: "Audio", priceKE: 10500, priceTZ: 225000, oldPriceKE: 14000, variant: "Black Waterproof", image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=500&q=80" },
+            { id: 22, name: "Sony WH-1000XM5 Noise Cancelling Headphones", category: "Audio", priceKE: 32000, priceTZ: 690000, oldPriceKE: 39500, variant: "Matte Black", image: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?auto=format&fit=crop&w=500&q=80" },
+            { id: 23, name: "Nunix 3.1CH Home Theater Subwoofer System", category: "Audio", priceKE: 7800, priceTZ: 168000, oldPriceKE: 10500, variant: "Bluetooth / USB", image: "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=500&q=80" },
+            { id: 24, name: "JBL Flip 6 Waterproof Portable Speaker", category: "Audio", priceKE: 13500, priceTZ: 290000, oldPriceKE: 16500, variant: "Squad Camo", image: "https://images.unsplash.com/photo-1589256469067-ea9812289dc9?auto=format&fit=crop&w=500&q=80" },
+            { id: 25, name: "Apple AirPods Pro (2nd Gen) MagSafe", category: "Audio", priceKE: 29500, priceTZ: 635000, oldPriceKE: 35000, variant: "White", image: "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?auto=format&fit=crop&w=500&q=80" },
+            { id: 26, name: "Samsung Galaxy Buds2 Pro", category: "Audio", priceKE: 18500, priceTZ: 399000, oldPriceKE: 23000, variant: "Bora Purple", image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=500&q=80" },
+            { id: 27, name: "Sony SRS-XB100 Ultra-Portable Speaker", category: "Audio", priceKE: 6500, priceTZ: 140000, oldPriceKE: 8500, variant: "Light Gray", image: "https://images.unsplash.com/photo-1543512214-318c7553f230?auto=format&fit=crop&w=500&q=80" },
+            { id: 28, name: "Marshall Emberton II Bluetooth Speaker", category: "Audio", priceKE: 22000, priceTZ: 475000, oldPriceKE: 27000, variant: "Cream & Brass", image: "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=500&q=80" },
+            { id: 29, name: "Anker Soundcore Life Q30 Headphones", category: "Audio", priceKE: 9500, priceTZ: 205000, oldPriceKE: 12500, variant: "Midnight Blue", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80" },
+            { id: 30, name: "JBL PartyBox Encore Essential", category: "Audio", priceKE: 36000, priceTZ: 775000, oldPriceKE: 42000, variant: "Dynamic Light Show", image: "https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=500&q=80" },
+            { id: 31, name: "Bruhm 5.1CH Bluetooth Multimedia Speaker", category: "Audio", priceKE: 14500, priceTZ: 312000, oldPriceKE: 18000, variant: "Black Gloss", image: "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=500&q=80" },
+            { id: 32, name: "JBL Tune 520BT Wireless Headphones", category: "Audio", priceKE: 6800, priceTZ: 147000, oldPriceKE: 8900, variant: "White", image: "https://images.unsplash.com/photo-1484704849700-f032a568e944?auto=format&fit=crop&w=500&q=80" },
+            { id: 33, name: "Sony HT-S400 Soundbar with Subwoofer", category: "Audio", priceKE: 31000, priceTZ: 668000, oldPriceKE: 38000, variant: "330W Dolby Audio", image: "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=500&q=80" },
+            { id: 34, name: "Oraimo FreePods 4 True Wireless Earbuds", category: "Audio", priceKE: 3500, priceTZ: 75000, oldPriceKE: 4800, variant: "Black", image: "https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?auto=format&fit=crop&w=500&q=80" },
+            { id: 35, name: "Harman Kardon Onyx Studio 8", category: "Audio", priceKE: 34000, priceTZ: 732000, oldPriceKE: 41000, variant: "Champagne", image: "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=500&q=80" },
+            { id: 36, name: "Bose QuietComfort Ultra Earbuds", category: "Audio", priceKE: 38000, priceTZ: 818000, oldPriceKE: 45000, variant: "Smoke White", image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=500&q=80" },
+            { id: 37, name: "LG SN4 2.1ch 300W Sound Bar", category: "Audio", priceKE: 24500, priceTZ: 528000, oldPriceKE: 29000, variant: "High Res Audio", image: "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=500&q=80" },
+            { id: 38, name: "Soundcore Motion+ Waterproof Speaker", category: "Audio", priceKE: 12000, priceTZ: 258000, oldPriceKE: 15000, variant: "Hi-Res Audio", image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=500&q=80" },
+            { id: 39, name: "JBL Boombox 3 Portable Bluetooth Speaker", category: "Audio", priceKE: 58000, priceTZ: 1250000, oldPriceKE: 68000, variant: "Black Massive", image: "https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=500&q=80" },
+            { id: 40, name: "Skullcandy Crusher Wireless Headphones", category: "Audio", priceKE: 16500, priceTZ: 355000, oldPriceKE: 21000, variant: "Deep Bass", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80" },
 
             // Smart TVs & Gaming (41-60)
-            { id: 41, name: "Hisense 55-Inch 4K UHD Smart Frameless TV", category: "TVs", price: 48000, oldPrice: 58000, variant: "55\" Dolby Vision", image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=500&q=80" },
-            { id: 42, name: "LG 43-Inch Full HD Smart LED TV", category: "TVs", price: 33500, oldPrice: 39000, variant: "WebOS ThinQ AI", image: "https://images.unsplash.com/photo-1509281373149-e957c6296406?auto=format&fit=crop&w=500&q=80" },
-            { id: 43, name: "Sony PlayStation 5 Console (Slim Edition)", category: "TVs", price: 79000, oldPrice: 89000, variant: "1TB SSD + DualSense", image: "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?auto=format&fit=crop&w=500&q=80" },
-            { id: 44, name: "Samsung 65-Inch Crystal UHD 4K Smart TV", category: "TVs", price: 78000, oldPrice: 92000, variant: "PurColor HDR", image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=500&q=80" },
-            { id: 45, name: "TCL 50-Inch 4K UHD Google Smart TV", category: "TVs", price: 41000, oldPrice: 48000, variant: "Borderless Design", image: "https://images.unsplash.com/photo-1509281373149-e957c6296406?auto=format&fit=crop&w=500&q=80" },
-            { id: 46, name: "Microsoft Xbox Series X 1TB Console", category: "TVs", price: 74000, oldPrice: 84000, variant: "Carbon Black", image: "https://images.unsplash.com/photo-1621259182978-fbf93132d53d?auto=format&fit=crop&w=500&q=80" },
-            { id: 47, name: "Vision Plus 32-Inch HD Frameless Smart TV", category: "TVs", price: 16500, oldPrice: 19900, variant: "Android TV", image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=500&q=80" },
-            { id: 48, name: "Sony 55-Inch Bravia 4K Google TV", category: "TVs", price: 92000, oldPrice: 108000, variant: "XR Processor", image: "https://images.unsplash.com/photo-1509281373149-e957c6296406?auto=format&fit=crop&w=500&q=80" },
-            { id: 49, name: "Nintendo Switch OLED Model Console", category: "TVs", price: 42000, oldPrice: 49000, variant: "White Joy-Con", image: "https://images.unsplash.com/photo-1578303512597-81e6cc155b2e?auto=format&fit=crop&w=500&q=80" },
-            { id: 50, name: "Skyworth 40-Inch Full HD Android Smart TV", category: "TVs", price: 23500, oldPrice: 28000, variant: "Voice Control", image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=500&q=80" },
-            { id: 51, name: "Hisense 65-Inch ULED 4K Smart TV", category: "TVs", price: 89000, oldPrice: 102000, variant: "Quantum Dot", image: "https://images.unsplash.com/photo-1509281373149-e957c6296406?auto=format&fit=crop&w=500&q=80" },
-            { id: 52, name: "LG OLED evo C3 55-Inch 4K Smart TV", category: "TVs", price: 165000, oldPrice: 189000, variant: "Self-lit OLED", image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=500&q=80" },
-            { id: 53, name: "Xiaomi TV A2 32-Inch HD Smart TV", category: "TVs", price: 17500, oldPrice: 21000, variant: "Dolby Audio", image: "https://images.unsplash.com/photo-1509281373149-e957c6296406?auto=format&fit=crop&w=500&q=80" },
-            { id: 54, name: "TCL 43-Inch 4K UHD Smart TV", category: "TVs", price: 31000, oldPrice: 36000, variant: "HDR10", image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=500&q=80" },
-            { id: 55, name: "Logitech G29 Driving Force Racing Wheel", category: "TVs", price: 41000, oldPrice: 48000, variant: "PS5/PS4/PC", image: "https://images.unsplash.com/photo-1592840496694-26d035b52b48?auto=format&fit=crop&w=500&q=80" },
-            { id: 56, name: "PlayStation DualSense Wireless Controller", category: "TVs", price: 9500, oldPrice: 12000, variant: "Midnight Black", image: "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?auto=format&fit=crop&w=500&q=80" },
-            { id: 57, name: "Razer BlackShark V2 X Gaming Headset", category: "TVs", price: 7500, oldPrice: 9900, variant: "Green", image: "https://images.unsplash.com/photo-1599669454699-248893623440?auto=format&fit=crop&w=500&q=80" },
-            { id: 58, name: "Samsung 75-Inch 4K UHD Smart TV", category: "TVs", price: 135000, oldPrice: 159000, variant: "Crystal Processor", image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=500&q=80" },
-            { id: 59, name: "Xbox Series S 512GB Digital Edition", category: "TVs", price: 44000, oldPrice: 51000, variant: "Robot White", image: "https://images.unsplash.com/photo-1621259182978-fbf93132d53d?auto=format&fit=crop&w=500&q=80" },
-            { id: 60, name: "Google Chromecast with Google TV 4K", category: "TVs", price: 9200, oldPrice: 11500, variant: "Snow White", image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=500&q=80" },
+            { id: 41, name: "Hisense 55-Inch 4K UHD Smart Frameless TV", category: "TVs", priceKE: 48000, priceTZ: 1030000, oldPriceKE: 58000, variant: "55\" Dolby Vision", image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=500&q=80" },
+            { id: 42, name: "LG 43-Inch Full HD Smart LED TV", category: "TVs", priceKE: 33500, priceTZ: 722000, oldPriceKE: 39000, variant: "WebOS ThinQ AI", image: "https://images.unsplash.com/photo-1509281373149-e957c6296406?auto=format&fit=crop&w=500&q=80" },
+            { id: 43, name: "Sony PlayStation 5 Console (Slim Edition)", category: "TVs", priceKE: 79000, priceTZ: 1700000, oldPriceKE: 89000, variant: "1TB SSD", image: "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?auto=format&fit=crop&w=500&q=80" },
+            { id: 44, name: "Samsung 65-Inch Crystal UHD 4K Smart TV", category: "TVs", priceKE: 78000, priceTZ: 1680000, oldPriceKE: 92000, variant: "PurColor HDR", image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=500&q=80" },
+            { id: 45, name: "TCL 50-Inch 4K UHD Google Smart TV", category: "TVs", priceKE: 41000, priceTZ: 885000, oldPriceKE: 48000, variant: "Borderless", image: "https://images.unsplash.com/photo-1509281373149-e957c6296406?auto=format&fit=crop&w=500&q=80" },
+            { id: 46, name: "Microsoft Xbox Series X 1TB Console", category: "TVs", priceKE: 74000, priceTZ: 1595000, oldPriceKE: 84000, variant: "Carbon Black", image: "https://images.unsplash.com/photo-1621259182978-fbf93132d53d?auto=format&fit=crop&w=500&q=80" },
+            { id: 47, name: "Vision Plus 32-Inch HD Frameless Smart TV", category: "TVs", priceKE: 16500, priceTZ: 355000, oldPriceKE: 19900, variant: "Android TV", image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=500&q=80" },
+            { id: 48, name: "Sony 55-Inch Bravia 4K Google TV", category: "TVs", priceKE: 92000, priceTZ: 1980000, oldPriceKE: 108000, variant: "XR Processor", image: "https://images.unsplash.com/photo-1509281373149-e957c6296406?auto=format&fit=crop&w=500&q=80" },
+            { id: 49, name: "Nintendo Switch OLED Model Console", category: "TVs", priceKE: 42000, priceTZ: 905000, oldPriceKE: 49000, variant: "White Joy-Con", image: "https://images.unsplash.com/photo-1578303512597-81e6cc155b2e?auto=format&fit=crop&w=500&q=80" },
+            { id: 50, name: "Skyworth 40-Inch Full HD Android Smart TV", category: "TVs", priceKE: 23500, priceTZ: 506000, oldPriceKE: 28000, variant: "Voice Control", image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=500&q=80" },
+            { id: 51, name: "Hisense 65-Inch ULED 4K Smart TV", category: "TVs", priceKE: 89000, priceTZ: 1920000, oldPriceKE: 102000, variant: "Quantum Dot", image: "https://images.unsplash.com/photo-1509281373149-e957c6296406?auto=format&fit=crop&w=500&q=80" },
+            { id: 52, name: "LG OLED evo C3 55-Inch 4K Smart TV", category: "TVs", priceKE: 165000, priceTZ: 3550000, oldPriceKE: 189000, variant: "Self-lit OLED", image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=500&q=80" },
+            { id: 53, name: "Xiaomi TV A2 32-Inch HD Smart TV", category: "TVs", priceKE: 17500, priceTZ: 377000, oldPriceKE: 21000, variant: "Dolby Audio", image: "https://images.unsplash.com/photo-1509281373149-e957c6296406?auto=format&fit=crop&w=500&q=80" },
+            { id: 54, name: "TCL 43-Inch 4K UHD Smart TV", category: "TVs", priceKE: 31000, priceTZ: 668000, oldPriceKE: 36000, variant: "HDR10", image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=500&q=80" },
+            { id: 55, name: "Logitech G29 Driving Force Racing Wheel", category: "TVs", priceKE: 41000, priceTZ: 885000, oldPriceKE: 48000, variant: "PS5/PS4/PC", image: "https://images.unsplash.com/photo-1592840496694-26d035b52b48?auto=format&fit=crop&w=500&q=80" },
+            { id: 56, name: "PlayStation DualSense Wireless Controller", category: "TVs", priceKE: 9500, priceTZ: 205000, oldPriceKE: 12000, variant: "Midnight Black", image: "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?auto=format&fit=crop&w=500&q=80" },
+            { id: 57, name: "Razer BlackShark V2 X Gaming Headset", category: "TVs", priceKE: 7500, priceTZ: 162000, oldPriceKE: 9900, variant: "Green", image: "https://images.unsplash.com/photo-1599669454699-248893623440?auto=format&fit=crop&w=500&q=80" },
+            { id: 58, name: "Samsung 75-Inch 4K UHD Smart TV", category: "TVs", priceKE: 135000, priceTZ: 2910000, oldPriceKE: 159000, variant: "Crystal Processor", image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=500&q=80" },
+            { id: 59, name: "Xbox Series S 512GB Digital Edition", category: "TVs", priceKE: 44000, priceTZ: 950000, oldPriceKE: 51000, variant: "Robot White", image: "https://images.unsplash.com/photo-1621259182978-fbf93132d53d?auto=format&fit=crop&w=500&q=80" },
+            { id: 60, name: "Google Chromecast with Google TV 4K", category: "TVs", priceKE: 9200, priceTZ: 198000, oldPriceKE: 11500, variant: "Snow White", image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=500&q=80" },
 
             // Home Appliances (61-80)
-            { id: 61, name: "Ramtons 2-Door Direct Cool Fridge 215L", category: "Appliances", price: 36500, oldPrice: 42000, variant: "Brushed Silver", image: "https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?auto=format&fit=crop&w=500&q=80" },
-            { id: 62, name: "Digital Air Fryer 6.5L Touch Screen Cooker", category: "Appliances", price: 8500, oldPrice: 12000, variant: "Oil-Free Frying", image: "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=500&q=80" },
-            { id: 63, name: "Ramtons Fully Automatic Washing Machine 7Kg", category: "Appliances", price: 41000, oldPrice: 48000, variant: "Front Load", image: "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?auto=format&fit=crop&w=500&q=80" },
-            { id: 64, name: "Bruhm 4-Burner Gas Cooker with Oven", category: "Appliances", price: 28500, oldPrice: 34000, variant: "Stainless Steel", image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=500&q=80" },
-            { id: 65, name: "Von Hotpoint Microwave Oven 20L", category: "Appliances", price: 10500, oldPrice: 13000, variant: "Digital Black", image: "https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?auto=format&fit=crop&w=500&q=80" },
-            { id: 66, name: "Geyser Instant Water Heater 30L", category: "Appliances", price: 16500, oldPrice: 19900, variant: "Energy Efficient", image: "https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?auto=format&fit=crop&w=500&q=80" },
-            { id: 67, name: "Black+Decker 3-in-1 Blender & Grinder", category: "Appliances", price: 6800, oldPrice: 8900, variant: "Glass Jar 1.5L", image: "https://images.unsplash.com/photo-1570222094114-d074f7e1e836?auto=format&fit=crop&w=500&q=80" },
-            { id: 68, name: "Ramtons Electric Kettle 1.8L Stainless Steel", category: "Appliances", price: 2500, oldPrice: 3500, variant: "Auto Shut-Off", image: "https://images.unsplash.com/photo-1590794055402-7634f16d4d1d?auto=format&fit=crop&w=500&q=80" },
-            { id: 69, name: "Von Hotpoint Chest Freezer 198L", category: "Appliances", price: 34000, oldPrice: 39900, variant: "Low Energy", image: "https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?auto=format&fit=crop&w=500&q=80" },
-            { id: 70, name: "Mika Standing Fan with Remote Control", category: "Appliances", price: 6200, oldPrice: 7900, variant: "16-Inch 3-Speed", image: "https://images.unsplash.com/photo-1617469166774-a035d648c2c8?auto=format&fit=crop&w=500&q=80" },
-            { id: 71, name: "Nespresso Inissia Coffee Capsule Machine", category: "Appliances", price: 21000, oldPrice: 25500, variant: "Ruby Red", image: "https://images.unsplash.com/photo-1517668808822-9402f2db04b3?auto=format&fit=crop&w=500&q=80" },
-            { id: 72, name: "Bruhm Table Top 2-Burner Gas Cooker", category: "Appliances", price: 4200, oldPrice: 5500, variant: "Cast Iron Burners", image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=500&q=80" },
-            { id: 73, name: "Ramtons Dry Iron Box Heavyweight", category: "Appliances", price: 2200, oldPrice: 2900, variant: "Non-Stick Soleplate", image: "https://images.unsplash.com/photo-1585837575652-267fb0cb4eb8?auto=format&fit=crop&w=500&q=80" },
-            { id: 74, name: "Von Hotpoint Water Dispenser Hot & Cold", category: "Appliances", price: 15500, oldPrice: 18500, variant: "Cabinet Storage", image: "https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?auto=format&fit=crop&w=500&q=80" },
-            { id: 75, name: "Philips Daily Collection Rice Cooker 1.8L", category: "Appliances", price: 6500, oldPrice: 8200, variant: "Keep Warm Function", image: "https://images.unsplash.com/photo-1585565918255-a522968c7e6d?auto=format&fit=crop&w=500&q=80" },
-            { id: 76, name: "Delonghi Toaster 2-Slice Stainless Steel", category: "Appliances", price: 7200, oldPrice: 9000, variant: "Browning Control", image: "https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?auto=format&fit=crop&w=500&q=80" },
-            { id: 77, name: "Ramtons Juice Extractor & Maker 800W", category: "Appliances", price: 9800, oldPrice: 12000, variant: "Wide Chute", image: "https://images.unsplash.com/photo-1570222094114-d074f7e1e836?auto=format&fit=crop&w=500&q=80" },
-            { id: 78, name: "Von Hotpoint 6kg Twin Tub Washing Machine", category: "Appliances", price: 19500, oldPrice: 23000, variant: "Semi-Automatic", image: "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?auto=format&fit=crop&w=500&q=80" },
-            { id: 79, name: "Mika Air Purifier with HEPA Filter", category: "Appliances", price: 14000, oldPrice: 17500, variant: "Quiet Sleep Mode", image: "https://images.unsplash.com/photo-1585771724684-38269d6639fd?auto=format&fit=crop&w=500&q=80" },
-            { id: 80, name: "Bruhm Single Door Fridge 90L", category: "Appliances", price: 18500, oldPrice: 22000, variant: "Silver Direct Cool", image: "https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?auto=format&fit=crop&w=500&q=80" },
+            { id: 61, name: "Ramtons 2-Door Direct Cool Fridge 215L", category: "Appliances", priceKE: 36500, priceTZ: 788000, oldPriceKE: 42000, variant: "Brushed Silver", image: "https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?auto=format&fit=crop&w=500&q=80" },
+            { id: 62, name: "Digital Air Fryer 6.5L Touch Screen Cooker", category: "Appliances", priceKE: 8500, priceTZ: 183000, oldPriceKE: 12000, variant: "Oil-Free Frying", image: "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=500&q=80" },
+            { id: 63, name: "Ramtons Fully Automatic Washing Machine 7Kg", category: "Appliances", priceKE: 41000, priceTZ: 885000, oldPriceKE: 48000, variant: "Front Load", image: "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?auto=format&fit=crop&w=500&q=80" },
+            { id: 64, name: "Bruhm 4-Burner Gas Cooker with Oven", category: "Appliances", priceKE: 28500, priceTZ: 615000, oldPriceKE: 34000, variant: "Stainless Steel", image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=500&q=80" },
+            { id: 65, name: "Von Hotpoint Microwave Oven 20L", category: "Appliances", priceKE: 10500, priceTZ: 226000, oldPriceKE: 13000, variant: "Digital Black", image: "https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?auto=format&fit=crop&w=500&q=80" },
+            { id: 66, name: "Geyser Instant Water Heater 30L", category: "Appliances", priceKE: 16500, priceTZ: 356000, oldPriceKE: 19900, variant: "Energy Efficient", image: "https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?auto=format&fit=crop&w=500&q=80" },
+            { id: 67, name: "Black+Decker 3-in-1 Blender & Grinder", category: "Appliances", priceKE: 6800, priceTZ: 147000, oldPriceKE: 8900, variant: "Glass Jar 1.5L", image: "https://images.unsplash.com/photo-1570222094114-d074f7e1e836?auto=format&fit=crop&w=500&q=80" },
+            { id: 68, name: "Ramtons Electric Kettle 1.8L Stainless Steel", category: "Appliances", priceKE: 2500, priceTZ: 54000, oldPriceKE: 3500, variant: "Auto Shut-Off", image: "https://images.unsplash.com/photo-1590794055402-7634f16d4d1d?auto=format&fit=crop&w=500&q=80" },
+            { id: 69, name: "Von Hotpoint Chest Freezer 198L", category: "Appliances", priceKE: 34000, priceTZ: 733000, oldPriceKE: 39900, variant: "Low Energy", image: "https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?auto=format&fit=crop&w=500&q=80" },
+            { id: 70, name: "Mika Standing Fan with Remote Control", category: "Appliances", priceKE: 6200, priceTZ: 134000, oldPriceKE: 7900, variant: "16-Inch 3-Speed", image: "https://images.unsplash.com/photo-1617469166774-a035d648c2c8?auto=format&fit=crop&w=500&q=80" },
+            { id: 71, name: "Nespresso Inissia Coffee Capsule Machine", category: "Appliances", priceKE: 21000, priceTZ: 453000, oldPriceKE: 25500, variant: "Ruby Red", image: "https://images.unsplash.com/photo-1517668808822-9402f2db04b3?auto=format&fit=crop&w=500&q=80" },
+            { id: 72, name: "Bruhm Table Top 2-Burner Gas Cooker", category: "Appliances", priceKE: 4200, priceTZ: 91000, oldPriceKE: 5500, variant: "Cast Iron Burners", image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=500&q=80" },
+            { id: 73, name: "Ramtons Dry Iron Box Heavyweight", category: "Appliances", priceKE: 2200, priceTZ: 48000, oldPriceKE: 2900, variant: "Non-Stick Soleplate", image: "https://images.unsplash.com/photo-1585837575652-267fb0cb4eb8?auto=format&fit=crop&w=500&q=80" },
+            { id: 74, name: "Von Hotpoint Water Dispenser Hot & Cold", category: "Appliances", priceKE: 15500, priceTZ: 334000, oldPriceKE: 18500, variant: "Cabinet Storage", image: "https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?auto=format&fit=crop&w=500&q=80" },
+            { id: 75, name: "Philips Daily Collection Rice Cooker 1.8L", category: "Appliances", priceKE: 6500, priceTZ: 140000, oldPriceKE: 8200, variant: "Keep Warm", image: "https://images.unsplash.com/photo-1585565918255-a522968c7e6d?auto=format&fit=crop&w=500&q=80" },
+            { id: 76, name: "Delonghi Toaster 2-Slice Stainless Steel", category: "Appliances", priceKE: 7200, priceTZ: 155000, oldPriceKE: 9000, variant: "Browning Control", image: "https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?auto=format&fit=crop&w=500&q=80" },
+            { id: 77, name: "Ramtons Juice Extractor & Maker 800W", category: "Appliances", priceKE: 9800, priceTZ: 211000, oldPriceKE: 12000, variant: "Wide Chute", image: "https://images.unsplash.com/photo-1570222094114-d074f7e1e836?auto=format&fit=crop&w=500&q=80" },
+            { id: 78, name: "Von Hotpoint 6kg Twin Tub Washing Machine", category: "Appliances", priceKE: 19500, priceTZ: 420000, oldPriceKE: 23000, variant: "Semi-Automatic", image: "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?auto=format&fit=crop&w=500&q=80" },
+            { id: 79, name: "Mika Air Purifier with HEPA Filter", category: "Appliances", priceKE: 14000, priceTZ: 302000, oldPriceKE: 17500, variant: "Quiet Sleep Mode", image: "https://images.unsplash.com/photo-1585771724684-38269d6639fd?auto=format&fit=crop&w=500&q=80" },
+            { id: 80, name: "Bruhm Single Door Fridge 90L", category: "Appliances", priceKE: 18500, priceTZ: 399000, oldPriceKE: 22000, variant: "Silver Direct Cool", image: "https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?auto=format&fit=crop&w=500&q=80" },
 
             // Laptops & Tech (81-90)
-            { id: 81, name: "HP Pavilion 15 Core i7 16GB RAM 512GB SSD", category: "Laptops", price: 78000, oldPrice: 89000, variant: "Backlit Keyboard", image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=500&q=80" },
-            { id: 82, name: "Apple MacBook Air M2 13-Inch (8GB/256GB)", category: "Laptops", price: 128000, oldPrice: 142000, variant: "Midnight", image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=500&q=80" },
-            { id: 83, name: "Dell Inspiron 15 Core i5 8GB RAM 512GB SSD", category: "Laptops", price: 62000, oldPrice: 71000, variant: "Carbon Black", image: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=500&q=80" },
-            { id: 84, name: "Lenovo IdeaPad Slim 3 Core i3 8GB RAM", category: "Laptops", price: 43000, oldPrice: 49900, variant: "Arctic Grey", image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?auto=format&fit=crop&w=500&q=80" },
-            { id: 85, name: "ASUS TUF Gaming A15 Ryzen 5 16GB RAM", category: "Laptops", price: 98000, oldPrice: 112000, variant: "RTX 3050 GPU", image: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=500&q=80" },
-            { id: 86, name: "HP 255 G9 AMD Ryzen 3 8GB RAM 256GB SSD", category: "Laptops", price: 37000, oldPrice: 43000, variant: "Dark Ash Silver", image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=500&q=80" },
-            { id: 87, name: "Apple MacBook Pro 14 M3 Pro Chip", category: "Laptops", price: 215000, oldPrice: 240000, variant: "Space Black", image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=500&q=80" },
-            { id: 88, name: "Logitech MX Master 3S Wireless Mouse", category: "Laptops", price: 12500, oldPrice: 15500, variant: "Graphite", image: "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&w=500&q=80" },
-            { id: 89, name: "SanDisk Ultra 128GB MicroSDXC Memory Card", category: "Laptops", price: 2100, oldPrice: 2900, variant: "140MB/s Read", image: "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=500&q=80" },
-            { id: 90, name: "Anker PowerCore 20,000mAh Power Bank", category: "Laptops", price: 5500, oldPrice: 7200, variant: "Fast USB-C Charging", image: "https://images.unsplash.com/photo-1609592424104-97d4c42e177d?auto=format&fit=crop&w=500&q=80" },
+            { id: 81, name: "HP Pavilion 15 Core i7 16GB RAM 512GB SSD", category: "Laptops", priceKE: 78000, priceTZ: 1680000, oldPriceKE: 89000, variant: "Backlit Keyboard", image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=500&q=80" },
+            { id: 82, name: "Apple MacBook Air M2 13-Inch (8GB/256GB)", category: "Laptops", priceKE: 128000, priceTZ: 2760000, oldPriceKE: 142000, variant: "Midnight", image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=500&q=80" },
+            { id: 83, name: "Dell Inspiron 15 Core i5 8GB RAM 512GB SSD", category: "Laptops", priceKE: 62000, priceTZ: 1335000, oldPriceKE: 71000, variant: "Carbon Black", image: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=500&q=80" },
+            { id: 84, name: "Lenovo IdeaPad Slim 3 Core i3 8GB RAM", category: "Laptops", priceKE: 43000, priceTZ: 927000, oldPriceKE: 49900, variant: "Arctic Grey", image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?auto=format&fit=crop&w=500&q=80" },
+            { id: 85, name: "ASUS TUF Gaming A15 Ryzen 5 16GB RAM", category: "Laptops", priceKE: 98000, priceTZ: 2110000, oldPriceKE: 112000, variant: "RTX 3050 GPU", image: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=500&q=80" },
+            { id: 86, name: "HP 255 G9 AMD Ryzen 3 8GB RAM 256GB SSD", category: "Laptops", priceKE: 37000, priceTZ: 798000, oldPriceKE: 43000, variant: "Dark Ash Silver", image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=500&q=80" },
+            { id: 87, name: "Apple MacBook Pro 14 M3 Pro Chip", category: "Laptops", priceKE: 215000, priceTZ: 4635000, oldPriceKE: 240000, variant: "Space Black", image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=500&q=80" },
+            { id: 88, name: "Logitech MX Master 3S Wireless Mouse", category: "Laptops", priceKE: 12500, priceTZ: 270000, oldPriceKE: 15500, variant: "Graphite", image: "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&w=500&q=80" },
+            { id: 89, name: "SanDisk Ultra 128GB MicroSDXC Memory Card", category: "Laptops", priceKE: 2100, priceTZ: 45000, oldPriceKE: 2900, variant: "140MB/s Read", image: "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=500&q=80" },
+            { id: 90, name: "Anker PowerCore 20,000mAh Power Bank", category: "Laptops", priceKE: 5500, priceTZ: 119000, oldPriceKE: 7200, variant: "Fast USB-C", image: "https://images.unsplash.com/photo-1609592424104-97d4c42e177d?auto=format&fit=crop&w=500&q=80" },
 
             // Fashion & Watches (91-95)
-            { id: 91, name: "Apple Watch Series 9 GPS 45mm Aluminum", category: "Fashion", price: 54000, oldPrice: 62000, variant: "Midnight Sport Band", image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80" },
-            { id: 92, name: "Samsung Galaxy Watch 6 44mm Bluetooth", category: "Fashion", price: 34000, oldPrice: 41000, variant: "Graphite", image: "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=500&q=80" },
-            { id: 93, name: "Casio G-Shock Classic Digital Resin Watch", category: "Fashion", price: 12500, oldPrice: 16000, variant: "Matte Black", image: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=500&q=80" },
-            { id: 94, name: "Xiaomi Redmi Watch 4 AMOLED Display", category: "Fashion", price: 9800, oldPrice: 12500, variant: "Silver Grey", image: "https://images.unsplash.com/photo-1510017803434-a899398421b3?auto=format&fit=crop&w=500&q=80" },
-            { id: 95, name: "Ray-Ban Classic Aviator Sunglasses", category: "Fashion", price: 16000, oldPrice: 20000, variant: "Gold / G-15 Green", image: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=500&q=80" },
+            { id: 91, name: "Apple Watch Series 9 GPS 45mm Aluminum", category: "Fashion", priceKE: 54000, priceTZ: 1165000, oldPriceKE: 62000, variant: "Midnight Band", image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80" },
+            { id: 92, name: "Samsung Galaxy Watch 6 44mm Bluetooth", category: "Fashion", priceKE: 34000, priceTZ: 733000, oldPriceKE: 41000, variant: "Graphite", image: "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=500&q=80" },
+            { id: 93, name: "Casio G-Shock Classic Digital Resin Watch", category: "Fashion", priceKE: 12500, priceTZ: 270000, oldPriceKE: 16000, variant: "Matte Black", image: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=500&q=80" },
+            { id: 94, name: "Xiaomi Redmi Watch 4 AMOLED Display", category: "Fashion", priceKE: 9800, priceTZ: 211000, oldPriceKE: 12500, variant: "Silver Grey", image: "https://images.unsplash.com/photo-1510017803434-a899398421b3?auto=format&fit=crop&w=500&q=80" },
+            { id: 95, name: "Ray-Ban Classic Aviator Sunglasses", category: "Fashion", priceKE: 16000, priceTZ: 345000, oldPriceKE: 20000, variant: "Gold / G-15", image: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=500&q=80" },
 
             // Supermarket & Essentials (96-100)
-            { id: 96, name: "Persil Automatic Laundry Washing Powder 3Kg", category: "Groceries", price: 1200, oldPrice: 1500, variant: "Deep Clean Fresh", image: "https://images.unsplash.com/photo-1585837575652-267fb0cb4eb8?auto=format&fit=crop&w=500&q=80" },
-            { id: 97, name: "Brookside Dairy Fresh Whole Milk 1L Pack", category: "Groceries", price: 160, oldPrice: 190, variant: "Pure Cow Milk", image: "https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=500&q=80" },
-            { id: 98, name: "Jogoo Maize Meal Flour 2Kg Bale (5 Pack)", category: "Groceries", price: 950, oldPrice: 1100, variant: "Fortified Unga", image: "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=500&q=80" },
-            { id: 99, name: "FairAndLovely Multivitamin Face Cream 100g", category: "Groceries", price: 450, oldPrice: 600, variant: "Glow & Lovely", image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=500&q=80" },
-            { id: 100, name: "Coca-Cola Soda Soft Drink 2L Pet Bottle", category: "Groceries", price: 220, oldPrice: 260, variant: "Original Taste", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=500&q=80" }
+            { id: 96, name: "Persil Automatic Laundry Washing Powder 3Kg", category: "Groceries", priceKE: 1200, priceTZ: 26000, oldPriceKE: 1500, variant: "Deep Clean Fresh", image: "https://images.unsplash.com/photo-1585837575652-267fb0cb4eb8?auto=format&fit=crop&w=500&q=80" },
+            { id: 97, name: "Brookside Dairy Fresh Whole Milk 1L Pack", category: "Groceries", priceKE: 160, priceTZ: 3500, oldPriceKE: 190, variant: "Pure Cow Milk", image: "https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=500&q=80" },
+            { id: 98, name: "Jogoo Maize Meal Flour 2Kg Bale (5 Pack)", category: "Groceries", priceKE: 950, priceTZ: 20500, oldPriceKE: 1100, variant: "Fortified Unga", image: "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=500&q=80" },
+            { id: 99, name: "FairAndLovely Multivitamin Face Cream 100g", category: "Groceries", priceKE: 450, priceTZ: 9800, oldPriceKE: 600, variant: "Glow & Lovely", image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=500&q=80" },
+            { id: 100, name: "Coca-Cola Soda Soft Drink 2L Pet Bottle", category: "Groceries", priceKE: 220, priceTZ: 4800, oldPriceKE: 260, variant: "Original Taste", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=500&q=80" }
         ];
 
         let cart = [];
         let activeCategory = 'All';
 
-        // Format currency
-        function formatKES(amount) {
-            return 'KES ' + amount.toLocaleString();
+        function changeRegion() {
+            currentRegion = document.getElementById('regionSelect').value;
+            renderProducts();
+            updateCartUI();
         }
 
-        // Render Product Grid (100 items supported)
+        function formatPrice(item) {
+            if (currentRegion === 'TZ') {
+                return 'TZS ' + item.priceTZ.toLocaleString();
+            }
+            return 'KES ' + item.priceKE.toLocaleString();
+        }
+
+        function formatOldPrice(item) {
+            if (currentRegion === 'TZ') {
+                return 'TZS ' + Math.round(item.priceTZ * 1.15).toLocaleString();
+            }
+            return 'KES ' + item.oldPriceKE.toLocaleString();
+        }
+
+        // Render Product Grid
         function renderProducts() {
             const grid = document.getElementById('productGrid');
             const searchDesktop = document.getElementById('desktopSearch').value.toLowerCase();
@@ -321,16 +346,18 @@
                 return matchesCat && matchesSearch;
             });
 
-            document.getElementById('itemCountLabel').textContent = `Showing ${filtered.length} items`;
+            document.getElementById('itemCountLabel').textContent = `Showing ${filtered.length} items (${currentRegion === 'TZ' ? 'Tanzania' : 'Kenya'})`;
 
             if (filtered.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-16 text-gray-500 text-sm">No products matched your search. Try another keyword!</div>`;
+                grid.innerHTML = `<div class="col-span-full text-center py-16 text-gray-500 text-sm">No products matched your search.</div>`;
                 return;
             }
 
             grid.innerHTML = filtered.map(product => {
-                const discount = Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100);
-                const deposit = Math.round(product.price * 0.30);
+                const price = currentRegion === 'TZ' ? product.priceTZ : product.priceKE;
+                const oldPrice = currentRegion === 'TZ' ? Math.round(product.priceTZ * 1.15) : product.oldPriceKE;
+                const discount = Math.round(((oldPrice - price) / oldPrice) * 100);
+                const deposit = Math.round(price * 0.30);
 
                 return `
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col justify-between hover:shadow-md transition">
@@ -345,12 +372,12 @@
                             <p class="text-[10px] text-gray-500 mt-0.5">${product.variant}</p>
                             
                             <div class="mt-2">
-                                <div class="text-xs sm:text-sm font-extrabold text-gray-900">${formatKES(product.price)}</div>
-                                <div class="text-[10px] text-gray-400 line-through">${formatKES(product.oldPrice)}</div>
+                                <div class="text-xs sm:text-sm font-extrabold text-gray-900">${currentRegion === 'TZ' ? 'TZS ' + price.toLocaleString() : 'KES ' + price.toLocaleString()}</div>
+                                <div class="text-[10px] text-gray-400 line-through">${currentRegion === 'TZ' ? 'TZS ' + oldPrice.toLocaleString() : 'KES ' + oldPrice.toLocaleString()}</div>
                             </div>
 
                             <div class="mt-1.5 inline-block bg-orange-50 text-orange-700 text-[10px] font-semibold px-2 py-0.5 rounded">
-                                30% Dep: ${formatKES(deposit)}
+                                30% Dep: ${currentRegion === 'TZ' ? 'TZS ' + deposit.toLocaleString() : 'KES ' + deposit.toLocaleString()}
                             </div>
                         </div>
                     </div>
@@ -365,7 +392,6 @@
             }).join('');
         }
 
-        // Category Selection
         function selectCategory(category) {
             activeCategory = category;
             document.getElementById('sectionTitle').textContent = category === 'All' ? 'All Products (100)' : category;
@@ -387,7 +413,6 @@
             renderProducts();
         }
 
-        // Cart Management
         function addToCart(productId) {
             const existing = cart.find(item => item.id === productId);
             if (existing) {
@@ -417,12 +442,10 @@
             const container = document.getElementById('cartItemsContainer');
             const summaryBox = document.getElementById('cartSummaryBox');
             const checkoutForm = document.getElementById('checkoutForm');
+            const payBtn = document.getElementById('payNowBtn');
 
             if (cart.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-8 text-gray-500 text-sm">
-                        Your cart is empty. Explore our 100+ items and add to cart!
-                    </div>`;
+                container.innerHTML = `<div class="text-center py-8 text-gray-500 text-sm">Your cart is empty.</div>`;
                 summaryBox.classList.add('hidden');
                 checkoutForm.classList.add('hidden');
                 return;
@@ -431,12 +454,15 @@
             summaryBox.classList.remove('hidden');
             checkoutForm.classList.remove('hidden');
 
-            container.innerHTML = cart.map(item => `
+            container.innerHTML = cart.map(item => {
+                const price = currentRegion === 'TZ' ? item.priceTZ : item.priceKE;
+                const currSymbol = currentRegion === 'TZ' ? 'TZS ' : 'KES ';
+                return `
                 <div class="flex items-center justify-between gap-3 border-b pb-3">
                     <img src="${item.image}" class="w-12 h-12 rounded-lg object-cover bg-gray-100">
                     <div class="flex-1 min-w-0">
                         <h5 class="text-xs font-bold text-gray-900 truncate">${item.name}</h5>
-                        <p class="text-xs text-orange-600 font-semibold mt-0.5">${formatKES(item.price * item.qty)}</p>
+                        <p class="text-xs text-orange-600 font-semibold mt-0.5">${currSymbol}${(price * item.qty).toLocaleString()}</p>
                     </div>
                     <div class="flex items-center gap-2">
                         <button onclick="updateQty(${item.id}, -1)" class="w-7 h-7 bg-gray-100 hover:bg-gray-200 rounded-lg font-bold text-sm">-</button>
@@ -444,16 +470,27 @@
                         <button onclick="updateQty(${item.id}, 1)" class="w-7 h-7 bg-gray-100 hover:bg-gray-200 rounded-lg font-bold text-sm">+</button>
                     </div>
                 </div>
-            `).join('');
+                `;
+            }).join('');
 
-            const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const totalAmount = cart.reduce((sum, item) => {
+                const p = currentRegion === 'TZ' ? item.priceTZ : item.priceKE;
+                return sum + (p * item.qty);
+            }, 0);
+
             const depositAmount = Math.round(totalAmount * 0.30);
             const balanceAmount = totalAmount - depositAmount;
+            const currSymbol = currentRegion === 'TZ' ? 'TZS ' : 'KES ';
 
-            document.getElementById('modalTotalAmount').textContent = formatKES(totalAmount);
-            document.getElementById('modalDepositAmount').textContent = formatKES(depositAmount);
-            document.getElementById('modalBalanceAmount').textContent = formatKES(balanceAmount);
-            document.getElementById('payNowBtn').textContent = `PAY 30% DEPOSIT (${formatKES(depositAmount)})`;
+            document.getElementById('modalTotalAmount').textContent = currSymbol + totalAmount.toLocaleString();
+            document.getElementById('modalDepositAmount').textContent = currSymbol + depositAmount.toLocaleString();
+            document.getElementById('modalBalanceAmount').textContent = currSymbol + balanceAmount.toLocaleString();
+
+            if (currentRegion === 'TZ') {
+                payBtn.textContent = `PROCURE TZ 30% DEPOSIT (${currSymbol + depositAmount.toLocaleString()})`;
+            } else {
+                payBtn.textContent = `PAY 30% DEPOSIT (${currSymbol + depositAmount.toLocaleString()})`;
+            }
         }
 
         function openCartModal() {
@@ -474,7 +511,7 @@
             selectCategory('All');
         }
 
-        // Paystack Live V2 Checkout Trigger
+        // Checkout submission handler
         document.getElementById('checkoutForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
@@ -486,11 +523,30 @@
             const phone = document.getElementById('custPhone').value.trim();
             const location = document.getElementById('custLocation').value.trim();
 
-            const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const totalAmount = cart.reduce((sum, item) => {
+                const p = currentRegion === 'TZ' ? item.priceTZ : item.priceKE;
+                return sum + (p * item.qty);
+            }, 0);
             const depositAmount = Math.round(totalAmount * 0.30);
             const balanceAmount = totalAmount - depositAmount;
-            const amountInCents = depositAmount * 100;
+            const currSymbol = currentRegion === 'TZ' ? 'TZS ' : 'KES ';
 
+            // If Customer is buying from Tanzania
+            if (currentRegion === 'TZ') {
+                // Tanzania orders are routed via regional mobile money / WhatsApp support confirmation instructions
+                closeCartModal();
+                document.getElementById('successRef').textContent = 'TZ_ORD_' + Date.now();
+                document.getElementById('successPaid').textContent = currSymbol + depositAmount.toLocaleString();
+                document.getElementById('successBalance').textContent = currSymbol + balanceAmount.toLocaleString();
+                document.getElementById('successMessageText').textContent = 'Tanzania order received! Since Paystack operates in KES, our Dar es Salaam / Arusha desk will initiate a Selcom / Tigo Pesa prompt to ' + phone + ' for your 30% deposit.';
+                document.getElementById('successModal').classList.remove('hidden');
+                cart = [];
+                updateCartUI();
+                return;
+            }
+
+            // If Customer is buying from Kenya (Paystack Live KES)
+            const amountInCents = depositAmount * 100;
             const itemsSummary = cart.map(i => `${i.name} (x${i.qty})`).join(', ');
 
             try {
@@ -506,23 +562,21 @@
                             { display_name: "Customer Name", variable_name: "customer_name", value: name },
                             { display_name: "Phone Number", variable_name: "phone_number", value: phone },
                             { display_name: "Delivery Location", variable_name: "delivery_location", value: location },
-                            { display_name: "Items Ordered", variable_name: "items_ordered", value: itemsSummary },
-                            { display_name: "Total Order Value", variable_name: "total_order_kes", value: totalAmount },
-                            { display_name: "Remaining 70% Balance", variable_name: "balance_on_delivery_kes", value: balanceAmount }
+                            { display_name: "Items Ordered", variable_name: "items_ordered", value: itemsSummary }
                         ]
                     },
                     onSuccess: (transaction) => {
                         closeCartModal();
                         document.getElementById('successRef').textContent = transaction.reference;
-                        document.getElementById('successPaid').textContent = formatKES(depositAmount);
-                        document.getElementById('successBalance').textContent = formatKES(balanceAmount);
+                        document.getElementById('successPaid').textContent = currSymbol + depositAmount.toLocaleString();
+                        document.getElementById('successBalance').textContent = currSymbol + balanceAmount.toLocaleString();
+                        document.getElementById('successMessageText').textContent = 'Your 30% deposit has been processed via Paystack. Our dispatch team will call you shortly.';
                         document.getElementById('successModal').classList.remove('hidden');
-                        
                         cart = [];
                         updateCartUI();
                     },
                     onCancel: () => {
-                        errorDiv.textContent = "Payment window was closed. Your cart items are saved.";
+                        errorDiv.textContent = "Payment cancelled. Your cart items are saved.";
                         errorDiv.classList.remove('hidden');
                     }
                 });
@@ -533,7 +587,6 @@
             }
         });
 
-        // Initial render of all 100 products
         renderProducts();
     </script>
 </body>
