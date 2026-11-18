@@ -1,279 +1,139 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>KILISHOP - Online Shopping Kenya</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,sans-serif;background:#f5f5f5;color:#252525}
-header{background:#fff;padding:13px 5%;display:flex;align-items:center;gap:20px;position:sticky;top:0;z-index:10;box-shadow:0 2px 8px #0001}
-.logo{font-size:25px;font-weight:900;color:#ed6b18}
-.search{flex:1;display:flex}
-.search input{width:100%;padding:13px;border:1px solid #ddd;border-radius:6px 0 0 6px}
-.search button{background:#ed6b18;color:white;border-radius:0 6px 6px 0}
-.cartlink{font-weight:bold;color:#222;text-decoration:none;white-space:nowrap}
-.hero{margin:18px 4%;background:linear-gradient(110deg,#172b49,#ed6b18);color:white;padding:55px 7%;border-radius:12px;display:flex;justify-content:space-between;align-items:center;gap:20px}
-.hero h1{font-size:38px;margin-bottom:12px}
-.hero p{margin-bottom:20px}
-button{border:0;padding:11px 15px;border-radius:5px;cursor:pointer;font-weight:bold}
-.orange{background:#ed6b18;color:white}
-.white{background:white;color:#ed6b18}
-.container{padding:20px 4%}
-.sectionhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
-.categories{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:12px;margin-bottom:30px}
-.cat{background:white;padding:18px 8px;text-align:center;border-radius:8px;cursor:pointer;border:1px solid #eee}
-.cat:hover,.cat.active{border:2px solid #ed6b18;color:#ed6b18}
-.cat span{display:block;font-size:27px;margin-bottom:8px}
-.deals{background:#fff0e5;padding:18px;border-radius:8px;margin-bottom:20px;color:#9b480d}
-.products{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px}
-.card{background:white;border-radius:8px;padding:12px;position:relative;transition:.2s}
-.card:hover{box-shadow:0 4px 15px #0002;transform:translateY(-2px)}
-.card img{width:100%;height:165px;object-fit:contain}
-.card h3{font-size:14px;margin:12px 0 8px}
-.price{color:#ed6b18;font-weight:bold;font-size:18px}
-.old{color:#999;text-decoration:line-through;font-size:12px;margin-left:5px}
-.discount{position:absolute;top:10px;left:10px;background:#ffe2d1;color:#c44b0b;padding:5px;font-size:11px}
-.card button{width:100%;background:#ed6b18;color:white;margin-top:12px}
-.cartbox{background:white;padding:22px;border-radius:10px;margin-top:35px}
-.cartrow{display:flex;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid #eee}
-input,select{padding:12px;border:1px solid #ddd;border-radius:6px;width:100%;margin:7px 0 13px}
-.total{font-size:18px;font-weight:bold;margin:12px 0}
-footer{background:#172b49;color:white;padding:35px 5%;margin-top:40px}
-footer h2{color:#ffad6c;margin-bottom:10px}
-.notice{background:#fff2d5;padding:13px;border-radius:6px;margin:15px 0;font-size:13px}
-@media(max-width:850px){.products{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:600px){
-header{flex-wrap:wrap;gap:10px}
-.logo{font-size:21px}
-.search{order:3;flex-basis:100%}
-.hero{padding:35px 6%;margin:12px 3%}
-.hero h1{font-size:28px}
-.products{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-.card{padding:9px}
-.card img{height:125px}
-.container{padding:18px 3%}
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KiliShop - Secure Checkout</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Paystack Inline JS Script -->
+    <script src="https://js.paystack.co/v1/inline.js"></script>
 </head>
-<body>
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col justify-between">
 
-<header>
-<div class="logo">KILISHOP</div>
-<div class="search">
-<input id="search" placeholder="Search electronics, phones and appliances..." oninput="render()">
-<button onclick="render()">Search</button>
-</div>
-<a class="cartlink" href="#cart">🛒 Cart <span id="count">0</span></a>
-</header>
+    <!-- Header -->
+    <header class="bg-white shadow-sm py-4 px-6 flex justify-between items-center">
+        <h1 class="text-xl font-bold text-orange-600 tracking-wide">KILISHOP</h1>
+        <span class="text-sm font-medium bg-orange-100 text-orange-800 px-3 py-1 rounded-full">Secure Checkout</span>
+    </header>
 
-<section class="hero">
-<div>
-<h1>Welcome to Kilishop!</h1>
-<p>Discover electronics, appliances and amazing shopping deals.</p>
-<button class="white" onclick="document.getElementById('shop').scrollIntoView()">SHOP NOW</button>
-</div>
-<div style="font-size:65px">🛍️</div>
-</section>
+    <!-- Main Checkout Container -->
+    <main class="max-w-md mx-auto w-full p-4 my-6 bg-white rounded-xl shadow-md border border-gray-100">
+        
+        <!-- Order Summary -->
+        <div class="mb-6 border-b pb-4">
+            <h2 class="text-lg font-semibold text-gray-900 mb-3">Order Summary</h2>
+            <div class="flex justify-between text-sm mb-1">
+                <span class="text-gray-600">Bluetooth Speaker x 1</span>
+                <span class="font-medium text-gray-900">KES 10,500</span>
+            </div>
+            <div class="flex justify-between text-sm mb-1 font-semibold text-orange-600 pt-2 border-t mt-2">
+                <span>Total Amount</span>
+                <span>KES 10,500</span>
+            </div>
+            <div class="flex justify-between text-sm mb-1 text-gray-700">
+                <span>Deposit Required (30%)</span>
+                <span class="font-bold">KES 3,150</span>
+            </div>
+            <div class="flex justify-between text-sm text-gray-500">
+                <span>Remaining Balance (70% on delivery)</span>
+                <span>KES 7,350</span>
+            </div>
+            
+            <div class="mt-3 p-3 bg-orange-50 border border-orange-100 text-orange-800 text-xs rounded-lg leading-relaxed">
+                A 30% deposit is required to confirm your order. The remaining balance is payable under the agreed delivery terms.
+            </div>
+        </div>
 
-<main class="container">
+        <!-- Checkout Form -->
+        <form id="paymentForm" class="space-y-4">
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">Full Name</label>
+                <input type="text" id="fullName" required value="Langat Kipkorir" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:outline-none">
+            </div>
 
-<div class="sectionhead">
-<h2>Shop by Category</h2>
-</div>
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">Email Address</label>
+                <input type="email" id="email" required value="langatkipkorir2007@gmail.com" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:outline-none">
+            </div>
 
-<div class="categories">
-<div class="cat active" onclick="choose('All',this)"><span>🛍️</span>All Products</div>
-<div class="cat" onclick="choose('Phones',this)"><span>📱</span>Phones</div>
-<div class="cat" onclick="choose('Computers',this)"><span>💻</span>Computers</div>
-<div class="cat" onclick="choose('TVs',this)"><span>📺</span>Televisions</div>
-<div class="cat" onclick="choose('Appliances',this)"><span>🧊</span>Appliances</div>
-<div class="cat" onclick="choose('Accessories',this)"><span>🎧</span>Accessories</div>
-</div>
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">Phone Number</label>
+                <input type="tel" id="phone" required value="+254712555279" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:outline-none">
+            </div>
 
-<div class="deals">
-<strong>🔥 KILISHOP DAILY DEALS</strong>
-<p>Discover quality electronics at competitive prices.</p>
-</div>
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">Delivery Location</label>
+                <input type="text" id="location" required value="Nairobi" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:outline-none">
+            </div>
 
-<section id="shop">
-<div class="sectionhead">
-<h2>Featured Products</h2>
-<select id="sort" onchange="render()" style="width:160px">
-<option value="default">Sort products</option>
-<option value="low">Price: Low to High</option>
-<option value="high">Price: High to Low</option>
-</select>
-</div>
-<div class="products" id="products"></div>
-</section>
+            <div id="errorMessage" class="hidden p-3 bg-red-50 text-red-700 text-xs rounded-lg border border-red-200"></div>
 
-<section class="cartbox" id="cart">
-<h2>🛒 Your Shopping Cart</h2>
-<div id="cartitems">Your cart is empty.</div>
-<div class="total">Total: KES <span id="total">0</span></div>
-<div class="total">Deposit (30%): KES <span id="deposit">0</span></div>
-<div class="total">Remaining (70%): KES <span id="balance">0</span></div>
+            <button type="submit" id="payButton" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 shadow-md text-sm">
+                PAY 30% DEPOSIT (KES 3,150)
+            </button>
+        </form>
+    </main>
 
-<div class="notice">
-A 30% deposit is required to confirm your order. The remaining balance is payable under the agreed delivery terms.
-</div>
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 px-6 text-center space-y-2">
+        <p class="font-semibold text-slate-200">KILISHOP</p>
+        <p>Your online destination for electronics and appliances across East Africa.</p>
+        <p class="text-slate-500 pt-2">&copy; 2026 Kilishop. All rights reserved.</p>
+    </footer>
 
-<h3>Delivery Information</h3>
-<form id="checkout">
-<label>Full name</label>
-<input id="name" required placeholder="Your full name">
-<label>Email address</label>
-<input id="email" type="email" required placeholder="Your email">
-<label>Phone number</label>
-<input id="phone" required placeholder="M-PESA number">
-<label>Delivery location</label>
-<input id="location" required placeholder="Your town and delivery address">
-<button class="orange" style="width:100%">PAY 30% DEPOSIT</button>
-</form>
-<p id="message"></p>
-</section>
-</main>
+    <!-- Script to Handle Paystack Trigger -->
+    <script>
+        const PAYSTACK_PUBLIC_KEY = 'pk_test_your_actual_public_key_here'; // Replace with your live/test Paystack Public Key
 
-<footer>
-<h2>KILISHOP</h2>
-<p>Your online destination for electronics and appliances.</p>
-<p style="margin-top:15px">Customer service | Secure checkout | Reliable delivery</p>
-<p style="margin-top:20px">© 2026 Kilishop. All rights reserved.</p>
-</footer>
+        document.getElementById('paymentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.classList.add('hidden');
+            errorDiv.textContent = '';
 
-<script>
-const API="https://YOUR-RENDER-URL.onrender.com";
+            const email = document.getElementById('email').value.trim();
+            const fullName = document.getElementById('fullName').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const location = document.getElementById('location').value.trim();
 
-const products=[
-{id:"item1",name:"Smart Television",category:"TVs",price:25000,image:"https://placehold.co/400x300?text=Smart+TV"},
-{id:"item2",name:"Double Door Refrigerator",category:"Appliances",price:45000,image:"https://placehold.co/400x300?text=Refrigerator"},
-{id:"item3",name:"Laptop Computer",category:"Computers",price:60000,image:"https://placehold.co/400x300?text=Laptop"},
-{id:"item4",name:"Smartphone",category:"Phones",price:18000,image:"https://placehold.co/400x300?text=Smartphone"},
-{id:"item5",name:"Bluetooth Speaker",category:"Accessories",price:3500,image:"https://placehold.co/400x300?text=Speaker"},
-{id:"item6",name:"Microwave Oven",category:"Appliances",price:12000,image:"https://placehold.co/400x300?text=Microwave"},
-{id:"item7",name:"Wireless Headphones",category:"Accessories",price:2500,image:"https://placehold.co/400x300?text=Headphones"},
-{id:"item8",name:"Desktop Computer",category:"Computers",price:55000,image:"https://placehold.co/400x300?text=Desktop"},
-{id:"item9",name:"Digital Camera",category:"Accessories",price:22000,image:"https://placehold.co/400x300?text=Camera"},
-{id:"item10",name:"Electric Kettle",category:"Appliances",price:1800,image:"https://placehold.co/400x300?text=Kettle"},
-{id:"item11",name:"Android Tablet",category:"Phones",price:15000,image:"https://placehold.co/400x300?text=Tablet"},
-{id:"item12",name:"Home Theatre",category:"Accessories",price:14500,image:"https://placehold.co/400x300?text=Home+Theatre"}
-];
+            // 30% deposit calculation in KES (converted to sub-units/cents if required, or entered directly depending on currency configuration)
+            // Paystack expects amount in the lowest currency denomination (e.g., KES cents -> amount * 100)
+            const depositAmountKES = 3150; 
+            const amountInCents = depositAmountKES * 100;
 
-let cart=[];
-let selected="All";
-
-function money(n){return Number(n).toLocaleString("en-KE")}
-
-function choose(c,el){
-selected=c;
-document.querySelectorAll(".cat").forEach(x=>x.classList.remove("active"));
-el.classList.add("active");
-render();
-}
-
-function render(){
-let search=document.getElementById("search").value.toLowerCase();
-let list=products.filter(p=>
-(selected==="All"||p.category===selected)&&
-p.name.toLowerCase().includes(search)
-);
-
-let sort=document.getElementById("sort").value;
-if(sort==="low")list.sort((a,b)=>a.price-b.price);
-if(sort==="high")list.sort((a,b)=>b.price-a.price);
-
-document.getElementById("products").innerHTML=list.map(p=>`
-<div class="card">
-<div class="discount">Kilishop Deal</div>
-<img src="${p.image}" alt="${p.name}" loading="lazy">
-<h3>${p.name}</h3>
-<div class="price">KES ${money(p.price)}</div>
-<button onclick="add('${p.id}')">Add to Cart</button>
-</div>`).join("")||"No products found.";
-}
-
-function add(id){
-let p=products.find(x=>x.id===id);
-let found=cart.find(x=>x.id===id);
-if(found)found.quantity++;
-else cart.push({...p,quantity:1});
-updateCart();
-}
-
-function quantity(id,change){
-let p=cart.find(x=>x.id===id);
-if(!p)return;
-p.quantity+=change;
-if(p.quantity<=0)cart=cart.filter(x=>x.id!==id);
-updateCart();
-}
-
-function updateCart(){
-let total=cart.reduce((s,p)=>s+p.price*p.quantity,0);
-let deposit=Math.ceil(total*.30);
-
-document.getElementById("count").textContent=
-cart.reduce((s,p)=>s+p.quantity,0);
-
-document.getElementById("cartitems").innerHTML=cart.length?
-cart.map(p=>`
-<div class="cartrow">
-<div>${p.name} × ${p.quantity}</div>
-<div>
-KES ${money(p.price*p.quantity)}
-<button onclick="quantity('${p.id}',-1)">−</button>
-<button onclick="quantity('${p.id}',1)">+</button>
-</div>
-</div>`).join(""):"Your cart is empty.";
-
-document.getElementById("total").textContent=money(total);
-document.getElementById("deposit").textContent=money(deposit);
-document.getElementById("balance").textContent=money(total-deposit);
-}
-
-document.getElementById("checkout").addEventListener("submit",async e=>{
-e.preventDefault();
-
-if(!cart.length){
-alert("Please add products to your cart.");
-return;
-}
-
-const message=document.getElementById("message");
-message.textContent="Preparing your order...";
-
-try{
-const orderResponse=await fetch(API+"/api/orders",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-email:document.getElementById("email").value,
-items:cart.map(p=>({id:p.id,quantity:p.quantity}))
-})
-});
-
-const order=await orderResponse.json();
-if(!orderResponse.ok)throw new Error(order.message);
-
-const paymentResponse=await fetch(API+"/api/paystack/initialize",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({orderId:order.orderId})
-});
-
-const payment=await paymentResponse.json();
-if(!paymentResponse.ok)throw new Error(payment.message);
-
-window.location.href=payment.authorization_url;
-}catch(error){
-message.textContent=error.message||"Unable to start payment. Please try again.";
-}
-});
-
-render();
-updateCart();
-</script>
+            try {
+                let handler = PaystackPop.setup({
+                    key: PAYSTACK_PUBLIC_KEY,
+                    email: email,
+                    amount: amountInCents,
+                    currency: 'KES',
+                    ref: 'KILI_' + Math.floor((Math.random() * 1000000000) + 1),
+                    metadata: {
+                        custom_fields: [
+                            { display_name: "Full Name", variable_name: "full_name", value: fullName },
+                            { display_name: "Phone Number", variable_name: "phone_number", value: phone },
+                            { display_name: "Delivery Location", variable_name: "location", value: location },
+                            { display_name: "Order Type", variable_name: "order_type", value: "30% Deposit" }
+                        ]
+                    },
+                    callback: function(response) {
+                        alert('Payment complete! Reference: ' + response.reference);
+                        // Redirect to success page or update UI order state here
+                        window.location.reload();
+                    },
+                    onClose: function() {
+                        alert('Transaction was closed, window not closed.');
+                    }
+                });
+                handler.openIframe();
+            } catch (error) {
+                console.error("Paystack Initialization Error:", error);
+                errorDiv.textContent = "Could not launch payment gateway. Please check your network connection.";
+                errorDiv.classList.remove('hidden');
+            }
+        });
+    </script>
 </body>
 </html>
