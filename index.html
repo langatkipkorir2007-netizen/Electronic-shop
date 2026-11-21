@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KiliShop East Africa | 2,000+ Products Megastore</title>
+    <meta name="theme-color" content="#0f172a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="KiliShop">
+    <link id="dynamic-manifest" rel="manifest">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://js.paystack.co/v1/inline.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -11,6 +17,28 @@
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
+    <script>
+        // Dynamic Web App Manifest for Android / iOS / Desktop App Installation
+        (function() {
+            const iconSvg = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='96' fill='%230f172a'/%3E%3Ctext x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23fbbf24' font-family='sans-serif' font-weight='900' font-size='260'%3EK%3C/text%3E%3C/svg%3E";
+            const manifestData = {
+                name: "KiliShop East Africa",
+                short_name: "KiliShop",
+                description: "East Africa Online Megastore - 2,000+ Products with M-Pesa & Mobile Money",
+                start_url: window.location.href,
+                display: "standalone",
+                orientation: "portrait",
+                background_color: "#0f172a",
+                theme_color: "#f59e0b",
+                icons: [
+                    { src: iconSvg, sizes: "192x192", type: "image/svg+xml", purpose: "any maskable" },
+                    { src: iconSvg, sizes: "512x512", type: "image/svg+xml", purpose: "any maskable" }
+                ]
+            };
+            const blob = new Blob([JSON.stringify(manifestData)], { type: "application/manifest+json" });
+            document.getElementById("dynamic-manifest").href = URL.createObjectURL(blob);
+        })();
+    </script>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
 
@@ -23,7 +51,7 @@
     <header class="sticky top-0 z-40 bg-slate-900 text-white shadow-md">
         <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
             <div class="flex items-center space-x-2 sm:space-x-3">
-                <span class="text-xl sm:text-2xl font-black tracking-wider text-amber-400 cursor-pointer flex items-center" onclick="switchView('store')">
+                <span class="text-lg sm:text-2xl font-black tracking-wider text-amber-400 cursor-pointer flex items-center" onclick="switchView('store')">
                     <i class="fa-solid fa-bag-shopping mr-1.5"></i>KILISHOP
                 </span>
                 <select id="countrySelector" onchange="changeCountry(this.value)" class="bg-slate-800 text-white text-xs font-semibold px-2 py-1.5 rounded-lg border border-slate-700 focus:outline-none focus:border-amber-400">
@@ -44,12 +72,19 @@
                 </div>
             </div>
 
-            <div class="flex items-center space-x-2">
-                <button onclick="switchView('admin')" class="bg-slate-800 hover:bg-slate-700 text-amber-400 px-3 py-2 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 border border-slate-700">
+            <div class="flex items-center space-x-1.5 sm:space-x-2">
+                <!-- Custom Install KiliShop App Button -->
+                <button id="installAppBtn" onclick="triggerInstallApp()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 sm:px-3 py-2 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 shadow-sm">
+                    <i class="fa-solid fa-download"></i>
+                    <span>Install App</span>
+                </button>
+
+                <button onclick="switchView('admin')" class="bg-slate-800 hover:bg-slate-700 text-amber-400 px-2.5 sm:px-3 py-2 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 border border-slate-700">
                     <i class="fa-solid fa-chart-line"></i>
                     <span class="hidden sm:inline">Admin</span>
                 </button>
-                <button onclick="toggleCart()" class="relative p-2 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl transition font-bold flex items-center px-3 space-x-1.5">
+
+                <button onclick="toggleCart()" class="relative p-2 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl transition font-bold flex items-center px-2.5 sm:px-3 space-x-1.5">
                     <i class="fa-solid fa-cart-shopping"></i>
                     <span id="cartBadge" class="bg-slate-950 text-amber-400 text-xs px-1.5 py-0.5 rounded-full font-bold hidden">0</span>
                 </button>
@@ -63,6 +98,27 @@
             </div>
         </div>
     </header>
+
+    <!-- Install Instructions Modal (Fallback for iOS / Manual Add to Home Screen) -->
+    <div id="installGuideModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2.5">
+                    <div class="w-10 h-10 rounded-xl bg-slate-900 text-amber-400 flex items-center justify-center font-black text-lg">K</div>
+                    <div>
+                        <h3 class="font-black text-slate-900 text-base">Install KiliShop App</h3>
+                        <p class="text-xs text-slate-500">Add to your phone Home Screen</p>
+                    </div>
+                </div>
+                <button onclick="closeInstallModal()" class="text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="bg-slate-50 p-4 rounded-xl text-xs text-slate-700 space-y-2.5 border border-slate-200">
+                <p><strong>Android (Chrome):</strong> Tap the <strong>three dots (⋮)</strong> at the top-right corner and select <strong>"Add to Home screen"</strong> or <strong>"Install app"</strong>.</p>
+                <p><strong>iPhone (Safari):</strong> Tap the <strong>Share icon (<i class="fa-solid fa-arrow-up-from-bracket"></i>)</strong> at the bottom and select <strong>"Add to Home Screen"</strong>.</p>
+            </div>
+            <button onclick="closeInstallModal()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 py-2.5 rounded-xl text-xs font-black transition">Got It</button>
+        </div>
+    </div>
 
     <!-- Main Container -->
     <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-5">
@@ -206,6 +262,48 @@
     </div>
 
     <script>
+        // PWA Install Prompt Handling
+        let deferredInstallPrompt = null;
+        const installBtn = document.getElementById('installAppBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredInstallPrompt = e;
+            if (installBtn) {
+                installBtn.classList.remove('hidden');
+                installBtn.innerHTML = `<i class="fa-solid fa-download"></i><span>Install App</span>`;
+            }
+        });
+
+        window.addEventListener('appinstalled', () => {
+            deferredInstallPrompt = null;
+            if (installBtn) {
+                installBtn.innerHTML = `<i class="fa-solid fa-check"></i><span>Installed</span>`;
+                installBtn.classList.replace('bg-emerald-600', 'bg-slate-700');
+            }
+        });
+
+        // Hide button if already running inside standalone installed app mode
+        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+            if (installBtn) installBtn.classList.add('hidden');
+        }
+
+        async function triggerInstallApp() {
+            if (deferredInstallPrompt) {
+                deferredInstallPrompt.prompt();
+                const { outcome } = await deferredInstallPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    deferredInstallPrompt = null;
+                }
+            } else {
+                document.getElementById('installGuideModal').classList.remove('hidden');
+            }
+        }
+
+        function closeInstallModal() {
+            document.getElementById('installGuideModal').classList.add('hidden');
+        }
+
         const PAYSTACK_PUBLIC_KEY = "Pk_live_96685dc1a36bc585d08a7b5fd4a4891d8bce14cb";
 
         let currentCountry = 'KE';
@@ -2318,7 +2416,6 @@
             let pool = IMAGE_POOLS.home;
             let variantLabels = ["Standard Edition", "Plus / Upgraded", "Deluxe Bundle"];
 
-            // 1. Smartphones & Feature Phones
             if (/\b(samsung galaxy|tecno|infinix|itel|iphone|xiaomi|redmi|poco|oppo|realme|nokia|huawei|vivo|honor)\b/.test(lower) && !/\b(cover|case|protector|guard|skin|charger|cable|earbuds|band|tab|tablet|remote)\b/.test(lower)) {
                 category = "Phones & Tablets";
                 pool = IMAGE_POOLS.phone;
@@ -2330,14 +2427,12 @@
                 else if (lower.includes("it2160") || lower.includes("105") || lower.includes("3310")) { basePrice = 1650; variantLabels = ["Black", "Dark Blue", "Grey"]; }
                 else basePrice = 13800;
             }
-            // 2. Tablets
             else if (/\b(tablet|ipad|matepad)\b/.test(lower) && !/\b(cover|stand|keyboard|stylus|drawing)\b/.test(lower)) {
                 category = "Phones & Tablets";
                 pool = IMAGE_POOLS.phone;
                 basePrice = lower.includes("ipad") ? 52000 : 19500;
                 variantLabels = ["WiFi Only 64GB", "4G LTE + 128GB", "Bundle + Keyboard Case"];
             }
-            // 3. Phone Accessories & Smartwatches
             else if (/\b(cover|case|protector|guard|skin|power bank|charger|cable|earphone|earbud|airpod|headphone|neckband|smart watch|fitness|band|tripod|ring light|memory card|sim|stylus|magsafe|adapter)\b/.test(lower)) {
                 category = "Phones & Tablets";
                 pool = lower.includes("watch") || lower.includes("band") ? IMAGE_POOLS.watch : IMAGE_POOLS.phoneAcc;
@@ -2347,7 +2442,6 @@
                 else if (lower.includes("earbud") || lower.includes("headphone") || lower.includes("charger")) basePrice = 1650;
                 else basePrice = 550;
             }
-            // 4. TVs, Decoders & Home Audio
             else if (/\b(tv|soundbar|home theatre|woofer|speaker|dstv|gotv|startimes|decoder|antenna|projector|karaoke|radio)\b/.test(lower) && !/\b(stand|mount|bracket|remote)\b/.test(lower)) {
                 category = "Electronics & TVs";
                 pool = IMAGE_POOLS.tvAudio;
@@ -2363,7 +2457,6 @@
                 else if (lower.includes("decoder") || lower.includes("projector")) basePrice = 4800;
                 else basePrice = 2400;
             }
-            // 5. Laptops, Printers, Monitors & Gaming
             else if (/\b(laptop|macbook|chromebook|printer|scanner|monitor|keyboard|mouse|flash|hard drive|ssd|webcam|headset|usb hub|router|wifi|cctv|dvr|ps5|ps4|xbox|nintendo|docking)\b/.test(lower)) {
                 category = "Computing & Gaming";
                 pool = /\b(laptop|macbook|chromebook)\b/.test(lower) ? IMAGE_POOLS.laptop : IMAGE_POOLS.pcAcc;
@@ -2384,7 +2477,6 @@
                     variantLabels = ["Black", "Silver / Grey", "Pro Edition"];
                 }
             }
-            // 6. Fashion, Shoes, Bags & Watches
             else if (/\b(men's|women's|kids|t-shirt|shirt|jeans|hoodie|dress|skirt|sneaker|shoe|sandal|heel|boot|slipper|loafer|handbag|backpack|suitcase|bag|wallet|purse|watch|sunglass|belt|cap|hat|sock|bra|boxer|panties|suit|blazer|jacket|trouser|legging|short|sweater|cardigan|tie|scarf|glove|earring|necklace|bracelet|ring|anklet|bangle|bikini|swimsuit|pyjama|pajama|nightdress|tracksuit|jogger|chino|ankara)\b/.test(lower) && !/\b(baby|toy|rack|hanger|washing|machine)\b/.test(lower)) {
                 category = "Fashion & Shoes";
                 if (/\b(shoe|sneaker|sandal|heel|boot|slipper|loafer)\b/.test(lower)) {
@@ -2405,14 +2497,12 @@
                     variantLabels = ["Size M", "Size L", "Size XL"];
                 }
             }
-            // 7. Health, Beauty, Wigs & Personal Care
             else if (/\b(serum|face|nivea|vaseline|lipstick|lip|foundation|eyeshadow|perfume|body|wig|hair|beard|vitamin|collagen|mask|nail|makeup|concealer|mascara|eyeliner|blush|primer|bb cream|cc cream|scrub|toner|shampoo|conditioner|curler|straightener|dryer|clipper|shaver|razor|toothbrush|toothpaste|mouthwash|floss|deodorant|aftershave|sunscreen|aloe|lotion|soap|shower gel|loofah|omega|protein|multivitamin|iron|calcium)\b/.test(lower) && !/\b(baby|pet|dog|dish|car)\b/.test(lower)) {
                 category = "Health & Beauty";
                 pool = IMAGE_POOLS.beauty;
                 basePrice = lower.includes("wig") || lower.includes("human hair") ? 6500 : (lower.includes("perfume") ? 2800 : 1150);
                 variantLabels = ["Single Pack", "Value Twin Pack", "Pro Salon Kit"];
             }
-            // 8. Kitchen & Home Appliances
             else if (/\b(blender|cooker|microwave|kettle|fridge|freezer|sufuria|frying pan|wok|saucepan|plate|cup|mug|glass|bottle|flask|air fryer|sandwich|toaster|waffle|panini|hotplate|oven|mixer|food processor|coffee maker|juicer|meat grinder|knife|chopping|cutting board|dish rack|cutlery|dinner set|bowl|jug|lunch box|spice rack|gas|dispenser|washing machine|iron box|fan|water heater|purifier|humidifier|ice maker|yogurt|bread maker)\b/.test(lower)) {
                 category = "Appliances & Kitchen";
                 pool = IMAGE_POOLS.kitchen;
@@ -2423,28 +2513,24 @@
                 else if (lower.includes("blender") || lower.includes("pressure cooker") || lower.includes("sufuria") || lower.includes("dinner set")) basePrice = 3800;
                 else basePrice = 1450;
             }
-            // 9. Supermarket & Groceries
             else if (/\b(rice|oil|flour|sugar|milk|tea|coffee|biscuit|chocolate|juice|soda|pasta|spaghetti|macaroni|tomato|soy|honey|peanut|jam|marmalade|cornflakes|oats|weetabix|beans|tuna|sardine|mayonnaise|ketchup|mustard|sauce|salt|pepper|curry|masala|milo|energy drink|water|ghee|butter|margarine|custard|baking|yeast|vanilla|noodles|sweet|gum|detergent|washing powder|dish soap|air freshener)\b/.test(lower) && !/\b(maker|grinder|kettle|jug|bottle|filter|heater|dispenser|cup|mug|plate|bowl|pan|rack|machine)\b/.test(lower)) {
                 category = "Supermarket";
                 pool = IMAGE_POOLS.grocery;
                 basePrice = lower.includes("25kg") ? 4200 : (lower.includes("10kg") || lower.includes("10l") || lower.includes("5kg") || lower.includes("5l") ? 1650 : 480);
                 variantLabels = ["Single Unit", "Family Value Pack (x2)", "Bulk Carton (x4)"];
             }
-            // 10. Baby & Toys
             else if (/\b(baby|diaper|pampers|huggies|stroller|carrier|toy|doll|barbie|lego|drone|puzzle|crib|walker|bouncer|play mat|play gym|high chair|teether|bib|onesie|romper|tricycle)\b/.test(lower)) {
                 category = "Baby & Toys";
                 pool = IMAGE_POOLS.baby;
                 basePrice = lower.includes("stroller") || lower.includes("crib") || lower.includes("car seat") ? 11500 : (lower.includes("diaper") || lower.includes("walker") ? 2100 : 1250);
                 variantLabels = ["Standard Pack", "Jumbo Value Pack", "Gift Set"];
             }
-            // 11. Sports, Auto, Solar, Books & Tools
             else if (/\b(dumbbell|resistance|yoga|football|jersey|bicycle|skipping|gym|car|tyre|motorbike|helmet|board game|ludo|monopoly|chess|scrabble|novel|bible|quran|textbook|notebook|diary|pen|pencil|solar|drill|screwdriver|hammer|plier|wrench|tool|pet|dog|cat|aquarium|plant|garden|kettlebell|boxing|punching|basketball|volleyball|tennis|badminton|cricket|golf|skateboard)\b/.test(lower)) {
                 category = "Sports, Auto & Tools";
                 pool = IMAGE_POOLS.sportsAuto;
                 basePrice = lower.includes("solar panel") || lower.includes("inverter") || lower.includes("bicycle") || lower.includes("treadmill") ? 16500 : (lower.includes("tyre") || lower.includes("drill") || lower.includes("battery") ? 6800 : 1650);
                 variantLabels = ["Standard Spec", "Heavy Duty Pro", "Complete Kit"];
             }
-            // 12. Home & Living (Bedding, Furniture, Lighting, Decor)
             else {
                 category = "Home & Living";
                 pool = IMAGE_POOLS.home;
@@ -2541,7 +2627,6 @@
             ).join('');
             const defaultPrice = formatPrice(p.variants[0].price);
 
-            // Clean SVG fallback if an external image fails on slow mobile data
             const fallbackSvg = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'><rect width='400' height='300' fill='%231e293b'/><text x='50%' y='45%' dominant-baseline='middle' text-anchor='middle' fill='%23fbbf24' font-family='sans-serif' font-weight='bold' font-size='18'>KILISHOP #${p.id}</text><text x='50%' y='58%' dominant-baseline='middle' text-anchor='middle' fill='%23cbd5e1' font-family='sans-serif' font-size='13'>${encodeURIComponent(p.category)}</text></svg>`;
 
             return `
