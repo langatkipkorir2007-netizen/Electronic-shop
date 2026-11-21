@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KiliShop East Africa | Online Megastore & Admin</title>
+    <title>KiliShop East Africa | 2,000+ Products Megastore</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://js.paystack.co/v1/inline.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -15,70 +15,91 @@
 <body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
 
     <!-- Top Announcement Bar -->
-    <div class="bg-amber-500 text-slate-950 text-xs font-semibold py-1.5 px-4 text-center">
-        ⚡ East Africa Express Delivery across Kenya, Tanzania, Uganda, Rwanda, Burundi, Zambia & Zimbabwe | Direct Mobile Money & Paystack Enabled
+    <div class="bg-amber-500 text-slate-950 text-xs font-bold py-1.5 px-4 text-center">
+        ⚡ 2,000+ Jumia-Priced Items | Express Delivery across Kenya, Tanzania, Uganda, Rwanda, Burundi, Zambia & Zimbabwe
     </div>
 
     <!-- Header / Navigation -->
-    <header class="sticky top-0 z-45 bg-slate-900 text-white shadow-md">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center space-x-4">
-                <span class="text-2xl font-black tracking-wider text-amber-400 cursor-pointer" onclick="switchView('store')">
-                    <i class="fa-solid fa-bag-shopping mr-2"></i>KILISHOP
+    <header class="sticky top-0 z-40 bg-slate-900 text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <span class="text-xl sm:text-2xl font-black tracking-wider text-amber-400 cursor-pointer flex items-center" onclick="switchView('store')">
+                    <i class="fa-solid fa-bag-shopping mr-1.5"></i>KILISHOP
                 </span>
-                <select id="countrySelector" onchange="changeCountry(this.value)" class="bg-slate-800 text-white text-xs font-semibold px-2.5 py-1.5 rounded-lg border border-slate-700 focus:outline-none focus:border-amber-400">
-                    <option value="KE">🇰🇪 Kenya (KES)</option>
-                    <option value="TZ">🇹🇿 Tanzania (TZS)</option>
-                    <option value="UG">🇺🇬 Uganda (UGX)</option>
-                    <option value="RW">🇷🇼 Rwanda (RWF)</option>
-                    <option value="BI">🇧🇮 Burundi (BIF)</option>
-                    <option value="ZM">🇿🇲 Zambia (ZMW)</option>
-                    <option value="ZW">🇿🇼 Zimbabwe (USD)</option>
+                <select id="countrySelector" onchange="changeCountry(this.value)" class="bg-slate-800 text-white text-xs font-semibold px-2 py-1.5 rounded-lg border border-slate-700 focus:outline-none focus:border-amber-400">
+                    <option value="KE">🇰🇪 KE (KES)</option>
+                    <option value="TZ">🇹🇿 TZ (TZS)</option>
+                    <option value="UG">🇺🇬 UG (UGX)</option>
+                    <option value="RW">🇷🇼 RW (RWF)</option>
+                    <option value="BI">🇧🇮 BI (BIF)</option>
+                    <option value="ZM">🇿🇲 ZM (ZMW)</option>
+                    <option value="ZW">🇿🇼 ZW (USD)</option>
                 </select>
             </div>
             
-            <div class="flex-1 max-w-xl mx-4 hidden md:block">
+            <div class="flex-1 max-w-xl mx-2 hidden md:block">
                 <div class="relative">
-                    <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="Search millions of products, brands and categories..." class="w-full pl-10 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-full text-sm text-white placeholder-slate-400 focus:bg-slate-900 focus:border-amber-400 focus:outline-none transition">
+                    <input type="text" id="searchInputDesktop" oninput="handleSearch(this.value)" placeholder="Search all 2,000+ products, brands, and categories..." class="w-full pl-10 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-full text-sm text-white placeholder-slate-400 focus:bg-slate-900 focus:border-amber-400 focus:outline-none transition">
                     <i class="fa-solid fa-search absolute left-3.5 top-3 text-slate-400"></i>
                 </div>
             </div>
 
-            <div class="flex items-center space-x-3">
-                <button onclick="switchView('admin')" class="bg-slate-800 hover:bg-slate-700 text-amber-400 px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 border border-slate-700">
+            <div class="flex items-center space-x-2">
+                <button onclick="switchView('admin')" class="bg-slate-800 hover:bg-slate-700 text-amber-400 px-3 py-2 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 border border-slate-700">
                     <i class="fa-solid fa-chart-line"></i>
-                    <span class="hidden sm:inline">Admin Dashboard</span>
+                    <span class="hidden sm:inline">Admin</span>
                 </button>
-                <button onclick="toggleCart()" class="relative p-2 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl transition font-bold flex items-center px-3 space-x-2">
+                <button onclick="toggleCart()" class="relative p-2 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl transition font-bold flex items-center px-3 space-x-1.5">
                     <i class="fa-solid fa-cart-shopping"></i>
-                    <span id="cartBadge" class="bg-slate-950 text-amber-400 text-xs px-2 py-0.5 rounded-full font-bold hidden">0</span>
+                    <span id="cartBadge" class="bg-slate-950 text-amber-400 text-xs px-1.5 py-0.5 rounded-full font-bold hidden">0</span>
                 </button>
+            </div>
+        </div>
+        <!-- Mobile Search Bar -->
+        <div class="md:hidden px-3 pb-2.5 bg-slate-900">
+            <div class="relative">
+                <input type="text" id="searchInputMobile" oninput="handleSearch(this.value)" placeholder="Search 2,000+ products (e.g. Samsung, Blender, Shoes)..." class="w-full pl-9 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-400 focus:border-amber-400 focus:outline-none">
+                <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-400 text-xs"></i>
             </div>
         </div>
     </header>
 
     <!-- Main Container -->
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-5">
         
         <!-- STORE VIEW -->
-        <div id="storeView" class="space-y-6">
-            <!-- Categories Slider -->
-            <div class="flex space-x-2 overflow-x-auto hide-scrollbar pb-2" id="categoryContainer">
-                <button onclick="filterCategory('All')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold bg-amber-500 text-slate-950 whitespace-nowrap transition shadow-sm">All Departments</button>
-                <button onclick="filterCategory('Phones & Tablets')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200 whitespace-nowrap hover:bg-slate-50 transition">Phones & Tablets</button>
-                <button onclick="filterCategory('Electronics')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200 whitespace-nowrap hover:bg-slate-50 transition">Electronics & TVs</button>
-                <button onclick="filterCategory('Fashion')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200 whitespace-nowrap hover:bg-slate-50 transition">Fashion & Shoes</button>
-                <button onclick="filterCategory('Home & Living')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200 whitespace-nowrap hover:bg-slate-50 transition">Home & Living</button>
-                <button onclick="filterCategory('Supermarket')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200 whitespace-nowrap hover:bg-slate-50 transition">Supermarket & Groceries</button>
-                <button onclick="filterCategory('Computing')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200 whitespace-nowrap hover:bg-slate-50 transition">Computing & Gaming</button>
-                <button onclick="filterCategory('Health & Beauty')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200 whitespace-nowrap hover:bg-slate-50 transition">Health & Beauty</button>
-                <button onclick="filterCategory('Baby Products')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200 whitespace-nowrap hover:bg-slate-50 transition">Baby Products</button>
-                <button onclick="filterCategory('Sports & Fitness')" class="cat-btn px-4 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200 whitespace-nowrap hover:bg-slate-50 transition">Sports & Fitness</button>
+        <div id="storeView" class="space-y-5">
+            <!-- Categories Bar -->
+            <div class="flex space-x-2 overflow-x-auto hide-scrollbar pb-1" id="categoryContainer">
+                <button onclick="filterCategory('All')" class="cat-btn px-3.5 py-2 rounded-full text-xs font-bold bg-amber-500 text-slate-950 whitespace-nowrap transition shadow-sm">All (2,000)</button>
+                <button onclick="filterCategory('Phones & Tablets')" class="cat-btn px-3.5 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200 whitespace-nowrap hover:bg-slate-50 transition">Phones & Accessories</button>
+                <button onclick="filterCategory('Electronics & TVs')" class="cat-btn px-3.5 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200 whitespace-nowrap hover:bg-slate-50 transition">Electronics & TVs</button>
+                <button onclick="filterCategory('Computing & Gaming')" class="cat-btn px-3.5 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200 whitespace-nowrap hover:bg-slate-50 transition">Computing & Gaming</button>
+                <button onclick="filterCategory('Fashion & Shoes')" class="cat-btn px-3.5 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200 whitespace-nowrap hover:bg-slate-50 transition">Fashion & Shoes</button>
+                <button onclick="filterCategory('Health & Beauty')" class="cat-btn px-3.5 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200 whitespace-nowrap hover:bg-slate-50 transition">Health & Beauty</button>
+                <button onclick="filterCategory('Home & Living')" class="cat-btn px-3.5 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200 whitespace-nowrap hover:bg-slate-50 transition">Home & Living</button>
+                <button onclick="filterCategory('Appliances & Kitchen')" class="cat-btn px-3.5 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200 whitespace-nowrap hover:bg-slate-50 transition">Appliances & Kitchen</button>
+                <button onclick="filterCategory('Supermarket')" class="cat-btn px-3.5 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200 whitespace-nowrap hover:bg-slate-50 transition">Supermarket</button>
+                <button onclick="filterCategory('Baby & Toys')" class="cat-btn px-3.5 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200 whitespace-nowrap hover:bg-slate-50 transition">Baby & Toys</button>
+                <button onclick="filterCategory('Sports, Auto & Tools')" class="cat-btn px-3.5 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200 whitespace-nowrap hover:bg-slate-50 transition">Sports, Auto & Tools</button>
+            </div>
+
+            <!-- Results Count Bar -->
+            <div class="flex items-center justify-between text-xs text-slate-500 bg-white px-4 py-2.5 rounded-xl border border-slate-200">
+                <span id="catalogStatusText" class="font-semibold">Showing 40 of 2,000 products</span>
+                <span class="text-amber-600 font-bold"><i class="fa-solid fa-tag mr-1"></i>3 Choices Per Item</span>
             </div>
 
             <!-- Product Grid -->
-            <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-                <!-- Dynamically populated products -->
+            <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+                <!-- Populated dynamically -->
+            </div>
+
+            <!-- Load More Button -->
+            <div id="loadMoreContainer" class="py-6 text-center">
+                <button onclick="loadMoreProducts()" class="bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-white px-8 py-3.5 rounded-2xl text-xs font-black tracking-wide uppercase shadow-md transition">
+                    <i class="fa-solid fa-angles-down mr-2"></i>Load Next 40 Products
+                </button>
             </div>
         </div>
 
@@ -86,93 +107,98 @@
         <div id="adminView" class="space-y-6 hidden">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between bg-white p-6 rounded-2xl shadow-sm border border-slate-200 gap-4">
                 <div>
-                    <h1 class="text-2xl font-black text-slate-900">Admin Control Center & Dispatch</h1>
-                    <p class="text-xs text-slate-500 mt-1">Live overview of incoming orders, mobile money logs, and automated WhatsApp/SMS customer dispatch tools.</p>
+                    <h1 class="text-xl sm:text-2xl font-black text-slate-900">Admin Control Center & Dispatch</h1>
+                    <p class="text-xs text-slate-500 mt-1">Live incoming orders, cross-border mobile money logs, and 1-tap WhatsApp/SMS customer dispatch.</p>
                 </div>
                 <div class="flex items-center space-x-3">
-                    <button onclick="clearOrders()" class="bg-rose-50 text-rose-600 px-4 py-2 rounded-xl text-xs font-bold hover:bg-rose-100 transition border border-rose-200">Clear Order History</button>
-                    <button onclick="switchView('store')" class="bg-slate-900 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-slate-800 transition">Back to Storefront</button>
+                    <button onclick="clearOrders()" class="bg-rose-50 text-rose-600 px-4 py-2 rounded-xl text-xs font-bold hover:bg-rose-100 transition border border-rose-200">Clear History</button>
+                    <button onclick="switchView('store')" class="bg-slate-900 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-slate-800 transition">Back to Store</button>
                 </div>
             </div>
 
             <!-- Stats Overview Cards -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Orders Received</p>
-                    <h3 id="statTotalOrders" class="text-3xl font-black text-slate-900 mt-2">0</h3>
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Orders</p>
+                    <h3 id="statTotalOrders" class="text-2xl sm:text-3xl font-black text-slate-900 mt-1">0</h3>
                 </div>
-                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Sales Revenue (KES)</p>
-                    <h3 id="statTotalRevenue" class="text-3xl font-black text-emerald-600 mt-2">KES 0</h3>
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Sales Revenue</p>
+                    <h3 id="statTotalRevenue" class="text-2xl sm:text-3xl font-black text-emerald-600 mt-1">KES 0</h3>
                 </div>
-                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Active Gateways</p>
-                    <h3 class="text-3xl font-black text-indigo-600 mt-2">M-Pesa / Airtel / Paystack</h3>
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Active Catalog Size</p>
+                    <h3 class="text-2xl sm:text-3xl font-black text-amber-600 mt-1">2,000 Items</h3>
                 </div>
             </div>
 
             <!-- Orders Table -->
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                <div class="p-6 border-b border-slate-200 flex items-center justify-between">
-                    <h3 class="font-bold text-slate-900">Customer Orders & Automated WhatsApp Dispatch</h3>
-                    <span class="text-xs bg-slate-100 text-slate-600 px-3 py-1 rounded-full font-semibold">Live Sync Active</span>
+                <div class="p-5 border-b border-slate-200 flex items-center justify-between">
+                    <h3 class="font-bold text-slate-900 text-sm">Customer Orders & Automated Dispatch</h3>
+                    <span class="text-xs bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full font-bold">Live Sync</span>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="bg-slate-50 text-slate-400 text-xs uppercase font-semibold border-b border-slate-200">
+                            <tr class="bg-slate-50 text-slate-400 text-[11px] uppercase font-bold border-b border-slate-200">
                                 <th class="p-4">Order ID</th>
                                 <th class="p-4">Customer Phone</th>
-                                <th class="p-4">Country & Channel</th>
+                                <th class="p-4">Country / Gateway</th>
                                 <th class="p-4">Items Ordered</th>
-                                <th class="p-4">Total Amount</th>
-                                <th class="p-4">Automated Dispatch Actions</th>
+                                <th class="p-4">Amount</th>
+                                <th class="p-4">Dispatch Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="adminOrdersTable" class="divide-y divide-slate-100 text-sm">
+                        <tbody id="adminOrdersTable" class="divide-y divide-slate-100 text-xs">
                             <!-- Populated dynamically -->
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-
     </main>
+
+    <!-- Floating Bottom-Right Cart Button -->
+    <button onclick="toggleCart()" id="floatingCartBtn" class="fixed bottom-5 right-5 z-30 bg-slate-900 hover:bg-amber-500 text-white hover:text-slate-950 p-4 rounded-full shadow-2xl border-2 border-amber-400 transition flex items-center space-x-2">
+        <i class="fa-solid fa-cart-shopping text-lg"></i>
+        <span id="floatingCartCount" class="font-black text-xs">0</span>
+    </button>
 
     <!-- Cart Drawer Modal -->
     <div id="cartDrawer" class="fixed inset-0 z-50 overflow-hidden hidden">
         <div class="absolute inset-0 bg-slate-950/60 backdrop-blur-sm transition-opacity" onclick="toggleCart()"></div>
-        <div class="absolute inset-y-0 right-0 max-w-full flex pl-10">
+        <div class="absolute inset-y-0 right-0 max-w-full flex pl-8">
             <div class="w-screen max-w-md bg-white shadow-2xl flex flex-col">
-                <div class="p-6 border-b border-slate-200 flex items-center justify-between bg-slate-900 text-white">
-                    <h2 class="text-lg font-bold flex items-center space-x-2"><i class="fa-solid fa-cart-shopping text-amber-400"></i><span>Your Shopping Cart</span></h2>
+                <div class="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-900 text-white">
+                    <h2 class="text-base font-bold flex items-center space-x-2"><i class="fa-solid fa-cart-shopping text-amber-400"></i><span>Your Shopping Cart</span></h2>
                     <button onclick="toggleCart()" class="text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark text-xl"></i></button>
                 </div>
                 
-                <div id="cartItemsList" class="flex-1 overflow-y-auto p-6 space-y-4 divide-y divide-slate-100">
+                <div id="cartItemsList" class="flex-1 overflow-y-auto p-5 space-y-3 divide-y divide-slate-100">
                     <!-- Cart items populated here -->
                 </div>
 
-                <div class="p-6 border-t border-slate-200 bg-slate-50 space-y-4">
-                    <div class="space-y-2">
+                <div class="p-5 border-t border-slate-200 bg-slate-50 space-y-3">
+                    <div class="space-y-1">
                         <div class="flex justify-between text-xs text-slate-500">
-                            <span>Selected Country Currency</span>
+                            <span>Billing Currency</span>
                             <span id="cartCurrencyLabel" class="font-bold text-slate-700">KES</span>
                         </div>
                         <div class="flex justify-between text-lg font-black text-slate-900">
-                            <span>Grand Total</span>
+                            <span>Total</span>
                             <span id="cartSubtotal" class="text-amber-600">KES 0</span>
                         </div>
                     </div>
 
-                    <div class="space-y-2 pt-2 border-t border-slate-200">
-                        <label class="block text-xs font-bold text-slate-700 uppercase">Customer Phone / Mobile Money Number</label>
-                        <input type="text" id="customerPhone" placeholder="e.g. +254712345678 / +255... / +256..." class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-amber-500">
+                    <div class="space-y-1.5 pt-2 border-t border-slate-200">
+                        <label class="block text-[11px] font-bold text-slate-700 uppercase">Mobile Money / M-Pesa Phone Number</label>
+                        <input type="tel" id="customerPhone" placeholder="e.g. +254712345678 / +255... / +256..." class="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-amber-500">
                     </div>
 
-                    <button onclick="checkoutWithPaystack()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 py-3.5 px-4 rounded-xl font-black text-sm shadow-lg shadow-amber-500/20 transition flex items-center justify-center space-x-2">
+                    <button onclick="checkoutWithPaystack()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 py-3.5 px-4 rounded-xl font-black text-sm shadow-lg transition flex items-center justify-center space-x-2">
                         <i class="fa-solid fa-lock"></i>
-                        <span>Pay via M-Pesa / Mobile Money / Card</span>
+                        <span>Pay Now (M-Pesa / Mobile Money / Card)</span>
                     </button>
                 </div>
             </div>
@@ -193,204 +219,2393 @@
             ZW: { code: 'USD', rate: 0.0077, symbol: '$' }
         };
 
-        const products = [
-            {
-                id: 1,
-                name: "Smart Android TV 43 inch Full HD",
-                category: "Electronics",
-                basePrice: 28500,
-                image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=600&q=80",
-                variants: [
-                    { name: "Standard Black (43\")", price: 28500 },
-                    { name: "Frameless Metallic (43\")", price: 31000 },
-                    { name: "Smart 4K UHD Edition (43\")", price: 35500 }
-                ]
-            },
-            {
-                id: 2,
-                name: "Wireless Bluetooth Earbuds Pro",
-                category: "Phones & Tablets",
-                basePrice: 2200,
-                image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=600&q=80",
-                variants: [
-                    { name: "Midnight Black", price: 2200 },
-                    { name: "Pure Glossy White", price: 2350 },
-                    { name: "Rose Gold Edition", price: 2500 }
-                ]
-            },
-            {
-                id: 3,
-                name: "Men's Casual Athletic Running Sneakers",
-                category: "Fashion",
-                basePrice: 3500,
-                image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80",
-                variants: [
-                    { name: "Size 41 (Red/Black)", price: 3500 },
-                    { name: "Size 42 (Red/Black)", price: 3500 },
-                    { name: "Size 43 (Red/Black)", price: 3700 }
-                ]
-            },
-            {
-                id: 4,
-                name: "Heavy Duty Kitchen Blender & Grinder",
-                category: "Home & Living",
-                basePrice: 4800,
-                image: "https://images.unsplash.com/photo-1570222094114-d074f7e1e6e8?auto=format&fit=crop&w=600&q=80",
-                variants: [
-                    { name: "2.0L Glass Jar (1500W)", price: 4800 },
-                    { name: "2.5L Unbreakable Jar (2000W)", price: 5600 },
-                    { name: "Professional Chef Edition", price: 6900 }
-                ]
-            },
-            {
-                id: 5,
-                name: "Organic Premium Arabica Coffee Beans 1kg",
-                category: "Supermarket",
-                basePrice: 1500,
-                image: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?auto=format&fit=crop&w=600&q=80",
-                variants: [
-                    { name: "Medium Roast (1kg)", price: 1500 },
-                    { name: "Dark French Roast (1kg)", price: 1650 },
-                    { name: "Decaf Blend (1kg)", price: 1800 }
-                ]
-            },
-            {
-                id: 6,
-                name: "Solar Powered Outdoor Motion Security Lamp",
-                category: "Home & Living",
-                basePrice: 1850,
-                image: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=600&q=80",
-                variants: [
-                    { name: "Single Head 100LED", price: 1850 },
-                    { name: "Dual Head 200LED Pro", price: 2400 },
-                    { name: "Ultra Bright Floodlight", price: 3200 }
-                ]
-            },
-            {
-                id: 7,
-                name: "4G LTE Smartphone 6.5\" Display",
-                category: "Phones & Tablets",
-                basePrice: 12500,
-                image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80",
-                variants: [
-                    { name: "32GB ROM + 2GB RAM", price: 12500 },
-                    { name: "64GB ROM + 4GB RAM", price: 14800 },
-                    { name: "128GB ROM + 6GB RAM", price: 17900 }
-                ]
-            },
-            {
-                id: 8,
-                name: "Non-Stick Cookware 7-Piece Set",
-                category: "Home & Living",
-                basePrice: 6500,
-                image: "https://images.unsplash.com/photo-1584990347426-c585c64303ab?auto=format&fit=crop&w=600&q=80",
-                variants: [
-                    { name: "Standard Black Granite", price: 6500 },
-                    { name: "Royal Copper Edition", price: 7500 },
-                    { name: "Ceramic Red Marble", price: 8200 }
-                ]
-            }
-        ];
+        // Complete 2,000-item catalog list
+        const RAW_CATALOG = `1. Samsung Galaxy A05
+2. Tecno Spark 20
+3. Infinix Hot 40i
+4. Itel A70
+5. iPhone 13
+6. Xiaomi Redmi 13C
+7. Oraimo FreePods 3
+8. Oraimo Power Bank 20000mAh
+9. Anker Charger 20W
+10. Phone Cover for Samsung A14
+11. Tempered Glass for Tecno
+12. Bluetooth Earphones
+13. Wireless Earbuds Black
+14. Type C Cable 1m
+15. Selfie Stick
+16. Phone Holder for Car
+17. Vitron 32 inch TV
+18. TCL 43 inch Smart TV
+19. Hisense 55 inch TV
+20. Vision Plus 32 inch TV
+21. LG 43 inch TV
+22. Bluetooth Speaker Portable
+23. Home Theatre System
+24. Soundbar
+25. DStv Decoder
+26. GOtv Decoder
+27. TV Antenna
+28. TV Wall Mount
+29. HP Laptop 15
+30. Lenovo IdeaPad 3
+31. Dell Latitude Laptop
+32. Asus VivoBook
+33. HP Printer DeskJet
+34. Canon Printer
+35. Wireless Mouse
+36. Keyboard + Mouse Combo
+37. Flash Disk 64GB
+38. Flash Disk 128GB
+39. External Hard Drive 1TB
+40. Laptop Bag
+41. Laptop Stand
+42. Monitor 24 inch
+43. Webcam HD
+44. Men's T-Shirt White
+45. Men's Jeans Black
+46. Men's Hoodie
+47. Women's Dress Floral
+48. Women's Skirt
+49. Women's Jeans
+50. Kids T-Shirt Set
+51. Sneakers White Unisex
+52. Running Shoes
+53. Sandals for Men
+54. Heels for Women
+55. Handbag Leather
+56. Backpack School
+57. Watch for Men
+58. Watch for Women
+59. Sunglasses Black
+60. Belt Leather
+61. Cap Baseball
+62. Socks 5 Pairs
+63. Bra Set
+64. Boxers 3 Pack
+65. Baby Romper
+66. Ankara Dress
+67. The Ordinary Niacinamide Serum
+68. CeraVe Face Wash
+69. Dr Rashel Vitamin C Serum
+70. Nivea Soft Cream
+71. Vaseline Lotion
+72. Lipstick Matte Red
+73. Lip Gloss Pink
+74. Foundation Fenty
+75. Eyeshadow Palette
+76. Perfume 100ml Oud
+77. Perfume 50ml Floral
+78. Body Spray
+79. Wig 22 inch Straight
+80. Wig Curly Bob
+81. Hair Extensions
+82. Hair Dryer
+83. Hair Straightener
+84. Beard Oil
+85. Vitamin C Tablets
+86. Collagen Powder
+87. Face Mask Sheet
+88. Nail Polish Set
+89. Makeup Brush Set
+90. Bedsheet 4x6 Cotton
+91. Bedsheet 5x6
+92. Duvet 5x6
+93. Pillow 2 Pack
+94. Curtains 2 Pieces
+95. Towel Bath
+96. Storage Box Plastic
+97. Laundry Basket
+98. Office Chair
+99. Study Table
+100. Wall Art Canvas
+101. LED Lamp Desk
+102. Wall Clock
+103. Mirror Full Length
+104. Nunix Blender 2 in 1
+105. Ramtons Cooker 3 Burner
+106. Mika Microwave
+107. Von Kettle 1.7L
+108. Hotpoint Fridge
+109. Electric Kettle
+110. Rice Cooker
+111. Sufuria Set 7 Pieces
+112. Frying Pan Non-Stick
+113. Plates Set 6 Pieces
+114. Cups Set
+115. Water Bottle 1L
+116. Thermos Flask
+117. Pressure Cooker
+118. Air Fryer
+119. Sandwich Maker
+120. Toaster 2 Slice
+121. Rice 5kg Pishori
+122. Cooking Oil 3L
+123. Wheat Flour 2kg
+124. Maize Flour 2kg
+125. Sugar 2kg
+126. Milk Powder
+127. Tea Leaves 500g
+128. Coffee 250g
+129. Biscuits Pack
+130. Chocolate Bar
+131. Juice 1L Mango
+132. Soda 1.25L
+133. Baby Diapers Huggies Size 3
+134. Pampers Diapers Size 2
+135. Baby Feeding Bottle
+136. Baby Wipes
+137. Baby Lotion
+138. Baby Shampoo
+139. Baby Stroller
+140. Baby Carrier
+141. Kids Toy Car
+142. Doll Barbie
+143. Building Blocks
+144. Dumbbells 5kg Pair
+145. Resistance Bands
+146. Yoga Mat
+147. Football
+148. Football Boots
+149. Jersey Man United
+150. Bicycle Mountain Bike
+151. Skipping Rope
+152. Gym Gloves
+153. Car Tyre 195/65
+154. Car Charger
+155. Car Seat Cover
+156. Car Wash Shampoo
+157. Motorbike Helmet
+158. Motorbike Gloves
+159. PS5 Controller
+160. PS4 Game GTA
+161. Board Game Ludo
+162. Playing Cards
+163. Novel - The Alchemist
+164. Novel - Rich Dad Poor Dad
+165. Textbook Form 4 Math
+166. Notebook A4 4 Pack
+167. Pens Bic 10 Pack
+168. School Bag Primary
+169. Solar Panel 100W
+170. Solar Light
+171. Solar Charger
+172. Power Extension 4 Socket
+173. Drill Machine
+174. Screwdriver Set
+175. Hammer
+176. LED Bulb Pack
+177. Mosquito Net
+178. Raincoat
+179. Umbrella
+180. Iron Box Steam
+181. Sewing Machine
+182. Electric Fan Standing
+183. Water Heater
+184. Gas Cylinder 6kg
+185. Gas Regulator
+186. Shower Head
+187. Toothbrush Electric
+188. Shaver Machine
+189. Trimming Machine
+190. Baby Blanket
+191. Pet Food Dog 2kg
+192. Pet Shampoo
+193. Dog Leash
+194. Cat Food
+195. Aquarium Filter
+196. Plant Pot
+197. Garden Hose
+198. Laundry Detergent 2kg
+199. Dish Soap
+200. Air Freshener
+201. Samsung Galaxy A15
+202. Tecno Camon 20
+203. Infinix Note 30
+204. iPhone 11 Pro
+205. Xiaomi Redmi Note 13
+206. Itel P55
+207. Oppo Reno 10
+208. Nokia C32
+209. Huawei Y61
+210. Vivo Y27s
+211. Phone Cover for iPhone 13
+212. Phone Cover for Redmi
+213. Screen Protector for Infinix
+214. Camera Lens Protector
+215. Power Bank 10000mAh Oraimo
+216. Anker Power Bank 20000mAh
+217. Fast Charger Type C 25W
+218. USB Cable 3m
+219. Earbuds Oraimo FreePods Pro
+220. Wireless Headphones Bluetooth
+221. Neckband Earphones
+222. Smart Watch FitPro
+223. Smart Watch Amazfit
+224. Phone Tripod Stand
+225. Ring Light 12 inch
+226. Microphone for TikTok
+227. Memory Card 32GB
+228. Memory Card 256GB
+229. SIM Card Adapter
+230. Phone Cleaning Wipes
+231. Vitron 43 inch TV
+232. TCL 55 inch 4K TV
+233. Hisense 43 inch Smart TV
+234. Vision Plus 43 inch TV
+235. Sony 32 inch TV
+236. TV Stand
+237. Soundbar Bluetooth
+238. Woofer 2.1 Channel
+239. Portable Speaker JBL Style
+240. StarTimes Decoder
+241. HDMI Cable 2m
+242. TV Remote Universal
+243. HP Pavilion Laptop
+244. Lenovo ThinkPad
+245. Dell Inspiron
+246. MacBook Air M1
+247. Canon Printer Ink
+248. HP Printer Ink 680
+249. Printer Paper A4 500 Sheets
+250. Mouse Pad Large
+251. Laptop Cooling Pad
+252. USB Hub 4 Port
+253. Webcam 1080p
+254. Headset with Mic for PC
+255. Gaming Keyboard RGB
+256. Gaming Mouse
+257. Office Desk Lamp LED
+258. Extension Cable 6 Way
+259. Power Bank for Laptop
+260. WiFi Router TP-Link
+261. CCTV Camera 2 Pack
+262. Doorbell Camera
+263. Men's Shirt Official
+264. Men's Suit Blazer
+265. Men's Shorts
+266. Men's Tracksuit
+267. Women's Crop Top
+268. Women's Palazo Trouser
+269. Women's Maxi Dress
+270. Women's Jumpsuit
+271. Kids Hoodie
+272. Kids Shoes Sneakers
+273. Kids Dress
+274. Baby Shoes
+275. Slippers for Women
+276. Sandals for Men Leather
+277. Loafers for Men
+278. Boots for Women
+279. School Shoes Black
+280. Sports Shoes Nike Style
+281. Tote Bag Canvas
+282. Sling Bag
+283. Wallet for Men
+284. Purse for Women
+285. Tie Set
+286. Scarf Winter
+287. Beanie Hat
+288. Gloves Winter
+289. Sunglasses Aviator
+290. Earrings Set
+291. Necklace Gold Plated
+292. Bracelet for Women
+293. Ring Set
+294. Makeup Kit
+295. Foundation Matte
+296. Concealer
+297. Mascara
+298. Eyeliner Pen
+299. Blush Palette
+300. Setting Spray
+301. Perfume 30ml Mini
+302. Body Lotion Vaseline
+303. Body Oil Coconut
+304. Face Scrub
+305. Face Toner Rose Water
+306. Hair Oil Castor
+307. Hair Shampoo Anti-Dandruff
+308. Hair Conditioner
+309. Hair Color Black
+310. Hair Curler
+311. Nail Dryer
+312. False Nails Set
+313. Wig 18 inch Body Wave
+314. Wig Headband
+315. Bonnet Satin
+316. Duvet Cover 6x6
+317. Blanket Fleece
+318. Mattress Topper
+319. Bedside Lamp
+320. Wall Shelf
+321. Shoe Rack 3 Tier
+322. Clothes Drying Rack
+323. Ironing Board
+324. Kitchen Organizer Rack
+325. Spice Rack
+326. Water Dispenser Bottle
+327. Electric Hotplate Double
+328. Gas Cooker 4 Burner
+329. Oven Electric
+330. Blender 3 in 1 Mika
+331. Hand Mixer
+332. Food Processor
+333. Kettle Cordless
+334. Coffee Maker
+335. Popcorn Maker
+336. Cookware Set Non-Stick
+337. Baking Tray Set
+338. Measuring Cups
+339. Water Jug 2L
+340. Lunch Box Set
+341. Drinking Glass Set 6
+342. Tea Set Ceramic
+343. Knife Set Kitchen
+344. Cutting Board Wood
+345. Cooking Oil 5L Sunflower
+346. Rice 10kg Basmati
+347. Pasta Spaghetti 500g
+348. Tomato Paste
+349. Soy Sauce
+350. Honey 1kg
+351. Peanut Butter
+352. Jam Strawberry
+353. Cornflakes
+354. Oats 500g
+355. Baby Cereal
+356. Baby Diapers Size 4
+357. Baby Feeding Spoon Set
+358. Baby Bottle Sterilizer
+359. Baby Bath Tub
+360. Baby Toy Rattle
+361. Toy Drone Mini
+362. Remote Control Car
+363. Puzzle Game 100 Pieces
+364. Skateboard
+365. Treadmill Foldable
+366. Stationary Bike
+367. Skipping Rope Adjustable
+368. Water Bottle Gym 2L
+369. Sports Bra
+370. Gym Leggings Women
+371. Car Floor Mats
+372. Car Air Freshener
+373. Car Battery Charger
+374. Car Polish
+375. Tyre Pump Electric
+376. Motorbike Cover
+377. Motorbike Chain Lube
+378. PS5 Game Spider-Man
+379. Xbox Controller
+380. Monopoly Board Game
+381. Chess Board
+382. Novel - Atomic Habits
+383. Novel - Think and Grow Rich
+384. Bible King James
+385. Quran
+386. Diary Notebook Hardcover
+387. Pen Set Gel
+388. Highlighters 6 Pack
+389. Solar Power Bank
+390. Solar Torch
+391. Rechargeable Bulb 2 Pack
+392. Torch LED
+393. Insect Killer Lamp
+394. Air Fryer Basket
+395. Pet Bed
+396. Dog Food Pedigree 3kg
+397. Cat Litter
+398. Plant Seeds Vegetable
+399. Watering Can
+400. Washing Machine 7kg
+401. Samsung Galaxy S24
+402. Tecno Spark 10 Pro
+403. Infinix Hot 30
+404. iPhone 14
+405. Xiaomi Poco X5
+406. Itel S23
+407. Oppo A78
+408. Realme C55
+409. Nokia G22
+410. Huawei Nova 11
+411. Phone Cover for Tecno Spark
+412. Phone Cover Clear for iPhone
+413. Phone Cover Flip Leather
+414. Screen Guard Privacy
+415. Phone Skin Sticker
+416. Power Bank 30000mAh
+417. Wireless Charger Pad
+418. MagSafe Charger
+419. Car Phone Holder Magnetic
+420. Bluetooth Speaker Anker
+421. Headphones Over Ear
+422. AirPods Pro Style
+423. Smart Watch Ultra
+424. Fitness Band Xiaomi
+425. Tablet Samsung Galaxy Tab
+426. Tablet Lenovo Tab
+427. iPad 10th Gen
+428. Stylus Pen for Tablet
+429. Tablet Cover
+430. Keyboard for Tablet
+431. Vitron 55 inch TV
+432. TCL 65 inch TV
+433. Hisense 32 inch TV
+434. LG 55 inch TV
+435. Sony 43 inch TV
+436. TV Bracket Swivel
+437. DSTV Dish Kit
+438. Decoder Remote
+439. Speaker Stand
+440. Microphone Wireless
+441. HP EliteBook Laptop
+442. Lenovo Legion Gaming Laptop
+443. Dell XPS Laptop
+444. Asus ROG Gaming Laptop
+445. Apple MacBook Pro
+446. Laptop Charger 65W
+447. Laptop Battery Replacement
+448. Printer Epson
+449. Scanner Portable
+450. External SSD 500GB
+451. USB Flash 256GB
+452. SD Card Reader
+453. Laptop Cooling Fan
+454. Desk Organizer
+455. Office Chair Ergonomic
+456. Study Desk Wooden
+457. Bookshelf
+458. Men's Polo Shirt
+459. Men's Official Trouser
+460. Men's Sweater
+461. Men's Jacket Denim
+462. Men's Vest
+463. Women's Blouse
+464. Women's Cardigan
+465. Women's Leggings
+466. Women's Shorts
+467. Women's Bikini Set
+468. Women's Nightdress
+469. Men's Pyjamas
+470. Kids Jacket
+471. Kids Jeans
+472. Baby Onesie 3 Pack
+473. Kids Sandals
+474. Kids Slippers
+475. School Bag with Wheels
+476. Travelling Bag
+477. Duffel Bag
+478. Luggage Suitcase 3 Set
+479. Waist Bag
+480. Crossbody Bag Women
+481. Wrist Watch Casio Style
+482. Smart Watch for Kids
+483. Sunglasses Polarized
+484. Hat Bucket
+485. Gloves Leather
+486. Tie Slim
+487. Bow Tie
+488. Cufflinks Set
+489. Hair Clips Set
+490. Headband for Women
+491. Earrings Hoop Gold
+492. Choker Necklace
+493. Anklet
+494. Toe Ring
+495. Makeup Sponge Set
+496. Lip Liner Set
+497. Brow Pencil
+498. False Eyelashes Set
+499. Makeup Remover Wipes
+500. Face Primer
+501. BB Cream
+502. CC Cream
+503. Body Scrub Coffee
+504. Body Butter Shea
+505. Hand Cream
+506. Foot Cream
+507. Hair Mask Treatment
+508. Hair Spray
+509. Hair Wax
+510. Hair Brush
+511. Comb Set
+512. Electric Shaver
+513. Nose Trimmer
+514. Electric Toothbrush Heads
+515. Mouthwash
+516. Dental Floss
+517. Deodorant Roll On
+518. Aftershave
+519. Beard Trimming Kit
+520. Bedsheet 6x6 King
+521. Duvet 4x6 Single
+522. Pillow Protector
+523. Mattress 5x6 Foam
+524. Mosquito Net Double
+525. Curtain Rod
+526. Shower Curtain
+527. Bathroom Towel Set
+528. Bath Mat
+529. Soap Dispenser
+530. Toothbrush Holder
+531. Kitchen Towels 3 Pack
+532. Apron Kitchen
+533. Oven Gloves
+534. Pot Holder
+535. Gas Cooker 2 Burner
+536. Hotplate Single
+537. Electric Grill
+538. Toaster Oven
+539. Waffle Maker
+540. Ice Maker Portable
+541. Water Purifier
+542. Juice Extractor
+543. Meat Grinder
+544. Electric Whisk
+545. Cake Mixer Stand
+546. Baking Pan Round
+547. Muffin Tray
+548. Dinner Set 24 Pieces
+549. Soup Bowls Set
+550. Serving Spoons Set
+551. Thermos 2L
+552. Water Bottle Stainless
+553. Ice Flask
+554. Cooking Oil 2L
+555. Rice 2kg
+556. Spaghetti 1kg
+557. Macaroni
+558. Baked Beans Can
+559. Tuna Can
+560. Sardines Can
+561. Mayonnaise
+562. Ketchup
+563. Mustard
+564. Chilli Sauce
+565. Salt 1kg
+566. Black Pepper
+567. Curry Powder
+568. Pilau Masala
+569. Tea Bags 100 Pack
+570. Milo 400g
+571. Drinking Chocolate
+572. Energy Drink 6 Pack
+573. Baby Diapers Size 5
+574. Baby Powder
+575. Baby Oil
+576. Baby Soap
+577. Baby Cup
+578. Baby Plate Set
+579. Baby Blanket Fleece
+580. Baby Play Mat
+581. Baby Walker
+582. Baby Swing
+583. Toy Kitchen Set
+584. Toy Doctor Kit
+585. Toy Gun Water
+586. Toy Train Set
+587. Kite
+588. Bicycle for Kids
+589. Tricycle
+590. Yoga Block
+591. Foam Roller
+592. Ab Wheel
+593. Pull Up Bar
+594. Kettlebell 10kg
+595. Weight Bench
+596. Football Size 5
+597. Basketball
+598. Tennis Racket
+599. Badminton Set
+600. Car Vacuum Cleaner
+601. Samsung Galaxy Z Flip
+602. Tecno Pova 5
+603. Infinix Zero 30
+604. iPhone 15
+605. Xiaomi Redmi 12
+606. Itel A60
+607. Oppo A58
+608. Realme 11
+609. Nokia C22
+610. Huawei P50
+611. Phone Case Silicone Pink
+612. Phone Case Rugged Black
+613. Phone Case Cartoon
+614. Phone Back Glass Protector
+615. Power Bank Solar 20000mAh
+616. Charger Cable Braided 2m
+617. Fast Charger 45W Samsung
+618. Adapter 3 Pin
+619. Bluetooth Earbuds with Case
+620. Bone Conduction Headphones
+621. Portable Karaoke Speaker
+622. Smart TV Stick
+623. Laptop HP ProBook
+624. Lenovo Yoga Laptop
+625. Dell Vostro Laptop
+626. Asus ZenBook
+627. MacBook Air M2
+628. Chromebook Laptop
+629. Printer HP LaserJet
+630. Printer Canon Pixma
+631. Ink Cartridge Black
+632. Toner Cartridge
+633. Monitor Arm Stand
+634. Monitor 27 inch
+635. Mechanical Keyboard
+636. Wireless Keyboard for TV
+637. Mouse Pad RGB
+638. USB C Hub Adapter
+639. Ethernet Cable 10m
+640. WiFi Extender
+641. CCTV DVR Kit 4 Channel
+642. Security Light Solar
+643. Door Lock Smart Fingerprint
+644. Safe Box Small
+645. Men's T-Shirt Pack of 3
+646. Men's Tank Top
+647. Men's Sweatpants
+648. Men's Cargo Pants
+649. Men's Leather Jacket
+650. Women's T-Shirt Oversize
+651. Women's Bodycon Dress
+652. Women's Denim Jacket
+653. Women's Office Dress
+654. Women's Sweater Knitted
+655. Women's Pajama Set
+656. Women's Sports Set
+657. Kids T-Shirt and Shorts Set
+658. Kids School Uniform Shirt
+659. Kids Winter Jacket
+660. Baby Socks 5 Pairs
+661. Baby Hat
+662. Kids Rain Boots
+663. Sneakers for Kids Light Up
+664. Sandals Heeled Block
+665. Sneakers High Top
+666. Canvas Shoes
+667. Formal Shoes for Men
+668. Leather Shoes for Women
+669. Clutch Bag Evening
+670. School Backpack for Girls
+671. School Backpack for Boys
+672. Laptop Backpack Waterproof
+673. Travel Pillow Neck
+674. Umbrella Automatic
+675. Watch Strap Leather
+676. Sunglasses Round
+677. Fashion Earrings Pearl
+678. Necklace Pendant Heart
+679. Bangles Set
+680. Hair Band Velvet
+681. Makeup Palette 35 Colors
+682. Lipstick Set 6 Colors
+683. Lip Balm Vaseline
+684. Highlighter Palette
+685. Contour Palette
+686. Face Powder Compact
+687. Setting Powder Loose
+688. Makeup Fixing Spray
+689. Nail Polish Remover
+690. Nail Art Kit
+691. Perfume Arabic Oud
+692. Perfume for Men 100ml
+693. Body Mist Vanilla
+694. Face Serum Retinol
+695. Face Serum Hyaluronic Acid
+696. Night Cream
+697. Day Cream SPF
+698. Sunscreen SPF 50
+699. Aloe Vera Gel
+700. Hair Growth Oil
+701. Hair Dye Blonde
+702. Hair Dye Brown
+703. Wig Straight 26 inch
+704. Wig Pixie Cut
+705. Wig Afro Curly
+706. Hair Bundles 3 Pack
+707. Hair Clips Extensions
+708. Beard Comb
+709. Electric Hair Clipper
+710. Shaving Cream
+711. Razor Blades 5 Pack
+712. Toothpaste for Sensitive
+713. Dental Whitening Kit
+714. Floss Picks
+715. Bath Sponge
+716. Loofah
+717. Body Wash Dove
+718. Shower Gel
+719. Bar Soap Set
+720. Hand Wash Liquid
+721. Duvet 6x6 Heavy
+722. Fleece Blanket Double
+723. Bed Skirt
+724. Mattress Protector Waterproof
+725. Pillow Memory Foam
+726. Cushion Covers 4 Pack
+727. Throw Blanket
+728. Rug Carpet 5x7
+729. Door Mat
+730. Shoe Organizer Hanging
+731. Wardrobe Closet
+732. TV Stand Wooden
+733. Coffee Table
+734. Dining Table 4 Chairs
+735. Bed Frame 5x6
+736. Office Desk with Drawers
+737. Electric Cooker 4 Burner
+738. Gas Oven with Grill
+739. Induction Cooker
+740. Deep Fryer
+741. Electric Pressure Cooker
+742. Slow Cooker
+743. Bread Maker
+744. Ice Cream Maker
+745. Yogurt Maker
+746. Electric Kettle Glass
+747. Blender with Grinder
+748. Hand Blender
+749. Food Chopper
+750. Kitchen Scale Digital
+751. Measuring Jug
+752. Egg Tray
+753. Dish Rack Stainless
+754. Dish Drying Mat
+755. Cutlery Organizer
+756. Food Storage Containers Set
+757. Water Filter Jug
+758. Gas Cylinder 13kg
+759. Gas Burner Head
+760. Cooking Oil 10L
+761. Rice 25kg
+762. Maize Flour 5kg
+763. Atta Flour
+764. Sugar 5kg
+765. Salt 2kg
+766. Cooking Chocolate
+767. Custard Powder
+768. Baking Powder
+769. Baking Soda
+770. Yeast
+771. Vanilla Essence
+772. Coconut Milk
+773. Evaporated Milk
+774. Green Tea Bags
+775. Herbal Tea
+776. Baby Diapers Size 1
+777. Baby Diapers Size 6
+778. Baby Formula Milk
+779. Baby Food Jars
+780. Baby Teether
+781. Baby Bibs 3 Pack
+782. Baby Carrier Wrap
+783. Baby Car Seat
+784. Baby Crib
+785. Toy Robot
+786. Toy Lego Set
+787. Toy Helicopter
+788. Toy Piano
+789. Kids Drawing Tablet
+790. Kids Story Book
+791. Resistance Bands Set
+792. Ankle Weights
+793. Jump Mat
+794. Boxing Gloves
+795. Punching Bag
+796. Hockey Stick
+797. Cricket Bat
+798. Golf Set Mini
+799. Car Seat Cushion
+800. Car Steering Cover
+801. Samsung Galaxy A34
+802. Tecno Spark Go 2024
+803. Infinix Smart 7
+804. iPhone 12 Mini
+805. Xiaomi Redmi A2
+806. Itel it2160 Feature Phone
+807. Oppo A16
+808. Nokia 105 Feature Phone
+809. Nokia 3310 Style Phone
+810. Huawei Mate 50
+811. Phone Case for Nokia
+812. Phone Case for Xiaomi
+813. Phone Cover with Card Holder
+814. Power Bank 5000mAh Mini
+815. Charger Dual USB
+816. Cable for iPhone Lightning
+817. Earbuds with Mic
+818. Headphone Bluetooth Kids
+819. Speaker Bluetooth Waterproof
+820. Portable Radio Solar
+821. TV Vitron 24 inch
+822. TV TCL 32 inch Android
+823. TV Hisense 65 inch
+824. TV Vision Plus 55 inch
+825. TV LG 32 inch
+826. TV Remote Replacement Samsung
+827. TV Remote Replacement LG
+828. Projector for Home Cinema
+829. Projector Screen
+830. Laptop HP 14 inch
+831. Laptop Lenovo 14 inch
+832. Laptop Dell 14 inch
+833. Laptop Asus 14 inch
+834. Laptop Bag Leather
+835. Laptop Sleeve 15.6
+836. Printer HP Smart Tank
+837. Printer Canon G Series
+838. Printer Paper Photo Glossy
+839. Keyboard Cover Silicone
+840. Mouse Wireless Silent
+841. Mouse Gaming Wired
+842. Laptop Docking Station
+843. USB Flash 16GB
+844. USB Flash 512GB
+845. External Hard Drive 2TB
+846. Hard Drive Case
+847. Laptop Screen Protector
+848. Desk Chair Gaming
+849. Standing Desk
+850. LED Strip RGB 5m
+851. Night Light Plug
+852. Table Lamp Bedside
+853. Floor Lamp
+854. Chandelier Light
+855. Men's Long Sleeve Shirt
+856. Men's T-Shirt V Neck
+857. Men's Denim Shorts
+858. Men's Joggers
+859. Men's Blazer
+860. Men's Rain Jacket
+861. Women's Tank Top
+862. Women's Wrap Dress
+863. Women's Pleated Skirt
+864. Women's Wide Leg Trousers
+865. Women's Blazer
+866. Women's Denim Skirt
+867. Women's Gym Top
+868. Women's Swimsuit
+869. Kids Hoodie with Pocket
+870. Kids T-Shirt Long Sleeve
+871. Kids Pants
+872. Baby Jacket
+873. Baby Booties
+874. Kids Sunglasses
+875. Kids Cap
+876. Slippers Fluffy Women
+877. Slippers Leather Men
+878. Sandals Flat Women
+879. Sandals Sport Men
+880. Sneakers Running Women
+881. Sneakers Canvas Men
+882. Formal Shoes Loafers
+883. Heels Platform
+884. Boots Ankle Women
+885. Boots Chelsea Men
+886. Handbag Shoulder
+887. Handbag Tote Large
+888. Handbag Clutch
+889. Backpack Hiking
+890. Backpack Fashion Women
+891. Waist Bag Sports
+892. Suitcase Hard Shell
+893. Suitcase Cabin Size
+894. Wallet Leather Women
+895. Card Holder
+896. Belt Braided
+897. Tie Silk
+898. Scarf Silk
+899. Beanie Wool
+900. Gloves Touch Screen
+901. Earrings Stud Diamond Style
+902. Necklace Chain Gold
+903. Necklace Pearl
+904. Bracelet Beaded
+905. Ring Engagement Style
+906. Watch Digital Sports
+907. Watch Analog Leather
+908. Sunglasses Kids
+909. Makeup Brush Cleaner
+910. Lipstick Long Lasting Nude
+911. Lip Gloss Clear
+912. Eyeliner Liquid Black
+913. Mascara Waterproof
+914. Eyebrow Gel
+915. Blush Cream
+916. Foundation Liquid
+917. Concealer Stick
+918. Face Primer Matte
+919. Makeup Setting Powder
+920. Nail Polish Gel Set
+921. Nail File Set
+922. Cuticle Oil
+923. Perfume Eau de Toilette
+924. Perfume Gift Set
+925. Deodorant Spray Men
+926. Body Lotion Cocoa Butter
+927. Face Wash for Oily Skin
+928. Face Wash for Dry Skin
+929. Face Scrub Apricot
+930. Face Mask Clay
+931. Toner Witch Hazel
+932. Serum Niacinamide
+933. Moisturizer Oil Free
+934. Eye Cream
+935. Hair Conditioner Argan
+936. Hair Shampoo Keratin
+937. Hair Treatment Mask
+938. Hair Gel Strong Hold
+939. Hair Mousse
+940. Hair Straightening Brush
+941. Hair Roller Set
+942. Wig Cap 2 Pack
+943. Wig Stand
+944. Wig Comb
+945. Beard Balm
+946. Beard Shampoo
+947. Shaver Replacement Heads
+948. Trimmer for Nose
+949. Toothpaste Whitening
+950. Mouthwash Mint
+951. Duvet Cover Set 4 Pieces
+952. Blanket Weighted
+953. Pillowcase Set 2
+954. Bed Runner
+955. Mattress 4x6 High Density
+956. Mosquito Net Conical
+957. Curtain Sheer White
+958. Curtain Blackout
+959. Towel Hand Small
+960. Bathrobe Cotton
+961. Laundry Hamper
+962. Clothes Hangers 20 Pack
+963. Ironing Board Cover
+964. Shoe Rack Wooden
+965. Book Shelf Wall
+966. Mirror Wall Decor
+967. Photo Frame Set
+968. Vase Decor
+969. Artificial Plant
+970. Candle Scented
+971. Diffuser Reed
+972. Air Purifier
+973. Humidifier
+974. Electric Cooker Portable
+975. Gas Cooker Table Top
+976. Rice Cooker Mini
+977. Steamer Electric
+978. Egg Cooker
+979. Panini Press
+980. Kettle Electric Stainless
+981. Blender Portable USB
+982. Juicer Slow
+983. Coffee Grinder
+984. Spice Grinder
+985. Baking Set for Kids
+986. Cake Stand
+987. Cookie Cutter Set
+988. Dinner Plate Set Ceramic
+989. Soup Spoon Set
+990. Tea Cups Set 6
+991. Glass Water Jug
+992. Wine Glasses Set
+993. Champagne Glasses
+994. Food Flask
+995. Lunch Bag Insulated
+996. Baby Bottle 250ml
+997. Baby Bottle 150ml
+998. Baby Food Processor
+999. Baby High Chair
+1000. Baby Play gym
+1001. Samsung Galaxy A55
+1002. Tecno Camon 30
+1003. Infinix Note 40
+1004. iPhone 15 Pro
+1005. Xiaomi Poco M6 Pro
+1006. Itel A50
+1007. Oppo Reno 11
+1008. Realme C67
+1009. Nokia C31
+1010. Huawei Nova 12
+1011. Phone Cover Transparent for Tecno
+1012. Phone Cover Shockproof for Samsung
+1013. Power Bank Anker 10000mAh
+1014. Charger Fast Charge 65W
+1015. Earbuds Bluetooth with LED Display
+1016. Headphones Noise Cancelling
+1017. Smart Watch with Calling
+1018. Tablet Stylus Pen Universal
+1019. TV TCL 75 inch
+1020. TV Hisense 75 inch
+1021. Soundbar with Subwoofer
+1022. Laptop HP Victus Gaming
+1023. Laptop Lenovo IdeaPad Slim
+1024. Wireless Keyboard and Mouse Set
+1025. Monitor 32 inch Curved
+1026. Men's Oversize T-Shirt
+1027. Women's Satin Dress
+1028. Kids Denim Jacket
+1029. Sneakers Jordan Style
+1030. Handbag Mini Crossbody
+1031. Perfume Lattafa Khamrah
+1032. Face Serum Vitamin C 30ml
+1033. Wig 30 inch Deep Wave
+1034. Duvet Set 6x6 Floral
+1035. Blender Nunix 4 in 1
+1036. Air Fryer 5.5L
+1037. Rice 5kg Mwea Pishori
+1038. Cooking Oil 3L Elianto
+1039. Baby Diapers Size 3 Pampers
+1040. Baby Walker with Music
+1041. Toy Building Blocks 100 Pieces
+1042. Dumbbell Set Adjustable 20kg
+1043. Football Boots Size 42
+1044. Car Dash Camera
+1045. PS5 Game FC 24
+1046. Novel - The Power of Habit
+1047. Solar Panel 200W
+1048. Rechargeable Fan with Light
+1049. Pet Food Cat 1.5kg
+1050. Washing Powder 3kg
+1051. Samsung Galaxy A24
+1052. Samsung Galaxy A34 5G
+1053. Samsung Galaxy A54
+1054. Samsung Galaxy S21 FE
+1055. Samsung Galaxy S22
+1056. Samsung Galaxy Note 20
+1057. Tecno Spark 20 Pro
+1058. Tecno Camon 19
+1059. Tecno Pop 7
+1060. Tecno Phantom X2
+1061. Infinix Hot 40 Pro
+1062. Infinix Note 30 Pro
+1063. Infinix Zero 20
+1064. Infinix Smart 6
+1065. iPhone XR
+1066. iPhone 12
+1067. iPhone 12 Pro Max
+1068. iPhone 14 Pro Max
+1069. iPhone 15 Plus
+1070. Xiaomi Redmi Note 12
+1071. Xiaomi Redmi 10A
+1072. Xiaomi Poco C65
+1073. Xiaomi Mi 11 Lite
+1074. Itel S24
+1075. Itel P38
+1076. Itel A27
+1077. Oppo A77s
+1078. Oppo A57
+1079. Oppo Find X5
+1080. Realme 10
+1081. Realme C33
+1082. Realme Narzo 50
+1083. Nokia G50
+1084. Nokia X20
+1085. Huawei P40 Lite
+1086. Huawei Y9a
+1087. Vivo V27
+1088. Vivo Y100
+1089. Vivo Y02
+1090. Honor X8
+1091. Phone Cover for Infinix Hot 30
+1092. Phone Cover for Tecno Camon
+1093. Phone Cover for iPhone 14
+1094. Phone Cover for Redmi Note 12
+1095. Phone Cover for Samsung A34
+1096. Phone Case Wallet Leather
+1097. Phone Case Glitter
+1098. Phone Case with Stand
+1099. Phone Case for Huawei
+1100. Screen Protector for Samsung S23
+1101. Screen Protector for iPhone 11
+1102. Screen Protector for Xiaomi
+1103. Screen Protector Matte
+1104. Camera Protector for iPhone 14
+1105. Power Bank 15000mAh
+1106. Power Bank 25000mAh
+1107. Power Bank 5000mAh Slim
+1108. Power Bank with Cable Built-in
+1109. Anker Power Bank 10000mAh
+1110. Oraimo Power Bank 27000mAh
+1111. Charger 33W Fast
+1112. Charger 67W Xiaomi
+1113. Charger 100W GaN
+1114. Charger for Laptop Type C
+1115. Cable USB to Type C 1.5m
+1116. Cable Micro USB 1m
+1117. Cable Lightning to Type C
+1118. Cable 3 in 1
+1119. Earphones Wired Samsung
+1120. Earphones Wired iPhone
+1121. Earbuds Oraimo FreePods Lite
+1122. Earbuds Oraimo AirBuds
+1123. Earbuds Anker Soundcore
+1124. Earbuds JBL Style
+1125. Earbuds with Noise Cancelling
+1126. Headphones Wireless JBL
+1127. Headphones Wireless Sony Style
+1128. Headphones Gaming RGB
+1129. Speaker Bluetooth Mini Portable
+1130. Speaker Bluetooth Party Box
+1131. Speaker Bluetooth with Mic
+1132. Speaker Anker Soundcore Mini
+1133. Smart Watch X8 Ultra
+1134. Smart Watch T500
+1135. Smart Watch Series 8
+1136. Smart Watch for Women Pink
+1137. Fitness Tracker Band
+1138. Smart Band Xiaomi Mi Band 7
+1139. Tablet Samsung Galaxy Tab A8
+1140. Tablet Samsung Galaxy Tab S7
+1141. Tablet Lenovo Tab M10
+1142. Tablet Huawei MatePad
+1143. Tablet iPad Mini 6
+1144. Tablet Cover for Samsung Tab
+1145. Tablet Stand Adjustable
+1146. Tablet Keyboard Bluetooth
+1147. TV Vitron 43 inch Smart
+1148. TV Vitron 50 inch
+1149. TV TCL 32 inch
+1150. TV TCL 50 inch
+1151. TV TCL 65 inch QLED
+1152. TV Hisense 43 inch 4K
+1153. TV Hisense 50 inch
+1154. TV Hisense 58 inch
+1155. TV Vision Plus 32 inch Smart
+1156. TV Vision Plus 50 inch
+1157. TV LG 50 inch 4K
+1158. TV LG 65 inch
+1159. TV Sony 55 inch Bravia
+1160. TV Sony 65 inch
+1161. TV Wall Mount Tilting
+1162. TV Wall Mount Fixed
+1163. TV Stand with Wheels
+1164. TV Antenna Indoor
+1165. TV Antenna Outdoor
+1166. DSTV Explora Decoder
+1167. DSTV HD Decoder
+1168. GOtv Decoder + Antenna
+1169. StarTimes Decoder
+1170. Free to Air Decoder
+1171. HDMI Cable 1.5m
+1172. HDMI Cable 3m
+1173. HDMI Cable 5m
+1174. AV Cable
+1175. Soundbar Samsung
+1176. Soundbar LG
+1177. Soundbar with Woofer
+1178. Home Theatre 5.1
+1179. Home Theatre 2.1
+1180. Woofer Bluetooth
+1181. Projector Android Smart
+1182. Projector 1080p Full HD
+1183. Projector Mini Portable
+1184. Projector Screen 100 inch
+1185. Laptop HP 250 G8
+1186. Laptop HP 15s
+1187. Laptop HP EliteBook 840
+1188. Laptop HP ProBook 450
+1189. Laptop Lenovo ThinkPad X1
+1190. Laptop Lenovo IdeaPad 1
+1191. Laptop Lenovo V15
+1192. Laptop Dell Inspiron 15
+1193. Laptop Dell Latitude 5420
+1194. Laptop Dell Vostro 3500
+1195. Laptop Asus VivoBook 15
+1196. Laptop Asus TUF Gaming
+1197. Laptop Acer Aspire 5
+1198. Laptop Acer Swift 3
+1199. Laptop MacBook Air M1 13
+1200. Laptop MacBook Pro 14
+1201. Laptop Charger HP 19V
+1202. Laptop Charger Lenovo 20V
+1203. Laptop Charger Dell 19.5V
+1204. Laptop Charger Universal
+1205. Laptop Battery HP Pavilion
+1206. Laptop Battery Lenovo
+1207. Laptop Battery Dell
+1208. Laptop Bag 15.6 inch
+1209. Laptop Bag Backpack 17 inch
+1210. Laptop Sleeve Neoprene
+1211. Laptop Stand Aluminium
+1212. Laptop Cooling Pad with Fan
+1213. Printer HP DeskJet 2710
+1214. Printer HP DeskJet 4155
+1215. Printer HP LaserJet M110w
+1216. Printer Canon PIXMA G3410
+1217. Printer Epson EcoTank L3210
+1218. Printer Epson EcoTank L3250
+1219. Printer Ink HP 305 Black
+1220. Printer Ink HP 305 Colour
+1221. Printer Ink Canon 445
+1222. Printer Ink Epson 003 Black
+1223. Printer Paper A4 80gsm
+1224. Printer Paper Photo 4x6
+1225. Monitor HP 22 inch
+1226. Monitor Dell 24 inch
+1227. Monitor LG 24 inch
+1228. Monitor Samsung 27 inch
+1229. Monitor 32 inch 144Hz Gaming
+1230. Monitor Stand
+1231. Keyboard Wired HP
+1232. Keyboard Wireless Logitech
+1233. Keyboard Mechanical RGB
+1234. Mouse Wired Dell
+1235. Mouse Wireless HP
+1236. Mouse Gaming Logitech
+1237. Mouse Pad Gaming Large
+1238. Webcam Logitech C270
+1239. Webcam 4K
+1240. Headset for Call Centre
+1241. Headset Bluetooth for PC
+1242. USB Hub 7 Port
+1243. USB Hub Type C
+1244. Card Reader USB
+1245. Flash Drive 8GB
+1246. Flash Drive 16GB
+1247. Flash Drive 32GB
+1248. Flash Drive 128GB Metal
+1249. Flash Drive 512GB
+1250. External Hard Drive 500GB
+1251. External Hard Drive 2TB Seagate
+1252. External SSD 1TB
+1253. Memory Card 16GB
+1254. Memory Card 64GB Class 10
+1255. Memory Card 128GB UHS
+1256. Memory Card 256GB
+1257. Router TP-Link Archer C6
+1258. Router D-Link
+1259. Router Huawei 4G
+1260. WiFi Extender TP-Link
+1261. WiFi Adapter USB
+1262. CCTV Camera Bullet 2MP
+1263. CCTV Camera Dome
+1264. CCTV Camera PTZ
+1265. CCTV DVR 8 Channel
+1266. CCTV DVR 4 Channel
+1267. CCTV Hard Drive 1TB
+1268. Video Doorbell
+1269. Smart Plug WiFi
+1270. Smart Bulb WiFi
+1271. LED Bulb 9W
+1272. LED Bulb 12W
+1273. LED Tube Light
+1274. LED Panel Light
+1275. Rechargeable Emergency Light
+1276. Solar Lamp Outdoor
+1277. Solar Street Light
+1278. Solar Panel 50W
+1279. Solar Panel 150W
+1280. Solar Panel 300W
+1281. Solar Battery 100Ah
+1282. Solar Inverter 1000W
+1283. Solar Charge Controller
+1284. Power Extension 3 Socket
+1285. Power Extension 5 Socket
+1286. Power Extension with USB
+1287. Power Strip Surge Protector
+1288. Adapter Plug 3 Pin
+1289. Adapter Plug Universal
+1290. Men's T-Shirt Round Neck Black
+1291. Men's T-Shirt Round Neck Grey
+1292. Men's T-Shirt V Neck White
+1293. Men's T-Shirt Pack of 5
+1294. Men's Polo Shirt Navy
+1295. Men's Polo Shirt White
+1296. Men's Shirt Checked
+1297. Men's Shirt Plain White
+1298. Men's Shirt Official Blue
+1299. Men's Shirt Linen
+1300. Men's Jeans Slim Fit Blue
+1301. Men's Jeans Ripped
+1302. Men's Jeans Baggy
+1303. Men's Chinos Khaki
+1304. Men's Chinos Black
+1305. Men's Shorts Denim
+1306. Men's Shorts Sports
+1307. Men's Jogger Pants Grey
+1308. Men's Tracksuit Black
+1309. Men's Hoodie Grey
+1310. Men's Hoodie Black
+1311. Men's Sweater V Neck
+1312. Men's Sweater Round Neck
+1313. Men's Jacket Bomber
+1314. Men's Jacket Leather Brown
+1315. Men's Jacket Puffer
+1316. Men's Blazer Navy
+1317. Men's Suit 3 Piece
+1318. Men's Vest Formal
+1319. Men's Boxers Cotton 4 Pack
+1320. Men's Briefs 3 Pack
+1321. Men's Socks Ankle 6 Pack
+1322. Men's Socks Long 5 Pack
+1323. Men's Pyjama Set
+1324. Men's Bathrobe
+1325. Women's T-Shirt Fitted
+1326. Women's T-Shirt Oversized White
+1327. Women's Crop Top Black
+1328. Women's Crop Top White
+1329. Women's Tank Top Ribbed
+1330. Women's Blouse Chiffon
+1331. Women's Blouse Satin
+1332. Women's Shirt Oversized
+1333. Women's Dress Bodycon Black
+1334. Women's Dress Summer Floral
+1335. Women's Dress Maxi Red
+1336. Women's Dress Midi
+1337. Women's Dress Party Sequin
+1338. Women's Skirt Mini Denim
+1339. Women's Skirt Pleated
+1340. Women's Skirt Long
+1341. Women's Jeans High Waist
+1342. Women's Jeans Skinny
+1343. Women's Jeans Mom Fit
+1344. Women's Trouser Palazzo
+1345. Women's Trouser Wide Leg
+1346. Women's Leggings Black
+1347. Women's Leggings Sports
+1348. Women's Shorts High Waist
+1349. Women's Jumpsuit Black
+1350. Women's Playsuit
+1351. Women's Hoodie Pink
+1352. Women's Sweater Oversized
+1353. Women's Cardigan Long
+1354. Women's Blazer White
+1355. Women's Jacket Denim
+1356. Women's Jacket Leather
+1357. Women's Coat Long
+1358. Women's Bra Padded
+1359. Women's Bra Sports
+1360. Women's Panties Cotton 5 Pack
+1361. Women's Panties Seamless
+1362. Women's Socks 5 Pack
+1363. Women's Pyjama Satin
+1364. Women's Nightdress Cotton
+1365. Women's Swimsuit One Piece
+1366. Women's Bikini 2 Piece
+1367. Women's Sports Bra
+1368. Women's Gym Set 2 Piece
+1369. Kids T-Shirt Boys
+1370. Kids T-Shirt Girls
+1371. Kids Shirt Boys
+1372. Kids Dress Girls Floral
+1373. Kids Dress Girls Party
+1374. Kids Jeans Boys
+1375. Kids Jeans Girls
+1376. Kids Shorts Boys
+1377. Kids Shorts Girls
+1378. Kids Hoodie Boys
+1379. Kids Hoodie Girls
+1380. Kids Jacket Boys
+1381. Kids Jacket Girls
+1382. Kids Tracksuit
+1383. Kids Pyjama
+1384. Kids School Uniform
+1385. Kids Socks 6 Pack
+1386. Kids Shoes Sneakers White
+1387. Kids Shoes Sneakers Black
+1388. Kids Shoes Sandals
+1389. Kids Shoes School Black
+1390. Kids Shoes Boots
+1391. Baby Onesie Long Sleeve
+1392. Baby Onesie Short Sleeve
+1393. Baby Romper Set 3 Pack
+1394. Baby Bibs 5 Pack
+1395. Baby Hat Knitted
+1396. Baby Mittens
+1397. Baby Socks 3 Pack
+1398. Baby Shoes Soft Sole
+1399. Baby Blanket Muslin
+1400. Baby Towel Hooded
+1401. Sneakers Men White Low
+1402. Sneakers Men Black Low
+1403. Sneakers Women White
+1404. Sneakers Women Pink
+1405. Sneakers Running Men
+1406. Sneakers Running Women
+1407. Sneakers High Top Men
+1408. Sneakers Canvas White
+1409. Sneakers Slip On
+1410. Sandals Men Leather Brown
+1411. Sandals Men Rubber
+1412. Sandals Women Flat
+1413. Sandals Women Wedge
+1414. Slippers Men Leather
+1415. Slippers Women Fur
+1416. Slippers Bathroom
+1417. Heels Women Block
+1418. Heels Women Stiletto
+1419. Heels Women Platform
+1420. Boots Women Knee High
+1421. Boots Men Desert
+1422. Boots Men Chelsea
+1423. Formal Shoes Men Oxford
+1424. Formal Shoes Men Loafers
+1425. Formal Shoes Women Pumps
+1426. Sports Shoes Football
+1427. Sports Shoes Basketball
+1428. Handbag Women Leather Black
+1429. Handbag Women Tote Beige
+1430. Handbag Women Sling
+1431. Handbag Women Clutch Gold
+1432. Handbag Women Mini
+1433. Backpack Men Laptop
+1434. Backpack Women Fashion
+1435. Backpack Kids Cartoon
+1436. Backpack Hiking 40L
+1437. Backpack Travel 60L
+1438. Suitcase 20 inch
+1439. Suitcase 24 inch
+1440. Suitcase 28 inch
+1441. Suitcase Set 3 Pieces
+1442. Duffel Bag Travel
+1443. Gym Bag
+1444. Waist Bag Men
+1445. Waist Bag Women
+1446. Wallet Men Bifold
+1447. Wallet Women Zip
+1448. Card Holder Leather
+1449. Watch Men Quartz
+1450. Watch Men Digital
+1451. Watch Men Chronograph
+1452. Watch Women Quartz
+1453. Watch Women Gold
+1454. Watch Couple Set
+1455. Sunglasses Men Black
+1456. Sunglasses Women Cat Eye
+1457. Sunglasses Kids
+1458. Sunglasses Polarized Sports
+1459. Cap Men Baseball Black
+1460. Cap Women Baseball
+1461. Hat Bucket Beige
+1462. Hat Sun Wide Brim
+1463. Beanie Hat Black
+1464. Scarf Men Winter
+1465. Scarf Women Silk
+1466. Gloves Men Leather
+1467. Gloves Women Wool
+1468. Belt Men Leather Black
+1469. Belt Men Canvas
+1470. Belt Women Thin
+1471. Tie Men Silk Red
+1472. Tie Men Slim Black
+1473. Bow Tie Men
+1474. Earrings Women Gold Hoop
+1475. Earrings Women Pearl Stud
+1476. Earrings Women Long
+1477. Necklace Women Gold Chain
+1478. Necklace Women Pendant
+1479. Bracelet Women Gold
+1480. Bracelet Men Beaded
+1481. Ring Women Gold
+1482. Ring Men Silver
+1483. Hair Clip Women 4 Pack
+1484. Hair Band Women
+1485. Hair Scrunchies 10 Pack
+1486. Wig Human Hair 20 inch
+1487. Wig Human Hair 24 inch
+1488. Wig Human Hair 28 inch
+1489. Wig Synthetic Straight
+1490. Wig Synthetic Curly
+1491. Wig Bob 12 inch
+1492. Wig Headband Wig
+1493. Hair Bundles Brazilian 3 Pack
+1494. Hair Extensions Clip In
+1495. Hair Oil Argan
+1496. Hair Oil Coconut
+1497. Hair Shampoo 500ml
+1498. Hair Conditioner 500ml
+1499. Hair Mask Deep Repair
+1500. Hair Dryer 2200W
+1501. Hair Straightener Ceramic
+1502. Hair Curler 32mm
+1503. Hair Clipper Professional
+1504. Beard Trimmer
+1505. Shaving Machine Rotary
+1506. Electric Razor
+1507. Makeup Kit 12 Pieces
+1508. Makeup Brush Set 16 Pieces
+1509. Foundation Liquid Beige
+1510. Foundation Powder
+1511. Concealer Liquid
+1512. Lipstick Matte Nude
+1513. Lipstick Red
+1514. Lip Gloss Shine
+1515. Eyeshadow Palette 12 Colors
+1516. Eyeshadow Palette 35 Colors
+1517. Eyeliner Pen Black
+1518. Mascara Volume
+1519. Blush Powder Pink
+1520. Highlighter Powder
+1521. Setting Spray Matte
+1522. Makeup Remover Micellar
+1523. Face Primer Gel
+1524. BB Cream Light
+1525. CC Cream Medium
+1526. Face Wash Gel
+1527. Face Scrub Gentle
+1528. Face Mask Sheet 5 Pack
+1529. Face Mask Clay Detox
+1530. Face Serum Hyaluronic
+1531. Face Serum Vitamin C
+1532. Face Serum Retinol
+1533. Face Cream Day
+1534. Face Cream Night
+1535. Sunscreen SPF 30
+1536. Sunscreen SPF 50 PA+++
+1537. Body Lotion 400ml
+1538. Body Butter Cocoa
+1539. Body Oil Almond
+1540. Body Scrub Sugar
+1541. Hand Cream 75ml
+1542. Foot Scrub
+1543. Nail Polish Red
+1544. Nail Polish Pink
+1545. Nail Polish Gel
+1546. Nail Polish Remover Acetone
+1547. Nail File 2 Pack
+1548. False Nails Coffin
+1549. Perfume Men 100ml Intense
+1550. Perfume Women 100ml Floral
+1551. Perfume Unisex Oud 100ml
+1552. Perfume Mini Set 6x10ml
+1553. Body Spray Axe Style
+1554. Body Mist Coconut
+1555. Deodorant Spray Women
+1556. Deodorant Roll On Men
+1557. Toothpaste Colgate 140g
+1558. Toothpaste Sensodyne
+1559. Toothbrush Soft 4 Pack
+1560. Electric Toothbrush
+1561. Mouthwash Listerine Style
+1562. Dental Floss 50m
+1563. Vitamin C 1000mg 20 Tablets
+1564. Vitamin D3 1000IU
+1565. Multivitamin Women
+1566. Multivitamin Men
+1567. Collagen Powder 300g
+1568. Protein Powder Whey
+1569. Omega 3 Fish Oil
+1570. Iron Supplements
+1571. Calcium Tablets
+1572. Bedsheet 4x6 Floral
+1573. Bedsheet 5x6 Plain
+1574. Bedsheet 6x6 Striped
+1575. Duvet 6x6 Woolen
+1576. Duvet 5x6 Microfiber
+1577. Duvet Cover 5x6
+1578. Pillow Standard 2 Pack
+1579. Pillow Memory Foam
+1580. Pillowcase Satin 2 Pack
+1581. Blanket Fleece Single
+1582. Blanket Fleece Double
+1583. Throw Blanket Knitted
+1584. Mattress 4x6 Foam
+1585. Mattress 5x6 Spring
+1586. Mattress 6x6 Orthopedic
+1587. Mattress Protector 5x6
+1588. Mosquito Net 5x6
+1589. Mosquito Net 6x6
+1590. Curtain 2 Pieces Blackout
+1591. Curtain Sheer 2 Pieces
+1592. Curtain Rod 2m
+1593. Curtain Rings 10 Pack
+1594. Towel Bath Large Grey
+1595. Towel Bath Large White
+1596. Towel Hand 3 Pack
+1597. Towel Face 5 Pack
+1598. Bath Mat Anti-Slip
+1599. Bathrobe Hooded
+1600. Shower Curtain Waterproof
+1601. Shower Head Rain
+1602. Soap Dispenser Pump
+1603. Toothbrush Holder Ceramic
+1604. Bathroom Organizer
+1605. Laundry Basket Large
+1606. Laundry Hamper 2 Compartment
+1607. Clothes Hangers Plastic 20
+1608. Clothes Hangers Velvet 20
+1609. Clothes Drying Rack Folding
+1610. Ironing Board Metal
+1611. Iron Box Dry
+1612. Iron Box Steam Philips Style
+1613. Storage Box 20L
+1614. Storage Box 50L
+1615. Storage Box with Lid 5 Pack
+1616. Shoe Rack 2 Tier
+1617. Shoe Rack 4 Tier
+1618. Shoe Rack 5 Tier
+1619. Shoe Organizer Over Door
+1620. Wardrobe 2 Door
+1621. Wardrobe 3 Door
+1622. Bookshelf 3 Tier
+1623. Bookshelf 5 Tier
+1624. TV Stand 120cm
+1625. Coffee Table Glass
+1626. Coffee Table Wood
+1627. Dining Table 6 Chairs
+1628. Dining Table 4 Chairs Wood
+1629. Bed Frame 4x6
+1630. Bed Frame 5x6 with Storage
+1631. Office Chair Mesh
+1632. Office Chair Leather
+1633. Gaming Chair RGB
+1634. Study Desk 100cm
+1635. Study Desk with Shelf
+1636. Wall Shelf Floating 2 Pack
+1637. Wall Mirror Round
+1638. Wall Mirror Rectangle
+1639. Wall Clock Quartz
+1640. Wall Art 3 Pieces
+1641. Photo Frame A4
+1642. Photo Frame Set 4
+1643. Vase Ceramic
+1644. Artificial Flower Bouquet
+1645. Artificial Plant Potted
+1646. Scented Candle Lavender
+1647. Scented Candle Vanilla
+1648. Reed Diffuser
+1649. Air Freshener Spray
+1650. Air Purifier HEPA
+1651. Humidifier Ultrasonic
+1652. Dehumidifier
+1653. Table Fan 16 inch
+1654. Standing Fan 18 inch
+1655. Wall Fan
+1656. Rechargeable Fan 12 inch
+1657. Ceiling Fan
+1658. Water Heater Instant
+1659. Water Heater 50L
+1660. Blender Nunix 2 in 1
+1661. Blender Von 3 in 1
+1662. Blender Mika 4 in 1
+1663. Blender Portable USB
+1664. Blender with Grinder 1.5L
+1665. Juicer Electric
+1666. Juice Extractor Slow
+1667. Coffee Maker Drip
+1668. Coffee Maker Espresso
+1669. Coffee Grinder Electric
+1670. Kettle Electric 1.8L
+1671. Kettle Cordless Glass
+1672. Toaster 2 Slice
+1673. Toaster 4 Slice
+1674. Sandwich Maker
+1675. Waffle Maker
+1676. Panini Grill
+1677. Air Fryer 4.5L
+1678. Air Fryer 6L
+1679. Air Fryer 8L
+1680. Deep Fryer 3L
+1681. Rice Cooker 1.8L
+1682. Rice Cooker 2.2L
+1683. Electric Pressure Cooker 6L
+1684. Slow Cooker 3.5L
+1685. Electric Cooker 2 Burner
+1686. Electric Hotplate Single
+1687. Induction Cooker Single
+1688. Gas Cooker 3 Burner Standing
+1689. Gas Cooker 4 Burner with Oven
+1690. Gas Cooker 2 Burner Table Top
+1691. Microwave 20L
+1692. Microwave 25L with Grill
+1693. Oven Electric 45L
+1694. Fridge Single Door 90L
+1695. Fridge Double Door 250L
+1696. Fridge Side by Side
+1697. Deep Freezer 200L
+1698. Water Dispenser Hot and Cold
+1699. Water Dispenser Bottom Load
+1700. Water Filter 3 Stage
+1701. Sufuria Set 5 Pieces
+1702. Sufuria Set 9 Pieces
+1703. Frying Pan 28cm Non-Stick
+1704. Frying Pan 32cm
+1705. Wok Pan
+1706. Saucepan Set
+1707. Pressure Cooker 7L
+1708. Pressure Cooker 9L
+1709. Baking Tray Non-Stick
+1710. Cake Pan Round
+1711. Muffin Tray 12 Cup
+1712. Cookie Cutter Set
+1713. Kitchen Knife Set 6 Pieces
+1714. Kitchen Knife Sharpener
+1715. Chopping Board Plastic
+1716. Chopping Board Bamboo
+1717. Kitchen Scale 5kg
+1718. Measuring Cups Set
+1719. Measuring Spoons
+1720. Dish Rack 2 Tier Stainless
+1721. Dish Rack Plastic
+1722. Dish Drying Mat
+1723. Cutlery Set 24 Pieces
+1724. Cutlery Set 16 Pieces
+1725. Dinner Set 24 Pieces Porcelain
+1726. Dinner Plates 6 Pieces
+1727. Soup Bowls 6 Pieces
+1728. Tea Cups 6 Pieces
+1729. Coffee Mugs 4 Pack
+1730. Drinking Glasses 6 Pieces
+1731. Wine Glasses 6 Pieces
+1732. Water Jug 1.5L
+1733. Thermos Flask 1L
+1734. Thermos Flask 2L
+1735. Water Bottle 500ml
+1736. Water Bottle 1L Sports
+1737. Water Bottle 2L Gym
+1738. Lunch Box 3 Compartment
+1739. Food Storage Containers 5 Pack
+1740. Spice Rack 6 Jars
+1741. Spice Rack Rotating
+1742. Kitchen Organizer Shelf
+1743. Apron Waterproof
+1744. Oven Gloves 2 Pack
+1745. Kitchen Towels 5 Pack
+1746. Gas Cylinder 6kg Empty
+1747. Gas Cylinder 13kg Empty
+1748. Gas Regulator with Hose
+1749. Gas Burner Single
+1750. Rice 2kg Pishori
+1751. Rice 5kg Basmati
+1752. Rice 10kg Long Grain
+1753. Rice 25kg Pishori
+1754. Maize Flour 2kg
+1755. Maize Flour 5kg
+1756. Wheat Flour 2kg
+1757. Wheat Flour 5kg
+1758. Self Raising Flour 2kg
+1759. Sugar 1kg
+1760. Sugar 2kg Brown
+1761. Sugar 5kg White
+1762. Salt 1kg
+1763. Salt 2kg Iodized
+1764. Cooking Oil 1L
+1765. Cooking Oil 2L
+1766. Cooking Oil 5L
+1767. Cooking Oil 10L
+1768. Olive Oil 500ml
+1769. Coconut Oil 500ml
+1770. Ghee 500g
+1771. Butter 250g
+1772. Margarine 500g
+1773. Milk Powder 400g
+1774. Milk Powder 900g
+1775. Evaporated Milk 410ml
+1776. Condensed Milk
+1777. Tea Leaves 250g
+1778. Tea Bags 50 Pack
+1779. Tea Bags 100 Pack
+1780. Coffee 100g Instant
+1781. Coffee 250g Ground
+1782. Drinking Chocolate 400g
+1783. Milo 200g
+1784. Milo 800g
+1785. Cornflakes 500g
+1786. Oats 1kg
+1787. Weetabix
+1788. Honey 500g
+1789. Honey 1kg
+1790. Peanut Butter 400g
+1791. Peanut Butter 800g
+1792. Jam Strawberry 500g
+1793. Marmalade Orange
+1794. Tomato Sauce 500g
+1795. Tomato Paste 400g
+1796. Ketchup 1kg
+1797. Mayonnaise 500ml
+1798. Soy Sauce 250ml
+1799. Chilli Sauce 250ml
+1800. Pasta Spaghetti 500g
+1801. Pasta Penne 500g
+1802. Macaroni 500g
+1803. Noodles 5 Pack
+1804. Noodles Cup
+1805. Baked Beans 400g
+1806. Tuna in Oil 185g
+1807. Sardines 125g
+1808. Biscuits Digestive
+1809. Biscuits Cream
+1810. Crackers
+1811. Chocolate Milk 100g
+1812. Chocolate Dark 100g
+1813. Chocolate Bar 50g
+1814. Sweets Candy Pack
+1815. Chewing Gum 10 Pack
+1816. Juice Orange 1L
+1817. Juice Mango 1L
+1818. Juice Passion 1L
+1819. Soda 500ml
+1820. Soda 1L
+1821. Energy Drink 250ml
+1822. Mineral Water 1L
+1823. Baby Diapers Size 2 Huggies
+1824. Baby Diapers Size 3 Pampers
+1825. Baby Diapers Size 4 Huggies
+1826. Baby Diapers Size 5 Pampers
+1827. Baby Wipes 80 Pack
+1828. Baby Wipes 120 Pack
+1829. Baby Lotion 400ml
+1830. Baby Oil 200ml
+1831. Baby Shampoo 200ml
+1832. Baby Soap Bar
+1833. Baby Powder 200g
+1834. Baby Formula Stage 1
+1835. Baby Formula Stage 2
+1836. Baby Cereal 400g
+1837. Baby Feeding Bottle 150ml
+1838. Baby Feeding Bottle 260ml
+1839. Baby Bottle Teats 2 Pack
+1840. Baby Cup with Straw
+1841. Baby Plate with Spoon
+1842. Baby High Chair Foldable
+1843. Baby Walker
+1844. Baby Bouncer
+1845. Baby Play Mat
+1846. Baby Play Gym
+1847. Baby Stroller Lightweight
+1848. Baby Stroller 3 in 1
+1849. Baby Car Seat
+1850. Baby Crib with Mattress
+1851. Baby Blanket 2 Pack
+1852. Baby Towel 2 Pack
+1853. Toy Car Remote Control
+1854. Toy Car Diecast
+1855. Toy Doll with Accessories
+1856. Toy Kitchen Playset
+1857. Toy Doctor Set
+1858. Toy Building Blocks 50 Pieces
+1859. Toy Building Blocks 200 Pieces
+1860. Toy Puzzle 24 Pieces
+1861. Toy Puzzle 100 Pieces
+1862. Toy Drone with Camera
+1863. Toy Helicopter Remote
+1864. Toy Robot Dancing
+1865. Toy Train Electric
+1866. Toy Piano Keyboard
+1867. Toy Guitar
+1868. Toy Gun Water Pistol
+1869. Toy Sword
+1870. Skateboard for Kids
+1871. Bicycle 20 inch Kids
+1872. Bicycle 26 inch Adult
+1873. Tricycle for Toddlers
+1874. Kite Colorful
+1875. Dumbbell 2.5kg Pair
+1876. Dumbbell 7.5kg Pair
+1877. Dumbbell 10kg Pair
+1878. Dumbbell Adjustable 24kg
+1879. Kettlebell 8kg
+1880. Kettlebell 12kg
+1881. Resistance Bands 5 Set
+1882. Resistance Bands with Handles
+1883. Yoga Mat 8mm
+1884. Yoga Mat 10mm
+1885. Yoga Block 2 Pack
+1886. Foam Roller
+1887. Ab Wheel Roller
+1888. Skipping Rope Speed
+1889. Skipping Rope Weighted
+1890. Boxing Gloves 12oz
+1891. Boxing Gloves 14oz
+1892. Punching Bag 1.2m
+1893. Football Size 4
+1894. Football Size 5 Pro
+1895. Basketball Size 7
+1896. Volleyball
+1897. Tennis Racket Pro
+1898. Badminton Racket 2 Pack
+1899. Table Tennis Set
+1900. Hockey Stick
+1901. Cricket Bat + Ball
+1902. Golf Club Set Mini
+1903. Car Tyre 185/65 R15
+1904. Car Tyre 205/55 R16
+1905. Car Battery 12V
+1906. Car Charger Fast 2 Port
+1907. Car Phone Holder Dashboard
+1908. Car Seat Cover Leather
+1909. Car Seat Cushion Memory Foam
+1910. Car Floor Mats Rubber
+1911. Car Steering Cover Leather
+1912. Car Air Freshener Gel
+1913. Car Vacuum Cleaner 12V
+1914. Car Wash Sponge
+1915. Car Polish Wax
+1916. Tyre Inflator Portable
+1917. Car Jump Starter
+1918. Dash Camera Front
+1919. Dash Camera Front and Rear
+1920. Motorbike Helmet Full Face
+1921. Motorbike Helmet Half Face
+1922. Motorbike Gloves Leather
+1923. Motorbike Cover Waterproof
+1924. Motorbike Chain Lube
+1925. Motorbike Phone Holder
+1926. PS5 Console Disc
+1927. PS5 Controller DualSense
+1928. PS4 Console Slim
+1929. PS4 Controller
+1930. PS5 Game GTA V
+1931. PS5 Game Call of Duty
+1932. PS4 Game FIFA 23
+1933. Xbox Series S
+1934. Xbox Controller Wireless
+1935. Nintendo Switch Lite
+1936. Board Game Monopoly
+1937. Board Game Scrabble
+1938. Board Game Chess Wooden
+1939. Board Game Ludo
+1940. Playing Cards Deck
+1941. Novel - The Alchemist
+1942. Novel - Atomic Habits
+1943. Novel - Rich Dad Poor Dad
+1944. Novel - Think and Grow Rich
+1945. Novel - The 5 AM Club
+1946. Novel - Harry Potter Set
+1947. Bible - Good News
+1948. Quran with Translation
+1949. Textbook - KCSE Revision
+1950. Textbook - Form 1 English
+1951. Notebook A5 3 Pack
+1952. Notebook A4 5 Pack
+1953. Diary 2026 Hardcover
+1954. Pens Ballpoint 10 Pack
+1955. Pens Gel 6 Pack
+1956. Pencils HB 12 Pack
+1957. Highlighters Pastel 6 Pack
+1958. Eraser + Sharpener Set
+1959. Ruler Set
+1960. School Bag Backpack 32L
+1961. School Bag with Lunch Bag
+1962. Pencil Case
+1963. Solar Panel 100W Mono
+1964. Solar Panel 200W Mono
+1965. Solar Panel 400W
+1966. Solar Inverter 2000W
+1967. Solar Battery 200Ah
+1968. Solar Charge Controller 30A
+1969. Solar Light with Panel
+1970. Solar Garden Light 4 Pack
+1971. Solar Torch Rechargeable
+1972. Power Bank Solar 30000mAh
+1973. Drill Machine Cordless 20V
+1974. Drill Machine Electric 750W
+1975. Drill Bits Set 50 Pieces
+1976. Screwdriver Set 24 Pieces
+1977. Screwdriver Electric
+1978. Hammer Claw
+1979. Pliers Set
+1980. Wrench Set
+1981. Tool Box 3 Tier
+1982. Measuring Tape 5m
+1983. Spirit Level
+1984. Glue Gun
+1985. Extension Cable 10m
+1986. Extension Cable Reel
+1987. Pet Food Dog 5kg
+1988. Pet Food Cat 2kg
+1989. Dog Leash 1.5m
+1990. Dog Collar
+1991. Dog Bed Large
+1992. Cat Litter 5kg
+1993. Cat Scratching Post
+1994. Pet Shampoo 500ml
+1995. Pet Bowl Stainless
+1996. Aquarium 20L
+1997. Aquarium Filter
+1998. Plant Pot Ceramic
+1999. Garden Hose 20m
+2000. Washing Powder 5kg Ariel Style`;
 
+        // Verified curated studio image pools matched to product keywords
+        const IMAGE_POOLS = {
+            phone: [
+                "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?auto=format&fit=crop&w=500&q=80"
+            ],
+            phoneAcc: [
+                "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1601593346740-925612772716?auto=format&fit=crop&w=500&q=80"
+            ],
+            watch: [
+                "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=500&q=80"
+            ],
+            tvAudio: [
+                "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=500&q=80"
+            ],
+            laptop: [
+                "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=500&q=80"
+            ],
+            pcAcc: [
+                "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=500&q=80"
+            ],
+            menWear: [
+                "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=500&q=80"
+            ],
+            womenWear: [
+                "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1551163943-3f6a855d1153?auto=format&fit=crop&w=500&q=80"
+            ],
+            shoes: [
+                "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=500&q=80"
+            ],
+            bags: [
+                "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1565026057447-bc90a3dceb87?auto=format&fit=crop&w=500&q=80"
+            ],
+            beauty: [
+                "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=500&q=80"
+            ],
+            home: [
+                "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=500&q=80"
+            ],
+            kitchen: [
+                "https://images.unsplash.com/photo-1570222094114-d074f7e1e6e8?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1584990347426-c585c64303ab?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1585515320310-259814833e62?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?auto=format&fit=crop&w=500&q=80"
+            ],
+            grocery: [
+                "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=500&q=80"
+            ],
+            baby: [
+                "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1522771930-78848d9293e8?auto=format&fit=crop&w=500&q=80"
+            ],
+            sportsAuto: [
+                "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=500&q=80",
+                "https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=500&q=80"
+            ]
+        };
+
+        // Intelligent Jumia Price, Category, Variant, and Photo Engine
+        function classifyAndPriceProduct(id, name) {
+            const lower = name.toLowerCase();
+            let category = "Home & Living";
+            let basePrice = 1500;
+            let pool = IMAGE_POOLS.home;
+            let variantLabels = ["Standard Edition", "Plus / Upgraded", "Deluxe Bundle"];
+
+            // 1. Smartphones & Feature Phones
+            if (/\b(samsung galaxy|tecno|infinix|itel|iphone|xiaomi|redmi|poco|oppo|realme|nokia|huawei|vivo|honor)\b/.test(lower) && !/\b(cover|case|protector|guard|skin|charger|cable|earbuds|band|tab|tablet|remote)\b/.test(lower)) {
+                category = "Phones & Tablets";
+                pool = IMAGE_POOLS.phone;
+                variantLabels = ["64GB + 4GB RAM", "128GB + 6GB RAM", "256GB + 8GB RAM"];
+                if (lower.includes("iphone 15") || lower.includes("s24") || lower.includes("z flip")) basePrice = 115000;
+                else if (lower.includes("iphone 14") || lower.includes("iphone 13") || lower.includes("s22")) basePrice = 78000;
+                else if (lower.includes("iphone 12") || lower.includes("iphone 11") || lower.includes("s21") || lower.includes("note 20") || lower.includes("reno")) basePrice = 44000;
+                else if (lower.includes("iphone xr") || lower.includes("camon") || lower.includes("note 30") || lower.includes("note 40") || lower.includes("zero") || lower.includes("a54") || lower.includes("a55") || lower.includes("a34")) basePrice = 26500;
+                else if (lower.includes("it2160") || lower.includes("105") || lower.includes("3310")) { basePrice = 1650; variantLabels = ["Black", "Dark Blue", "Grey"]; }
+                else basePrice = 13800;
+            }
+            // 2. Tablets
+            else if (/\b(tablet|ipad|matepad)\b/.test(lower) && !/\b(cover|stand|keyboard|stylus|drawing)\b/.test(lower)) {
+                category = "Phones & Tablets";
+                pool = IMAGE_POOLS.phone;
+                basePrice = lower.includes("ipad") ? 52000 : 19500;
+                variantLabels = ["WiFi Only 64GB", "4G LTE + 128GB", "Bundle + Keyboard Case"];
+            }
+            // 3. Phone Accessories & Smartwatches
+            else if (/\b(cover|case|protector|guard|skin|power bank|charger|cable|earphone|earbud|airpod|headphone|neckband|smart watch|fitness|band|tripod|ring light|memory card|sim|stylus|magsafe|adapter)\b/.test(lower)) {
+                category = "Phones & Tablets";
+                pool = lower.includes("watch") || lower.includes("band") ? IMAGE_POOLS.watch : IMAGE_POOLS.phoneAcc;
+                variantLabels = ["Midnight Black", "Arctic White", "Metallic Grey"];
+                if (lower.includes("power bank")) basePrice = lower.includes("30000") || lower.includes("27000") ? 3400 : 2100;
+                else if (lower.includes("smart watch") || lower.includes("airpod") || lower.includes("noise cancelling")) basePrice = 2800;
+                else if (lower.includes("earbud") || lower.includes("headphone") || lower.includes("charger")) basePrice = 1650;
+                else basePrice = 550;
+            }
+            // 4. TVs, Decoders & Home Audio
+            else if (/\b(tv|soundbar|home theatre|woofer|speaker|dstv|gotv|startimes|decoder|antenna|projector|karaoke|radio)\b/.test(lower) && !/\b(stand|mount|bracket|remote)\b/.test(lower)) {
+                category = "Electronics & TVs";
+                pool = IMAGE_POOLS.tvAudio;
+                variantLabels = ["Standard Edition", "With Wall Bracket", "Complete Home Bundle"];
+                if (lower.includes("75 inch")) basePrice = 112000;
+                else if (lower.includes("65 inch")) basePrice = 69500;
+                else if (lower.includes("55 inch") || lower.includes("58 inch")) basePrice = 47500;
+                else if (lower.includes("50 inch")) basePrice = 38500;
+                else if (lower.includes("43 inch")) basePrice = 27900;
+                else if (lower.includes("32 inch")) basePrice = 15800;
+                else if (lower.includes("24 inch")) basePrice = 10900;
+                else if (lower.includes("home theatre") || lower.includes("soundbar") || lower.includes("party box")) basePrice = 12500;
+                else if (lower.includes("decoder") || lower.includes("projector")) basePrice = 4800;
+                else basePrice = 2400;
+            }
+            // 5. Laptops, Printers, Monitors & Gaming
+            else if (/\b(laptop|macbook|chromebook|printer|scanner|monitor|keyboard|mouse|flash|hard drive|ssd|webcam|headset|usb hub|router|wifi|cctv|dvr|ps5|ps4|xbox|nintendo|docking)\b/.test(lower)) {
+                category = "Computing & Gaming";
+                pool = /\b(laptop|macbook|chromebook)\b/.test(lower) ? IMAGE_POOLS.laptop : IMAGE_POOLS.pcAcc;
+                if (/\b(laptop|macbook|chromebook)\b/.test(lower) && !/\b(bag|sleeve|stand|cooling|charger|battery|protector)\b/.test(lower)) {
+                    basePrice = lower.includes("macbook") || lower.includes("gaming") || lower.includes("xps") ? 98000 : 42500;
+                    variantLabels = ["8GB RAM / 256GB SSD", "16GB RAM / 512GB SSD", "16GB RAM / 1TB SSD"];
+                } else if (lower.includes("ps5") || lower.includes("xbox") || lower.includes("nintendo")) {
+                    basePrice = lower.includes("console") || lower.includes("series") || lower.includes("switch") ? 58000 : 6500;
+                    variantLabels = ["Standard Edition", "Dual Controller Pack", "Pro Bundle"];
+                } else if (lower.includes("printer") && !lower.includes("ink") && !lower.includes("paper")) {
+                    basePrice = 16500;
+                    variantLabels = ["Printer Only", "With Extra Ink Set", "Office Starter Pack"];
+                } else if (lower.includes("monitor")) {
+                    basePrice = 18500;
+                    variantLabels = ["Full HD 75Hz", "IPS Pro 100Hz", "Gaming 144Hz"];
+                } else {
+                    basePrice = 1850;
+                    variantLabels = ["Black", "Silver / Grey", "Pro Edition"];
+                }
+            }
+            // 6. Fashion, Shoes, Bags & Watches
+            else if (/\b(men's|women's|kids|t-shirt|shirt|jeans|hoodie|dress|skirt|sneaker|shoe|sandal|heel|boot|slipper|loafer|handbag|backpack|suitcase|bag|wallet|purse|watch|sunglass|belt|cap|hat|sock|bra|boxer|panties|suit|blazer|jacket|trouser|legging|short|sweater|cardigan|tie|scarf|glove|earring|necklace|bracelet|ring|anklet|bangle|bikini|swimsuit|pyjama|pajama|nightdress|tracksuit|jogger|chino|ankara)\b/.test(lower) && !/\b(baby|toy|rack|hanger|washing|machine)\b/.test(lower)) {
+                category = "Fashion & Shoes";
+                if (/\b(shoe|sneaker|sandal|heel|boot|slipper|loafer)\b/.test(lower)) {
+                    pool = IMAGE_POOLS.shoes;
+                    basePrice = lower.includes("boot") || lower.includes("jordan") || lower.includes("formal") ? 3600 : 2200;
+                    variantLabels = ["Size 39 / 40", "Size 41 / 42", "Size 43 / 44"];
+                } else if (/\b(bag|backpack|suitcase|wallet|purse|luggage|duffel)\b/.test(lower)) {
+                    pool = IMAGE_POOLS.bags;
+                    basePrice = lower.includes("suitcase") ? 7500 : 2100;
+                    variantLabels = ["Classic Black", "Tan / Brown", "Navy / Beige"];
+                } else if (lower.includes("watch")) {
+                    pool = IMAGE_POOLS.watch;
+                    basePrice = 2400;
+                    variantLabels = ["Black Strap", "Gold / Silver", "Brown Leather"];
+                } else {
+                    pool = lower.includes("women") || lower.includes("dress") || lower.includes("skirt") || lower.includes("bra") ? IMAGE_POOLS.womenWear : IMAGE_POOLS.menWear;
+                    basePrice = lower.includes("suit") || lower.includes("jacket") ? 4500 : 1450;
+                    variantLabels = ["Size M", "Size L", "Size XL"];
+                }
+            }
+            // 7. Health, Beauty, Wigs & Personal Care
+            else if (/\b(serum|face|nivea|vaseline|lipstick|lip|foundation|eyeshadow|perfume|body|wig|hair|beard|vitamin|collagen|mask|nail|makeup|concealer|mascara|eyeliner|blush|primer|bb cream|cc cream|scrub|toner|shampoo|conditioner|curler|straightener|dryer|clipper|shaver|razor|toothbrush|toothpaste|mouthwash|floss|deodorant|aftershave|sunscreen|aloe|lotion|soap|shower gel|loofah|omega|protein|multivitamin|iron|calcium)\b/.test(lower) && !/\b(baby|pet|dog|dish|car)\b/.test(lower)) {
+                category = "Health & Beauty";
+                pool = IMAGE_POOLS.beauty;
+                basePrice = lower.includes("wig") || lower.includes("human hair") ? 6500 : (lower.includes("perfume") ? 2800 : 1150);
+                variantLabels = ["Single Pack", "Value Twin Pack", "Pro Salon Kit"];
+            }
+            // 8. Kitchen & Home Appliances
+            else if (/\b(blender|cooker|microwave|kettle|fridge|freezer|sufuria|frying pan|wok|saucepan|plate|cup|mug|glass|bottle|flask|air fryer|sandwich|toaster|waffle|panini|hotplate|oven|mixer|food processor|coffee maker|juicer|meat grinder|knife|chopping|cutting board|dish rack|cutlery|dinner set|bowl|jug|lunch box|spice rack|gas|dispenser|washing machine|iron box|fan|water heater|purifier|humidifier|ice maker|yogurt|bread maker)\b/.test(lower)) {
+                category = "Appliances & Kitchen";
+                pool = IMAGE_POOLS.kitchen;
+                variantLabels = ["Standard Model", "Deluxe Stainless", "Family Combo"];
+                if (lower.includes("fridge") || lower.includes("freezer") || lower.includes("washing machine")) basePrice = 34500;
+                else if (lower.includes("gas cooker 4") || lower.includes("gas cooker 3") || lower.includes("electric cooker 4")) basePrice = 24500;
+                else if (lower.includes("microwave") || lower.includes("air fryer") || lower.includes("dispenser") || lower.includes("oven")) basePrice = 8900;
+                else if (lower.includes("blender") || lower.includes("pressure cooker") || lower.includes("sufuria") || lower.includes("dinner set")) basePrice = 3800;
+                else basePrice = 1450;
+            }
+            // 9. Supermarket & Groceries
+            else if (/\b(rice|oil|flour|sugar|milk|tea|coffee|biscuit|chocolate|juice|soda|pasta|spaghetti|macaroni|tomato|soy|honey|peanut|jam|marmalade|cornflakes|oats|weetabix|beans|tuna|sardine|mayonnaise|ketchup|mustard|sauce|salt|pepper|curry|masala|milo|energy drink|water|ghee|butter|margarine|custard|baking|yeast|vanilla|noodles|sweet|gum|detergent|washing powder|dish soap|air freshener)\b/.test(lower) && !/\b(maker|grinder|kettle|jug|bottle|filter|heater|dispenser|cup|mug|plate|bowl|pan|rack|machine)\b/.test(lower)) {
+                category = "Supermarket";
+                pool = IMAGE_POOLS.grocery;
+                basePrice = lower.includes("25kg") ? 4200 : (lower.includes("10kg") || lower.includes("10l") || lower.includes("5kg") || lower.includes("5l") ? 1650 : 480);
+                variantLabels = ["Single Unit", "Family Value Pack (x2)", "Bulk Carton (x4)"];
+            }
+            // 10. Baby & Toys
+            else if (/\b(baby|diaper|pampers|huggies|stroller|carrier|toy|doll|barbie|lego|drone|puzzle|crib|walker|bouncer|play mat|play gym|high chair|teether|bib|onesie|romper|tricycle)\b/.test(lower)) {
+                category = "Baby & Toys";
+                pool = IMAGE_POOLS.baby;
+                basePrice = lower.includes("stroller") || lower.includes("crib") || lower.includes("car seat") ? 11500 : (lower.includes("diaper") || lower.includes("walker") ? 2100 : 1250);
+                variantLabels = ["Standard Pack", "Jumbo Value Pack", "Gift Set"];
+            }
+            // 11. Sports, Auto, Solar, Books & Tools
+            else if (/\b(dumbbell|resistance|yoga|football|jersey|bicycle|skipping|gym|car|tyre|motorbike|helmet|board game|ludo|monopoly|chess|scrabble|novel|bible|quran|textbook|notebook|diary|pen|pencil|solar|drill|screwdriver|hammer|plier|wrench|tool|pet|dog|cat|aquarium|plant|garden|kettlebell|boxing|punching|basketball|volleyball|tennis|badminton|cricket|golf|skateboard)\b/.test(lower)) {
+                category = "Sports, Auto & Tools";
+                pool = IMAGE_POOLS.sportsAuto;
+                basePrice = lower.includes("solar panel") || lower.includes("inverter") || lower.includes("bicycle") || lower.includes("treadmill") ? 16500 : (lower.includes("tyre") || lower.includes("drill") || lower.includes("battery") ? 6800 : 1650);
+                variantLabels = ["Standard Spec", "Heavy Duty Pro", "Complete Kit"];
+            }
+            // 12. Home & Living (Bedding, Furniture, Lighting, Decor)
+            else {
+                category = "Home & Living";
+                pool = IMAGE_POOLS.home;
+                basePrice = lower.includes("mattress") || lower.includes("wardrobe") || lower.includes("dining") || lower.includes("bed frame") ? 14500 : (lower.includes("duvet") || lower.includes("chair") || lower.includes("desk") || lower.includes("table") || lower.includes("carpet") ? 4500 : 1650);
+                variantLabels = ["Classic Design", "Modern Grey / Cream", "Luxury Edition"];
+            }
+
+            const imgUrl = pool[id % pool.length];
+            const variants = [
+                { name: variantLabels[0], price: basePrice },
+                { name: variantLabels[1], price: Math.round(basePrice * 1.15) },
+                { name: variantLabels[2], price: Math.round(basePrice * 1.32) }
+            ];
+
+            return { id, name, category, basePrice, image: imgUrl, variants };
+        }
+
+        // Parse all 2,000 products into memory
+        const ALL_PRODUCTS = RAW_CATALOG.trim().split('\n').map((line, index) => {
+            const match = line.trim().match(/^(\d+)\.\s*(.+)$/);
+            const id = match ? parseInt(match[1]) : index + 1;
+            const name = match ? match[2].replace(/\.$/, '') : line.trim();
+            return classifyAndPriceProduct(id, name);
+        });
+
+        let filteredProducts = [...ALL_PRODUCTS];
+        let displayedCount = 40;
+        let activeCategory = 'All';
+        let currentSearch = '';
         let cart = [];
         let orders = JSON.parse(localStorage.getItem('kilishop_orders') || '[]');
-        let activeCategory = 'All';
 
         function switchView(view) {
-            if(view === 'store') {
+            if (view === 'store') {
                 document.getElementById('storeView').classList.remove('hidden');
                 document.getElementById('adminView').classList.add('hidden');
-                renderProducts();
+                document.getElementById('floatingCartBtn').classList.remove('hidden');
             } else {
                 document.getElementById('storeView').classList.add('hidden');
                 document.getElementById('adminView').classList.remove('hidden');
+                document.getElementById('floatingCartBtn').classList.add('hidden');
                 renderAdminDashboard();
             }
         }
 
         function changeCountry(countryCode) {
             currentCountry = countryCode;
-            renderProducts(activeCategory, document.getElementById('searchInput').value);
+            renderProductGrid(true);
             updateCartUI();
         }
 
         function formatPrice(baseKES) {
             const curr = currencies[currentCountry];
-            const converted = Math.round(baseKES * curr.rate);
-            return curr.symbol + converted.toLocaleString();
-        }
-
-        function renderProducts(filter = 'All', search = '') {
-            const grid = document.getElementById('productGrid');
-            const filtered = products.filter(p => {
-                const matchesCat = filter === 'All' || p.category === filter;
-                const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase());
-                return matchesCat && matchesSearch;
-            });
-
-            if(filtered.length === 0) {
-                grid.innerHTML = `<div class="col-span-full py-16 text-center text-slate-400 font-medium">No products match your search.</div>`;
-                return;
-            }
-
-            grid.innerHTML = filtered.map(p => {
-                const variantOptions = p.variants.map((v, idx) => 
-                    `<option value="${idx}">${v.name} (${formatPrice(v.price)})</option>`
-                ).join('');
-
-                const defaultVariantPrice = formatPrice(p.variants[0].price);
-
-                return `
-                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col group">
-                        <div class="h-48 bg-slate-100 overflow-hidden relative">
-                            <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                            <span class="absolute top-2 left-2 bg-slate-900/80 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-lg">${p.category}</span>
-                        </div>
-                        <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
-                            <div>
-                                <h3 class="font-bold text-slate-900 text-sm line-clamp-1">${p.name}</h3>
-                                <p id="price-display-${p.id}" class="text-amber-600 font-black text-base mt-1">${defaultVariantPrice}</p>
-                            </div>
-
-                            <div class="space-y-2">
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Select Choice / Variant</label>
-                                <select id="variant-select-${p.id}" onchange="updateVariantPrice(${p.id})" class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 font-medium text-slate-700 focus:outline-none focus:border-amber-500">
-                                    ${variantOptions}
-                                </select>
-                            </div>
-
-                            <button id="add-btn-${p.id}" onclick="addToCart(${p.id})" class="w-full bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-white py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center space-x-2 shadow-sm">
-                                <i class="fa-solid fa-cart-plus"></i>
-                                <span>Add to Cart</span>
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function updateVariantPrice(productId) {
-            const product = products.find(p => p.id === productId);
-            const selectEl = document.getElementById(`variant-select-${productId}`);
-            const variantIndex = parseInt(selectEl.value);
-            const variant = product.variants[variantIndex];
-            document.getElementById(`price-display-${productId}`).textContent = formatPrice(variant.price);
+            const converted = curr.code === 'USD' ? (baseKES * curr.rate).toFixed(2) : Math.round(baseKES * curr.rate).toLocaleString();
+            return curr.symbol + converted;
         }
 
         function filterCategory(cat) {
             activeCategory = cat;
             document.querySelectorAll('.cat-btn').forEach(btn => {
-                if(btn.textContent.includes(cat) || (cat === 'All' && btn.textContent.includes('All'))) {
-                    btn.className = "cat-btn px-4 py-2 rounded-full text-xs font-bold bg-amber-500 text-slate-950 whitespace-nowrap transition shadow-sm";
-                } else {
-                    btn.className = "cat-btn px-4 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200 whitespace-nowrap hover:bg-slate-50 transition";
-                }
+                const isMatch = (cat === 'All' && btn.textContent.startsWith('All')) || btn.textContent.includes(cat.split(' ')[0]);
+                btn.className = isMatch
+                    ? "cat-btn px-3.5 py-2 rounded-full text-xs font-bold bg-amber-500 text-slate-950 whitespace-nowrap transition shadow-sm"
+                    : "cat-btn px-3.5 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-slate-200 whitespace-nowrap hover:bg-slate-50 transition";
             });
-            renderProducts(activeCategory, document.getElementById('searchInput').value);
+            applyFilters();
         }
 
         function handleSearch(val) {
-            renderProducts(activeCategory, val);
+            currentSearch = val.toLowerCase().trim();
+            document.getElementById('searchInputDesktop').value = val;
+            document.getElementById('searchInputMobile').value = val;
+            applyFilters();
+        }
+
+        function applyFilters() {
+            filteredProducts = ALL_PRODUCTS.filter(p => {
+                const matchesCat = activeCategory === 'All' || p.category === activeCategory;
+                const matchesSearch = !currentSearch || p.name.toLowerCase().includes(currentSearch) || p.category.toLowerCase().includes(currentSearch) || String(p.id) === currentSearch;
+                return matchesCat && matchesSearch;
+            });
+            displayedCount = 40;
+            renderProductGrid(true);
+        }
+
+        function loadMoreProducts() {
+            displayedCount += 40;
+            renderProductGrid(false);
+        }
+
+        function buildProductCardHTML(p) {
+            const variantOptions = p.variants.map((v, idx) =>
+                `<option value="${idx}">${v.name} — ${formatPrice(v.price)}</option>`
+            ).join('');
+            const defaultPrice = formatPrice(p.variants[0].price);
+
+            // Clean SVG fallback if an external image fails on slow mobile data
+            const fallbackSvg = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'><rect width='400' height='300' fill='%231e293b'/><text x='50%' y='45%' dominant-baseline='middle' text-anchor='middle' fill='%23fbbf24' font-family='sans-serif' font-weight='bold' font-size='18'>KILISHOP #${p.id}</text><text x='50%' y='58%' dominant-baseline='middle' text-anchor='middle' fill='%23cbd5e1' font-family='sans-serif' font-size='13'>${encodeURIComponent(p.category)}</text></svg>`;
+
+            return `
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col">
+                    <div class="h-40 sm:h-44 bg-slate-100 overflow-hidden relative">
+                        <img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.onerror=null;this.src='${fallbackSvg}';" class="w-full h-full object-cover">
+                        <span class="absolute top-2 left-2 bg-slate-900/85 text-white text-[10px] font-bold px-2 py-0.5 rounded-md">#${p.id} • ${p.category}</span>
+                    </div>
+                    <div class="p-3 sm:p-4 flex-1 flex flex-col justify-between space-y-2.5">
+                        <div>
+                            <h3 class="font-bold text-slate-900 text-xs sm:text-sm line-clamp-2 leading-snug" title="${p.name}">${p.name}</h3>
+                            <p id="price-display-${p.id}" class="text-amber-600 font-black text-sm sm:text-base mt-1">${defaultPrice}</p>
+                        </div>
+
+                        <div class="space-y-1">
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase">3 Choices Available:</label>
+                            <select id="variant-select-${p.id}" onchange="updateVariantPrice(${p.id})" class="w-full text-[11px] bg-slate-50 border border-slate-200 rounded-xl px-2 py-1.5 font-semibold text-slate-700 focus:outline-none focus:border-amber-500">
+                                ${variantOptions}
+                            </select>
+                        </div>
+
+                        <button id="add-btn-${p.id}" onclick="addToCart(${p.id})" class="w-full bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-white py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center space-x-1.5 shadow-sm">
+                            <i class="fa-solid fa-cart-plus"></i>
+                            <span>Add to Cart</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderProductGrid(reset = true) {
+            const grid = document.getElementById('productGrid');
+            const loadMoreBox = document.getElementById('loadMoreContainer');
+            const statusText = document.getElementById('catalogStatusText');
+
+            if (filteredProducts.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-16 text-center text-slate-400 font-semibold">No products found matching your filter.</div>`;
+                loadMoreBox.classList.add('hidden');
+                statusText.textContent = "Showing 0 products";
+                return;
+            }
+
+            const sliceEnd = Math.min(displayedCount, filteredProducts.length);
+            statusText.textContent = `Showing ${sliceEnd.toLocaleString()} of ${filteredProducts.length.toLocaleString()} products`;
+
+            if (reset) {
+                grid.innerHTML = filteredProducts.slice(0, sliceEnd).map(buildProductCardHTML).join('');
+            } else {
+                const startIdx = Math.max(0, sliceEnd - 40);
+                grid.insertAdjacentHTML('beforeend', filteredProducts.slice(startIdx, sliceEnd).map(buildProductCardHTML).join(''));
+            }
+
+            if (sliceEnd >= filteredProducts.length) {
+                loadMoreBox.classList.add('hidden');
+            } else {
+                loadMoreBox.classList.remove('hidden');
+            }
+        }
+
+        function updateVariantPrice(productId) {
+            const product = ALL_PRODUCTS.find(p => p.id === productId);
+            const selectEl = document.getElementById(`variant-select-${productId}`);
+            const variantIndex = parseInt(selectEl.value);
+            document.getElementById(`price-display-${productId}`).textContent = formatPrice(product.variants[variantIndex].price);
         }
 
         function toggleCart() {
@@ -398,7 +2613,7 @@
         }
 
         function addToCart(productId) {
-            const product = products.find(p => p.id === productId);
+            const product = ALL_PRODUCTS.find(p => p.id === productId);
             const selectEl = document.getElementById(`variant-select-${productId}`);
             const variantIndex = selectEl ? parseInt(selectEl.value) : 0;
             const variant = product.variants[variantIndex];
@@ -406,7 +2621,7 @@
             const cartItemId = `${productId}-${variantIndex}`;
             const existing = cart.find(item => item.cartItemId === cartItemId);
 
-            if(existing) {
+            if (existing) {
                 existing.qty++;
             } else {
                 cart.push({
@@ -420,22 +2635,23 @@
                 });
             }
 
-            // Visual button color feedback flash
+            // Visual button color change feedback
             const btn = document.getElementById(`add-btn-${productId}`);
-            const originalHTML = btn.innerHTML;
-            btn.className = "w-full bg-emerald-600 text-white py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center space-x-2 shadow-sm scale-95";
-            btn.innerHTML = `<i class="fa-solid fa-check"></i><span>Added to Cart!</span>`;
-            
-            setTimeout(() => {
-                btn.className = "w-full bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-white py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center space-x-2 shadow-sm";
-                btn.innerHTML = originalHTML;
-            }, 600);
+            if (btn) {
+                btn.className = "w-full bg-emerald-600 text-white py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center space-x-1.5 shadow-sm scale-95";
+                btn.innerHTML = `<i class="fa-solid fa-check"></i><span>Added to Cart!</span>`;
+                setTimeout(() => {
+                    btn.className = "w-full bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-white py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center space-x-1.5 shadow-sm";
+                    btn.innerHTML = `<i class="fa-solid fa-cart-plus"></i><span>Add to Cart</span>`;
+                }, 700);
+            }
 
             updateCartUI();
         }
 
         function updateCartUI() {
             const badge = document.getElementById('cartBadge');
+            const floatCount = document.getElementById('floatingCartCount');
             const list = document.getElementById('cartItemsList');
             const subtotalEl = document.getElementById('cartSubtotal');
             document.getElementById('cartCurrencyLabel').textContent = currencies[currentCountry].code;
@@ -443,7 +2659,8 @@
             const totalCount = cart.reduce((sum, i) => sum + i.qty, 0);
             const subtotalKES = cart.reduce((sum, i) => sum + (i.priceKES * i.qty), 0);
 
-            if(totalCount > 0) {
+            floatCount.textContent = totalCount;
+            if (totalCount > 0) {
                 badge.textContent = totalCount;
                 badge.classList.remove('hidden');
             } else {
@@ -452,15 +2669,15 @@
 
             subtotalEl.textContent = formatPrice(subtotalKES);
 
-            if(cart.length === 0) {
-                list.innerHTML = `<p class="text-center text-slate-400 py-12 text-sm">Your cart is currently empty.</p>`;
+            if (cart.length === 0) {
+                list.innerHTML = `<p class="text-center text-slate-400 py-12 text-sm">Your cart is empty. Tap "Add to Cart" on any item!</p>`;
                 return;
             }
 
             list.innerHTML = cart.map(item => `
-                <div class="flex items-center justify-between py-3">
+                <div class="flex items-center justify-between py-2.5">
                     <div class="flex items-center space-x-3">
-                        <img src="${item.image}" class="w-14 h-14 object-cover rounded-xl bg-slate-100 border border-slate-200">
+                        <img src="${item.image}" class="w-12 h-12 object-cover rounded-xl bg-slate-100 border border-slate-200">
                         <div>
                             <h4 class="font-bold text-slate-900 text-xs line-clamp-1">${item.name}</h4>
                             <p class="text-[10px] text-amber-600 font-semibold">${item.variantName}</p>
@@ -478,37 +2695,37 @@
         }
 
         function checkoutWithPaystack() {
-            if(cart.length === 0) {
+            if (cart.length === 0) {
                 alert('Your cart is empty.');
                 return;
             }
             const phone = document.getElementById('customerPhone').value.trim();
-            if(!phone) {
-                alert('Please enter your mobile phone / mobile money number for East Africa direct billing.');
+            if (!phone) {
+                alert('Please enter your mobile money / M-Pesa phone number.');
                 document.getElementById('customerPhone').focus();
                 return;
             }
 
             const subtotalKES = cart.reduce((sum, i) => sum + (i.priceKES * i.qty), 0);
             const curr = currencies[currentCountry];
-            const localAmount = Math.round(subtotalKES * curr.rate);
+            const localAmount = curr.code === 'USD' ? Number((subtotalKES * curr.rate).toFixed(2)) : Math.round(subtotalKES * curr.rate);
 
             let handler = PaystackPop.setup({
                 key: PAYSTACK_PUBLIC_KEY,
                 email: phone.replace(/[^a-zA-Z0-9]/g, '') + '@kilishop.africa',
-                amount: localAmount * 100,
+                amount: Math.round(localAmount * 100),
                 currency: curr.code,
                 metadata: {
                     phone: phone,
                     country: currentCountry,
-                    gateway: "M-Pesa / Mobile Money / Paystack"
+                    gateway: "M-Pesa / Cross-Border Mobile Money / Paystack"
                 },
                 callback: function(response) {
                     const newOrder = {
                         id: 'KS-' + Math.floor(100000 + Math.random() * 900000),
                         phone: phone,
                         country: currentCountry,
-                        channel: curr.code === 'KES' ? 'M-Pesa Direct' : 'Mobile Money / Paystack',
+                        channel: curr.code === 'KES' ? 'M-Pesa Direct' : `${curr.code} Mobile Money`,
                         items: [...cart],
                         totalFormatted: formatPrice(subtotalKES),
                         totalKES: subtotalKES,
@@ -519,14 +2736,14 @@
                     orders.unshift(newOrder);
                     localStorage.setItem('kilishop_orders', JSON.stringify(orders));
 
-                    alert('Payment successful! Order reference: ' + response.reference);
+                    alert('Payment confirmed! Order ID: ' + newOrder.id);
                     cart = [];
                     updateCartUI();
                     toggleCart();
                     switchView('admin');
                 },
                 onClose: function() {
-                    alert('Transaction was cancelled or not completed.');
+                    alert('Payment window closed.');
                 }
             });
             handler.openIframe();
@@ -539,33 +2756,33 @@
             const totalRevKES = orders.reduce((sum, o) => sum + o.totalKES, 0);
             document.getElementById('statTotalRevenue').textContent = formatPrice(totalRevKES);
 
-            if(orders.length === 0) {
-                table.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-400">No orders recorded yet. Make a test purchase to view live logs here.</td></tr>`;
+            if (orders.length === 0) {
+                table.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-400">No orders recorded yet. Place an order in the storefront to test live logs & WhatsApp dispatch.</td></tr>`;
                 return;
             }
 
             table.innerHTML = orders.map(o => {
                 const itemsSummary = o.items.map(i => `${i.qty}x ${i.name} (${i.variantName})`).join(', ');
-                const whatsappMsg = encodeURIComponent(`Hello! Thank you for shopping with KiliShop (Order ID: ${o.id}). Your payment of ${o.totalFormatted} has been confirmed. Items: ${itemsSummary}. We are processing your express dispatch now!`);
-                const smsMsg = `KiliShop: Order ${o.id} confirmed! Total: ${o.totalFormatted}. Out for express delivery across East Africa. Ref: ${o.reference}`;
+                const whatsappMsg = encodeURIComponent(`Hello! Thank you for shopping with KiliShop (Order ID: ${o.id}). Your payment of ${o.totalFormatted} is confirmed. Items: ${itemsSummary}. Your express delivery is being dispatched!`);
+                const smsMsg = `KiliShop: Order ${o.id} confirmed! Paid: ${o.totalFormatted}. Ref: ${o.reference}. Express dispatch initiated.`;
 
                 return `
                     <tr class="hover:bg-slate-50 transition">
-                        <td class="p-4 font-bold text-slate-900">${o.id}</td>
-                        <td class="p-4 font-semibold text-slate-800">${o.phone}</td>
-                        <td class="p-4">
-                            <span class="inline-block bg-slate-100 text-slate-700 text-xs font-semibold px-2.5 py-1 rounded-lg">${o.country} - ${o.channel}</span>
+                        <td class="p-4 font-bold text-slate-900 whitespace-nowrap">${o.id}</td>
+                        <td class="p-4 font-semibold text-slate-800 whitespace-nowrap">${o.phone}</td>
+                        <td class="p-4 whitespace-nowrap">
+                            <span class="inline-block bg-slate-100 text-slate-700 text-[11px] font-bold px-2.5 py-1 rounded-lg">${o.country} • ${o.channel}</span>
                         </td>
-                        <td class="p-4"><p class="text-xs text-slate-600">${itemsSummary}</p></td>
-                        <td class="p-4 font-black text-amber-600">${o.totalFormatted}</td>
-                        <td class="p-4 space-y-1.5">
+                        <td class="p-4 max-w-xs"><p class="text-xs text-slate-600 line-clamp-2">${itemsSummary}</p></td>
+                        <td class="p-4 font-black text-amber-600 whitespace-nowrap">${o.totalFormatted}</td>
+                        <td class="p-4 space-y-1.5 whitespace-nowrap">
                             <a href="https://wa.me/${o.phone.replace(/[^0-9]/g, '')}?text=${whatsappMsg}" target="_blank" class="inline-flex items-center space-x-1.5 bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition shadow-sm">
                                 <i class="fa-brands fa-whatsapp"></i>
                                 <span>Send WhatsApp</span>
                             </a>
-                            <button onclick="alert('SMS Dispatch Template Copied to Clipboard:\\n\\n${smsMsg}')" class="inline-flex items-center space-x-1.5 bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition shadow-sm">
+                            <button onclick="alert('SMS Template Copied:\\n\\n${smsMsg}')" class="inline-flex items-center space-x-1.5 bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition shadow-sm">
                                 <i class="fa-solid fa-comment-sms"></i>
-                                <span>Copy SMS Template</span>
+                                <span>SMS Template</span>
                             </button>
                         </td>
                     </tr>
@@ -574,15 +2791,15 @@
         }
 
         function clearOrders() {
-            if(confirm('Are you sure you want to clear all order history?')) {
+            if (confirm('Clear all saved order history?')) {
                 orders = [];
                 localStorage.removeItem('kilishop_orders');
                 renderAdminDashboard();
             }
         }
 
-        // Initial setup
-        renderProducts();
+        // Initialize Storefront
+        renderProductGrid(true);
     </script>
 </body>
 </html>
